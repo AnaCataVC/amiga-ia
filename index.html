@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AmigaIA</title>
+    <meta name="description" content="A centralized repository for storing skills, agent definitions, and lifecycle hooks that are 100% cross-compatible with Antigravity (Gemini) and Claude Code.">
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            purple: '#8E24AA',
+                            orange: '#D97757'
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.8s ease-out forwards',
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .delay-100 { animation-delay: 100ms; opacity: 0; }
+            .delay-200 { animation-delay: 200ms; opacity: 0; }
+            .delay-300 { animation-delay: 300ms; opacity: 0; }
+            .delay-400 { animation-delay: 400ms; opacity: 0; }
+        }
+    </style>
+    <script>
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 antialiased font-sans transition-colors duration-300 min-h-screen flex flex-col relative overflow-x-hidden">
+
+    <!-- Decorative background elements -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
+        <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-brand-purple/10 dark:bg-brand-purple/20 blur-3xl opacity-50 mix-blend-multiply dark:mix-blend-lighten"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-brand-orange/10 dark:bg-brand-orange/20 blur-3xl opacity-50 mix-blend-multiply dark:mix-blend-lighten"></div>
+    </div>
+
+    <!-- Discreet Logo in corner -->
+    <header class="absolute top-8 left-8 sm:top-12 sm:left-12 z-10 animate-fade-in">
+        <a href="https://ana-catalina.com" target="_blank" rel="noopener noreferrer">
+            <img src="./favicon.svg" alt="ACVC Logo" class="w-8 h-8 sm:w-10 sm:h-10 opacity-70 hover:opacity-100 transition-opacity duration-300" />
+        </a>
+    </header>
+
+    <!-- Header Actions -->
+    <div class="absolute top-8 right-8 sm:top-12 sm:right-12 z-10 animate-fade-in flex items-center gap-3">
+        
+        <!-- Language Toggle Pill -->
+        <div class="flex items-center bg-white/50 dark:bg-slate-800/50 rounded-full p-1 border border-slate-200/50 dark:border-slate-700/50 shadow-sm backdrop-blur-sm relative">
+            <div id="lang-indicator" class="absolute top-1 bottom-1 left-1 bg-white dark:bg-slate-700 shadow-sm rounded-full transition-transform duration-300 ease-out w-[calc(50%-4px)] pointer-events-none" style="transform: translateX(100%)"></div>
+            
+            <button id="lang-es" class="relative z-10 w-11 sm:w-14 h-8 sm:h-9 rounded-full text-xs sm:text-sm font-medium transition-colors text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 flex items-center justify-center">
+                ES
+            </button>
+            <button id="lang-en" class="relative z-10 w-11 sm:w-14 h-8 sm:h-9 rounded-full text-xs sm:text-sm font-medium transition-colors text-slate-800 dark:text-slate-200 flex items-center justify-center">
+                EN
+            </button>
+        </div>
+
+        <!-- Mobile Theme Toggle Button -->
+        <button id="theme-toggle-mobile" class="sm:hidden flex items-center justify-center w-8 h-8 rounded-full bg-white/50 dark:bg-slate-800/50 border border-slate-200/50 dark:border-slate-700/50 shadow-sm backdrop-blur-sm text-slate-800 dark:text-slate-200 transition-colors" aria-label="Toggle theme">
+            <svg class="w-4 h-4 hidden dark:block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>
+            <svg class="w-4 h-4 block dark:hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+
+        <!-- Desktop Theme Toggle Pill -->
+        <div class="hidden sm:flex items-center bg-white/50 dark:bg-slate-800/50 rounded-full p-1 border border-slate-200/50 dark:border-slate-700/50 shadow-sm backdrop-blur-sm relative">
+            <div id="theme-indicator" class="absolute top-1 bottom-1 left-1 bg-white dark:bg-slate-700 shadow-sm rounded-full transition-transform duration-300 ease-out w-[calc(50%-4px)] pointer-events-none"></div>
+            
+            <button id="theme-light" class="relative z-10 w-12 h-9 rounded-full flex items-center justify-center transition-colors text-slate-800 dark:text-slate-200" aria-label="Light mode">
+                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>
+            </button>
+            <button id="theme-dark" class="relative z-10 w-12 h-9 rounded-full flex items-center justify-center transition-colors text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200" aria-label="Dark mode">
+                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-grow flex flex-col justify-center items-center px-6 w-full max-w-5xl mx-auto py-24 sm:py-32">
+        
+        <!-- Hero Section -->
+        <div class="text-center max-w-3xl mb-20 animate-fade-in-up">
+            <h1 class="text-5xl sm:text-7xl font-bold tracking-tight mb-6 text-slate-900 dark:text-white">
+                Amiga<span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-purple to-brand-orange">IA</span>
+            </h1>
+            <p class="text-lg sm:text-xl text-slate-600 dark:text-slate-400 leading-relaxed mb-10">
+                <span data-i18n-en="A centralized repository for storing skills, agent definitions, and lifecycle hooks." data-i18n-es="Un repositorio centralizado diseñado para almacenar skills, definiciones de agentes y hooks.">A centralized repository for storing skills, agent definitions, and lifecycle hooks.</span>
+                <strong class="font-semibold text-slate-800 dark:text-slate-200" data-i18n-en="100% cross-compatible" data-i18n-es="100% compatible">100% cross-compatible</strong> 
+                <span data-i18n-en="with Antigravity (Gemini) and Claude Code." data-i18n-es="con Antigravity (Gemini) y Claude Code.">with Antigravity (Gemini) and Claude Code.</span>
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#arsenal" class="px-6 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-medium hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors shadow-lg shadow-slate-900/20 dark:shadow-white/10 w-full sm:w-auto">
+                    <span data-i18n-en="Explore Arsenal" data-i18n-es="Arsenal Disponible">Explore Arsenal</span>
+                </a>
+                <a href="https://github.com/anacatalinavc/amiga-ia" target="_blank" class="px-6 py-3 rounded-xl bg-white/50 dark:bg-slate-800/50 text-slate-800 dark:text-slate-200 font-medium hover:bg-white dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition-all shadow-sm backdrop-blur-sm w-full sm:w-auto flex justify-center items-center gap-2">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    <span data-i18n-en="GitHub Repo" data-i18n-es="Repositorio GitHub">GitHub Repo</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Ecosystem Logos -->
+        <div class="flex items-center justify-center gap-8 mb-24 opacity-70 grayscale hover:grayscale-0 transition-all duration-500 animate-fade-in-up delay-100">
+            <div class="flex items-center gap-3 font-medium text-lg">
+                <svg viewBox="0 0 24 24" class="w-8 h-8 drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="url(#geminiGrad)" d="M12 24c0-6.627-5.373-12-12-12 6.627 0 12-5.373 12-12 0 6.627 5.373 12 12 12-6.627 0-12 5.373-12 12z"/>
+                    <defs>
+                        <linearGradient id="geminiGrad" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#4285F4"/>
+                            <stop offset="0.5" stop-color="#9B72CB"/>
+                            <stop offset="1" stop-color="#D96570"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                Antigravity
+            </div>
+            <div class="w-px h-8 bg-slate-300 dark:bg-slate-700"></div>
+            <div class="flex items-center gap-3 font-medium text-lg">
+                <img src="https://cdn.jsdelivr.net/gh/callback-io/allogo@main/public/logos/anthropic/icon.svg" alt="Claude" class="w-8 h-8 drop-shadow-md bg-white rounded-md p-0.5">
+                Claude Code
+            </div>
+        </div>
+
+        <!-- Architecture Section -->
+        <div id="features" class="w-full grid grid-cols-1 md:grid-cols-2 gap-5 animate-fade-in-up delay-200">
+            
+            <div class="bg-white/60 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 p-6 rounded-2xl shadow-sm backdrop-blur-md hover:shadow-md transition-shadow">
+                <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-4">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                </div>
+                <h3 class="text-lg font-bold mb-2" data-i18n-en="Modular Skills" data-i18n-es="Skills Modulares">Modular Skills</h3>
+                <p class="text-sm text-slate-600 dark:text-slate-400" data-i18n-en="Shared capabilities stored in <code class='bg-slate-200 dark:bg-slate-700 px-1 py-0.5 rounded text-xs'>skills/</code> using YAML frontmatter and Markdown. Acts as a dynamic engine for Antigravity." data-i18n-es="Habilidades compartidas en <code class='bg-slate-200 dark:bg-slate-700 px-1 py-0.5 rounded text-xs'>skills/</code> usando YAML frontmatter. Funciona como un motor dinámico para Antigravity.">
+                    Shared capabilities stored in <code class="bg-slate-200 dark:bg-slate-700 px-1 py-0.5 rounded text-xs">skills/</code> using YAML frontmatter and Markdown. Acts as a dynamic engine for Antigravity.
+                </p>
+            </div>
+
+            <div class="bg-white/60 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 p-6 rounded-2xl shadow-sm backdrop-blur-md hover:shadow-md transition-shadow">
+                <div class="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-4">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                </div>
+                <h3 class="text-lg font-bold mb-2" data-i18n-en="Dynamic Subagents" data-i18n-es="Subagentes Dinámicos">Dynamic Subagents</h3>
+                <p class="text-sm text-slate-600 dark:text-slate-400" data-i18n-en="Store agent personas in <code class='bg-slate-200 dark:bg-slate-700 px-1 py-0.5 rounded text-xs'>agents/</code>. Claude loads them statically, while Antigravity uses them dynamically to spawn specialized swarms on the fly." data-i18n-es="Define los agentes en <code class='bg-slate-200 dark:bg-slate-700 px-1 py-0.5 rounded text-xs'>agents/</code>. Claude los carga de forma estática, mientras Antigravity los usa en tiempo real para crear clones autónomos.">
+                    Store agent personas in <code class="bg-slate-200 dark:bg-slate-700 px-1 py-0.5 rounded text-xs">agents/</code>. Claude loads them statically, while Antigravity uses them dynamically to spawn specialized swarms on the fly.
+                </p>
+            </div>
+
+            <div class="bg-white/60 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 p-6 rounded-2xl shadow-sm backdrop-blur-md hover:shadow-md transition-shadow">
+                <div class="w-10 h-10 rounded-xl bg-green-100 dark:bg-green-900/50 text-green-600 dark:text-green-400 flex items-center justify-center mb-4">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+                </div>
+                <h3 class="text-lg font-bold mb-2" data-i18n-en="Persistent Memory" data-i18n-es="Memoria Persistente">Persistent Memory</h3>
+                <p class="text-sm text-slate-600 dark:text-slate-400" data-i18n-en="Long-term project knowledge and Architectural Decision Records (ADRs) are stored in <code class='bg-slate-200 dark:bg-slate-700 px-1 py-0.5 rounded text-xs'>docs/</code>, giving agents continuous context." data-i18n-es="El conocimiento del proyecto y Decisiones Arquitectónicas (ADRs) se guardan en <code class='bg-slate-200 dark:bg-slate-700 px-1 py-0.5 rounded text-xs'>docs/</code> para memoria a largo plazo.">
+                    Long-term project knowledge and Architectural Decision Records (ADRs) are stored in <code class="bg-slate-200 dark:bg-slate-700 px-1 py-0.5 rounded text-xs">docs/</code>, giving agents continuous context.
+                </p>
+            </div>
+
+            <div class="bg-white/60 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 p-6 rounded-2xl shadow-sm backdrop-blur-md hover:shadow-md transition-shadow">
+                <div class="w-10 h-10 rounded-xl bg-orange-100 dark:bg-orange-900/50 text-orange-600 dark:text-orange-400 flex items-center justify-center mb-4">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                </div>
+                <h3 class="text-lg font-bold mb-2" data-i18n-en="Unified Settings" data-i18n-es="Configuración Unificada">Unified Settings</h3>
+                <p class="text-sm text-slate-600 dark:text-slate-400" data-i18n-en="<code class='bg-slate-200 dark:bg-slate-700 px-1 py-0.5 rounded text-xs'>settings.json</code> manages cross-platform hooks for Claude, seamlessly co-existing with Antigravity's atomic Planning Mode pipeline." data-i18n-es="Los hooks multiplataforma para Claude viven en <code class='bg-slate-200 dark:bg-slate-700 px-1 py-0.5 rounded text-xs'>settings.json</code> coexistiendo con la seguridad de Antigravity.">
+                    <code class="bg-slate-200 dark:bg-slate-700 px-1 py-0.5 rounded text-xs">settings.json</code> manages cross-platform hooks for Claude, seamlessly co-existing with Antigravity's atomic Planning Mode pipeline.
+                </p>
+            </div>
+        </div>
+        </div>
+
+        <!-- Arsenal Section -->
+        <div id="arsenal" class="w-full mt-16 animate-fade-in-up delay-200 scroll-mt-24">
+            <h2 class="text-3xl font-bold text-center mb-8" data-i18n-en="Available Arsenal" data-i18n-es="Arsenal Disponible">Available Arsenal</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Agents -->
+                <div class="bg-white/50 dark:bg-slate-800/30 border border-slate-200/50 dark:border-slate-700/50 p-6 rounded-3xl shadow-sm backdrop-blur-md">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2 text-purple-600 dark:text-purple-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path></svg>
+                        <span data-i18n-en="Specialized Agents" data-i18n-es="Agentes Especializados">Specialized Agents</span>
+                    </h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg text-sm font-medium border border-purple-200 dark:border-purple-800/50">commit-assistant</span>
+                        <span class="px-3 py-1.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg text-sm font-medium border border-purple-200 dark:border-purple-800/50">pr-publisher</span>
+                        <span class="px-3 py-1.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg text-sm font-medium border border-purple-200 dark:border-purple-800/50">push-assistant</span>
+                        <span class="px-3 py-1.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg text-sm font-medium border border-purple-200 dark:border-purple-800/50">release-manager</span>
+                    </div>
+                </div>
+
+                <!-- Skills -->
+                <div class="bg-white/50 dark:bg-slate-800/30 border border-slate-200/50 dark:border-slate-700/50 p-6 rounded-3xl shadow-sm backdrop-blur-md">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2 text-blue-600 dark:text-blue-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        <span data-i18n-en="Shared Skills" data-i18n-es="Skills Compartidas">Shared Skills</span>
+                    </h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-sm font-medium border border-blue-200 dark:border-blue-800/50">code-review</span>
+                        <span class="px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-sm font-medium border border-blue-200 dark:border-blue-800/50">pr-conflict-detector</span>
+                        <span class="px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-sm font-medium border border-blue-200 dark:border-blue-800/50">pr-test-creator</span>
+                        <span class="px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-sm font-medium border border-blue-200 dark:border-blue-800/50">pr-test-runner</span>
+                        <span class="px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-sm font-medium border border-blue-200 dark:border-blue-800/50">push-data-validator</span>
+                        <span class="px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-sm font-medium border border-blue-200 dark:border-blue-800/50">push-docs-updater</span>
+                        <span class="px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-sm font-medium border border-blue-200 dark:border-blue-800/50">push-learnings-extractor</span>
+                        <span class="px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-sm font-medium border border-blue-200 dark:border-blue-800/50">push-quality-auditor</span>
+                        <span class="px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-sm font-medium border border-blue-200 dark:border-blue-800/50">release-drafter</span>
+                        <span class="px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-sm font-medium border border-blue-200 dark:border-blue-800/50">release-tagger</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Installation Section -->
+        <div class="w-full mt-10 animate-fade-in-up delay-300">
+            <div class="bg-white/60 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 p-8 rounded-3xl shadow-sm backdrop-blur-md">
+                <h3 class="text-xl font-bold mb-5 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <span data-i18n-en="Quick Start" data-i18n-es="Inicio Rápido">Quick Start</span>
+                </h3>
+                <div class="space-y-4 text-slate-600 dark:text-slate-400">
+                    <div class="flex gap-3">
+                        <span class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-sm font-semibold">1</span>
+                        <p data-i18n-en="Fork this repository to your GitHub account." data-i18n-es="Haz un fork de este repositorio a tu cuenta de GitHub.">Fork this repository to your GitHub account.</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <span class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-sm font-semibold">2</span>
+                        <div class="w-full">
+                            <p class="mb-2" data-i18n-en="Clone it to your local machine (e.g., inside your Repos folder):" data-i18n-es="Clónalo en tu máquina local (ej. dentro de tu carpeta Repos):">Clone it to your local machine (e.g., inside your Repos folder):</p>
+                            <div class="bg-slate-900 dark:bg-[#0d1117] text-slate-200 p-4 rounded-xl font-mono text-sm overflow-x-auto border border-slate-700 shadow-inner">
+                                git clone https://github.com/YOUR_USER/amiga-ia.git
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex gap-3">
+                        <span class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-sm font-semibold">3</span>
+                        <p data-i18n-en="Link the folders to your global Antigravity / Claude config as described in the &lt;a href='https://github.com/AnaCataVC/amiga-ia/blob/main/README.md' target='_blank' class='text-brand-purple dark:text-brand-orange hover:underline'&gt;README&lt;/a&gt;." data-i18n-es="Vincula las carpetas a tu configuración global de Antigravity / Claude como se describe en el &lt;a href='https://github.com/AnaCataVC/amiga-ia/blob/main/README.md' target='_blank' class='text-brand-purple dark:text-brand-orange hover:underline'&gt;README&lt;/a&gt;.">Link the folders to your global Antigravity / Claude config as described in the <a href="https://github.com/AnaCataVC/amiga-ia/blob/main/README.md" target="_blank" class="text-brand-purple dark:text-brand-orange hover:underline">README</a>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-auto py-8 text-center text-slate-500 dark:text-slate-400 text-sm animate-fade-in-up delay-300">
+        <p data-i18n-en="© 2026 &lt;a href='https://ana-catalina.com' target='_blank' class='hover:text-slate-800 dark:hover:text-slate-200 transition-colors'&gt;Ana Catalina&lt;/a&gt;. Created with Antigravity." data-i18n-es="© 2026 &lt;a href='https://ana-catalina.com' target='_blank' class='hover:text-slate-800 dark:hover:text-slate-200 transition-colors'&gt;Ana Catalina&lt;/a&gt;. Creado con Antigravity.">© 2026 <a href="https://ana-catalina.com" target="_blank" class="hover:text-slate-800 dark:hover:text-slate-200 transition-colors">Ana Catalina</a>. Created with Antigravity.</p>
+    </footer>
+
+    <script>
+        // UI Helper for toggles
+        function updateToggleUI(activeBtn, inactiveBtn, indicatorEl, isRight) {
+            if (indicatorEl) indicatorEl.style.transform = isRight ? 'translateX(100%)' : 'translateX(0)';
+            if (activeBtn) {
+                activeBtn.classList.remove('text-slate-500', 'dark:text-slate-400');
+                activeBtn.classList.add('text-slate-800', 'dark:text-slate-200');
+            }
+            if (inactiveBtn) {
+                inactiveBtn.classList.remove('text-slate-800', 'dark:text-slate-200');
+                inactiveBtn.classList.add('text-slate-500', 'dark:text-slate-400');
+            }
+        }
+
+        // Language Toggle Logic
+        let currentLang = 'en';
+        const btnEs = document.getElementById('lang-es');
+        const btnEn = document.getElementById('lang-en');
+        const langIndicator = document.getElementById('lang-indicator');
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.documentElement.lang = lang;
+            
+            if (lang === 'es') {
+                updateToggleUI(btnEs, btnEn, langIndicator, false);
+            } else {
+                updateToggleUI(btnEn, btnEs, langIndicator, true);
+            }
+
+            document.querySelectorAll('[data-i18n-en]').forEach(el => {
+                el.innerHTML = el.getAttribute(`data-i18n-${lang}`) || '';
+            });
+        }
+
+        if (btnEs && btnEn) {
+            btnEs.addEventListener('click', () => setLanguage('es'));
+            btnEn.addEventListener('click', () => setLanguage('en'));
+            setLanguage(currentLang); // Initialize language
+        }
+
+        // Theme Toggle Logic
+        const btnLight = document.getElementById('theme-light');
+        const btnDark = document.getElementById('theme-dark');
+        const themeIndicator = document.getElementById('theme-indicator');
+        const btnMobileToggle = document.getElementById('theme-toggle-mobile');
+
+        function setTheme(isDark) {
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+                localStorage.theme = 'dark';
+                updateToggleUI(btnDark, btnLight, themeIndicator, true);
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.theme = 'light';
+                updateToggleUI(btnLight, btnDark, themeIndicator, false);
+            }
+        }
+
+        if (btnLight && btnDark) {
+            btnLight.addEventListener('click', () => setTheme(false));
+            btnDark.addEventListener('click', () => setTheme(true));
+        }
+
+        if (btnMobileToggle) {
+            btnMobileToggle.addEventListener('click', () => {
+                const isDark = document.documentElement.classList.contains('dark');
+                setTheme(!isDark);
+            });
+        }
+
+        // Initialize theme
+        setTheme(document.documentElement.classList.contains('dark'));
+    </script>
+</body>
+</html>
