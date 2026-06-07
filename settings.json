@@ -1,6 +1,19 @@
 {
   "hooks": {
-    "PreToolUse": [],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "command": "if echo \"$CLAUDE_TOOL_ARGS\" | grep -qE 'git[[:space:]]+commit'; then echo 'Commit formatting required. Run commit-assistant first.'; exit 2; fi"
+      },
+      {
+        "matcher": "Bash",
+        "command": "if echo \"$CLAUDE_TOOL_ARGS\" | grep -qE 'git[[:space:]]+push'; then echo 'Pre-push validation required. Run push-assistant agent first.'; exit 2; fi"
+      },
+      {
+        "matcher": "Bash",
+        "command": "if echo \"$CLAUDE_TOOL_ARGS\" | grep -qE 'gh[[:space:]]+pr[[:space:]]+create'; then echo 'Code review required. Run pr-publisher agent first.'; exit 2; fi"
+      }
+    ],
     "PostToolUse": []
   }
 }

@@ -20,6 +20,8 @@ amiga-ia/
 ├── docs/                    # Persistent agent memory and architecture docs
 ├── skills/                  # Shared skills (YAML frontmatter + Markdown)
 └── settings.json            # Additional configurations (e.g., Claude Hooks)
+                             # Note: Hooks in settings.json are configured using cross-platform 
+                             # `bash` syntax to ensure they work on Mac, Linux, and Windows (via Git Bash/WSL).
 ```
 
 ### 3. Installation & Usage
@@ -71,6 +73,8 @@ amiga-ia/
 ├── docs/                    # Memoria persistente y documentación del proyecto
 ├── skills/                  # Habilidades compartidas (yaml frontmatter + markdown)
 └── settings.json            # Configuraciones adicionales (ej. Hooks de Claude)
+                             # Nota: Los hooks en settings.json están configurados usando sintaxis 
+                             # `bash` multiplataforma para asegurar su funcionamiento en Mac, Linux y Windows (vía Git Bash/WSL).
 ```
 
 ### 3. Instalación y Uso
