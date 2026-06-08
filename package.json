@@ -14,7 +14,7 @@
     "url": "git+https://github.com/AnaCataVC/amiga-ia.git"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
+    "access": "public"
   },
   "keywords": [
     "skills",
