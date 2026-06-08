@@ -6,60 +6,32 @@ Este archivo sirve como referencia de contexto para Antigravity (Gemini) al mome
 1. **Idioma del Código:** Todo el código fuente DEBE escribirse siempre en **Inglés**.
 2. **Historial de Git:** Todos los mensajes de commit DEBEN escribirse en **Inglés** y seguir el estándar de **Conventional Commits** (usar prefijos como `feat:`, `fix:`, `docs:`, `chore:`, `refactor:`, etc.).
 
-## Arquitectura de Entorno IA Avanzado (Enterprise-grade)
-Este repositorio está estructurado basándose en las últimas arquitecturas de IA y las mejores prácticas oficiales:
+## Arquitectura de Entorno IA Declarativo (Agent Skills)
+Este repositorio ha evolucionado hacia un ecosistema de **Skills y Agentes en Markdown con Lazy Loading XML**, siguiendo el estándar de Agent Skills. Esto garantiza portabilidad universal y eficiencia extrema de tokens para Antigravity y Claude.
 
-* **`agents/`**: Definiciones de `instructions` y `system_prompt` para subagentes especializados (Ej. `commit-assistant.md`). Contienen Procedimientos Operativos Estándar (SOPs) y reglas estrictas.
-* **`skills/`**: Habilidades, comandos manuales (slash commands) y flujos de trabajo. Siguen el formato `nombre/SKILL.md` (con Frontmatter YAML). Las skills pueden ser invocadas manualmente por el usuario o de forma autónoma por la IA.
+* **`agents/`**: Definiciones de los subagentes en archivos `.md`. Describen el comportamiento y herramientas necesarias en texto natural.
+* **`skills/`**: Habilidades o flujos de trabajo en carpetas con un archivo `SKILL.md`. Utilizan YAML Frontmatter para la metadata y el cuerpo para instrucciones imperativas detalladas.
 * **`docs/`**: Memoria a largo plazo del agente. Decisiones Arquitectónicas (ADRs), contexto y restricciones del proyecto persistidos entre sesiones.
+* **`adapters/`**: El adaptador universal (`universal_adapter.js`) que escanea los directorios dinámicamente y genera un índice XML (`<available_skills>`) para el System Prompt de la IA, permitiendo "Lazy Loading" de los archivos Markdown cuando se necesiten.
 
-## Sistema de Agentes (`agents/*.md`)
-Los agentes se definen mediante archivos Markdown con **Frontmatter YAML**.
-* **Estructura Requerida:** 
-  ```yaml
-  ---
-  name: nombre-agente
-  description: Breve descripción de lo que hace.
-  tools: Read, Grep, Bash # (Opcional) Limita el acceso a herramientas
-  ---
-  ```
-  El cuerpo del Markdown sirve como el System Prompt.
-* **Comportamiento (Antigravity vs Claude):** 
-  Claude carga esto estáticamente y lo invocas vía `/agents`. Antigravity lo lee dinámicamente y lo usa como `system_prompt` al ejecutar `define_subagent`.
+## Flujo de Trabajo y CLI (Antigravity)
+1. **Lectura Dinámica (Lazy Loading):** Antigravity y el adaptador escanean dinámicamente `skills/` y `agents/` extrayendo el frontmatter para presentarle a la IA un catálogo de herramientas.
+2. **Instalador Interactivo (Wizard):** El proyecto cuenta con un CLI ejecutable (`amiga-ia-setup`) en `bin/setup.js`. Este script hace un copy-paste físico de los archivos hacia las carpetas `~/.gemini/config/` y `~/.claude/` para evitar problemas de permisos de Windows con symlinks.
+3. **Ejecución Nativa:** La IA lee el índice XML y utiliza su propia herramienta de lectura de archivos (`view_file`) para abrir y procesar el `SKILL.md` únicamente cuando decide que lo necesita.
 
-## Skills Compartidas (`skills/*/SKILL.md`)
-Las habilidades son carpetas modulares que pueden contener dependencias.
-* **Estructura Mínima:**
-  ```text
-  skills/
-  └── mi-skill/
-      ├── SKILL.md          (Obligatorio: YAML Frontmatter + Markdown)
-      ├── scripts/          (Opcional: Código ejecutable)
-      ├── references/       (Opcional: Documentación adicional)
-      └── assets/           (Opcional: Plantillas, íconos)
-  ```
-* **Frontmatter Recomendado:** `name`, `description`, `allowed-tools`.
-
-## Hooks y Configuración (`settings.json`)
-Los hooks de Claude se definen en `settings.json` o `settings.local.json`.
-* Utilizan `matcher` para filtrar herramientas (ej. `"Bash"`, `"Edit|Write"`).
-* Usan la variable `${CLAUDE_PROJECT_DIR}` para enrutar scripts locales de forma segura.
-* Un `exit 2` bloquea la acción, mientras que un `exit 1` es un error no bloqueante.
-
-## El Superpoder de Antigravity (Por qué usamos esta estructura)
-Aunque el formato es idéntico al de Claude Code, esta arquitectura potencia a Antigravity de formas únicas:
-1. **Skills como Motor Nativo:** Antigravity mapea internamente la carpeta `skills/`. Lee el YAML Frontmatter y el Markdown para asimilar flujos de trabajo de forma nativa.
-2. **Subagentes Dinámicos (`agents/`):** A diferencia de Claude (que carga agentes estáticamente), Antigravity usa `view_file` para leer `agents/*.md` bajo demanda, extrayendo el contenido para pasarlo como `system_prompt` a sus herramientas `define_subagent` e `invoke_subagent`. Esto le permite generar enjambres especializados en tiempo real.
-3. **Memoria a Largo Plazo (`docs/`):** Al no tener contexto persistente entre sesiones, Antigravity usa la carpeta `docs/` como fuente de la verdad para recordar Decisiones Arquitectónicas (ADRs) antes de planificar.
-4. **Seguridad Integrada (Planning Mode):** Antigravity ignora los hooks de `settings.json`. Su seguridad radica en su pipeline atómico: investigar, redactar un plan, requerir aprobación humana, y ejecutar.
+## Seguridad Integrada (Planning Mode)
+Antigravity ignora los hooks de bash cuando está en modo seguro. Su seguridad radica en su pipeline atómico: investigar, redactar un plan (`implementation_plan.md`), requerir aprobación humana, ejecutar usando `task.md`, y documentar con `walkthrough.md`.
 
 ## Resumen de la Jerarquía Estricta
-Para mantener la compatibilidad, el repositorio emula exactamente el estándar de Claude:
+El repositorio se distribuye como un paquete NPM:
 
 ```text
 /
-├── skills/<nombre>/SKILL.md     ← skills (habilidades compartidas y flujos)
-├── agents/<nombre>.md           ← subagentes (prompts especializados)
-├── settings.json                ← hooks (compartido y versionado)
-└── settings.local.json          ← hooks (local, no versionado en git)
+├── package.json                 ← Registro del paquete y comando global (amiga-ia-setup)
+├── bin/setup.js                 ← Instalador interactivo (CLI wizard copy-paste)
+├── adapters/                    ← Universal Adapter para compilar el catálogo XML
+├── agent/                       ← Entrypoint principal que exporta librerías
+├── skills/*/SKILL.md            ← Directorios de habilidades con YAML y Markdown detallado
+├── agents/*.md                  ← Perfiles de subagentes en Markdown
+└── settings.json                ← Hooks heredados o configuraciones extra
 ```

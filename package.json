@@ -1,0 +1,25 @@
+{
+  "name": "@anacatavc/amiga-ia",
+  "version": "1.0.0",
+  "description": "Universal declarative skills for agents",
+  "main": "adapters/universal_adapter.js",
+  "bin": {
+    "amiga-ia-setup": "bin/setup.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnaCataVC/amiga-ia.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "keywords": [
+    "skills",
+    "agent"
+  ],
+  "author": "AnaCataVC",
+  "license": "MIT"
+}

@@ -1,7 +1,10 @@
-# Amiga IA - Universal Skills & Agents
+# Amiga IA - Universal Declarative Skills & Agents
+
+> Repo name inspo 🎶: [Amiga Mia - Los Prisioneros](https://www.youtube.com/watch?v=qPHaLk4-_Ew)
 
 [![Antigravity](https://img.shields.io/badge/Antigravity-Gemini-8E24AA?style=flat&logo=googlegemini&logoColor=white)](#)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-Anthropic-D97757?style=flat&logo=anthropic&logoColor=white)](#)
+[![NPM](https://img.shields.io/badge/NPM-Package-CB3837?style=flat&logo=npm&logoColor=white)](#)
 
 [English](#english) | [Español](#español)
 
@@ -11,52 +14,67 @@
 ## English
 
 ### 1. Project Description
-**Amiga IA** is a centralized repository for storing *skills*, *agent* definitions, and lifecycle *hooks* that are 100% cross-compatible with **Antigravity (Gemini)** and **Claude Code**. It provides a single source of truth for modern, modular AI capabilities.
+**Amiga IA** is a centralized repository for storing *declarative skills*, *declarative agents*, and a *universal adapter* that are 100% cross-compatible with **Antigravity (Gemini)** and **Claude Code**. It provides a single source of truth for modern, modular AI capabilities formatted using the **Agent Skills (Markdown + Lazy Loading)** standard.
 
 ### 2. Repository Structure
 ```text
 amiga-ia/
-├── agents/                  # Agent definitions and system prompts (e.g., tech-lead.md)
+├── package.json             # NPM Package definition
+├── agent/                   # Boilerplate Agent entrypoint (agent.js)
+├── adapters/                # Universal adapter (universal_adapter.js)
+├── agents/                  # Declarative Markdown agents
+│   └── *.md                 # Individual agent definitions
 ├── docs/                    # Persistent agent memory and architecture docs
-├── skills/                  # Shared skills (YAML frontmatter + Markdown)
-└── settings.json            # Additional configurations (e.g., Claude Hooks)
-                             # Note: Hooks in settings.json are configured using cross-platform 
-                             # `bash` syntax to ensure they work on Mac, Linux, and Windows (via Git Bash/WSL).
+├── skills/                  # Declarative Markdown skills
+│   └── */SKILL.md           # Individual skill definitions in directories
+└── settings.json            # Additional configurations
 ```
 
-### 3. Installation & Usage
-To maintain a single centralized repository, create symbolic links (symlinks) from this repository to your AI assistants' configuration folders. Replace `/path/to/amiga-ia` or `C:\path\to\amiga-ia` with your actual repository path.
+### 3. Declarative Format
 
-**For Claude Code (Mac/Linux):**
+#### Skills
+All skills are defined as declarative directories containing a `SKILL.md` file. The adapter scans these directories, extracts the YAML frontmatter, and provides the LLM with an XML index (`<available_skills>`). When the agent decides to use a skill, it reads the Markdown file natively to understand the instructions.
+```yaml
+---
+name: code-review
+description: Reviews the code for logic errors.
+---
+1. Read the files.
+2. Run tests.
+```
+
+#### Agents
+Agents are defined in `.md` files containing the persona and instructions.
+```markdown
+# commit-assistant
+You are an agent designed to create commits.
+Use the `code-review` skill if necessary.
+```
+
+### 4. Installation & Usage
+You can install this repository as a Node.js package or consume it locally.
+
+**As an NPM Package:**
 ```bash
-ln -s /path/to/amiga-ia/skills ~/.claude/skills
-ln -s /path/to/amiga-ia/agents ~/.claude/agents
-ln -s /path/to/amiga-ia/settings.json ~/.claude/settings.json
+npm install -g @anacatavc/amiga-ia
 ```
 
-**For Claude Code (Windows):**
-```powershell
-New-Item -ItemType SymbolicLink -Path "$HOME\.claude\skills" -Target "C:\path\to\amiga-ia\skills"
-New-Item -ItemType SymbolicLink -Path "$HOME\.claude\agents" -Target "C:\path\to\amiga-ia\agents"
-New-Item -ItemType SymbolicLink -Path "$HOME\.claude\settings.json" -Target "C:\path\to\amiga-ia\settings.json"
-```
-
-**For Antigravity / Gemini (Mac/Linux):**
+**Setup Wizard (CLI):**
+Once installed globally, you can run the interactive setup wizard to automatically configure your assistant (Claude or Antigravity) with the package files:
 ```bash
-ln -s /path/to/amiga-ia/skills ~/.gemini/config/skills
+amiga-ia-setup
 ```
 
-**For Antigravity / Gemini (Windows):**
-```powershell
-New-Item -ItemType SymbolicLink -Path "$HOME\.gemini\config\skills" -Target "C:\path\to\amiga-ia\skills"
-```
 
-### 4. Architecture Philosophy (Why this works for both)
-While this structure perfectly mimics Claude Code's official static hierarchy, it serves as a powerful dynamic engine for **Antigravity**:
-* **`skills/`**: Antigravity natively parses YAML Frontmatter. It uses these files as programmable workflows.
-* **`agents/`**: While Claude loads agents statically, Antigravity uses these Markdown files dynamically. It reads them and uses tools like `define_subagent` to spawn autonomous "clones" with these exact personas.
-* **`docs/`**: Serves as Antigravity's long-term memory to prevent context loss across sessions.
-* **`settings.json`**: Used exclusively by Claude for hooks. Antigravity ignores this and relies on its explicit **Planning Mode** (Investigate -> Plan -> Approve -> Execute) for security.
+
+### 5. Uninstallation
+To completely remove the package and clean up your AI assistant folders:
+1. Run `amiga-ia-setup` and select `u` (Uninstall) to safely delete the copied skills and agents.
+2. Run `npm uninstall -g @anacatavc/amiga-ia` to remove the package.
+
+### 6. Extending the Package
+* **To add a new skill:** Create a new `skills/<name>/SKILL.md` directory and file with YAML frontmatter.
+* **To add a new agent:** Create a new `agents/<name>.md` file.
 
 ---
 
@@ -64,49 +82,63 @@ While this structure perfectly mimics Claude Code's official static hierarchy, i
 ## Español
 
 ### 1. Descripción del Proyecto
-**Amiga IA** es un repositorio centralizado diseñado para almacenar *skills*, definiciones de *agentes* y *hooks* que son 100% compatibles tanto con **Antigravity (Gemini)** como con **Claude Code**. Proporciona una única fuente de verdad para un ecosistema de IA moderno.
+**Amiga IA** es un repositorio centralizado diseñado para almacenar *skills declarativas*, *agentes declarativos* y un *adaptador universal* que son 100% compatibles tanto con **Antigravity (Gemini)** como con **Claude Code**. Proporciona una única fuente de verdad para un ecosistema de IA estructurado bajo el estándar **Agent Skills (Markdown + Lazy Loading)**.
 
 ### 2. Estructura del Repositorio
 ```text
 amiga-ia/
-├── agents/                  # Definiciones de agentes y prompts (ej. tech-lead.md)
+├── package.json             # Definición del paquete NPM
+├── agent/                   # Entrypoint del agente (agent.js)
+├── adapters/                # Adaptador universal (universal_adapter.js)
+├── agents/                  # Agentes declarativos en Markdown
+│   └── *.md                 # Definiciones individuales de agentes
 ├── docs/                    # Memoria persistente y documentación del proyecto
-├── skills/                  # Habilidades compartidas (yaml frontmatter + markdown)
-└── settings.json            # Configuraciones adicionales (ej. Hooks de Claude)
-                             # Nota: Los hooks en settings.json están configurados usando sintaxis 
-                             # `bash` multiplataforma para asegurar su funcionamiento en Mac, Linux y Windows (vía Git Bash/WSL).
+├── skills/                  # Skills declarativas en Markdown
+│   └── */SKILL.md           # Definiciones individuales de skills
+└── settings.json            # Configuraciones adicionales
 ```
 
-### 3. Instalación y Uso
-Crea enlaces simbólicos (symlinks) desde este repositorio hacia las carpetas de configuración de tus asistentes. Reemplaza `/ruta/a/amiga-ia` o `C:\ruta\a\amiga-ia` por la ruta absoluta donde clonaste este repositorio.
+### 3. Formato Declarativo
 
-**Para Claude Code (Mac/Linux):**
+#### Skills
+Todas las skills se definen como carpetas con un archivo `SKILL.md`. El adaptador lee el YAML frontmatter y le presenta a la IA un catálogo XML (`<available_skills>`). La IA usa *Lazy Loading* (carga diferida) para leer el archivo solo cuando necesita usar la habilidad.
+```yaml
+---
+name: code-review
+description: Reviews the code for logic errors.
+---
+1. Read the files.
+2. Run tests.
+```
+
+#### Agentes
+Los agentes se definen en archivos `.md`. Contienen el prompt principal del asistente.
+```markdown
+# commit-assistant
+You are an expert git agent.
+```
+
+### 4. Instalación y Uso
+Puedes instalar este repositorio como un paquete de Node.js o usarlo localmente.
+
+**Como paquete NPM:**
 ```bash
-ln -s /ruta/a/amiga-ia/skills ~/.claude/skills
-ln -s /ruta/a/amiga-ia/agents ~/.claude/agents
-ln -s /ruta/a/amiga-ia/settings.json ~/.claude/settings.json
+npm install -g @anacatavc/amiga-ia
 ```
 
-**Para Claude Code (Windows):**
-```powershell
-New-Item -ItemType SymbolicLink -Path "$HOME\.claude\skills" -Target "C:\ruta\a\amiga-ia\skills"
-New-Item -ItemType SymbolicLink -Path "$HOME\.claude\agents" -Target "C:\ruta\a\amiga-ia\agents"
-New-Item -ItemType SymbolicLink -Path "$HOME\.claude\settings.json" -Target "C:\ruta\a\amiga-ia\settings.json"
-```
-
-**Para Antigravity / Gemini (Mac/Linux):**
+**Asistente de Configuración (CLI):**
+Una vez instalado globalmente, puedes correr el asistente para copiar automáticamente las skills y agentes a tu entorno (Claude o Antigravity):
 ```bash
-ln -s /ruta/a/amiga-ia/skills ~/.gemini/config/skills
+amiga-ia-setup
 ```
 
-**Para Antigravity / Gemini (Windows):**
-```powershell
-New-Item -ItemType SymbolicLink -Path "$HOME\.gemini\config\skills" -Target "C:\ruta\a\amiga-ia\skills"
-```
 
-### 4. Filosofía de Arquitectura (Por qué funciona para ambos)
-Aunque esta estructura imita a la perfección la jerarquía estática oficial de Claude Code, funciona como un motor dinámico súper potente para **Antigravity**:
-* **`skills/`**: Antigravity lee nativamente el YAML Frontmatter y usa estos archivos como flujos de trabajo programables.
-* **`agents/`**: Mientras Claude carga los agentes de forma estática, Antigravity usa estos archivos de forma dinámica. Los Los lee en tiempo real para crear "clones" subagentes usando herramientas como `define_subagent`.
-* **`docs/`**: Actúa como la memoria a largo plazo de Antigravity, previniendo la pérdida de contexto entre diferentes sesiones de chat.
-* **`settings.json`**: Usado exclusivamente por Claude para sus hooks. Antigravity ignora este archivo y basa su seguridad en su **Modo de Planificación** explícito (Investigar -> Planear -> Aprobar -> Ejecutar).
+
+### 5. Desinstalación
+Para eliminar completamente el paquete y limpiar las carpetas de tu asistente de IA:
+1. Ejecuta `amiga-ia-setup` y selecciona `u` (Uninstall) para borrar de forma segura las skills y agentes copiados.
+2. Ejecuta `npm uninstall -g @anacatavc/amiga-ia` para eliminar el paquete.
+
+### 6. Extendiendo el Paquete
+* **Para añadir una nueva skill:** Crea una carpeta y archivo `skills/<nombre>/SKILL.md` con metadata en YAML.
+* **Para añadir un nuevo agente:** Crea un archivo `agents/<nombre>.md`.
