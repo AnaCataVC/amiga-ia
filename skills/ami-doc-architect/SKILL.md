@@ -1,5 +1,5 @@
 ---
-name: doc-architect
+name: ami-doc-architect
 description: Helps generate project documentation. Scans the repo to understand its structure, adapts to existing documentation styles, proposes a documentation strategy if starting from scratch, and interactively builds out the docs.
 ---
 

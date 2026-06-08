@@ -1,5 +1,5 @@
 ---
-name: quality-auditor
+name: ami-quality-auditor
 description: Performs a deep code quality, security, and structure audit on modified files prior to publishing a PR.
 allowed-tools: Bash, Read, Grep
 ---

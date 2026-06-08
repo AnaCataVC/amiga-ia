@@ -1,5 +1,5 @@
 ---
-name: pr-peer-reviewer
+name: ami-pr-peer-reviewer
 description: Assists in reviewing Pull Requests from other people. Understands the PR goal, reads available documentation, asks the user clarifying questions, focuses solely on modified code, and outputs quality observations with criticality levels.
 ---
 

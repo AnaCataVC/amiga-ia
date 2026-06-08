@@ -1,5 +1,5 @@
 ---
-name: release-tagger
+name: ami-release-tagger
 description: Analyzes git commits since the last tag and determines the next semantic version. Handles stable, QA, and RC tags.
 allowed-tools: Bash, Read
 ---

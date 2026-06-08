@@ -1,5 +1,5 @@
 ---
-name: code-review
+name: ami-code-review
 description: Performs a static analysis of modified or untracked files before a commit to ensure code quality and English-only rules.
 allowed-tools: Bash, Read, Grep
 ---

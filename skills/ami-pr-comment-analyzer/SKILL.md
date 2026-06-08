@@ -1,5 +1,5 @@
 ---
-name: pr-comment-analyzer
+name: ami-pr-comment-analyzer
 description: Analyzes code review comments left by other developers on an active Pull Request, extracting pending tasks, suggestions, and offering to reply.
 params:
   pr_number: (Optional) The PR number to review. If not provided, it will analyze the PR associated with the current branch.

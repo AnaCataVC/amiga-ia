@@ -1,5 +1,5 @@
 ---
-name: tech-debt-scanner
+name: ami-tech-debt-scanner
 description: Analyzes the repository for technical debt, including outdated dependencies, dead code, duplication, and architectural inconsistencies. Provides a classified report based on criticality, effort, and risk.
 ---
 

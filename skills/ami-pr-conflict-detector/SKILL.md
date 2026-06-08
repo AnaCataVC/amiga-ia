@@ -1,5 +1,5 @@
 ---
-name: pr-conflict-detector
+name: ami-pr-conflict-detector
 description: Analyzes other open Pull Requests in the repository to alert if there are parallel PRs that might conflict with the current changes.
 allowed-tools: Bash, Read, Grep
 ---
