@@ -17,26 +17,26 @@ When asked to review a PR or when triggered by a hook before a PR is created, yo
 - Only proceed if the size is acceptable or if the user explicitly approves.
 
 ### 2. Base Quality Checks
-- Invoke the push-assistant to ensure base quality.
-- Execute: `push-assistant` (View the file `agents/push-assistant.md`).
+- Invoke the ami-push-assistant to ensure base quality.
+- Execute: `ami-push-assistant` (View the file `agents/ami-push-assistant.md`).
 - Wait for the results. If any of its blocking checks fail, you MUST prompt the user to fix them before proceeding.
 
 ### 3. Run Parallel Conflict Check
 - Invoke the conflict detector skill to identify overlapping PRs.
-- Execute: `pr-conflict-detector` (View the file `skills/pr-conflict-detector/SKILL.md`).
+- Execute: `ami-pr-conflict-detector` (View the file `skills/ami-pr-conflict-detector/SKILL.md`).
 - If conflicts are detected with other open PRs, alert the user and ask for acknowledgment before proceeding.
 
 ### 4. Enforce Documentation Update
 - Invoke the documentation updater skill.
-- Execute: `push-docs-updater` (View the file `skills/push-docs-updater/SKILL.md`).
+- Execute: `ami-docs-updater` (View the file `skills/ami-docs-updater/SKILL.md`).
 - Unlike the push workflow, updating the documentation is **MANDATORY** for a PR. If docs are not updated, block the PR creation until they are.
 
 ### 5. Enforce Test Coverage and Run Tests
 - First, check if tests exist for the modified code by invoking the test creator skill.
-- Execute: `pr-test-creator` (View the file `skills/pr-test-creator/SKILL.md`).
-- If tests are missing, wait for `pr-test-creator` to automatically generate them.
+- Execute: `ami-test-creator` (View the file `skills/ami-test-creator/SKILL.md`).
+- If tests are missing, wait for `ami-test-creator` to automatically generate them.
 - Once tests are confirmed to exist, invoke the test runner skill.
-- Execute: `pr-test-runner` (View the file `skills/pr-test-runner/SKILL.md`).
+- Execute: `ami-test-runner` (View the file `skills/ami-test-runner/SKILL.md`).
 - Ensure all tests pass. This is a **blocker**.
 
 ### 6. Generate and Approve PR Description

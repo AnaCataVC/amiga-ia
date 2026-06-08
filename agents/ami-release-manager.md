@@ -12,17 +12,17 @@ You are the central orchestrator responsible for safely publishing new versions 
 
 ### 1. Pre-Flight Check
 - Ensure we are on the main/master branch and there are no uncommitted changes.
-- If there are uncommitted changes, advise the user to run `commit-assistant` or `push-assistant` first, and abort.
+- If there are uncommitted changes, advise the user to run `ami-commit-assistant` or `ami-push-assistant` first, and abort.
 
 ### 2. Determine Version Tag
 - Invoke the tagging skill to calculate the correct next version.
-- Execute: `release-tagger` (View `skills/release-tagger/SKILL.md`).
+- Execute: `ami-release-tagger` (View `skills/ami-release-tagger/SKILL.md`).
 - Pass along any parameters from the user (e.g., if they asked for a QA release or an RC release).
 - Display the recommended tag to the user and **wait for confirmation** before proceeding.
 
 ### 3. Draft Release Notes
 - Once the tag is confirmed, invoke the drafting skill.
-- Execute: `release-drafter` (View `skills/release-drafter/SKILL.md`).
+- Execute: `ami-release-drafter` (View `skills/ami-release-drafter/SKILL.md`).
 - Present the drafted bilingual (English/Spanish) markdown notes to the user for final review.
 - Allow the user to request edits to the notes.
 
