@@ -1,5 +1,5 @@
 ---
-name: pr-test-runner
+name: test-runner
 description: Finds and executes the test suite for the current project to ensure no regressions before opening a Pull Request.
 allowed-tools: Bash, Read, Grep
 ---

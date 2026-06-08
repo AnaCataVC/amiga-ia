@@ -1,5 +1,5 @@
 ---
-name: pr-test-creator
+name: test-creator
 description: Automatically generates tests for modified code if no existing tests cover the changes.
 allowed-tools: Bash, Read, Grep, Edit, Write
 ---
