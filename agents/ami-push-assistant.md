@@ -1,5 +1,5 @@
 ---
-name: push-assistant
+name: ami-push-assistant
 description: Pre-push orchestrator that performs baseline quality, security, and data consistency checks before code is pushed to a remote repository.
 tools: Bash, Read, Grep
 ---

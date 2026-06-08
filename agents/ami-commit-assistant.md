@@ -1,5 +1,5 @@
 ---
-name: commit-assistant
+name: ami-commit-assistant
 description: Prepares, reviews, and executes Git commits following Conventional Commits format.
 tools: Bash, Read, Grep
 ---
