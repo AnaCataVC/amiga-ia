@@ -36,7 +36,7 @@ amiga-ia/
 All skills are defined as declarative directories containing a `SKILL.md` file. The adapter scans these directories, extracts the YAML frontmatter, and provides the LLM with an XML index (`<available_skills>`). When the agent decides to use a skill, it reads the Markdown file natively to understand the instructions.
 ```yaml
 ---
-name: code-review
+name: ami-code-review
 description: Reviews the code for logic errors.
 ---
 1. Read the files.
@@ -46,9 +46,9 @@ description: Reviews the code for logic errors.
 #### Agents
 Agents are defined in `.md` files containing the persona and instructions.
 ```markdown
-# commit-assistant
+# ami-commit-assistant
 You are an agent designed to create commits.
-Use the `code-review` skill if necessary.
+Use the `ami-code-review` skill if necessary.
 ```
 
 ### 4. Installation & Usage
@@ -73,8 +73,9 @@ To completely remove the package and clean up your AI assistant folders:
 2. Run `npm uninstall -g @anacatavc/amiga-ia` to remove the package.
 
 ### 6. Extending the Package
-* **To add a new skill:** Create a new `skills/<name>/SKILL.md` directory and file with YAML frontmatter.
-* **To add a new agent:** Create a new `agents/<name>.md` file.
+* **Naming Convention (`ami-` prefix):** All custom skills and agents MUST be prefixed with `ami-` (e.g., `ami-test-runner`). This ensures safe namespacing, prevents collisions with other global AI tools, and keeps the ecosystem organized.
+* **To add a new skill:** Create a new `skills/ami-<name>/SKILL.md` directory and file with YAML frontmatter.
+* **To add a new agent:** Create a new `agents/ami-<name>.md` file.
 
 ---
 
@@ -104,7 +105,7 @@ amiga-ia/
 Todas las skills se definen como carpetas con un archivo `SKILL.md`. El adaptador lee el YAML frontmatter y le presenta a la IA un catálogo XML (`<available_skills>`). La IA usa *Lazy Loading* (carga diferida) para leer el archivo solo cuando necesita usar la habilidad.
 ```yaml
 ---
-name: code-review
+name: ami-code-review
 description: Reviews the code for logic errors.
 ---
 1. Read the files.
@@ -114,7 +115,7 @@ description: Reviews the code for logic errors.
 #### Agentes
 Los agentes se definen en archivos `.md`. Contienen el prompt principal del asistente.
 ```markdown
-# commit-assistant
+# ami-commit-assistant
 You are an expert git agent.
 ```
 
@@ -140,5 +141,6 @@ Para eliminar completamente el paquete y limpiar las carpetas de tu asistente de
 2. Ejecuta `npm uninstall -g @anacatavc/amiga-ia` para eliminar el paquete.
 
 ### 6. Extendiendo el Paquete
-* **Para añadir una nueva skill:** Crea una carpeta y archivo `skills/<nombre>/SKILL.md` con metadata en YAML.
-* **Para añadir un nuevo agente:** Crea un archivo `agents/<nombre>.md`.
+* **Convención de Nombres (Prefijo `ami-`):** Todas las skills y agentes personalizados DEBEN llevar el prefijo `ami-` (ej. `ami-test-runner`). Esto garantiza un namespacing seguro, evita colisiones con otras herramientas de IA globales, y mantiene el ecosistema organizado.
+* **Para añadir una nueva skill:** Crea una carpeta y archivo `skills/ami-<nombre>/SKILL.md` con metadata en YAML.
+* **Para añadir un nuevo agente:** Crea un archivo `agents/ami-<nombre>.md`.
