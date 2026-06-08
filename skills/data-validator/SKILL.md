@@ -1,5 +1,5 @@
 ---
-name: push-data-validator
+name: data-validator
 description: Validates structural consistency between code changes and data definitions (DB connections, queries) prior to a PR.
 allowed-tools: Bash, Read, Grep
 ---

@@ -1,5 +1,5 @@
 ---
-name: push-learnings-extractor
+name: learnings-extractor
 description: Analyzes recent code changes to extract architectural decisions, lessons, patterns, and surprises, documenting them for future reference.
 allowed-tools: Bash, Read, Grep, Edit, Write
 ---

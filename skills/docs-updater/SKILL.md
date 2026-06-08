@@ -1,5 +1,5 @@
 ---
-name: push-docs-updater
+name: docs-updater
 description: Identifies if codebase documentation exists and updates it to reflect code changes before publishing a PR.
 allowed-tools: Bash, Read, Grep, Edit, Write
 ---
