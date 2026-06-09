@@ -1,0 +1,56 @@
+name: Release & Publish
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Permiso necesario para hacer push a main
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          # Importante: para que este commit pueda bypassear protecciones simples, 
+          # se usa el token por defecto de Actions.
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org/'
+          
+      - name: Extract version from tag
+        id: get_version
+        # Quita la "v" del tag. Ej: v1.1.0 -> 1.1.0
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+        
+      - name: Bump package.json version
+        run: |
+          npm version ${{ env.VERSION }} --no-git-tag-version
+          
+      - name: Commit and push package.json
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json
+          # Si usas package-lock.json, también descomenta la siguiente línea:
+          # git add package-lock.json
+          
+          # Hacemos el commit y añadimos [skip ci] para no disparar otros workflows en loop
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore: bump version to ${{ env.VERSION }} [skip ci]" && git push origin HEAD:main)
+          
+      # ---------------------------------------------------------
+      # SECCIÓN OPCIONAL: Publicar a NPM
+      # Para que esto funcione, debes ir a GitHub Settings -> Secrets and variables -> Actions
+      # y crear un secreto llamado NPM_TOKEN con tu token de automatización de NPM.
+      # ---------------------------------------------------------
+      - name: Publish to NPM
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
