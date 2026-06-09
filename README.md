@@ -51,7 +51,33 @@ You are an agent designed to create commits.
 Use the `ami-code-review` skill if necessary.
 ```
 
-### 4. Installation & Usage
+### 4. Included Skills & Agents
+
+All built-in tools use the mandatory **`ami-`** prefix to ensure safe namespacing and prevent collisions.
+
+| Type | Name | Description |
+|---|---|---|
+| Agent | **ami-commit-assistant** | Prepares, reviews, and executes Git commits following Conventional Commits format. |
+| Agent | **ami-next-step-assistant** | Acts as a project guide by analyzing the repository and recommending the most critical next step. |
+| Agent | **ami-pr-publisher** | Master orchestrator agent that performs a comprehensive review of Pull Requests before they are published. |
+| Agent | **ami-push-assistant** | Pre-push orchestrator that performs baseline quality, security, and data consistency checks before a push. |
+| Agent | **ami-release-manager** | The central orchestrator agent that manages the release lifecycle. |
+| Skill | **ami-code-review** | Performs a static analysis of modified or untracked files before a commit. |
+| Skill | **ami-data-validator** | Validates structural consistency between code changes and data definitions. |
+| Skill | **ami-doc-architect** | Helps generate project documentation from scratch or adapts to existing styles. |
+| Skill | **ami-docs-updater** | Identifies if codebase documentation exists and updates it to reflect code changes. |
+| Skill | **ami-learnings-extractor** | Analyzes recent code changes to extract architectural decisions, lessons, and patterns. |
+| Skill | **ami-pr-comment-analyzer** | Analyzes code review comments left by other developers on an active Pull Request. |
+| Skill | **ami-pr-conflict-detector** | Analyzes other open Pull Requests to alert if there are parallel PRs that might conflict. |
+| Skill | **ami-pr-peer-reviewer** | Assists in reviewing Pull Requests from other people. |
+| Skill | **ami-quality-auditor** | Performs a deep code quality, security, and structure audit on modified files. |
+| Skill | **ami-release-drafter** | Analyzes git commits to automatically draft bilingual release notes. |
+| Skill | **ami-release-tagger** | Analyzes git commits since the last tag and determines the next semantic version. |
+| Skill | **ami-tech-debt-scanner** | Analyzes the repository for technical debt, including outdated dependencies and dead code. |
+| Skill | **ami-test-creator** | Automatically generates tests for modified code if no existing tests cover the changes. |
+| Skill | **ami-test-runner** | Finds and executes the test suite for the current project to ensure no regressions. |
+
+### 5. Installation & Usage
 You can install this repository as a Node.js package or consume it locally.
 
 **As an NPM Package:**
@@ -67,12 +93,12 @@ amiga-ia-setup
 
 
 
-### 5. Uninstallation
+### 6. Uninstallation
 To completely remove the package and clean up your AI assistant folders:
 1. Run `amiga-ia-setup` and select `u` (Uninstall) to safely delete the copied skills and agents.
 2. Run `npm uninstall -g @anacatavc/amiga-ia` to remove the package.
 
-### 6. Extending the Package
+### 7. Extending the Package
 * **Naming Convention (`ami-` prefix):** All custom skills and agents MUST be prefixed with `ami-` (e.g., `ami-test-runner`). This ensures safe namespacing, prevents collisions with other global AI tools, and keeps the ecosystem organized.
 * **To add a new skill:** Create a new `skills/ami-<name>/SKILL.md` directory and file with YAML frontmatter.
 * **To add a new agent:** Create a new `agents/ami-<name>.md` file.
@@ -119,7 +145,33 @@ Los agentes se definen en archivos `.md`. Contienen el prompt principal del asis
 You are an expert git agent.
 ```
 
-### 4. Instalación y Uso
+### 4. Skills y Agentes Incluidos
+
+Todas las herramientas incluidas utilizan el prefijo obligatorio **`ami-`** para garantizar un namespacing seguro y evitar colisiones.
+
+| Tipo | Nombre | Descripción |
+|---|---|---|
+| Agente | **ami-commit-assistant** | Prepara, revisa y ejecuta commits de Git siguiendo el formato Conventional Commits. |
+| Agente | **ami-next-step-assistant** | Guía el proyecto analizando el repositorio y recomendando el siguiente paso más crítico. |
+| Agente | **ami-pr-publisher** | Agente orquestador maestro que realiza una revisión exhaustiva de los Pull Requests antes de publicarlos. |
+| Agente | **ami-push-assistant** | Orquestador pre-push que realiza comprobaciones de calidad, seguridad y consistencia de datos. |
+| Agente | **ami-release-manager** | Agente orquestador central que gestiona el ciclo de vida de los lanzamientos (releases). |
+| Skill | **ami-code-review** | Realiza un análisis estático de los archivos modificados antes de un commit. |
+| Skill | **ami-data-validator** | Valida la consistencia estructural entre los cambios de código y las definiciones de datos. |
+| Skill | **ami-doc-architect** | Ayuda a generar documentación del proyecto desde cero o se adapta a estilos existentes. |
+| Skill | **ami-docs-updater** | Identifica si existe documentación del código y la actualiza para reflejar los cambios. |
+| Skill | **ami-learnings-extractor** | Analiza los cambios de código recientes para extraer decisiones arquitectónicas, lecciones y patrones. |
+| Skill | **ami-pr-comment-analyzer** | Analiza los comentarios de revisión de código dejados por otros desarrolladores en un PR activo. |
+| Skill | **ami-pr-conflict-detector** | Analiza otros Pull Requests abiertos para alertar si hay conflictos paralelos. |
+| Skill | **ami-pr-peer-reviewer** | Ayuda a revisar los Pull Requests de otras personas. |
+| Skill | **ami-quality-auditor** | Realiza una auditoría profunda de calidad, seguridad y estructura del código en archivos modificados. |
+| Skill | **ami-release-drafter** | Analiza los commits de git para redactar automáticamente notas de lanzamiento bilingües. |
+| Skill | **ami-release-tagger** | Analiza los commits desde el último tag y determina la siguiente versión semántica. |
+| Skill | **ami-tech-debt-scanner** | Analiza el repositorio en busca de deuda técnica, incluyendo dependencias obsoletas y código muerto. |
+| Skill | **ami-test-creator** | Genera automáticamente pruebas para el código modificado si no existen pruebas previas. |
+| Skill | **ami-test-runner** | Encuentra y ejecuta el conjunto de pruebas del proyecto actual para asegurar que no haya regresiones. |
+
+### 5. Instalación y Uso
 Puedes instalar este repositorio como un paquete de Node.js o usarlo localmente.
 
 **Como paquete NPM:**
@@ -135,12 +187,12 @@ amiga-ia-setup
 
 
 
-### 5. Desinstalación
+### 6. Desinstalación
 Para eliminar completamente el paquete y limpiar las carpetas de tu asistente de IA:
 1. Ejecuta `amiga-ia-setup` y selecciona `u` (Uninstall) para borrar de forma segura las skills y agentes copiados.
 2. Ejecuta `npm uninstall -g @anacatavc/amiga-ia` para eliminar el paquete.
 
-### 6. Extendiendo el Paquete
+### 7. Extendiendo el Paquete
 * **Convención de Nombres (Prefijo `ami-`):** Todas las skills y agentes personalizados DEBEN llevar el prefijo `ami-` (ej. `ami-test-runner`). Esto garantiza un namespacing seguro, evita colisiones con otras herramientas de IA globales, y mantiene el ecosistema organizado.
 * **Para añadir una nueva skill:** Crea una carpeta y archivo `skills/ami-<nombre>/SKILL.md` con metadata en YAML.
 * **Para añadir un nuevo agente:** Crea un archivo `agents/ami-<nombre>.md`.
