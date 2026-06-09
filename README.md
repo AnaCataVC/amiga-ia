@@ -74,6 +74,7 @@ All built-in tools use the mandatory **`ami-`** prefix to ensure safe namespacin
 | Skill | **ami-pr-comment-analyzer** | Analyzes code review comments left by other developers on an active Pull Request. |
 | Skill | **ami-pr-conflict-detector** | Analyzes other open Pull Requests to alert if there are parallel PRs that might conflict. |
 | Skill | **ami-pr-peer-reviewer** | Assists in reviewing Pull Requests from other people. |
+| Skill | **ami-project-architect** | Interactively sets up the initial architecture and structure of a new project. |
 | Skill | **ami-quality-auditor** | Performs a deep code quality, security, and structure audit on modified files. |
 | Skill | **ami-release-drafter** | Analyzes git commits to automatically draft bilingual release notes. |
 | Skill | **ami-release-tagger** | Analyzes git commits since the last tag and determines the next semantic version. |
@@ -168,6 +169,7 @@ Todas las herramientas incluidas utilizan el prefijo obligatorio **`ami-`** para
 | Skill | **ami-pr-comment-analyzer** | Analiza los comentarios de revisión de código dejados por otros desarrolladores en un PR activo. |
 | Skill | **ami-pr-conflict-detector** | Analiza otros Pull Requests abiertos para alertar si hay conflictos paralelos. |
 | Skill | **ami-pr-peer-reviewer** | Ayuda a revisar los Pull Requests de otras personas. |
+| Skill | **ami-project-architect** | Configura interactivamente la arquitectura y estructura inicial de un proyecto nuevo. |
 | Skill | **ami-quality-auditor** | Realiza una auditoría profunda de calidad, seguridad y estructura del código en archivos modificados. |
 | Skill | **ami-release-drafter** | Analiza los commits de git para redactar automáticamente notas de lanzamiento bilingües. |
 | Skill | **ami-release-tagger** | Analiza los commits desde el último tag y determina la siguiente versión semántica. |
