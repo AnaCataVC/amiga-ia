@@ -1,6 +1,6 @@
 {
   "name": "@anacatavc/amiga-ia",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Universal declarative skills for agents",
   "main": "adapters/universal_adapter.js",
   "bin": {
