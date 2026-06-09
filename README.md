@@ -40,7 +40,7 @@ amiga-ia/
 All skills are defined as declarative directories containing a `SKILL.md` file. The adapter scans these directories, extracts the YAML frontmatter, and provides the LLM with an XML index (`<available_skills>`). When the agent decides to use a skill, it reads the Markdown file natively to understand the instructions.
 ```yaml
 ---
-name: ami-code-review
+name: ami-quick-reviewer
 description: Reviews the code for logic errors.
 ---
 1. Read the files.
@@ -52,7 +52,7 @@ Agents are defined in `.md` files containing the persona and instructions.
 ```markdown
 # ami-commit-assistant
 You are an agent designed to create commits.
-Use the `ami-code-review` skill if necessary.
+Use the `ami-quick-reviewer` skill if necessary.
 ```
 
 ### 4. Included Skills & Agents
@@ -66,7 +66,6 @@ All built-in tools use the mandatory **`ami-`** prefix to ensure safe namespacin
 | Agent | **ami-pr-publisher** | Master orchestrator agent that performs a comprehensive review of Pull Requests before they are published. |
 | Agent | **ami-push-assistant** | Pre-push orchestrator that performs baseline quality, security, and data consistency checks before a push. |
 | Agent | **ami-release-manager** | The central orchestrator agent that manages the release lifecycle. |
-| Skill | **ami-code-review** | Performs a static analysis of modified or untracked files before a commit. |
 | Skill | **ami-data-validator** | Validates structural consistency between code changes and data definitions. |
 | Skill | **ami-doc-architect** | Helps generate project documentation from scratch or adapts to existing styles. |
 | Skill | **ami-docs-updater** | Identifies if codebase documentation exists and updates it to reflect code changes. |
@@ -76,6 +75,7 @@ All built-in tools use the mandatory **`ami-`** prefix to ensure safe namespacin
 | Skill | **ami-pr-peer-reviewer** | Assists in reviewing Pull Requests from other people. |
 | Skill | **ami-project-architect** | Interactively sets up the initial architecture and structure of a new project. |
 | Skill | **ami-quality-auditor** | Performs a deep code quality, security, and structure audit on modified files. |
+| Skill | **ami-quick-reviewer** | Performs a static analysis of modified or untracked files before a commit. |
 | Skill | **ami-release-drafter** | Analyzes git commits to automatically draft bilingual release notes. |
 | Skill | **ami-release-tagger** | Analyzes git commits since the last tag and determines the next semantic version. |
 | Skill | **ami-tech-debt-scanner** | Analyzes the repository for technical debt, including outdated dependencies and dead code. |
@@ -136,7 +136,7 @@ amiga-ia/
 Todas las skills se definen como carpetas con un archivo `SKILL.md`. El adaptador lee el YAML frontmatter y le presenta a la IA un catálogo XML (`<available_skills>`). La IA usa *Lazy Loading* (carga diferida) para leer el archivo solo cuando necesita usar la habilidad.
 ```yaml
 ---
-name: ami-code-review
+name: ami-quick-reviewer
 description: Reviews the code for logic errors.
 ---
 1. Read the files.
@@ -161,7 +161,6 @@ Todas las herramientas incluidas utilizan el prefijo obligatorio **`ami-`** para
 | Agente | **ami-pr-publisher** | Agente orquestador maestro que realiza una revisión exhaustiva de los Pull Requests antes de publicarlos. |
 | Agente | **ami-push-assistant** | Orquestador pre-push que realiza comprobaciones de calidad, seguridad y consistencia de datos. |
 | Agente | **ami-release-manager** | Agente orquestador central que gestiona el ciclo de vida de los lanzamientos (releases). |
-| Skill | **ami-code-review** | Realiza un análisis estático de los archivos modificados antes de un commit. |
 | Skill | **ami-data-validator** | Valida la consistencia estructural entre los cambios de código y las definiciones de datos. |
 | Skill | **ami-doc-architect** | Ayuda a generar documentación del proyecto desde cero o se adapta a estilos existentes. |
 | Skill | **ami-docs-updater** | Identifica si existe documentación del código y la actualiza para reflejar los cambios. |
@@ -171,6 +170,7 @@ Todas las herramientas incluidas utilizan el prefijo obligatorio **`ami-`** para
 | Skill | **ami-pr-peer-reviewer** | Ayuda a revisar los Pull Requests de otras personas. |
 | Skill | **ami-project-architect** | Configura interactivamente la arquitectura y estructura inicial de un proyecto nuevo. |
 | Skill | **ami-quality-auditor** | Realiza una auditoría profunda de calidad, seguridad y estructura del código en archivos modificados. |
+| Skill | **ami-quick-reviewer** | Realiza un análisis estático de los archivos modificados antes de un commit. |
 | Skill | **ami-release-drafter** | Analiza los commits de git para redactar automáticamente notas de lanzamiento bilingües. |
 | Skill | **ami-release-tagger** | Analiza los commits desde el último tag y determina la siguiente versión semántica. |
 | Skill | **ami-tech-debt-scanner** | Analiza el repositorio en busca de deuda técnica, incluyendo dependencias obsoletas y código muerto. |

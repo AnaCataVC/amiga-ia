@@ -1,12 +1,12 @@
 ---
-name: ami-code-review
+name: ami-quick-reviewer
 description: Performs a static analysis of modified or untracked files before a commit to ensure code quality and English-only rules.
 allowed-tools: Bash, Read, Grep
 ---
 
 # Skill: Code Review
 
-When this skill is invoked, you must act as a strict Code Reviewer. 
+When this skill is invoked, you must act as a strict Code Reviewer.
 
 ## Workflow
 1. **Identify Changes:** Use git commands (or standard file listing if it's not a git repo yet) to identify files that are about to be committed.
