@@ -26,5 +26,6 @@ When asked to commit code, follow these steps:
 2. **Security & Data Leak Check:** Actively scan the diffs to ensure no sensitive data (API keys, secrets, passwords, PII) is being committed. If a leak is detected, **ABORT** the process immediately and warn the user.
 3. **Stage Files:** Stage the appropriate files for the commit. Ensure you do not stage accidental or temporary files.
 4. **Draft Message:** Formulate a concise, clear commit message in English using the correct Conventional Commit prefix. Ensure the commit message itself DOES NOT contain any sensitive data. The message should explain *what* changed and *why*.
-5. **Execute:** Run the commit command. 
-6. **Report:** Provide a brief summary of the commit hash and the message used.
+5. **Request Approval:** You MUST output the drafted commit message to the user in the chat and ask: "Do you approve this commit message, or would you like to edit it?"
+6. **Execute:** Wait for the user's explicit approval. If they request changes, update the draft and ask again. Once approved, run the `git commit` command.
+7. **Report:** Provide a brief summary of the commit hash and the message used.

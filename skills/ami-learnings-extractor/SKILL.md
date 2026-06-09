@@ -23,8 +23,9 @@ When invoked, act as a Knowledge Manager to ensure valuable insights from the cu
 
 3. **Document:**
    - Check if there is an existing knowledge base (e.g., `docs/learning/` or `docs/ADR/`).
-   - If the learning involves a significant architectural decision and `docs/ADR/` exists, create a new ADR (Architecture Decision Record) file inside `docs/ADR/` following their established format.
-   - For all other learnings, store them as individual markdown files in `docs/learning/` using a descriptive title (e.g., `docs/learning/caching-strategy-redis.md`). Create the folder if it does not exist.
+   - **CRITICAL:** Before creating any files, you MUST present the extracted learnings and decisions to the user in the chat and ask for explicit permission to document them.
+   - Once approved, if the learning involves a significant architectural decision and `docs/ADR/` exists, create a new ADR (Architecture Decision Record) file inside `docs/ADR/` following their established format.
+   - For all other approved learnings, store them as individual markdown files in `docs/learning/` using a descriptive title (e.g., `docs/learning/caching-strategy-redis.md`). Create the folder if it does not exist.
 
 4. **Reporting:**
    - If learnings were extracted and documented, output the location of the updated file.

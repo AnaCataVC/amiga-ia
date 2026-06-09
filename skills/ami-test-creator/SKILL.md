@@ -16,7 +16,10 @@ When invoked, act as a Test Automation Engineer to ensure the repository has ade
    - Determine if the modified logic is adequately covered by existing tests.
 
 2. **Generate Tests (If Needed):**
-   - If tests are missing or insufficient, automatically generate the missing tests.
+   - If tests are missing or insufficient, determine the exact test cases needed.
+   - **CRITICAL:** Before writing any tests to disk, you MUST present a summary to the user in the chat explaining *what* exactly you are going to test, the *amount* of tests you will write, and any suggested changes to the existing test structure to better cover the new cases.
+   - Ask for the user's explicit permission to proceed.
+   - Upon approval, automatically generate the missing tests.
    - Use the appropriate testing framework for the project (e.g., pytest, jest, vitest, etc.).
    - Create or update the relevant test files. Ensure the tests are functional and cover the happy path and edge cases of the new code.
 

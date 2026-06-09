@@ -17,7 +17,8 @@ When invoked, act as a Technical Writer to ensure all repository documentation i
 2. **Analyze Changes & Update:**
    - Review the diffs of the current PR.
    - If the PR introduces new features, changes API endpoints, alters configuration requirements, or modifies existing behavior, find the exact place in the documentation where this is described.
-   - Edit the documentation files to reflect these changes accurately.
+   - **CRITICAL:** Before editing any documentation files, you MUST present a summary or diff of the proposed documentation updates in the chat and ask the user for explicit approval.
+   - Once approved, edit the documentation files to reflect these changes accurately.
 
 3. **Language Rules:**
    - Ensure the documentation is written in English (unless the file is explicitly a bilingual or translated file).

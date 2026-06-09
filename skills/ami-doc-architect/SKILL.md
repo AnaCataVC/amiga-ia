@@ -17,10 +17,11 @@ Follow these instructions to assist the user in generating or updating documenta
    - Ask clarifying questions about the target audience (e.g., internal developers vs. end users) and the required level of technical detail.
 
 3. **Iterative Generation:**
-   - Once the strategy is approved by the user, begin generating the documentation.
-   - Write clear, concise, and accurate documentation in English (or the language the user requests for the docs), using standard Markdown formatting.
-   - Ensure the documentation accurately reflects the current state of the codebase by exploring the relevant files.
+   - Once the strategy is approved, **before** writing any files to disk, you MUST present the structure and a summary of what you are going to write in the chat.
+   - Ask for explicit permission to proceed with writing.
+   - Upon approval, write clear, concise, and accurate documentation in English (or the language requested), using standard Markdown formatting.
 
 4. **Review and Refine:**
-   - Present the generated documentation (or a summary of the changes) to the user for review.
+   - After writing the documentation files, you MUST ask the user to review the files and confirm their satisfaction.
+   - Ask: "Are you satisfied with the generated documentation, or would you like me to adjust something?"
    - Be prepared to iterate and make adjustments based on their feedback until the documentation completely meets their expectations.
