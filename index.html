@@ -283,197 +283,237 @@
             <h2 class="text-3xl font-bold text-center mb-12" data-i18n-en="Available Tools"
                 data-i18n-es="Herramientas Disponibles">Available Tools</h2>
 
-            <div class="flex flex-col gap-10">
-                <!-- Group 1: Specialized Agents -->
+            <div class="max-w-5xl mx-auto mt-10 flex flex-col gap-16">
+                <!-- Group 1: Specialized Agents (Standalone) -->
                 <div>
-                    <h3 class="text-xl font-bold mb-5 flex items-center justify-center sm:justify-start gap-3 text-slate-800 dark:text-slate-200">
-                        <div class="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 flex items-center justify-center shadow-sm">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <h3 class="text-2xl sm:text-3xl font-bold mb-8 flex items-center justify-center sm:justify-start gap-5 text-slate-800 dark:text-slate-200">
+                        <div class="w-14 h-14 rounded-2xl bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 flex items-center justify-center shadow-md ring-8 ring-slate-50 dark:ring-slate-900 transition-transform duration-300 hover:scale-110 cursor-default">
+                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                             </svg>
                         </div>
-                        <span data-i18n-en="Specialized Agents" data-i18n-es="Agentes Especializados">Specialized Agents</span>
+                        <span class="mt-1" data-i18n-en="Specialized Agents" data-i18n-es="Agentes Especializados">Specialized Agents</span>
                     </h3>
-                    <div class="flex flex-wrap justify-center gap-4 [&>div]:w-full [&>div]:sm:w-[calc(50%-0.5rem)] [&>div]:lg:w-[calc(33.333%-0.75rem)]">
-                        <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 cursor-default backdrop-blur-sm">
-                            <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-purple-500"></span>ami-next-step-assistant
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 cursor-default backdrop-blur-sm relative overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-r from-purple-500/0 to-purple-500/0 group-hover:from-purple-500/5 group-hover:to-transparent transition-all duration-300"></div>
+                            <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2 relative z-10">
+                                <span class="w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.6)]"></span>ami-next-step-assistant
                             </h4>
-                            <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2" data-i18n-en="Analyzes repo health to recommend the most critical next step." data-i18n-es="Analiza la salud del repositorio para recomendar el siguiente paso crítico.">Analyzes repo health to recommend the most critical next step.</p>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 relative z-10" data-i18n-en="Analyzes repo health to recommend the most critical next step." data-i18n-es="Analiza la salud del repositorio para recomendar el siguiente paso crítico.">Analyzes repo health to recommend the most critical next step.</p>
                         </div>
-                        <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 cursor-default backdrop-blur-sm">
-                            <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-purple-500"></span>ami-commit-assistant
+                        <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 cursor-default backdrop-blur-sm relative overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-r from-purple-500/0 to-purple-500/0 group-hover:from-purple-500/5 group-hover:to-transparent transition-all duration-300"></div>
+                            <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2 relative z-10">
+                                <span class="w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.6)]"></span>ami-commit-assistant
                             </h4>
-                            <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2" data-i18n-en="Analyzes diffs to generate semantic commit messages." data-i18n-es="Analiza diffs para generar mensajes de commit semánticos.">Analyzes diffs to generate semantic commit messages.</p>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 relative z-10" data-i18n-en="Analyzes diffs to generate semantic commit messages." data-i18n-es="Analiza diffs para generar mensajes de commit semánticos.">Analyzes diffs to generate semantic commit messages.</p>
                         </div>
-                        <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 cursor-default backdrop-blur-sm">
-                            <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-purple-500"></span>ami-push-assistant
+                        <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 cursor-default backdrop-blur-sm relative overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-r from-purple-500/0 to-purple-500/0 group-hover:from-purple-500/5 group-hover:to-transparent transition-all duration-300"></div>
+                            <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2 relative z-10">
+                                <span class="w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.6)]"></span>ami-push-assistant
                             </h4>
-                            <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2" data-i18n-en="Orchestrates pre-push checks and validations." data-i18n-es="Orquesta validaciones y revisiones antes del push.">Orchestrates pre-push checks and validations.</p>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 relative z-10" data-i18n-en="Orchestrates pre-push checks and validations." data-i18n-es="Orquesta validaciones y revisiones antes del push.">Orchestrates pre-push checks and validations.</p>
                         </div>
-                        <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 cursor-default backdrop-blur-sm">
-                            <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-purple-500"></span>ami-pr-publisher
+                        <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 cursor-default backdrop-blur-sm relative overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-r from-purple-500/0 to-purple-500/0 group-hover:from-purple-500/5 group-hover:to-transparent transition-all duration-300"></div>
+                            <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2 relative z-10">
+                                <span class="w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.6)]"></span>ami-pr-publisher
                             </h4>
-                            <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2" data-i18n-en="Automates the creation and formatting of Pull Requests." data-i18n-es="Automatiza la creación y formato de Pull Requests.">Automates the creation and formatting of Pull Requests.</p>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 relative z-10" data-i18n-en="Automates the creation and formatting of Pull Requests." data-i18n-es="Automatiza la creación y formato de Pull Requests.">Automates the creation and formatting of Pull Requests.</p>
                         </div>
-                        <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 cursor-default backdrop-blur-sm">
-                            <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-purple-500"></span>ami-release-manager
+                        <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 cursor-default backdrop-blur-sm relative overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-r from-purple-500/0 to-purple-500/0 group-hover:from-purple-500/5 group-hover:to-transparent transition-all duration-300"></div>
+                            <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2 relative z-10">
+                                <span class="w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.6)]"></span>ami-release-manager
                             </h4>
-                            <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2" data-i18n-en="Coordinates version bumping and release notes." data-i18n-es="Coordina el versionado y notas de lanzamiento.">Coordinates version bumping and release notes.</p>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 relative z-10" data-i18n-en="Coordinates version bumping and release notes." data-i18n-es="Coordina el versionado y notas de lanzamiento.">Coordinates version bumping and release notes.</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Group 2: Architecture & Setup (Skills) -->
-                <div>
-                    <h3 class="text-xl font-bold mb-5 flex items-center justify-center sm:justify-start gap-3 text-slate-800 dark:text-slate-200">
-                        <div class="w-10 h-10 rounded-xl bg-teal-100 dark:bg-teal-900/50 text-teal-600 dark:text-teal-400 flex items-center justify-center shadow-sm">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+                <!-- Pipeline for Skills -->
+                <div class="mt-8 sm:mt-12">
+                    <h3 class="text-2xl sm:text-3xl font-bold mb-10 flex items-center justify-center sm:justify-start gap-5 text-slate-800 dark:text-slate-200">
+                        <div class="w-14 h-14 rounded-2xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center shadow-md ring-8 ring-slate-50 dark:ring-slate-900 transition-transform duration-300 hover:scale-110 cursor-default">
+                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                             </svg>
                         </div>
-                        <span data-i18n-en="Architecture & Setup Skills" data-i18n-es="Skills de Arquitectura e Inicio">Architecture & Setup Skills</span>
+                        <span class="mt-1" data-i18n-en="Lifecycle Skills" data-i18n-es="Skills de Ciclo de Vida">Lifecycle Skills</span>
                     </h3>
-                    <div class="flex flex-wrap justify-center gap-4 [&>div]:w-full [&>div]:sm:w-[calc(50%-0.5rem)] [&>div]:lg:w-[calc(33.333%-0.75rem)]">
-                        <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-teal-500/10 cursor-default backdrop-blur-sm">
-                            <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-teal-500"></span>ami-project-architect
-                            </h4>
-                            <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2" data-i18n-en="Designs and structures the foundational architecture for new projects." data-i18n-es="Diseña y estructura la arquitectura base para nuevos proyectos.">Designs and structures the foundational architecture for new projects.</p>
-                        </div>
-                        <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-teal-500/10 cursor-default backdrop-blur-sm">
-                            <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-teal-500"></span>ami-doc-architect
-                            </h4>
-                            <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2" data-i18n-en="Scans and generates tailored project documentation structure." data-i18n-es="Escanea y genera estructura de documentación de proyecto adaptada.">Scans and generates tailored project documentation structure.</p>
+
+                    <div class="relative">
+                        <!-- Vertical Pipeline Line -->
+                        <div class="absolute left-[22px] top-6 bottom-10 w-1 bg-gradient-to-b from-teal-500 via-blue-500 to-green-500 rounded-full opacity-30 dark:opacity-40"></div>
+
+                        <div class="flex flex-col gap-14 sm:gap-16">
+                        <!-- Group 2: Architecture & Setup (Skills) -->
+                    <div class="relative pl-16 sm:pl-24">
+                        <h3 class="text-xl sm:text-2xl font-bold mb-6 flex items-center text-slate-800 dark:text-slate-200">
+                            <div class="absolute left-0 top-0 w-12 h-12 rounded-2xl bg-teal-100 dark:bg-teal-900/50 text-teal-600 dark:text-teal-400 flex items-center justify-center shadow-md ring-8 ring-slate-50 dark:ring-slate-900 z-10 transition-transform duration-300 hover:scale-110 cursor-default">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+                                </svg>
+                            </div>
+                            <span class="mt-1" data-i18n-en="Architecture & Setup Skills" data-i18n-es="Skills de Arquitectura e Inicio">Architecture & Setup Skills</span>
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-teal-500/10 cursor-default backdrop-blur-sm relative overflow-hidden">
+                                <div class="absolute inset-0 bg-gradient-to-r from-teal-500/0 to-teal-500/0 group-hover:from-teal-500/5 group-hover:to-transparent transition-all duration-300"></div>
+                                <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2 relative z-10">
+                                    <span class="w-2 h-2 rounded-full bg-teal-500 shadow-[0_0_8px_rgba(20,184,166,0.6)]"></span>ami-project-architect
+                                </h4>
+                                <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 relative z-10" data-i18n-en="Designs and structures the foundational architecture for new projects." data-i18n-es="Diseña y estructura la arquitectura base para nuevos proyectos.">Designs and structures the foundational architecture for new projects.</p>
+                            </div>
+                            <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-teal-500/10 cursor-default backdrop-blur-sm relative overflow-hidden">
+                                <div class="absolute inset-0 bg-gradient-to-r from-teal-500/0 to-teal-500/0 group-hover:from-teal-500/5 group-hover:to-transparent transition-all duration-300"></div>
+                                <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2 relative z-10">
+                                    <span class="w-2 h-2 rounded-full bg-teal-500 shadow-[0_0_8px_rgba(20,184,166,0.6)]"></span>ami-doc-architect
+                                </h4>
+                                <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 relative z-10" data-i18n-en="Scans and generates tailored project documentation structure." data-i18n-es="Escanea y genera estructura de documentación de proyecto adaptada.">Scans and generates tailored project documentation structure.</p>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Group 3: Development & Testing (Skills) -->
-                <div>
-                    <h3 class="text-xl font-bold mb-5 flex items-center justify-center sm:justify-start gap-3 text-slate-800 dark:text-slate-200">
-                        <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center shadow-sm">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
-                            </svg>
-                        </div>
-                        <span data-i18n-en="Development & Testing Skills" data-i18n-es="Skills de Desarrollo y Pruebas">Development & Testing Skills</span>
-                    </h3>
-                    <div class="flex flex-wrap justify-center gap-4 [&>div]:w-full [&>div]:sm:w-[calc(50%-0.5rem)] [&>div]:lg:w-[calc(33.333%-0.75rem)]">
-                        <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/10 cursor-default backdrop-blur-sm">
-                            <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-blue-500"></span>ami-code-review
-                            </h4>
-                            <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2" data-i18n-en="Deep architectural and security code review." data-i18n-es="Revisión profunda de arquitectura y seguridad.">Deep architectural and security code review.</p>
-                        </div>
-                        <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/10 cursor-default backdrop-blur-sm">
-                            <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-blue-500"></span>ami-test-creator
-                            </h4>
-                            <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2" data-i18n-en="Automatically generates missing unit tests for PR changes." data-i18n-es="Genera automáticamente tests unitarios para los cambios.">Automatically generates missing unit tests for PR changes.</p>
-                        </div>
-                        <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/10 cursor-default backdrop-blur-sm">
-                            <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-blue-500"></span>ami-test-runner
-                            </h4>
-                            <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2" data-i18n-en="Executes tests and reports coverage directly on PRs." data-i18n-es="Ejecuta tests y reporta cobertura en los PRs.">Executes tests and reports coverage directly on PRs.</p>
+                    <!-- Group 3: Development & Testing (Skills) -->
+                    <div class="relative pl-16 sm:pl-24">
+                        <h3 class="text-xl sm:text-2xl font-bold mb-6 flex items-center text-slate-800 dark:text-slate-200">
+                            <div class="absolute left-0 top-0 w-12 h-12 rounded-2xl bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center shadow-md ring-8 ring-slate-50 dark:ring-slate-900 z-10 transition-transform duration-300 hover:scale-110 cursor-default">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                </svg>
+                            </div>
+                            <span class="mt-1" data-i18n-en="Development & Testing Skills" data-i18n-es="Skills de Desarrollo y Pruebas">Development & Testing Skills</span>
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/10 cursor-default backdrop-blur-sm relative overflow-hidden">
+                                <div class="absolute inset-0 bg-gradient-to-r from-blue-500/0 to-blue-500/0 group-hover:from-blue-500/5 group-hover:to-transparent transition-all duration-300"></div>
+                                <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2 relative z-10">
+                                    <span class="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.6)]"></span>ami-code-review
+                                </h4>
+                                <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 relative z-10" data-i18n-en="Deep architectural and security code review." data-i18n-es="Revisión profunda de arquitectura y seguridad.">Deep architectural and security code review.</p>
+                            </div>
+                            <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/10 cursor-default backdrop-blur-sm relative overflow-hidden">
+                                <div class="absolute inset-0 bg-gradient-to-r from-blue-500/0 to-blue-500/0 group-hover:from-blue-500/5 group-hover:to-transparent transition-all duration-300"></div>
+                                <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2 relative z-10">
+                                    <span class="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.6)]"></span>ami-test-creator
+                                </h4>
+                                <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 relative z-10" data-i18n-en="Automatically generates missing unit tests for PR changes." data-i18n-es="Genera automáticamente tests unitarios para los cambios.">Automatically generates missing unit tests for PR changes.</p>
+                            </div>
+                            <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/10 cursor-default backdrop-blur-sm relative overflow-hidden">
+                                <div class="absolute inset-0 bg-gradient-to-r from-blue-500/0 to-blue-500/0 group-hover:from-blue-500/5 group-hover:to-transparent transition-all duration-300"></div>
+                                <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2 relative z-10">
+                                    <span class="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.6)]"></span>ami-test-runner
+                                </h4>
+                                <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 relative z-10" data-i18n-en="Executes tests and reports coverage directly on PRs." data-i18n-es="Ejecuta tests y reporta cobertura en los PRs.">Executes tests and reports coverage directly on PRs.</p>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Group 4: PR & Release (Skills) -->
-                <div>
-                    <h3 class="text-xl font-bold mb-5 flex items-center justify-center sm:justify-start gap-3 text-slate-800 dark:text-slate-200">
-                        <div class="w-10 h-10 rounded-xl bg-orange-100 dark:bg-orange-900/50 text-orange-600 dark:text-orange-400 flex items-center justify-center shadow-sm">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
-                            </svg>
-                        </div>
-                        <span data-i18n-en="PR & Release Skills" data-i18n-es="Skills de PR y Lanzamiento">PR & Release Skills</span>
-                    </h3>
-                    <div class="flex flex-wrap justify-center gap-4 [&>div]:w-full [&>div]:sm:w-[calc(50%-0.5rem)] [&>div]:lg:w-[calc(33.333%-0.75rem)]">
-                        <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-orange-500/10 cursor-default backdrop-blur-sm">
-                            <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-orange-500"></span>ami-pr-conflict-detector
-                            </h4>
-                            <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2" data-i18n-en="Detects and warns about potential merge conflicts." data-i18n-es="Detecta y advierte sobre posibles conflictos de merge.">Detects and warns about potential merge conflicts.</p>
-                        </div>
-                        <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-orange-500/10 cursor-default backdrop-blur-sm">
-                            <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-orange-500"></span>ami-pr-comment-analyzer
-                            </h4>
-                            <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2" data-i18n-en="Analyzes and addresses PR review comments." data-i18n-es="Analiza y atiende los comentarios de revisión del PR.">Analyzes and addresses PR review comments.</p>
-                        </div>
-                        <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-orange-500/10 cursor-default backdrop-blur-sm">
-                            <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-orange-500"></span>ami-pr-peer-reviewer
-                            </h4>
-                            <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2" data-i18n-en="Assists in peer reviewing Pull Requests with strict code analysis." data-i18n-es="Asiste en la revisión de Pull Requests de terceros con análisis estricto.">Assists in peer reviewing Pull Requests with strict code analysis.</p>
-                        </div>
-                        <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-orange-500/10 cursor-default backdrop-blur-sm">
-                            <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-orange-500"></span>ami-release-drafter
-                            </h4>
-                            <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2" data-i18n-en="Drafts release notes based on merged PRs." data-i18n-es="Redacta notas de lanzamiento basadas en PRs.">Drafts release notes based on merged PRs.</p>
-                        </div>
-                        <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-orange-500/10 cursor-default backdrop-blur-sm">
-                            <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-orange-500"></span>ami-release-tagger
-                            </h4>
-                            <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2" data-i18n-en="Creates and pushes Git tags for new versions." data-i18n-es="Crea y sube etiquetas de Git para nuevas versiones.">Creates and pushes Git tags for new versions.</p>
+                    <!-- Group 4: PR & Release (Skills) -->
+                    <div class="relative pl-16 sm:pl-24">
+                        <h3 class="text-xl sm:text-2xl font-bold mb-6 flex items-center text-slate-800 dark:text-slate-200">
+                            <div class="absolute left-0 top-0 w-12 h-12 rounded-2xl bg-orange-100 dark:bg-orange-900/50 text-orange-600 dark:text-orange-400 flex items-center justify-center shadow-md ring-8 ring-slate-50 dark:ring-slate-900 z-10 transition-transform duration-300 hover:scale-110 cursor-default">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                                </svg>
+                            </div>
+                            <span class="mt-1" data-i18n-en="PR & Release Skills" data-i18n-es="Skills de PR y Lanzamiento">PR & Release Skills</span>
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-orange-500/10 cursor-default backdrop-blur-sm relative overflow-hidden">
+                                <div class="absolute inset-0 bg-gradient-to-r from-orange-500/0 to-orange-500/0 group-hover:from-orange-500/5 group-hover:to-transparent transition-all duration-300"></div>
+                                <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2 relative z-10">
+                                    <span class="w-2 h-2 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.6)]"></span>ami-pr-conflict-detector
+                                </h4>
+                                <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 relative z-10" data-i18n-en="Detects and warns about potential merge conflicts." data-i18n-es="Detecta y advierte sobre posibles conflictos de merge.">Detects and warns about potential merge conflicts.</p>
+                            </div>
+                            <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-orange-500/10 cursor-default backdrop-blur-sm relative overflow-hidden">
+                                <div class="absolute inset-0 bg-gradient-to-r from-orange-500/0 to-orange-500/0 group-hover:from-orange-500/5 group-hover:to-transparent transition-all duration-300"></div>
+                                <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2 relative z-10">
+                                    <span class="w-2 h-2 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.6)]"></span>ami-pr-comment-analyzer
+                                </h4>
+                                <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 relative z-10" data-i18n-en="Analyzes and addresses PR review comments." data-i18n-es="Analiza y atiende los comentarios de revisión del PR.">Analyzes and addresses PR review comments.</p>
+                            </div>
+                            <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-orange-500/10 cursor-default backdrop-blur-sm relative overflow-hidden">
+                                <div class="absolute inset-0 bg-gradient-to-r from-orange-500/0 to-orange-500/0 group-hover:from-orange-500/5 group-hover:to-transparent transition-all duration-300"></div>
+                                <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2 relative z-10">
+                                    <span class="w-2 h-2 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.6)]"></span>ami-pr-peer-reviewer
+                                </h4>
+                                <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 relative z-10" data-i18n-en="Assists in peer reviewing Pull Requests with strict code analysis." data-i18n-es="Asiste en la revisión de Pull Requests de terceros con análisis estricto.">Assists in peer reviewing Pull Requests with strict code analysis.</p>
+                            </div>
+                            <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-orange-500/10 cursor-default backdrop-blur-sm relative overflow-hidden">
+                                <div class="absolute inset-0 bg-gradient-to-r from-orange-500/0 to-orange-500/0 group-hover:from-orange-500/5 group-hover:to-transparent transition-all duration-300"></div>
+                                <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2 relative z-10">
+                                    <span class="w-2 h-2 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.6)]"></span>ami-release-drafter
+                                </h4>
+                                <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 relative z-10" data-i18n-en="Drafts release notes based on merged PRs." data-i18n-es="Redacta notas de lanzamiento basadas en PRs.">Drafts release notes based on merged PRs.</p>
+                            </div>
+                            <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-orange-500/10 cursor-default backdrop-blur-sm relative overflow-hidden">
+                                <div class="absolute inset-0 bg-gradient-to-r from-orange-500/0 to-orange-500/0 group-hover:from-orange-500/5 group-hover:to-transparent transition-all duration-300"></div>
+                                <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2 relative z-10">
+                                    <span class="w-2 h-2 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.6)]"></span>ami-release-tagger
+                                </h4>
+                                <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 relative z-10" data-i18n-en="Creates and pushes Git tags for new versions." data-i18n-es="Crea y sube etiquetas de Git para nuevas versiones.">Creates and pushes Git tags for new versions.</p>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Group 5: Code Quality & Maintenance (Skills) -->
-                <div>
-                    <h3 class="text-xl font-bold mb-5 flex items-center justify-center sm:justify-start gap-3 text-slate-800 dark:text-slate-200">
-                        <div class="w-10 h-10 rounded-xl bg-green-100 dark:bg-green-900/50 text-green-600 dark:text-green-400 flex items-center justify-center shadow-sm">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                            </svg>
-                        </div>
-                        <span data-i18n-en="Code Quality & Maintenance Skills" data-i18n-es="Skills de Calidad y Mantenimiento">Code Quality & Maintenance Skills</span>
-                    </h3>
-                    <div class="flex flex-wrap justify-center gap-4 [&>div]:w-full [&>div]:sm:w-[calc(50%-0.5rem)] [&>div]:lg:w-[calc(33.333%-0.75rem)]">
-                        <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-green-500/10 cursor-default backdrop-blur-sm">
-                            <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-green-500"></span>ami-data-validator
-                            </h4>
-                            <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2" data-i18n-en="Validates data payloads and schema integrity." data-i18n-es="Valida la integridad de datos y esquemas.">Validates data payloads and schema integrity.</p>
-                        </div>
-                        <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-green-500/10 cursor-default backdrop-blur-sm">
-                            <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-green-500"></span>ami-quality-auditor
-                            </h4>
-                            <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2" data-i18n-en="Performs static analysis and code quality checks." data-i18n-es="Realiza análisis estático y revisión de calidad.">Performs static analysis and code quality checks.</p>
-                        </div>
-                        <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-green-500/10 cursor-default backdrop-blur-sm">
-                            <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-green-500"></span>ami-tech-debt-scanner
-                            </h4>
-                            <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2" data-i18n-en="Analyzes repo for technical debt and provides a classified report." data-i18n-es="Analiza el repositorio por deuda técnica y provee un reporte clasificado.">Analyzes repo for technical debt and provides a classified report.</p>
-                        </div>
-                        <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-green-500/10 cursor-default backdrop-blur-sm">
-                            <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-green-500"></span>ami-learnings-extractor
-                            </h4>
-                            <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2" data-i18n-en="Extracts and logs technical learnings from code." data-i18n-es="Extrae y registra aprendizajes técnicos del código.">Extracts and logs technical learnings from code.</p>
-                        </div>
-                        <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-green-500/10 cursor-default backdrop-blur-sm">
-                            <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-green-500"></span>ami-docs-updater
-                            </h4>
-                            <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2" data-i18n-en="Syncs documentation with the latest codebase changes." data-i18n-es="Sincroniza la documentación con los cambios recientes.">Syncs documentation with the latest codebase changes.</p>
+                    <!-- Group 5: Code Quality & Maintenance (Skills) -->
+                    <div class="relative pl-16 sm:pl-24">
+                        <h3 class="text-xl sm:text-2xl font-bold mb-6 flex items-center text-slate-800 dark:text-slate-200">
+                            <div class="absolute left-0 top-0 w-12 h-12 rounded-2xl bg-green-100 dark:bg-green-900/50 text-green-600 dark:text-green-400 flex items-center justify-center shadow-md ring-8 ring-slate-50 dark:ring-slate-900 z-10 transition-transform duration-300 hover:scale-110 cursor-default">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                                </svg>
+                            </div>
+                            <span class="mt-1" data-i18n-en="Code Quality & Maintenance Skills" data-i18n-es="Skills de Calidad y Mantenimiento">Code Quality & Maintenance Skills</span>
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-green-500/10 cursor-default backdrop-blur-sm relative overflow-hidden">
+                                <div class="absolute inset-0 bg-gradient-to-r from-green-500/0 to-green-500/0 group-hover:from-green-500/5 group-hover:to-transparent transition-all duration-300"></div>
+                                <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2 relative z-10">
+                                    <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></span>ami-data-validator
+                                </h4>
+                                <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 relative z-10" data-i18n-en="Validates data payloads and schema integrity." data-i18n-es="Valida la integridad de datos y esquemas.">Validates data payloads and schema integrity.</p>
+                            </div>
+                            <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-green-500/10 cursor-default backdrop-blur-sm relative overflow-hidden">
+                                <div class="absolute inset-0 bg-gradient-to-r from-green-500/0 to-green-500/0 group-hover:from-green-500/5 group-hover:to-transparent transition-all duration-300"></div>
+                                <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2 relative z-10">
+                                    <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></span>ami-quality-auditor
+                                </h4>
+                                <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 relative z-10" data-i18n-en="Performs static analysis and code quality checks." data-i18n-es="Realiza análisis estático y revisión de calidad.">Performs static analysis and code quality checks.</p>
+                            </div>
+                            <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-green-500/10 cursor-default backdrop-blur-sm relative overflow-hidden">
+                                <div class="absolute inset-0 bg-gradient-to-r from-green-500/0 to-green-500/0 group-hover:from-green-500/5 group-hover:to-transparent transition-all duration-300"></div>
+                                <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2 relative z-10">
+                                    <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></span>ami-tech-debt-scanner
+                                </h4>
+                                <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 relative z-10" data-i18n-en="Analyzes repo for technical debt and provides a classified report." data-i18n-es="Analiza el repositorio por deuda técnica y provee un reporte clasificado.">Analyzes repo for technical debt and provides a classified report.</p>
+                            </div>
+                            <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-green-500/10 cursor-default backdrop-blur-sm relative overflow-hidden">
+                                <div class="absolute inset-0 bg-gradient-to-r from-green-500/0 to-green-500/0 group-hover:from-green-500/5 group-hover:to-transparent transition-all duration-300"></div>
+                                <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2 relative z-10">
+                                    <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></span>ami-learnings-extractor
+                                </h4>
+                                <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 relative z-10" data-i18n-en="Extracts and logs technical learnings from code." data-i18n-es="Extrae y registra aprendizajes técnicos del código.">Extracts and logs technical learnings from code.</p>
+                            </div>
+                            <div class="group p-5 bg-white/40 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-green-500/10 cursor-default backdrop-blur-sm relative overflow-hidden">
+                                <div class="absolute inset-0 bg-gradient-to-r from-green-500/0 to-green-500/0 group-hover:from-green-500/5 group-hover:to-transparent transition-all duration-300"></div>
+                                <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2 relative z-10">
+                                    <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></span>ami-docs-updater
+                                </h4>
+                                <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 relative z-10" data-i18n-en="Syncs documentation with the latest codebase changes." data-i18n-es="Sincroniza la documentación con los cambios recientes.">Syncs documentation with the latest codebase changes.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            </div>
+        </div>
         </div>
 
         <!-- Installation Section -->
