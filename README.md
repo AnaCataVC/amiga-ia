@@ -1,12 +1,16 @@
 # Amiga IA - Universal Declarative Skills & Agents
 
-> Repo name inspo 🎶: [Amiga Mia - Los Prisioneros](https://www.youtube.com/watch?v=qPHaLk4-_Ew)
-
 [![Antigravity](https://img.shields.io/badge/Antigravity-Gemini-8E24AA?style=flat&logo=googlegemini&logoColor=white)](#)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-Anthropic-D97757?style=flat&logo=anthropic&logoColor=white)](#)
 [![NPM](https://img.shields.io/badge/NPM-Package-CB3837?style=flat&logo=npm&logoColor=white)](#)
 
 [English](#english) | [Español](#español)
+
+---
+
+> 🎶 Repo name inspo: [Amiga Mia - Los Prisioneros](https://www.youtube.com/watch?v=qPHaLk4-_Ew)
+
+> 🤖 Product website: [projects.ana-catalina.com/amiga-ia](https://projects.ana-catalina.com/amiga-ia)
 
 ---
 
