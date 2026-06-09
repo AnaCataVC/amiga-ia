@@ -21,9 +21,17 @@ Follow these instructions to scan a repository for technical debt:
      - **Other technical debt:** Code smells, bad practices, overly complex functions, or architectural antipatterns.
 
 4. **Classify and Report Findings:**
-   - Compile all findings into a structured list.
+   - If no technical debt is found during your audit, you MUST simply output **"NO TECH DEBT FOUND"**. Do not list anything, and do not proceed to step 5.
+   - If technical debt is found, compile all findings into a structured list.
    - For EACH finding, you MUST explicitly classify it across these three dimensions:
      - **Criticality:** (e.g., `[HIGH]`, `[MEDIUM]`, `[LOW]`)
      - **Ease of Resolution:** (e.g., `[EASY]`, `[MODERATE]`, `[HARD]`)
      - **Implementation Risk:** (e.g., `[HIGH RISK]`, `[MEDIUM RISK]`, `[LOW RISK]`)
    - Provide a clear explanation of the debt, why it is problematic, and a recommended approach to resolve it.
+   - **CRITICAL:** You MUST output this complete list of findings directly to the user in the chat interface before doing anything else.
+
+5. **Store Findings (Optional):**
+   - If no technical debt was found, do NOT offer to document anything.
+   - After showing the list of found debt to the user, you MUST ask for their explicit permission to save this report to the `docs/tech-debt.md` file. DO NOT create or update the file automatically.
+   - If the user approves, write the complete structured list of findings into the file.
+   - You MUST include the current Date and Time of the scan at the very top of the file.

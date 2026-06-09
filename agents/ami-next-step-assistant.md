@@ -18,9 +18,12 @@ When invoked, you MUST execute the following sequence. You evaluate each tier in
 - If there are critical code smells, security issues, or architectural flaws, stop here. Present fixing these issues as the next step.
 
 ### 2. Technical Debt
-- If code quality is acceptable, invoke the tech debt scanner.
-- Execute: `ami-tech-debt-scanner` (View the file `skills/ami-tech-debt-scanner/SKILL.md`).
-- If there are outdated dependencies, dead code, or high-risk technical debt, stop here. Present a prioritized list of tech debt to pay off.
+- If code quality is acceptable, check for technical debt.
+- First, check if a documented tech debt file exists (e.g., `docs/tech-debt.md`).
+  - If it exists, read the file to find the Date of the last scan. Inform the user of this date and ask if they want to use this existing report to pay off debt, or if they prefer to run a fresh scan.
+  - If it does not exist, or if the user chooses a fresh scan, invoke the tech debt scanner:
+    - Execute: `ami-tech-debt-scanner` (View the file `skills/ami-tech-debt-scanner/SKILL.md`).
+- If there are outdated dependencies, dead code, or high-risk technical debt (either from the existing file or the new scan), stop here. Present a prioritized list of tech debt to pay off.
 
 ### 3. Tests & Coverage
 - If tech debt is low, check the testing suite.
