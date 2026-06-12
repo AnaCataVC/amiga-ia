@@ -7,7 +7,7 @@
     <title>AmigaIA</title>
     <meta name="description"
         content="A centralized repository for storing skills, agent definitions, and lifecycle hooks that are 100% cross-compatible with Antigravity (Gemini) and Claude Code.">
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="icon" type="image/png" href="./favicon.png" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -71,10 +71,8 @@
 
     <!-- Discreet Logo in corner -->
     <header class="absolute top-8 left-8 sm:top-12 sm:left-12 z-10 animate-fade-in">
-        <a href="https://ana-catalina.com" target="_blank" rel="noopener noreferrer">
-            <img src="./favicon.svg" alt="ACVC Logo"
-                class="w-8 h-8 sm:w-10 sm:h-10 opacity-70 hover:opacity-100 transition-opacity duration-300" />
-        </a>
+        <img src="./favicon.png" alt="Ami Logo"
+            class="w-12 h-12 sm:w-16 sm:h-16 opacity-70 hover:opacity-100 transition-opacity duration-300" />
     </header>
 
     <!-- Header Actions -->
@@ -549,15 +547,9 @@
                     <div class="flex gap-3">
                         <span
                             class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-sm font-semibold">2</span>
-                        <div class="w-full">
-                            <p class="mb-2" data-i18n-en="Install the package globally via NPM:"
-                                data-i18n-es="Instala el paquete de forma global usando NPM:">Install the package
-                                globally via NPM:</p>
-                            <div
-                                class="bg-slate-900 dark:bg-[#0d1117] text-pink-500 p-4 rounded-xl font-mono text-sm overflow-x-auto border border-slate-700 shadow-inner">
-                                npm install -g @anacatavc/amiga-ia
-                            </div>
-                        </div>
+                        <p data-i18n-en="Install the package globally via NPM: <code class='bg-slate-100 dark:bg-slate-900 text-pink-500 dark:text-pink-500 font-mono px-2 py-0.5 rounded-md text-sm shadow-inner border border-slate-200 dark:border-slate-700/50'>npm install -g @anacatavc/amiga-ia</code>"
+                            data-i18n-es="Instala el paquete de forma global usando NPM: <code class='bg-slate-100 dark:bg-slate-900 text-pink-500 dark:text-pink-500 font-mono px-2 py-0.5 rounded-md text-sm shadow-inner border border-slate-200 dark:border-slate-700/50'>npm install -g @anacatavc/amiga-ia</code>">
+                            Install the package globally via NPM: <code class="bg-slate-100 dark:bg-slate-900 text-pink-500 dark:text-pink-500 font-mono px-2 py-0.5 rounded-md text-sm shadow-inner border border-slate-200 dark:border-slate-700/50">npm install -g @anacatavc/amiga-ia</code></p>
                     </div>
                     <div class="flex gap-3">
                         <span
@@ -574,7 +566,10 @@
     </main>
 
     <!-- Footer -->
-    <footer class="mt-auto py-8 text-center text-slate-500 dark:text-slate-400 text-sm animate-fade-in-up delay-300">
+    <footer class="mt-auto py-8 text-center text-slate-500 dark:text-slate-400 text-sm animate-fade-in-up delay-300 flex flex-col items-center justify-center gap-4">
+        <a href="https://ana-catalina.com" target="_blank" rel="noopener noreferrer" class="inline-block opacity-70 hover:opacity-100 transition-opacity duration-300">
+            <img src="./acvc-logo.svg" alt="ACVC Logo" class="w-8 h-8 mx-auto" />
+        </a>
         <p data-i18n-en="© 2026 &lt;a href='https://ana-catalina.com' target='_blank' class='hover:text-slate-800 dark:hover:text-slate-200 transition-colors'&gt;Ana Catalina&lt;/a&gt;. Created with Antigravity."
             data-i18n-es="© 2026 &lt;a href='https://ana-catalina.com' target='_blank' class='hover:text-slate-800 dark:hover:text-slate-200 transition-colors'&gt;Ana Catalina&lt;/a&gt;. Creado con Antigravity.">
             © 2026 <a href="https://ana-catalina.com" target="_blank"
