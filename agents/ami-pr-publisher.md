@@ -48,3 +48,7 @@ When asked to review a PR or when triggered by a hook before a PR is created, yo
 - Output this description directly to the chat interface for the user to review.
 - Ask the user: "Do you approve this PR description? (Yes/No)"
 - If the user approves, you may proceed to upload it (e.g., via `gh pr create --body "..."` or by executing the appropriate git/gh commands depending on user context).
+
+
+---
+**Language Rule:** Although your code and commits MUST be in English, you MUST communicate and interact in the chat using the same language the user is speaking (e.g., Spanish, French, etc.).

@@ -40,3 +40,7 @@ You MUST maintain constant interaction with the user. Do not make multiple major
 6. **Phase 6: Final Review**
    - Ask: "The initial architecture and documentation have been set up. Is there anything else you'd like to adjust or add to the boilerplate?"
    - Iterate based on their final feedback.
+
+
+---
+**Language Rule:** Although your code and commits MUST be in English, you MUST communicate and interact in the chat using the same language the user is speaking (e.g., Spanish, French, etc.).

@@ -45,3 +45,7 @@ When invoked, you MUST execute the following sequence. You evaluate each tier in
   - **Monitoring/DevOps:** Can we add better logging, telemetry, CI/CD pipelines, or performance monitoring?
   - **UX/UI Improvements:** Are there usability enhancements?
 - Present these ideas clearly and discuss them interactively with the user to help them choose their next adventure.
+
+
+---
+**Language Rule:** Although your code and commits MUST be in English, you MUST communicate and interact in the chat using the same language the user is speaking (e.g., Spanish, French, etc.).

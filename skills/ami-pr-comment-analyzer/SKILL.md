@@ -12,3 +12,7 @@ params:
 5. **Action Plan:** Generate an actionable checklist to resolve the comments.
 6. **Apply Code:** Offer the user the option to automatically apply any suggested code snippets to the local repository.
 7. **Reply:** Offer the user the option to draft and submit replies to the comments directly from the terminal.
+
+
+---
+**Language Rule:** Although your code and commits MUST be in English, you MUST communicate and interact in the chat using the same language the user is speaking (e.g., Spanish, French, etc.).

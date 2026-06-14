@@ -30,3 +30,7 @@ When invoked, act as a Knowledge Manager to ensure valuable insights from the cu
 4. **Reporting:**
    - If learnings were extracted and documented, output the location of the updated file.
    - If the changes were trivial (e.g., typos, simple refactors) and no significant learnings were found, output: **"NO NEW LEARNINGS TO EXTRACT"**.
+
+
+---
+**Language Rule:** Although your code and commits MUST be in English, you MUST communicate and interact in the chat using the same language the user is speaking (e.g., Spanish, French, etc.).

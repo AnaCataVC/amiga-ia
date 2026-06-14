@@ -41,3 +41,7 @@ You are the central orchestrator responsible for safely publishing new versions 
 
 ### 5. Summary
 - Output a success message confirming that the GitHub Release was created and is now live.
+
+
+---
+**Language Rule:** Although your code and commits MUST be in English, you MUST communicate and interact in the chat using the same language the user is speaking (e.g., Spanish, French, etc.).

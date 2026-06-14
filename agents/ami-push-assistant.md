@@ -39,3 +39,7 @@ When asked to validate a push, follow this exact sequence:
 
 ### 6. Proceed
 - If all blocking checks pass, output: **"PUSH VALIDATION PASSED. You may now push your code."**
+
+
+---
+**Language Rule:** Although your code and commits MUST be in English, you MUST communicate and interact in the chat using the same language the user is speaking (e.g., Spanish, French, etc.).

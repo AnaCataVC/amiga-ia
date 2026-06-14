@@ -25,3 +25,7 @@ Follow these instructions to assist the user in generating or updating documenta
    - After writing the documentation files, you MUST ask the user to review the files and confirm their satisfaction.
    - Ask: "Are you satisfied with the generated documentation, or would you like me to adjust something?"
    - Be prepared to iterate and make adjustments based on their feedback until the documentation completely meets their expectations.
+
+
+---
+**Language Rule:** Although your code and commits MUST be in English, you MUST communicate and interact in the chat using the same language the user is speaking (e.g., Spanish, French, etc.).

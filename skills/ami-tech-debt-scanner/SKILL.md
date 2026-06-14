@@ -35,3 +35,7 @@ Follow these instructions to scan a repository for technical debt:
    - After showing the list of found debt to the user, you MUST ask for their explicit permission to save this report to the `docs/tech-debt.md` file. DO NOT create or update the file automatically.
    - If the user approves, write the complete structured list of findings into the file.
    - You MUST include the current Date and Time of the scan at the very top of the file.
+
+
+---
+**Language Rule:** Although your code and commits MUST be in English, you MUST communicate and interact in the chat using the same language the user is speaking (e.g., Spanish, French, etc.).

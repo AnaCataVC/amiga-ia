@@ -21,3 +21,7 @@ When invoked, act as a Data Architect to ensure any structural changes in code d
 3. **Reporting:**
    - If structural inconsistencies are found, reject the check and list the specific files and queries that need to be updated.
    - If everything matches or no data definitions were affected, output: **"DATA VALIDATION PASSED"**.
+
+
+---
+**Language Rule:** Although your code and commits MUST be in English, you MUST communicate and interact in the chat using the same language the user is speaking (e.g., Spanish, French, etc.).

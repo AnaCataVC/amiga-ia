@@ -16,3 +16,7 @@ When this skill is invoked, you must act as a strict Code Reviewer.
 3. **Report:** 
    - If you find issues, list them clearly and reject the review.
    - If everything is perfect, you MUST output the exact phrase: **"LGTM - Ready to commit"**.
+
+
+---
+**Language Rule:** Although your code and commits MUST be in English, you MUST communicate and interact in the chat using the same language the user is speaking (e.g., Spanish, French, etc.).

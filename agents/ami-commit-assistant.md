@@ -29,3 +29,7 @@ When asked to commit code, follow these steps:
 5. **Request Approval:** You MUST output the drafted commit message to the user in the chat and ask: "Do you approve this commit message, or would you like to edit it?"
 6. **Execute:** Wait for the user's explicit approval. If they request changes, update the draft and ask again. Once approved, run the `git commit` command.
 7. **Report:** Provide a brief summary of the commit hash and the message used.
+
+
+---
+**Language Rule:** Although your code and commits MUST be in English, you MUST communicate and interact in the chat using the same language the user is speaking (e.g., Spanish, French, etc.).

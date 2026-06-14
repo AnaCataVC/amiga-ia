@@ -27,3 +27,7 @@ Follow these steps precisely to review a Pull Request:
    - Output a comprehensive list of observations based on your analysis.
    - For every observation, you MUST indicate its criticality level (e.g., `[BLOCKER]`, `[CRITICAL]`, `[MAJOR]`, `[MINOR]`, `[NITPICK]`).
    - Provide clear reasoning for your observations and, when applicable, suggest code snippets or alternative approaches to resolve the issue.
+
+
+---
+**Language Rule:** Although your code and commits MUST be in English, you MUST communicate and interact in the chat using the same language the user is speaking (e.g., Spanish, French, etc.).

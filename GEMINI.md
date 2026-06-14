@@ -6,6 +6,7 @@ Este archivo sirve como referencia de contexto para Antigravity (Gemini) al mome
 1. **Idioma del Código:** Todo el código fuente DEBE escribirse siempre en **Inglés**.
 2. **Historial de Git:** Todos los mensajes de commit DEBEN escribirse en **Inglés** y seguir el estándar de **Conventional Commits** (usar prefijos como `feat:`, `fix:`, `docs:`, `chore:`, `refactor:`, etc.).
 3. **Namespacing (Prefijo `ami-`):** Cualquier nueva skill o agente que se cree DEBE llevar el prefijo `ami-` en su nombre de carpeta, archivo y en la metadata interna (`name:`). Esto evita colisiones con ecosistemas externos y mantiene la suite unificada.
+4. **Idioma de Conversación:** Aunque el código y los commits deben ser en inglés, la IA DEBE comunicarse e interactuar en el chat usando el mismo idioma en el que el usuario le habla (ej. Español).
 
 ## Arquitectura de Entorno IA Declarativo (Agent Skills)
 Este repositorio ha evolucionado hacia un ecosistema de **Skills y Agentes en Markdown con Lazy Loading XML**, siguiendo el estándar de Agent Skills. Esto garantiza portabilidad universal y eficiencia extrema de tokens para Antigravity y Claude.

@@ -26,3 +26,7 @@ When invoked, act as a Repository Coordinator to identify potential conflicts wi
    - Provide a clear warning listing the parallel PRs (PR number and Title) that touch the same files.
    - Ask the user to coordinate with the authors of those PRs or to review them before proceeding.
    - Reject the check if severe conflicts are highly probable, otherwise allow the user to acknowledge the warning and proceed.
+
+
+---
+**Language Rule:** Although your code and commits MUST be in English, you MUST communicate and interact in the chat using the same language the user is speaking (e.g., Spanish, French, etc.).
