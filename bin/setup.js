@@ -33,8 +33,29 @@ function copyRecursiveSync(src, dest) {
   }
 }
 
+function cleanOrphanedFiles(src, dest) {
+  if (!fs.existsSync(dest)) return;
+  if (fs.statSync(dest).isDirectory()) {
+    fs.readdirSync(dest).forEach(function(childItemName) {
+      const srcPath = path.join(src, childItemName);
+      const destPath = path.join(dest, childItemName);
+      if (!fs.existsSync(srcPath)) {
+        if (fs.statSync(destPath).isDirectory()) {
+          fs.rmSync(destPath, { recursive: true, force: true });
+        } else {
+          fs.unlinkSync(destPath);
+        }
+      } else {
+        cleanOrphanedFiles(srcPath, destPath);
+      }
+    });
+  }
+}
+
 function setupClaude() {
   console.log('\nInstalling for Claude Code...');
+  cleanOrphanedFiles(sourceSkillsDir, path.join(claudeDir, 'skills'));
+  cleanOrphanedFiles(sourceAgentsDir, path.join(claudeDir, 'agents'));
   copyRecursiveSync(sourceSkillsDir, path.join(claudeDir, 'skills'));
   copyRecursiveSync(sourceAgentsDir, path.join(claudeDir, 'agents'));
   
@@ -49,6 +70,8 @@ function setupClaude() {
 
 function setupAntigravity() {
   console.log('\nInstalling for Antigravity...');
+  cleanOrphanedFiles(sourceSkillsDir, path.join(geminiDir, 'skills'));
+  cleanOrphanedFiles(sourceAgentsDir, path.join(geminiDir, 'agents'));
   copyRecursiveSync(sourceSkillsDir, path.join(geminiDir, 'skills'));
   copyRecursiveSync(sourceAgentsDir, path.join(geminiDir, 'agents'));
   console.log('✅ Antigravity successfully configured.');
