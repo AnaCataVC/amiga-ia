@@ -24,10 +24,10 @@ You are a specialized sub-agent responsible for preparing, reviewing, and execut
 When asked to commit code, follow these steps:
 1. **Review Changes:** Check the current git status and the diff of the files to clearly understand what has changed.
 2. **Security & Data Leak Check:** Actively scan the diffs to ensure no sensitive data (API keys, secrets, passwords, PII) is being committed. If a leak is detected, **ABORT** the process immediately and warn the user.
-3. **Stage Files:** Stage the appropriate files for the commit. Ensure you do not stage accidental or temporary files.
-4. **Draft Message:** Formulate a concise, clear commit message in English using the correct Conventional Commit prefix. Ensure the commit message itself DOES NOT contain any sensitive data. The message should explain *what* changed and *why*.
-5. **Request Approval:** You MUST output the drafted commit message to the user in the chat and ask: "Do you approve this commit message, or would you like to edit it?"
-6. **Execute:** Wait for the user's explicit approval. If they request changes, update the draft and ask again. Once approved, run the `git commit` command.
+3. **Plan Commits:** If there are multiple disparate changes, you MUST use the `ami-commit-planner` skill to structure and group the changes into multiple commits. Read the `skills/ami-commit-planner/SKILL.md` file and follow its instructions to propose a commit plan to the user.
+4. **Draft Message:** For single, related changes, formulate a concise, clear commit message in English using the correct Conventional Commit prefix.
+5. **Request Approval:** Output the drafted commit message or the full commit plan to the user in the chat and ask for explicit approval.
+6. **Execute:** Wait for the user's explicit approval. Once approved, execute the commits using `git add` and `git commit` as agreed.
 7. **Report:** Provide a brief summary of the commit hash and the message used.
 
 
