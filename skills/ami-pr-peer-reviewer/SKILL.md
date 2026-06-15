@@ -7,8 +7,8 @@ Follow these steps precisely to review a Pull Request:
 
 1. **Context and Validation:**
    - Identify the Pull Request to be reviewed.
-   - Verify that you are in the correct local repository and branch corresponding to the PR or its base.
-   - Identify the author of the PR. **CRITICAL:** The author must NOT be the user currently invoking this skill. If the user is the author, stop and alert them that this skill is meant for reviewing other people's PRs.
+   - Verify that you are in the correct local repository. **CRITICAL:** You MUST check out the PR's branch locally (e.g., using `git fetch` and `git checkout`) BEFORE performing any analysis. If you do not check out the PR's branch, you will analyze the wrong code.
+   - Identify the author of the PR. **CRITICAL:** The PR must belong to someone else. The author must NOT be the user currently invoking this skill. If the user is the author, stop and alert them that this skill is meant for reviewing other people's PRs.
 
 2. **Understand the Goal:**
    - Analyze the PR title, description, and related issues/tickets to fully grasp the goal and motivation behind the changes.
