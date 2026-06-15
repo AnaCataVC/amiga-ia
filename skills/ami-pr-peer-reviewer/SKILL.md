@@ -23,10 +23,18 @@ Follow these steps precisely to review a Pull Request:
    - Observe **ONLY** the code that is introduced (added) or removed (deleted) in the PR. Avoid commenting on pre-existing code that is out of scope, unless it directly interacts with the new changes in a problematic way.
    - Analyze the changes for code quality, potential bugs, edge cases, security, performance, and best practices.
 
-5. **Generate Quality Observations:**
+5. **Generate Quality Observations and Recommendation:**
    - Output a comprehensive list of observations based on your analysis.
    - For every observation, you MUST indicate its criticality level (e.g., `[BLOCKER]`, `[CRITICAL]`, `[MAJOR]`, `[MINOR]`, `[NITPICK]`).
    - Provide clear reasoning for your observations and, when applicable, suggest code snippets or alternative approaches to resolve the issue.
+   - **Recommendation:** Based on your findings, clearly recommend to the user what the final verdict should be ("Approve", "Comment", or "Request Changes") and justify your recommendation.
+
+6. **Publishing the Review:**
+   - Wait for the user to confirm their final decision regarding the verdict.
+   - **CRITICAL:** Before preparing the final comments, **ASK THE USER** to confirm the desired **tone** (e.g., formal, friendly, constructive) and **language** (e.g., English, Spanish) for the actual PR comments.
+   - Once they decide on the verdict, tone, and language, **OFFER** to automatically upload the review directly to the PR (e.g., using GitHub CLI `gh pr review`).
+   - Give them the option to publish the issues found as **inline comments** on the specific lines of code, and/or leave a **global comment** detailing the verdict.
+   - If the user approves the action, draft the comments according to the chosen tone and language, and execute the necessary commands to publish the review.
 
 
 ---
