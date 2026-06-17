@@ -115,7 +115,9 @@ npm install -g @anacatavc/amiga-ia
 Once installed globally via NPM, you can run the interactive setup wizard to automatically configure your assistant (Claude or Antigravity) with the package files:
 ```bash
 amiga-ia-setup
-```### 6. Uninstallation
+```
+
+### 6. Uninstallation
 To completely remove the package and clean up your AI assistant folders:
 1. Run `amiga-ia-setup` and select `u` (Uninstall) to safely delete the copied skills and agents.
 2. Run `npm uninstall -g @anacatavc/amiga-ia` to remove the package.
@@ -221,7 +223,9 @@ npm install -g @anacatavc/amiga-ia
 Una vez instalado globalmente vía NPM, puedes correr el asistente para copiar automáticamente las skills y agentes a tu entorno (Claude o Antigravity):
 ```bash
 amiga-ia-setup
-```### 6. Desinstalación
+```
+
+### 6. Desinstalación
 Para eliminar completamente el paquete y limpiar las carpetas de tu asistente de IA:
 1. Ejecuta `amiga-ia-setup` y selecciona `u` (Uninstall) para borrar de forma segura las skills y agentes copiados.
 2. Ejecuta `npm uninstall -g @anacatavc/amiga-ia` para eliminar el paquete.
