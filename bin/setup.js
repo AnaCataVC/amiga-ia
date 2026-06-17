@@ -126,6 +126,11 @@ rl.question('Which assistant do you want to configure? (Claude [c], Antigravity 
     console.log('Skipping configuration.');
   }
 
-  console.log('\nSetup complete!\n');
+  console.log('\nSetup complete!');
+  console.log('---------------------------------------------------------');
+  console.log('💡 Note: amiga-ia is also available natively as a Plugin.');
+  console.log('For Antigravity: agy plugin install https://github.com/AnaCataVC/amiga-ia');
+  console.log('For Claude Code: /plugin marketplace add AnaCataVC/amiga-ia');
+  console.log('---------------------------------------------------------\n');
   rl.close();
 });
