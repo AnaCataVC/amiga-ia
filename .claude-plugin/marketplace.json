@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "amiga-ia",
+  "description": "Amiga IA: The Declarative AI Assistant framework for Claude Code and Antigravity.",
+  "owner": {
+    "name": "AnaCataVC",
+    "url": "https://github.com/AnaCataVC"
+  },
+  "plugins": [
+    {
+      "name": "amiga-ia",
+      "description": "Universal declarative skills and agents for your AI assistant.",
+      "source": "./",
+      "category": "productivity"
+    }
+  ]
+}
