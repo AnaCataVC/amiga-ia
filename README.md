@@ -4,17 +4,19 @@
   <img src="./favicon.png" alt="Amiga IA Logo" width="120" />
 </p>
 
+> 🎶 Repo name inspo: [Amiga Mia - Los Prisioneros](https://www.youtube.com/watch?v=qPHaLk4-_Ew)
+
+> 🤖 Product website: [projects.ana-catalina.com/amiga-ia](https://projects.ana-catalina.com/amiga-ia)
+
+---
+
 [![Antigravity](https://img.shields.io/badge/Antigravity-Gemini-8E24AA?style=flat&logo=googlegemini&logoColor=white)](#)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-Anthropic-D97757?style=flat&logo=anthropic&logoColor=white)](#)
 [![NPM](https://img.shields.io/badge/NPM-Package-CB3837?style=flat&logo=npm&logoColor=white)](https://www.npmjs.com/package/@anacatavc/amiga-ia)
 
-[English](#english) | [Español](#español)
-
 ---
 
-> 🎶 Repo name inspo: [Amiga Mia - Los Prisioneros](https://www.youtube.com/watch?v=qPHaLk4-_Ew)
-
-> 🤖 Product website: [projects.ana-catalina.com/amiga-ia](https://projects.ana-catalina.com/amiga-ia)
+[English](#english) | [Español](#español)
 
 ---
 
@@ -88,22 +90,32 @@ All built-in tools use the mandatory **`ami-`** prefix to ensure safe namespacin
 | Skill | **ami-test-runner** | Finds and executes the test suite for the current project to ensure no regressions. |
 
 ### 5. Installation & Usage
-You can install this repository as a Node.js package or consume it locally.
+You can install this repository using NPM or directly as a native plugin for your CLI. Both methods work perfectly and allow you to invoke the skills.
 
-**As an NPM Package:**
+**Method A: As a Native Plugin**
+Install it directly via your assistant's plugin manager:
+
+**For Antigravity (Terminal):**
+```bash
+agy plugin install https://github.com/AnaCataVC/amiga-ia
+```
+
+**For Claude Code (Inside a Claude Code session):**
+```bash
+/plugin marketplace add AnaCataVC/amiga-ia
+/plugin install amiga-ia@amiga-ia
+```
+
+**Method B: As an NPM Package**
 ```bash
 npm install -g @anacatavc/amiga-ia
 ```
 
 **Setup Wizard (CLI):**
-Once installed globally, you can run the interactive setup wizard to automatically configure your assistant (Claude or Antigravity) with the package files:
+Once installed globally via NPM, you can run the interactive setup wizard to automatically configure your assistant (Claude or Antigravity) with the package files:
 ```bash
 amiga-ia-setup
-```
-
-
-
-### 6. Uninstallation
+```### 6. Uninstallation
 To completely remove the package and clean up your AI assistant folders:
 1. Run `amiga-ia-setup` and select `u` (Uninstall) to safely delete the copied skills and agents.
 2. Run `npm uninstall -g @anacatavc/amiga-ia` to remove the package.
@@ -184,22 +196,32 @@ Todas las herramientas incluidas utilizan el prefijo obligatorio **`ami-`** para
 | Skill | **ami-test-runner** | Encuentra y ejecuta el conjunto de pruebas del proyecto actual para asegurar que no haya regresiones. |
 
 ### 5. Instalación y Uso
-Puedes instalar este repositorio como un paquete de Node.js o usarlo localmente.
+Puedes instalar este repositorio usando NPM o directamente como un plugin nativo para tu CLI. Ambos métodos funcionan perfectamente y te permiten usar las skills con normalidad.
 
-**Como paquete NPM:**
+**Método A: Como Plugin Nativo**
+Instálalo directamente mediante el gestor de plugins de tu asistente:
+
+**Para Antigravity (En la terminal):**
+```bash
+agy plugin install https://github.com/AnaCataVC/amiga-ia
+```
+
+**Para Claude Code (Dentro de una sesión de Claude Code):**
+```bash
+/plugin marketplace add AnaCataVC/amiga-ia
+/plugin install amiga-ia@amiga-ia
+```
+
+**Método B: Como paquete NPM**
 ```bash
 npm install -g @anacatavc/amiga-ia
 ```
 
 **Asistente de Configuración (CLI):**
-Una vez instalado globalmente, puedes correr el asistente para copiar automáticamente las skills y agentes a tu entorno (Claude o Antigravity):
+Una vez instalado globalmente vía NPM, puedes correr el asistente para copiar automáticamente las skills y agentes a tu entorno (Claude o Antigravity):
 ```bash
 amiga-ia-setup
-```
-
-
-
-### 6. Desinstalación
+```### 6. Desinstalación
 Para eliminar completamente el paquete y limpiar las carpetas de tu asistente de IA:
 1. Ejecuta `amiga-ia-setup` y selecciona `u` (Uninstall) para borrar de forma segura las skills y agentes copiados.
 2. Ejecuta `npm uninstall -g @anacatavc/amiga-ia` para eliminar el paquete.
