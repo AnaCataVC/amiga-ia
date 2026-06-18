@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+    .delay-100 { animation-delay: 100ms; opacity: 0; }
+    .delay-200 { animation-delay: 200ms; opacity: 0; }
+    .delay-300 { animation-delay: 300ms; opacity: 0; }
+    .glass-card {
+        @apply bg-slate-900/40 backdrop-blur-xl border border-white/10 shadow-xl transition-all duration-300 hover:shadow-brand-purple/20 hover:-translate-y-1 hover:border-white/20;
+    }
+}
