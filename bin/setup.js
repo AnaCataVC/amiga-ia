@@ -10,13 +10,15 @@ const rl = readline.createInterface({
   output: process.stdout
 });
 
+const ask = (query) => new Promise(resolve => rl.question(query, resolve));
+
 const homeDir = os.homedir();
 const claudeDir = path.join(homeDir, '.claude');
 const geminiDir = path.join(homeDir, '.gemini', 'config');
 
 const sourceSkillsDir = path.join(__dirname, '../skills');
 const sourceAgentsDir = path.join(__dirname, '../agents');
-const sourceSettingsPath = path.join(__dirname, '../settings.json');
+const sourceSettingsPath = path.join(__dirname, '../hooks.json');
 
 function copyRecursiveSync(src, dest) {
   if (!fs.existsSync(src)) return;
@@ -52,31 +54,6 @@ function cleanOrphanedFiles(src, dest) {
   }
 }
 
-function setupClaude() {
-  console.log('\nInstalling for Claude Code...');
-  cleanOrphanedFiles(sourceSkillsDir, path.join(claudeDir, 'skills'));
-  cleanOrphanedFiles(sourceAgentsDir, path.join(claudeDir, 'agents'));
-  copyRecursiveSync(sourceSkillsDir, path.join(claudeDir, 'skills'));
-  copyRecursiveSync(sourceAgentsDir, path.join(claudeDir, 'agents'));
-  
-  if (fs.existsSync(sourceSettingsPath)) {
-    if (!fs.existsSync(claudeDir)) {
-      fs.mkdirSync(claudeDir, { recursive: true });
-    }
-    fs.copyFileSync(sourceSettingsPath, path.join(claudeDir, 'settings.json'));
-  }
-  console.log('✅ Claude Code successfully configured.');
-}
-
-function setupAntigravity() {
-  console.log('\nInstalling for Antigravity...');
-  cleanOrphanedFiles(sourceSkillsDir, path.join(geminiDir, 'skills'));
-  cleanOrphanedFiles(sourceAgentsDir, path.join(geminiDir, 'agents'));
-  copyRecursiveSync(sourceSkillsDir, path.join(geminiDir, 'skills'));
-  copyRecursiveSync(sourceAgentsDir, path.join(geminiDir, 'agents'));
-  console.log('✅ Antigravity successfully configured.');
-}
-
 function deleteMatchingFiles(src, dest) {
   if (!fs.existsSync(src) || !fs.existsSync(dest)) return;
   const isDirectory = fs.statSync(src).isDirectory();
@@ -89,48 +66,134 @@ function deleteMatchingFiles(src, dest) {
   }
 }
 
-function uninstall() {
-  console.log('\nUninstalling package files from AI assistants...');
-  if (fs.existsSync(claudeDir)) {
-    deleteMatchingFiles(sourceSkillsDir, path.join(claudeDir, 'skills'));
-    deleteMatchingFiles(sourceAgentsDir, path.join(claudeDir, 'agents'));
-    const claudeSettings = path.join(claudeDir, 'settings.json');
-    if (fs.existsSync(sourceSettingsPath) && fs.existsSync(claudeSettings)) {
-      fs.unlinkSync(claudeSettings);
+function mergeSettings(targetPath, sourcePath) {
+  let targetData = { hooks: {} };
+  if (fs.existsSync(targetPath)) {
+    try {
+      targetData = JSON.parse(fs.readFileSync(targetPath, 'utf8'));
+    } catch (e) {
+      console.warn('⚠️ Could not parse existing settings.json. Proceeding with overwrite.');
     }
   }
-  if (fs.existsSync(geminiDir)) {
-    deleteMatchingFiles(sourceSkillsDir, path.join(geminiDir, 'skills'));
-    deleteMatchingFiles(sourceAgentsDir, path.join(geminiDir, 'agents'));
+  const sourceData = JSON.parse(fs.readFileSync(sourcePath, 'utf8'));
+
+  if (!targetData.hooks) targetData.hooks = {};
+  
+  for (const [event, newHooks] of Object.entries(sourceData.hooks || {})) {
+    if (!targetData.hooks[event]) {
+      targetData.hooks[event] = [...newHooks];
+    } else {
+      for (const newHook of newHooks) {
+        // Very simplistic check to avoid exact duplicates
+        const exists = targetData.hooks[event].some(h => 
+          JSON.stringify(h) === JSON.stringify(newHook) || 
+          (h.hooks && newHook.hooks && h.hooks[0]?.command === newHook.hooks[0]?.command)
+        );
+        if (!exists) {
+          targetData.hooks[event].push(newHook);
+        }
+      }
+    }
   }
-  console.log('✅ Uninstallation complete. Safe deletion applied.');
+  
+  fs.writeFileSync(targetPath, JSON.stringify(targetData, null, 2));
 }
 
-console.log('=================================');
-console.log(' Welcome to Amiga IA Setup Wizard');
-console.log('=================================\n');
+async function main() {
+  console.log('======================================================');
+  console.log(' 🌟 Welcome to Amiga IA Setup Wizard');
+  console.log('======================================================');
+  console.log('This wizard will install the Amiga IA Universal Agent Skills');
+  console.log('into your local AI environments.\n');
 
-rl.question('Which assistant do you want to configure? (Claude [c], Antigravity [a], Both [b], Uninstall [u], Skip [s]): ', (answer) => {
+  const answer = await ask('Which assistant do you want to configure? (Claude [c], Antigravity [a], Both [b], Uninstall [u], Skip [s]): ');
   const choice = answer.toLowerCase().trim();
-  
-  if (choice === 'c' || choice === 'claude') {
-    setupClaude();
-  } else if (choice === 'a' || choice === 'antigravity') {
-    setupAntigravity();
-  } else if (choice === 'b' || choice === 'both') {
-    setupClaude();
-    setupAntigravity();
-  } else if (choice === 'u' || choice === 'uninstall') {
-    uninstall();
-  } else {
-    console.log('Skipping configuration.');
+
+  if (['c', 'claude', 'b', 'both'].includes(choice)) {
+    console.log('\nInstalling for Claude Code...');
+    cleanOrphanedFiles(sourceSkillsDir, path.join(claudeDir, 'skills'));
+    cleanOrphanedFiles(sourceAgentsDir, path.join(claudeDir, 'agents'));
+    copyRecursiveSync(sourceSkillsDir, path.join(claudeDir, 'skills'));
+    copyRecursiveSync(sourceAgentsDir, path.join(claudeDir, 'agents'));
+    console.log('✅ Skills and Agents directories successfully configured.');
+
+    if (fs.existsSync(sourceSettingsPath)) {
+      console.log('\nClaude Code supports powerful background Hooks (Pre-commit checks, context restoring).');
+      const hookAns = await ask('Install recommended Amiga IA Hooks? (We will merge them and create a backup) [y/N]: ');
+      if (hookAns.toLowerCase().trim() === 'y') {
+        if (!fs.existsSync(claudeDir)) fs.mkdirSync(claudeDir, { recursive: true });
+        
+        const claudeSettings = path.join(claudeDir, 'settings.json');
+        const backupPath = path.join(claudeDir, 'settings.json.amiga-backup');
+        
+        if (fs.existsSync(claudeSettings) && !fs.existsSync(backupPath)) {
+          fs.copyFileSync(claudeSettings, backupPath);
+          console.log('✅ Backup created at ~/.claude/settings.json.amiga-backup');
+        }
+        
+        mergeSettings(claudeSettings, sourceSettingsPath);
+        console.log('✅ Hooks successfully merged into settings.json.');
+      } else {
+        console.log('⏭️ Hooks installation skipped.');
+      }
+    }
   }
 
-  console.log('\nSetup complete!');
+  if (['a', 'antigravity', 'b', 'both'].includes(choice)) {
+    console.log('\nInstalling for Antigravity...');
+    cleanOrphanedFiles(sourceSkillsDir, path.join(geminiDir, 'skills'));
+    cleanOrphanedFiles(sourceAgentsDir, path.join(geminiDir, 'agents'));
+    copyRecursiveSync(sourceSkillsDir, path.join(geminiDir, 'skills'));
+    copyRecursiveSync(sourceAgentsDir, path.join(geminiDir, 'agents'));
+    console.log('✅ Skills and Agents directories successfully configured.');
+    console.log('ℹ️ Note: Bash hooks installation skipped. Antigravity ignores bash hooks in secure mode.');
+  }
+
+  if (['u', 'uninstall'].includes(choice)) {
+    console.log('\nUninstalling package files from AI assistants...');
+    if (fs.existsSync(claudeDir)) {
+      deleteMatchingFiles(sourceSkillsDir, path.join(claudeDir, 'skills'));
+      deleteMatchingFiles(sourceAgentsDir, path.join(claudeDir, 'agents'));
+      console.log('✅ Claude Code skills removed.');
+      
+      const hookAns = await ask('Do you want to remove the Amiga IA Hooks from Claude Code settings? [y/N]: ');
+      if (hookAns.toLowerCase().trim() === 'y') {
+        const claudeSettings = path.join(claudeDir, 'settings.json');
+        const backupPath = path.join(claudeDir, 'settings.json.amiga-backup');
+        
+        if (fs.existsSync(backupPath)) {
+          fs.copyFileSync(backupPath, claudeSettings);
+          fs.unlinkSync(backupPath);
+          console.log('✅ Restored settings.json from backup.');
+        } else if (fs.existsSync(claudeSettings)) {
+           console.log('⚠️ No backup found. Please remove the hooks manually from ~/.claude/settings.json to avoid deleting your custom settings.');
+        }
+      }
+    }
+    if (fs.existsSync(geminiDir)) {
+      deleteMatchingFiles(sourceSkillsDir, path.join(geminiDir, 'skills'));
+      deleteMatchingFiles(sourceAgentsDir, path.join(geminiDir, 'agents'));
+      console.log('✅ Antigravity skills removed.');
+    }
+    console.log('✅ Uninstallation complete. Safe deletion applied.');
+  }
+
+  if (!['c', 'claude', 'b', 'both', 'a', 'antigravity', 'u', 'uninstall'].includes(choice)) {
+    console.log('Skipping configuration.');
+  } else {
+    console.log('\nSetup complete!');
+  }
+  
   console.log('---------------------------------------------------------');
   console.log('💡 Note: amiga-ia is also available natively as a Plugin.');
   console.log('For Antigravity: agy plugin install https://github.com/AnaCataVC/amiga-ia');
   console.log('For Claude Code: /plugin marketplace add AnaCataVC/amiga-ia');
   console.log('---------------------------------------------------------\n');
+  
+  rl.close();
+}
+
+main().catch(err => {
+  console.error('An error occurred:', err);
   rl.close();
 });
