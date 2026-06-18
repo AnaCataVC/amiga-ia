@@ -10,9 +10,10 @@ When invoked, act as a Knowledge Manager to ensure valuable insights from the cu
 
 ## Workflow
 
-1. **Analyze Changes:**
-   - Review the diffs of the unpushed or recent commits.
-   - Look for complex logic, new design patterns, workarounds for specific bugs, or significant architectural decisions.
+1. **Understand Context And Analyze Changes:**
+   - **Determine Scope:** If the user has not specified a context (e.g., a specific commit, PR, or session), default to analyzing all unpushed changes or the most recent commit, and inform the user.
+   - **Review Changes:** Extract and analyze the diffs within the determined scope.
+   - **Identify Key Elements:** Actively search for complex logic, new design patterns, bug workarounds, and significant architectural decisions.
 
 2. **Extract Learnings:**
    - Synthesize the "why" behind the changes.
@@ -20,6 +21,7 @@ When invoked, act as a Knowledge Manager to ensure valuable insights from the cu
      - **Decisions:** Why a specific library or pattern was chosen.
      - **Lessons/Gotchas:** Any bugs or tricky configurations that took time to resolve.
      - **Patterns:** New reusable patterns introduced in the code.
+   - If you are not sure about why something was implemented a specific way, ask the user to clarify before documenting it.
 
 3. **Document:**
    - Check if there is an existing knowledge base (e.g., `docs/learning/` or `docs/ADR/`).
@@ -29,7 +31,7 @@ When invoked, act as a Knowledge Manager to ensure valuable insights from the cu
 
 4. **Reporting:**
    - If learnings were extracted and documented, output the location of the updated file.
-   - If the changes were trivial (e.g., typos, simple refactors) and no significant learnings were found, output: **"NO NEW LEARNINGS TO EXTRACT"**.
+   - If the changes were trivial (e.g., typos, simple refactors) and no significant learnings were found, let the user know.
 
 
 ---
