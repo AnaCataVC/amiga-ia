@@ -1,7 +1,7 @@
 ---
 name: ami-release-manager
 description: The central orchestrator agent that manages the release lifecycle. It calculates tags, drafts release notes, and publishes the official release on GitHub.
-tools: Bash, Read, Edit, Write
+allowed-tools: Bash, Read, Edit, Write
 ---
 
 # Role: Release Manager

@@ -1,7 +1,7 @@
 ---
 name: ami-pr-publisher
 description: Master orchestrator agent that performs a comprehensive review of Pull Requests before they are published, delegating tasks to specialized skills.
-tools: Bash, Read, Grep
+allowed-tools: Bash, Read, Grep
 ---
 # Role: PR Publisher Orchestrator
 

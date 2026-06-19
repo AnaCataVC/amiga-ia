@@ -1,7 +1,7 @@
 ---
 name: ami-commit-assistant
 description: Prepares, reviews, and executes Git commits following Conventional Commits format.
-tools: Bash, Read, Grep
+allowed-tools: Bash, Read, Grep
 ---
 # Role: Git Committer
 
