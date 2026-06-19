@@ -62,9 +62,45 @@ class UniversalAdapter {
     ].join('\n');
   }
 
-  getSystemPrompt(skillsDir) {
-    const xml = this.generateSkillsXml(skillsDir);
-    return `You are operating in the ${this.environment} environment.\n${xml}`;
+  generateAgentsXml(baseDir) {
+    const agents = [];
+    
+    if (!fs.existsSync(baseDir)) return '';
+
+    fs.readdirSync(baseDir).forEach(file => {
+      if (!file.endsWith('.md')) return;
+      const filepath = path.join(baseDir, file);
+      const content = fs.readFileSync(filepath, 'utf8');
+      const match = content.match(/^---\n([\s\S]*?)\n---/);
+      
+      let name = path.basename(file, '.md');
+      let description = 'No description provided.';
+      
+      if (match && match[1]) {
+        const yamlLines = match[1].split('\n');
+        yamlLines.forEach(line => {
+          if (line.startsWith('name:')) name = line.replace('name:', '').trim();
+          if (line.startsWith('description:')) description = line.replace('description:', '').trim();
+        });
+      }
+
+      agents.push(`  <agent>\n    <name>${name}</name>\n    <description>${description}</description>\n    <location>${filepath}</location>\n  </agent>`);
+    });
+
+    if (agents.length === 0) return '';
+
+    return [
+      '<available_agents>',
+      ...agents,
+      '</available_agents>',
+      'If you need to use an agent, use your file reading tool to read the file at <location> and follow its instructions.'
+    ].join('\n');
+  }
+
+  getSystemPrompt(skillsDir, agentsDir) {
+    const skillsXml = this.generateSkillsXml(skillsDir);
+    const agentsXml = agentsDir ? this.generateAgentsXml(agentsDir) : '';
+    return `You are operating in the ${this.environment} environment.\n${skillsXml}\n${agentsXml}`.trim();
   }
 }
 

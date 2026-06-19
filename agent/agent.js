@@ -9,11 +9,12 @@ class Agent {
   constructor(env) {
     this.adapter = new UniversalAdapter(env);
     this.skillsDir = path.join(__dirname, '../skills');
+    this.agentsDir = path.join(__dirname, '../agents');
   }
 
   getPrompt() {
-    // Generate the XML System Prompt based on available skills
-    return this.adapter.getSystemPrompt(this.skillsDir);
+    // Generate the XML System Prompt based on available skills and agents
+    return this.adapter.getSystemPrompt(this.skillsDir, this.agentsDir);
   }
 }
 
