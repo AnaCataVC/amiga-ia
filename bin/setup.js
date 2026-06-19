@@ -35,32 +35,38 @@ function copyRecursiveSync(src, dest) {
   }
 }
 
-function cleanOrphanedFiles(src, dest) {
+function cleanOrphanedFiles(src, dest, isRoot = true) {
   if (!fs.existsSync(dest)) return;
   if (fs.statSync(dest).isDirectory()) {
     fs.readdirSync(dest).forEach(function(childItemName) {
       const srcPath = path.join(src, childItemName);
       const destPath = path.join(dest, childItemName);
       if (!fs.existsSync(srcPath)) {
+        if (isRoot && !childItemName.startsWith('ami-')) {
+          return; // Skip deleting user's personal skills or agents
+        }
         if (fs.statSync(destPath).isDirectory()) {
           fs.rmSync(destPath, { recursive: true, force: true });
         } else {
           fs.unlinkSync(destPath);
         }
       } else {
-        cleanOrphanedFiles(srcPath, destPath);
+        cleanOrphanedFiles(srcPath, destPath, false);
       }
     });
   }
 }
 
-function deleteMatchingFiles(src, dest) {
+function deleteMatchingFiles(src, dest, isRoot = true) {
   if (!fs.existsSync(src) || !fs.existsSync(dest)) return;
   const isDirectory = fs.statSync(src).isDirectory();
   if (isDirectory) {
     fs.readdirSync(src).forEach(function(childItemName) {
-      deleteMatchingFiles(path.join(src, childItemName), path.join(dest, childItemName));
+      deleteMatchingFiles(path.join(src, childItemName), path.join(dest, childItemName), false);
     });
+    if (!isRoot && fs.existsSync(dest) && fs.readdirSync(dest).length === 0) {
+      fs.rmdirSync(dest);
+    }
   } else {
     fs.unlinkSync(dest);
   }
@@ -142,9 +148,9 @@ async function main() {
   if (['a', 'antigravity', 'b', 'both'].includes(choice)) {
     console.log('\nInstalling for Antigravity...');
     cleanOrphanedFiles(sourceSkillsDir, path.join(geminiDir, 'skills'));
-    cleanOrphanedFiles(sourceAgentsDir, path.join(geminiDir, 'agents'));
+    cleanOrphanedFiles(sourceAgentsDir, path.join(homeDir, '.gemini', 'agents'));
     copyRecursiveSync(sourceSkillsDir, path.join(geminiDir, 'skills'));
-    copyRecursiveSync(sourceAgentsDir, path.join(geminiDir, 'agents'));
+    copyRecursiveSync(sourceAgentsDir, path.join(homeDir, '.gemini', 'agents'));
     console.log('✅ Skills and Agents directories successfully configured.');
     console.log('ℹ️ Note: Bash hooks installation skipped. Antigravity ignores bash hooks in secure mode.');
   }
@@ -172,7 +178,7 @@ async function main() {
     }
     if (fs.existsSync(geminiDir)) {
       deleteMatchingFiles(sourceSkillsDir, path.join(geminiDir, 'skills'));
-      deleteMatchingFiles(sourceAgentsDir, path.join(geminiDir, 'agents'));
+      deleteMatchingFiles(sourceAgentsDir, path.join(homeDir, '.gemini', 'agents'));
       console.log('✅ Antigravity skills removed.');
     }
     console.log('✅ Uninstallation complete. Safe deletion applied.');
