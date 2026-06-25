@@ -147,11 +147,16 @@ async function main() {
 
   if (['a', 'antigravity', 'b', 'both'].includes(choice)) {
     console.log('\nInstalling for Antigravity...');
+    const geminiPluginDir = path.join(geminiDir, 'plugins', 'amiga-ia');
     cleanOrphanedFiles(sourceSkillsDir, path.join(geminiDir, 'skills'));
-    cleanOrphanedFiles(sourceAgentsDir, path.join(homeDir, '.gemini', 'agents'));
     copyRecursiveSync(sourceSkillsDir, path.join(geminiDir, 'skills'));
-    copyRecursiveSync(sourceAgentsDir, path.join(homeDir, '.gemini', 'agents'));
-    console.log('✅ Skills and Agents directories successfully configured.');
+    
+    if (!fs.existsSync(geminiPluginDir)) fs.mkdirSync(geminiPluginDir, { recursive: true });
+    fs.copyFileSync(path.join(__dirname, '../plugin.json'), path.join(geminiPluginDir, 'plugin.json'));
+    
+    cleanOrphanedFiles(sourceAgentsDir, path.join(geminiPluginDir, 'agents'));
+    copyRecursiveSync(sourceAgentsDir, path.join(geminiPluginDir, 'agents'));
+    console.log('✅ Skills and Plugin (Agents) directories successfully configured.');
     console.log('ℹ️ Note: Bash hooks installation skipped. Antigravity ignores bash hooks in secure mode.');
   }
 
@@ -177,9 +182,12 @@ async function main() {
       }
     }
     if (fs.existsSync(geminiDir)) {
+      const geminiPluginDir = path.join(geminiDir, 'plugins', 'amiga-ia');
       deleteMatchingFiles(sourceSkillsDir, path.join(geminiDir, 'skills'));
-      deleteMatchingFiles(sourceAgentsDir, path.join(homeDir, '.gemini', 'agents'));
-      console.log('✅ Antigravity skills removed.');
+      if (fs.existsSync(geminiPluginDir)) {
+        fs.rmSync(geminiPluginDir, { recursive: true, force: true });
+      }
+      console.log('✅ Antigravity skills and plugin removed.');
     }
     console.log('✅ Uninstallation complete. Safe deletion applied.');
   }
