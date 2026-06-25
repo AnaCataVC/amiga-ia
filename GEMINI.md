@@ -1,43 +1,44 @@
-# Instrucciones para Antigravity (Gemini)
+# Instructions for Antigravity (Gemini)
 
-Este archivo sirve como referencia de contexto para Antigravity (Gemini) al momento de operar en este repositorio.
+This file serves as context reference for Antigravity (Gemini) when operating in this repository.
 
-## 🚨 Reglas de Desarrollo Obligatorias
-1. **Idioma del Código:** Todo el código fuente DEBE escribirse siempre en **Inglés**.
-2. **Historial de Git:** Todos los mensajes de commit DEBEN escribirse en **Inglés** y seguir el estándar de **Conventional Commits** (usar prefijos como `feat:`, `fix:`, `docs:`, `chore:`, `refactor:`, etc.).
-3. **Namespacing (Prefijo `ami-`):** Cualquier nueva skill o agente que se cree DEBE llevar el prefijo `ami-` en su nombre de carpeta, archivo y en la metadata interna (`name:`). Esto evita colisiones con ecosistemas externos y mantiene la suite unificada.
-4. **Idioma de Conversación:** Aunque el código y los commits deben ser en inglés, la IA DEBE comunicarse e interactuar en el chat usando el mismo idioma en el que el usuario le habla (ej. Español).
-5. **Control de Versiones (UI):** La versión en `package.json` se actualiza automáticamente vía GitHub Actions al hacer un Release. Por lo tanto, antes de que el usuario publique un nuevo Release, la IA DEBE anticiparse y actualizar manualmente la insignia de versión en la página de producto (`index.html`) con la versión objetivo (ej. pasar de v1.3.1 a v2.0.0).
-6. **Estrategia de Git Push:** Dado que GitHub Actions genera commits automáticos (ej. actualizaciones de `package.json` post-release), si un `git push` es rechazado, la IA DEBE resolverlo ejecutando `git pull --rebase` para integrar los cambios remotos de forma limpia antes de volver a intentar el push.
+## 🚨 Mandatory Development Rules
+1. **Code Language:** All source code MUST always be written in **English**.
+2. **Git History:** All commit messages MUST be written in **English** and follow the **Conventional Commits** standard (use prefixes like `feat:`, `fix:`, `docs:`, `chore:`, `refactor:`, etc.).
+3. **Documentation Language:** All repository documentation (with the explicit exception of `README.md`) MUST be written in **English**.
+4. **Namespacing (`ami-` Prefix):** Any new skill or agent created MUST have the prefix `ami-` in its folder name, file name, and internal metadata (`name:`). This prevents collisions with external ecosystems and keeps the suite unified.
+5. **Conversation Language:** Although code and commits must be in English, the AI MUST communicate and interact in the chat using the same language the user speaks (e.g., Spanish).
+6. **Version Control (UI):** The version in `package.json` is updated automatically via GitHub Actions when making a Release. Therefore, before the user publishes a new Release, the AI MUST proactively update the version badge on the product page (`index.html`) with the target version manually (e.g., changing from v1.3.1 to v2.0.0).
+7. **Git Push Strategy:** Since GitHub Actions generates automatic commits (e.g., `package.json` updates post-release), if a `git push` is rejected, the AI MUST resolve it by executing `git pull --rebase` to cleanly integrate remote changes before attempting to push again.
 
-## Arquitectura de Entorno IA Declarativo (Agent Skills)
-Este repositorio ha evolucionado hacia un ecosistema de **Skills y Agentes en Markdown con Lazy Loading XML**, siguiendo el estándar de Agent Skills. Esto garantiza portabilidad universal y eficiencia extrema de tokens para Antigravity y Claude.
+## Declarative AI Environment Architecture (Agent Skills)
+This repository has evolved into an ecosystem of **Skills and Agents in Markdown with XML Lazy Loading**, following the Agent Skills standard. This ensures universal portability and extreme token efficiency for Antigravity and Claude.
 
-* **Importante:** Para la compatibilidad nativa con Claude Code, el YAML frontmatter de todos los archivos DEBE utilizar estrictamente la propiedad `allowed-tools:` para declarar los permisos, en lugar del genérico `tools:`.
+* **Important:** For native compatibility with Claude Code, the YAML frontmatter of all files MUST strictly use the `allowed-tools:` property to declare permissions, instead of the generic `tools:`.
 
-* **`agents/`**: Definiciones de los subagentes en archivos `.md`. Describen el comportamiento y herramientas necesarias en texto natural.
-* **`skills/`**: Habilidades o flujos de trabajo en carpetas con un archivo `SKILL.md`. Utilizan YAML Frontmatter para la metadata y el cuerpo para instrucciones imperativas detalladas.
-* **`docs/`**: Memoria a largo plazo del agente. Decisiones Arquitectónicas (ADRs), contexto y restricciones del proyecto persistidos entre sesiones.
-* **`adapters/`**: El adaptador universal (`universal_adapter.js`) que escanea los directorios dinámicamente y genera un índice XML (`<available_skills>`) para el System Prompt de la IA, permitiendo "Lazy Loading" de los archivos Markdown cuando se necesiten.
+* **`agents/`**: Definitions of subagents in `.md` files. They describe behavior and necessary tools in natural language.
+* **`skills/`**: Skills or workflows in folders with a `SKILL.md` file. They use YAML Frontmatter for metadata and the body for detailed imperative instructions.
+* **`docs/`**: Long-term memory of the agent. Architectural Decisions (ADRs), context, and project constraints persisted across sessions.
+* **`adapters/`**: The universal adapter (`universal_adapter.js`) that dynamically scans directories and generates an XML index (`<available_skills>`) for the AI's System Prompt, enabling "Lazy Loading" of Markdown files when needed.
 
-## Flujo de Trabajo y CLI (Antigravity)
-1. **Lectura Dinámica (Lazy Loading):** Antigravity y el adaptador escanean dinámicamente `skills/` y `agents/` extrayendo el frontmatter para presentarle a la IA un catálogo de herramientas.
-2. **Instalador Interactivo (Wizard):** El proyecto cuenta con un CLI ejecutable (`amiga-ia-setup`) en `bin/setup.js`. Este script hace un copy-paste físico de los archivos hacia las carpetas `~/.gemini/config/` y `~/.claude/` para evitar problemas de permisos de Windows con symlinks.
-3. **Ejecución Nativa:** La IA lee el índice XML y utiliza su propia herramienta de lectura de archivos (`view_file`) para abrir y procesar el `SKILL.md` únicamente cuando decide que lo necesita.
+## Workflow and CLI (Antigravity)
+1. **Dynamic Reading (Lazy Loading):** Antigravity and the adapter dynamically scan `skills/` and `agents/`, extracting the frontmatter to present a tool catalog to the AI.
+2. **Interactive Installer (Wizard):** The project features an executable CLI (`amiga-ia-setup`) in `bin/setup.js`. This script performs a physical copy-paste of files to the `~/.gemini/config/` and `~/.claude/` folders to avoid Windows permission issues with symlinks.
+3. **Native Execution:** The AI reads the XML index and uses its own file reading tool (`view_file`) to open and process `SKILL.md` only when it decides it's needed.
 
-## Seguridad Integrada (Planning Mode)
-Antigravity ignora los hooks de bash cuando está en modo seguro. Su seguridad radica en su pipeline atómico: investigar, redactar un plan (`implementation_plan.md`), requerir aprobación humana, ejecutar usando `task.md`, y documentar con `walkthrough.md`.
+## Built-in Security (Planning Mode)
+Antigravity ignores bash hooks when in safe mode. Its security relies on its atomic pipeline: investigate, draft a plan (`implementation_plan.md`), require human approval, execute using `task.md`, and document with `walkthrough.md`.
 
-## Resumen de la Jerarquía Estricta
-El repositorio se distribuye como un paquete NPM:
+## Strict Hierarchy Summary
+The repository is distributed as an NPM package:
 
 ```text
 /
-├── package.json                 ← Registro del paquete y comando global (amiga-ia-setup)
-├── bin/setup.js                 ← Instalador interactivo (CLI wizard copy-paste)
-├── adapters/                    ← Universal Adapter para compilar el catálogo XML
-├── agent/                       ← Entrypoint principal que exporta librerías
-├── skills/*/SKILL.md            ← Directorios de habilidades con YAML y Markdown detallado
-├── agents/*.md                  ← Perfiles de subagentes en Markdown
-└── settings.json                ← Hooks heredados o configuraciones extra
+├── package.json                 ← Package registry and global command (amiga-ia-setup)
+├── bin/setup.js                 ← Interactive installer (CLI wizard copy-paste)
+├── adapters/                    ← Universal Adapter to compile the XML catalog
+├── agent/                       ← Main entrypoint exporting libraries
+├── skills/*/SKILL.md            ← Skill directories with YAML and detailed Markdown
+├── agents/*.md                  ← Subagent profiles in Markdown
+└── settings.json                ← Legacy hooks or extra configurations
 ```
