@@ -26,8 +26,13 @@ You are the central orchestrator responsible for safely publishing new versions 
 - Present the drafted bilingual (English/Spanish) markdown notes to the user for final review.
 - Allow the user to request edits to the notes.
 
-### 4. Create and Publish the Release
-- After the user approves the notes, execute the release creation.
+### 4. Update Version Files (Universal)
+- Before creating the release, actively search the repository for configuration files (e.g., `package.json`, `plugin.json`, `manifest.json`) or product pages/documentation (e.g., `index.html`, `README.md`) that might contain the current version string.
+- If you find the old version hardcoded in these files, update them to match the new `<Confirm_Tag>` (without the `v` prefix if appropriate for the file).
+- Create a single commit for these version bumps (e.g., `chore: bump version to <Confirm_Tag> [skip ci]`) and push it to the remote repository.
+
+### 5. Create and Publish the Release
+- After the user approves the notes and version files are updated, execute the release creation.
 - Avoid writing the notes to a permanent file. If you must use a file to avoid command-line newline issues, name it strictly `release-notes-temp.md`, and you **MUST delete it** in the exact same command execution chain.
   - Example (Windows/PowerShell): 
     ```powershell
