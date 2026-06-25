@@ -6,7 +6,7 @@
 
 > 🎶 Repo name inspo: [Amiga Mia - Los Prisioneros](https://www.youtube.com/watch?v=qPHaLk4-_Ew)
 
-> 🤖 Product website: [projects.ana-catalina.com/amiga-ia](https://projects.ana-catalina.com/amiga-ia)
+> 🤖 Product website: [amiga-ia.ana-catalina.com/](https://amiga-ia.ana-catalina.com/)
 
 ---
 
