@@ -29,7 +29,7 @@ jobs:
         run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
         
       - name: Bump package.json version
-        run: npm version ${{ env.VERSION }} --no-git-tag-version
+        run: npm version ${{ env.VERSION }} --no-git-tag-version --allow-same-version
           
       - name: Commit and push package.json
         run: |
