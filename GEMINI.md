@@ -10,6 +10,7 @@ This file serves as context reference for Antigravity (Gemini) when operating in
 5. **Conversation Language:** Although code and commits must be in English, the AI MUST communicate and interact in the chat using the same language the user speaks (e.g., Spanish).
 6. **Version Control (UI):** The version in `package.json` is updated automatically via GitHub Actions when making a Release. Therefore, before the user publishes a new Release, the AI MUST proactively update the version badge on the product page (`index.html`) with the target version manually (e.g., changing from v1.3.1 to v2.0.0).
 7. **Git Push Strategy:** Since GitHub Actions generates automatic commits (e.g., `package.json` updates post-release), if a `git push` is rejected, the AI MUST resolve it by executing `git pull --rebase` to cleanly integrate remote changes before attempting to push again.
+8. **NPM Package Stability:** Before making architectural changes (like moving hooks or modifying plugin metadata), ALWAYS verify that the changes do not break the NPM installation method (e.g., check `bin/setup.js`, `.gitignore`, and `package.json`).
 
 ## Declarative AI Environment Architecture (Agent Skills)
 This repository has evolved into an ecosystem of **Skills and Agents in Markdown with XML Lazy Loading**, following the Agent Skills standard. This ensures universal portability and extreme token efficiency for Antigravity and Claude.
@@ -35,10 +36,13 @@ The repository is distributed as an NPM package:
 ```text
 /
 ├── package.json                 ← Package registry and global command (amiga-ia-setup)
+├── plugin.json                  ← Antigravity plugin manifest
+├── .claude-plugin/              ← Claude Code plugin manifest
 ├── bin/setup.js                 ← Interactive installer (CLI wizard copy-paste)
 ├── adapters/                    ← Universal Adapter to compile the XML catalog
 ├── agent/                       ← Main entrypoint exporting libraries
 ├── skills/*/SKILL.md            ← Skill directories with YAML and detailed Markdown
 ├── agents/*.md                  ← Subagent profiles in Markdown
-└── settings.json                ← Legacy hooks or extra configurations
+├── hooks.json                   ← Hooks config (used by NPM wizard for merging)
+└── hooks/hooks.json             ← Hooks config (used by Claude Code plugin discovery)
 ```

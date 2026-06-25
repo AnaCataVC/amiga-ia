@@ -122,9 +122,11 @@ amiga-ia-setup
 ```
 
 > 💡 **Understanding Hooks Installation:** The package includes background hooks (e.g., pre-commit blocks, context restoring) but they are installed differently based on your method:
-> - **Native Plugin (Claude Code):** Hooks are loaded dynamically from `hooks.json`. They remain fully isolated within the plugin context and do not modify your global system settings.
+> - **Native Plugin (Claude Code):** Hooks are loaded dynamically from `hooks/hooks.json`. They remain fully isolated within the plugin context and do not modify your global system settings.
 > - **NPM Wizard (Claude Code):** Hooks are permanently merged into your global `~/.claude/settings.json` file (a backup is created first to allow safe uninstallation).
 > - **Antigravity:** No bash hooks are installed. Antigravity natively ignores them when in secure mode, relying instead on its atomic planning pipeline.
+
+> ⚠️ **Important:** Choose **only one** installation method (Plugin **or** NPM). Using both simultaneously will result in duplicate skill names and may cause errors in your AI assistant.
 
 ### 6. Uninstallation
 To completely remove the package and clean up your AI assistant folders:
@@ -239,9 +241,11 @@ amiga-ia-setup
 ```
 
 > 💡 **Entendiendo la instalación de Hooks:** El paquete incluye hooks en segundo plano (ej. bloqueos pre-commit, restauración de contexto) pero se instalan diferente según el método:
-> - **Plugin Nativo (Claude Code):** Los hooks se cargan dinámicamente desde `hooks.json`. Se mantienen completamente aislados dentro del plugin y no modifican tu configuración global.
+> - **Plugin Nativo (Claude Code):** Los hooks se cargan dinámicamente desde `hooks/hooks.json`. Se mantienen completamente aislados dentro del plugin y no modifican tu configuración global.
 > - **Asistente NPM (Claude Code):** Los hooks se inyectan permanentemente ("merge") en tu `~/.claude/settings.json` global (se crea un backup previo para desinstalación segura).
 > - **Antigravity:** No se instalan hooks de bash. Antigravity los ignora nativamente cuando está en modo seguro, confiando en su propio pipeline de planificación atómica.
+
+> ⚠️ **Importante:** Elige **solo un** método de instalación (Plugin **o** NPM). Usar ambos simultáneamente resultará en nombres de skills duplicados y puede causar errores en tu asistente de IA.
 
 ### 6. Desinstalación
 Para eliminar completamente el paquete y limpiar las carpetas de tu asistente de IA:
