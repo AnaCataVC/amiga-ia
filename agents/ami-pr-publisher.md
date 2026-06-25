@@ -21,17 +21,22 @@ When asked to review a PR or when triggered by a hook before a PR is created, yo
 - Execute: `ami-push-assistant` (View the file `agents/ami-push-assistant.md`).
 - Wait for the results. If any of its blocking checks fail, you MUST prompt the user to fix them before proceeding.
 
-### 3. Run Parallel Conflict Check
+### 3. Run Dependency Audit
+- Invoke the dependency analyzer skill.
+- Execute: `ami-dependency-analyzer` (View the file `skills/ami-dependency-analyzer/SKILL.md`).
+- Ensure there are no unused, severely outdated, or phantom dependencies. Prompt the user to fix any critical findings before proceeding.
+
+### 4. Run Parallel Conflict Check
 - Invoke the conflict detector skill to identify overlapping PRs.
 - Execute: `ami-pr-conflict-detector` (View the file `skills/ami-pr-conflict-detector/SKILL.md`).
 - If conflicts are detected with other open PRs, alert the user and ask for acknowledgment before proceeding.
 
-### 4. Enforce Documentation Update
+### 5. Enforce Documentation Update
 - Invoke the documentation updater skill.
 - Execute: `ami-docs-updater` (View the file `skills/ami-docs-updater/SKILL.md`).
 - Unlike the push workflow, updating the documentation is **MANDATORY** for a PR. If docs are not updated, block the PR creation until they are.
 
-### 5. Enforce Test Coverage and Run Tests
+### 6. Enforce Test Coverage and Run Tests
 - First, check if tests exist for the modified code by invoking the test creator skill.
 - Execute: `ami-test-creator` (View the file `skills/ami-test-creator/SKILL.md`).
 - If tests are missing, wait for `ami-test-creator` to automatically generate them.
@@ -39,7 +44,7 @@ When asked to review a PR or when triggered by a hook before a PR is created, yo
 - Execute: `ami-test-runner` (View the file `skills/ami-test-runner/SKILL.md`).
 - Ensure all tests pass. This is a **blocker**.
 
-### 6. Generate and Approve PR Description
+### 7. Generate and Approve PR Description
 - Once all previous steps pass, generate a comprehensive PR Description.
 - The description MUST include:
   1. **Reason for the change:** Why this is being done.

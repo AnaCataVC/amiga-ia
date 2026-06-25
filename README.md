@@ -75,6 +75,7 @@ All built-in tools use the mandatory **`ami-`** prefix to ensure safe namespacin
 | Skill | **ami-commit-planner** | Analyzes the working tree for uncommitted work and proposes a structured set of commits. |
 | Skill | **ami-context-researcher** | Actively researches external documentation and saves findings to prevent context loss. |
 | Skill | **ami-data-validator** | Validates structural consistency between code changes and data definitions. |
+| Skill | **ami-dependency-analyzer** | Analyzes the project's libraries and dependencies for unused, outdated, or undeclared packages. |
 | Skill | **ami-doc-architect** | Helps generate project documentation from scratch or adapts to existing styles. |
 | Skill | **ami-docs-updater** | Identifies if codebase documentation exists and updates it to reflect code changes. |
 | Skill | **ami-learnings-extractor** | Analyzes recent code changes to extract architectural decisions, lessons, and patterns. |
@@ -191,6 +192,7 @@ Todas las herramientas incluidas utilizan el prefijo obligatorio **`ami-`** para
 | Skill | **ami-commit-planner** | Analiza el working tree por cambios sin guardar y propone una estructura de commits semánticos. |
 | Skill | **ami-context-researcher** | Investiga documentación externa activamente y guarda los hallazgos para prevenir pérdida de contexto. |
 | Skill | **ami-data-validator** | Valida la consistencia estructural entre los cambios de código y las definiciones de datos. |
+| Skill | **ami-dependency-analyzer** | Analiza las librerías y dependencias del proyecto buscando paquetes sin usar, desactualizados o no declarados. |
 | Skill | **ami-doc-architect** | Ayuda a generar documentación del proyecto desde cero o se adapta a estilos existentes. |
 | Skill | **ami-docs-updater** | Identifica si existe documentación del código y la actualiza para reflejar los cambios. |
 | Skill | **ami-learnings-extractor** | Analiza los cambios de código recientes para extraer decisiones arquitectónicas, lecciones y patrones. |
