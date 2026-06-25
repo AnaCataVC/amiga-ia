@@ -1,0 +1,59 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "bash",
+            "command": "if [ -d docs/coding-sessions ]; then latest=$(ls -t docs/coding-sessions/*_session-summary.md 2>/dev/null | head -n 1); if [ -n \"$latest\" ]; then echo \"Context from previous session ($(basename \"$latest\")):\"; awk '/^## Pending Tasks/{flag=1; print; next} /^##/{flag=0} flag' \"$latest\"; fi; fi"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "bash",
+            "command": "cmd=$(jq -r '.tool_input.command // empty'); if echo \"$cmd\" | grep -qE 'git[[:space:]]+commit'; then echo 'Commit formatting required. Run commit-assistant first.' >&2; exit 2; fi"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "bash",
+            "command": "cmd=$(jq -r '.tool_input.command // empty'); if echo \"$cmd\" | grep -qE 'git[[:space:]]+push'; then echo 'Pre-push validation required. Run push-assistant agent first.' >&2; exit 2; fi"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "bash",
+            "command": "cmd=$(jq -r '.tool_input.command // empty'); if echo \"$cmd\" | grep -qE 'gh[[:space:]]+pr[[:space:]]+create'; then echo 'Code review required. Run pr-publisher agent first.' >&2; exit 2; fi"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "bash",
+            "command": "file=$(jq -r '.tool_input.file_path // empty'); if [ -n \"$file\" ] && [ -f \"$file\" ]; then if grep -qE 'console\\.log|debugger|TODO|FIXME' \"$file\"; then echo \"Warning: Detected debug statements or TODOs in $file. Review before commit.\" >&2; fi; fi"
+          }
+        ]
+      }
+    ]
+  }
+}
