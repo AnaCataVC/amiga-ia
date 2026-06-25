@@ -44,7 +44,7 @@ You are the central orchestrator responsible for safely publishing new versions 
     ```
   - Note: If this is a `qa` or `rc` tag, pass the `--prerelease` flag to `gh release create`.
 
-### 5. Summary
+### 6. Summary
 - Output a success message confirming that the GitHub Release was created and is now live.
 
 
