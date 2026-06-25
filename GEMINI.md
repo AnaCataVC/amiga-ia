@@ -12,6 +12,8 @@ Este archivo sirve como referencia de contexto para Antigravity (Gemini) al mome
 ## Arquitectura de Entorno IA Declarativo (Agent Skills)
 Este repositorio ha evolucionado hacia un ecosistema de **Skills y Agentes en Markdown con Lazy Loading XML**, siguiendo el estándar de Agent Skills. Esto garantiza portabilidad universal y eficiencia extrema de tokens para Antigravity y Claude.
 
+* **Importante:** Para la compatibilidad nativa con Claude Code, el YAML frontmatter de todos los archivos DEBE utilizar estrictamente la propiedad `allowed-tools:` para declarar los permisos, en lugar del genérico `tools:`.
+
 * **`agents/`**: Definiciones de los subagentes en archivos `.md`. Describen el comportamiento y herramientas necesarias en texto natural.
 * **`skills/`**: Habilidades o flujos de trabajo en carpetas con un archivo `SKILL.md`. Utilizan YAML Frontmatter para la metadata y el cuerpo para instrucciones imperativas detalladas.
 * **`docs/`**: Memoria a largo plazo del agente. Decisiones Arquitectónicas (ADRs), contexto y restricciones del proyecto persistidos entre sesiones.
