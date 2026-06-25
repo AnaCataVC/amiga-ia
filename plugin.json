@@ -6,7 +6,11 @@
     "./skills/"
   ],
   "agents": [
-    "./agents/"
+    "agents/ami-commit-assistant.md",
+    "agents/ami-next-step-assistant.md",
+    "agents/ami-pr-publisher.md",
+    "agents/ami-push-assistant.md",
+    "agents/ami-release-manager.md"
   ],
   "hooks": "./hooks.json"
 }
