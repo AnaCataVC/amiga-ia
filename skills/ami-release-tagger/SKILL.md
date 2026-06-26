@@ -10,8 +10,10 @@ Act as a Version Control Manager. Your job is to determine the next correct vers
 
 ## Workflow
 
-1. **Find the Last Tag:**
+1. **Find the Last Tag and Tagging System:**
    - Run `git describe --tags --abbrev=0` to find the latest tag. If no tag exists, assume the baseline is `v0.0.0`.
+   - Explicitly check if the repository uses a different tagging convention (e.g., tags without the `v` prefix like `1.2.3`, or prefixed with package names like `backend-v1.0.0`).
+   - If a different system is found, adapt to it. Otherwise, use the standard `vX.Y.Z` defined here.
 
 2. **Analyze Commits Since Last Tag:**
    - Run `git log <last-tag>..HEAD --oneline`.
