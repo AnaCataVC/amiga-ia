@@ -79,6 +79,7 @@ All built-in tools use the mandatory **`ami-`** prefix to ensure safe namespacin
 | Skill | **ami-doc-architect** | Helps generate project documentation from scratch or adapts to existing styles. |
 | Skill | **ami-docs-updater** | Identifies if codebase documentation exists and updates it to reflect code changes. |
 | Skill | **ami-learnings-extractor** | Analyzes recent code changes to extract architectural decisions, lessons, and patterns. |
+| Skill | **ami-methodical-debugger** | Performs an organized debugging process, systematically isolating the root cause without assumptions. |
 | Skill | **ami-pr-comment-analyzer** | Analyzes code review comments left by other developers on an active Pull Request. |
 | Skill | **ami-pr-conflict-detector** | Analyzes other open Pull Requests to alert if there are parallel PRs that might conflict. |
 | Skill | **ami-pr-peer-reviewer** | Assists in reviewing Pull Requests from other people. |
@@ -198,6 +199,7 @@ Todas las herramientas incluidas utilizan el prefijo obligatorio **`ami-`** para
 | Skill | **ami-doc-architect** | Ayuda a generar documentación del proyecto desde cero o se adapta a estilos existentes. |
 | Skill | **ami-docs-updater** | Identifica si existe documentación del código y la actualiza para reflejar los cambios. |
 | Skill | **ami-learnings-extractor** | Analiza los cambios de código recientes para extraer decisiones arquitectónicas, lecciones y patrones. |
+| Skill | **ami-methodical-debugger** | Realiza un proceso de depuración organizado, aislando sistemáticamente la causa raíz sin suposiciones. |
 | Skill | **ami-pr-comment-analyzer** | Analiza los comentarios de revisión de código dejados por otros desarrolladores en un PR activo. |
 | Skill | **ami-pr-conflict-detector** | Analiza otros Pull Requests abiertos para alertar si hay conflictos paralelos. |
 | Skill | **ami-pr-peer-reviewer** | Ayuda a revisar los Pull Requests de otras personas. |
