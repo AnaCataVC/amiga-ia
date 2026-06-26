@@ -156,7 +156,7 @@ async function main() {
     
     cleanOrphanedFiles(sourceAgentsDir, path.join(geminiPluginDir, 'agents'));
     copyRecursiveSync(sourceAgentsDir, path.join(geminiPluginDir, 'agents'));
-    console.log('✅ Skills and Plugin (Agents) directories successfully configured.');
+    console.log('✅ Skills and Agents directories successfully configured.');
     console.log('ℹ️ Note: Bash hooks installation skipped. Antigravity ignores bash hooks in secure mode.');
   }
 
@@ -187,7 +187,7 @@ async function main() {
       if (fs.existsSync(geminiPluginDir)) {
         fs.rmSync(geminiPluginDir, { recursive: true, force: true });
       }
-      console.log('✅ Antigravity skills and plugin removed.');
+      console.log('✅ Antigravity skills and agents removed.');
     }
     console.log('✅ Uninstallation complete. Safe deletion applied.');
   }
@@ -195,14 +195,8 @@ async function main() {
   if (!['c', 'claude', 'b', 'both', 'a', 'antigravity', 'u', 'uninstall'].includes(choice)) {
     console.log('Skipping configuration.');
   } else {
-    console.log('\nSetup complete!');
+    console.log('\n✨ Setup complete! Restart your AI assistant for changes to take effect.');
   }
-  
-  console.log('---------------------------------------------------------');
-  console.log('💡 Note: amiga-ia is also available natively as a Plugin.');
-  console.log('For Antigravity: agy plugin install https://github.com/AnaCataVC/amiga-ia');
-  console.log('For Claude Code: /plugin marketplace add AnaCataVC/amiga-ia');
-  console.log('---------------------------------------------------------\n');
   
   rl.close();
 }
