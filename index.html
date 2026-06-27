@@ -56,9 +56,9 @@
                 <span class="text-sm text-slate-300" data-i18n-en="v2.4.0 Available Now" data-i18n-es="v2.4.0 Disponible Ahora">v2.4.0 Available Now</span>
             </div>
             
-            <h1 class="text-5xl sm:text-6xl md:text-7xl font-extrabold text-white tracking-tight mb-8 leading-tight">
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-purple to-brand-orange font-bold block mb-2" data-i18n-en="Elevate" data-i18n-es="Eleva">Elevate</span>
-                <span data-i18n-en="your AI coding sessions." data-i18n-es="tus sesiones de coding con IA.">your AI coding sessions.</span>
+            <h1 class="text-5xl sm:text-6xl md:text-7xl font-extrabold text-white tracking-tight mb-8 leading-[1.2]">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-purple to-brand-orange font-bold block mb-2 pb-1 sm:pb-3" data-i18n-en="AmigaIA helps you" data-i18n-es="AmigaIA te ayuda">AmigaIA helps you</span>
+                <span class="pb-1 sm:pb-3 block" data-i18n-en="in every step of your coding process" data-i18n-es="en cada paso de tu proceso de desarrollo.">in every step of your coding process.</span>
             </h1>
             
             <p class="text-lg sm:text-xl text-slate-400 leading-relaxed mb-10 max-w-2xl mx-auto">
@@ -157,14 +157,31 @@
                 <span data-i18n-en="Declarative Skills" data-i18n-es="Skills Declarativas">Declarative Skills</span>
             </h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
-                <div class="bg-white/5 border border-white/10 rounded-xl p-5 hover:bg-white/10 transition-colors">
+                <!-- TOP CHOICE 1: ami-commit-planner -->
+                <div class="bg-gradient-to-br from-brand-orange/15 via-brand-purple/5 to-slate-900/40 border border-brand-orange/30 rounded-xl p-5 hover:bg-brand-orange/20 transition-all shadow-lg shadow-brand-orange/5 relative overflow-hidden">
+                    <span class="absolute top-2 right-2 text-[9px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-brand-orange text-white" data-i18n-en="Top Choice" data-i18n-es="Destacada">Top Choice</span>
                     <h4 class="text-brand-orange font-mono text-sm mb-2">ami-commit-planner</h4>
                     <p class="text-slate-400 text-xs leading-relaxed" data-i18n-en="Analyzes uncommitted work and proposes a structured set of conventional commits." data-i18n-es="Analiza trabajo sin commitear y propone un conjunto estructurado de commits convencionales.">Analyzes uncommitted work and proposes a structured set of conventional commits.</p>
                 </div>
-                <div class="bg-white/5 border border-white/10 rounded-xl p-5 hover:bg-white/10 transition-colors">
+                <!-- TOP CHOICE 2: ami-quality-auditor -->
+                <div class="bg-gradient-to-br from-brand-orange/15 via-brand-purple/5 to-slate-900/40 border border-brand-orange/30 rounded-xl p-5 hover:bg-brand-orange/20 transition-all shadow-lg shadow-brand-orange/5 relative overflow-hidden">
+                    <span class="absolute top-2 right-2 text-[9px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-brand-orange text-white" data-i18n-en="Top Choice" data-i18n-es="Destacada">Top Choice</span>
+                    <h4 class="text-brand-orange font-mono text-sm mb-2">ami-quality-auditor</h4>
+                    <p class="text-slate-400 text-xs leading-relaxed" data-i18n-en="Performs a deep code quality, security, and structure audit prior to a PR." data-i18n-es="Realiza una auditoría profunda de calidad, seguridad y estructura previo a un PR.">Performs a deep code quality, security, and structure audit prior to a PR.</p>
+                </div>
+                <!-- TOP CHOICE 3: ami-tech-debt-scanner -->
+                <div class="bg-gradient-to-br from-brand-orange/15 via-brand-purple/5 to-slate-900/40 border border-brand-orange/30 rounded-xl p-5 hover:bg-brand-orange/20 transition-all shadow-lg shadow-brand-orange/5 relative overflow-hidden">
+                    <span class="absolute top-2 right-2 text-[9px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-brand-orange text-white" data-i18n-en="Top Choice" data-i18n-es="Destacada">Top Choice</span>
+                    <h4 class="text-brand-orange font-mono text-sm mb-2">ami-tech-debt-scanner</h4>
+                    <p class="text-slate-400 text-xs leading-relaxed" data-i18n-en="Scans the repository for technical debt, outdated dependencies, and dead code." data-i18n-es="Escanea el repositorio en busca de deuda técnica, dependencias antiguas y código muerto.">Scans the repository for technical debt, outdated dependencies, and dead code.</p>
+                </div>
+                <!-- TOP CHOICE 4: ami-context-researcher -->
+                <div class="bg-gradient-to-br from-brand-orange/15 via-brand-purple/5 to-slate-900/40 border border-brand-orange/30 rounded-xl p-5 hover:bg-brand-orange/20 transition-all shadow-lg shadow-brand-orange/5 relative overflow-hidden">
+                    <span class="absolute top-2 right-2 text-[9px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-brand-orange text-white" data-i18n-en="Top Choice" data-i18n-es="Destacada">Top Choice</span>
                     <h4 class="text-brand-orange font-mono text-sm mb-2">ami-context-researcher</h4>
                     <p class="text-slate-400 text-xs leading-relaxed" data-i18n-en="Actively researches external documentation and saves findings to prevent context loss." data-i18n-es="Investiga documentación externa activamente y guarda los hallazgos para prevenir pérdida de contexto.">Actively researches external documentation and saves findings to prevent context loss.</p>
                 </div>
+                <!-- Other skills -->
                 <div class="bg-white/5 border border-white/10 rounded-xl p-5 hover:bg-white/10 transition-colors">
                     <h4 class="text-brand-orange font-mono text-sm mb-2">ami-data-validator</h4>
                     <p class="text-slate-400 text-xs leading-relaxed" data-i18n-en="Validates structural consistency between code changes and database schemas." data-i18n-es="Valida consistencia estructural entre cambios de código y esquemas de base de datos.">Validates structural consistency between code changes and database schemas.</p>
@@ -214,10 +231,6 @@
                     <p class="text-slate-400 text-xs leading-relaxed" data-i18n-en="Interactively scaffolds the initial architecture, stack, and folders of a new project." data-i18n-es="Construye interactivamente la arquitectura inicial, stack y carpetas de un proyecto nuevo.">Interactively scaffolds the initial architecture, stack, and folders of a new project.</p>
                 </div>
                 <div class="bg-white/5 border border-white/10 rounded-xl p-5 hover:bg-white/10 transition-colors">
-                    <h4 class="text-brand-orange font-mono text-sm mb-2">ami-quality-auditor</h4>
-                    <p class="text-slate-400 text-xs leading-relaxed" data-i18n-en="Performs a deep code quality, security, and structure audit prior to a PR." data-i18n-es="Realiza una auditoría profunda de calidad, seguridad y estructura previo a un PR.">Performs a deep code quality, security, and structure audit prior to a PR.</p>
-                </div>
-                <div class="bg-white/5 border border-white/10 rounded-xl p-5 hover:bg-white/10 transition-colors">
                     <h4 class="text-brand-orange font-mono text-sm mb-2">ami-quick-reviewer</h4>
                     <p class="text-slate-400 text-xs leading-relaxed" data-i18n-en="Static analysis of modified files before a commit to ensure English-only rules." data-i18n-es="Análisis estático de archivos antes de commitear asegurando reglas como inglés-estricto.">Static analysis of modified files before a commit to ensure English-only rules.</p>
                 </div>
@@ -230,10 +243,6 @@
                     <p class="text-slate-400 text-xs leading-relaxed" data-i18n-en="Summarizes the current AI session using internal memory and saves it as a structured Markdown report." data-i18n-es="Resume la sesión de IA actual usando memoria interna y la guarda como reporte Markdown.">Summarizes the current AI session using internal memory and saves it as a structured Markdown report.</p>
                 </div>
                 <div class="bg-white/5 border border-white/10 rounded-xl p-5 hover:bg-white/10 transition-colors">
-                    <h4 class="text-brand-orange font-mono text-sm mb-2">ami-tech-debt-scanner</h4>
-                    <p class="text-slate-400 text-xs leading-relaxed" data-i18n-en="Scans the repository for technical debt, outdated dependencies, and dead code." data-i18n-es="Escanea el repositorio en busca de deuda técnica, dependencias antiguas y código muerto.">Scans the repository for technical debt, outdated dependencies, and dead code.</p>
-                </div>
-                <div class="bg-white/5 border border-white/10 rounded-xl p-5 hover:bg-white/10 transition-colors">
                     <h4 class="text-brand-orange font-mono text-sm mb-2">ami-test-creator</h4>
                     <p class="text-slate-400 text-xs leading-relaxed" data-i18n-en="Automatically generates unit tests for modified code if none exist." data-i18n-es="Genera automáticamente pruebas unitarias para código modificado si no existen.">Automatically generates unit tests for modified code if none exist.</p>
                 </div>
@@ -241,7 +250,6 @@
                     <h4 class="text-brand-orange font-mono text-sm mb-2">ami-test-runner</h4>
                     <p class="text-slate-400 text-xs leading-relaxed" data-i18n-en="Finds and executes the local test suite to ensure no regressions before a PR." data-i18n-es="Encuentra y ejecuta la suite de pruebas local para evitar regresiones antes de un PR.">Finds and executes the local test suite to ensure no regressions before a PR.</p>
                 </div>
-
             </div>
 
             <!-- Category: Hooks -->
