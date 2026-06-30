@@ -33,7 +33,7 @@ params:
 
 5. **Execute Actions:**
    - **Apply Changes:** Modify the local files to apply the approved code suggestions and fixes.
-   - **Draft & Submit Replies:** Draft replies based on the applied fixes and the user's answers. If requested, present the drafts for review, or submit them directly using the GitHub CLI/API.
+   - **Draft & Submit Replies:** Draft replies based on the applied fixes and the user's answers. Present the drafts for review, making sure they are in the same language and tone used in the original comments. If the user approves the drafts, submit them directly using the GitHub CLI/API.
    - **Track Progress:** Check off items from the action plan as they are completed.
 
 ---
