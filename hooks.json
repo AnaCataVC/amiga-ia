@@ -38,7 +38,7 @@
           {
             "type": "command",
             "shell": "bash",
-            "command": "cmd=$(jq -r '.tool_input.command // empty'); if echo \"$cmd\" | grep -qE 'gh[[:space:]]+pr[[:space:]]+create'; then echo 'Code review required. Run pr-publisher agent first.' >&2; exit 2; fi"
+            "command": "cmd=$(jq -r '.tool_input.command // empty'); if echo \"$cmd\" | grep -qE 'gh[[:space:]]+pr[[:space:]]+create'; then echo 'Conflict check and code review required. Please run the ami-pr-conflict-detector skill or the ami-pr-publisher agent first.' >&2; exit 2; fi"
           }
         ]
       }

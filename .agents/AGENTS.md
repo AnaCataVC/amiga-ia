@@ -11,6 +11,7 @@ This file serves as context reference for Antigravity (Gemini) when operating in
 6. **Version Control (UI):** The version in `package.json` is updated automatically via GitHub Actions when making a Release. Therefore, before the user publishes a new Release, the AI MUST proactively update the version badge on the product page (`index.html`) with the target version manually (e.g., changing from v1.3.1 to v2.0.0).
 7. **Git Push Strategy:** Since GitHub Actions generates automatic commits (e.g., `package.json` updates post-release), if a `git push` is rejected, the AI MUST resolve it by executing `git pull --rebase` to cleanly integrate remote changes before attempting to push again.
 8. **NPM Package Stability:** Before making architectural changes (like moving hooks or modifying plugin metadata), ALWAYS verify that the changes do not break the NPM installation method (e.g., check `bin/setup.js`, `.gitignore`, and `package.json`).
+9. **PR Verification:** Before creating a Pull Request or proposing its creation, the AI MUST run the `ami-pr-conflict-detector` skill (or suggest it to the user) to identify potential conflicts with other open PRs.
 
 ## Declarative AI Environment Architecture (Agent Skills)
 This repository has evolved into an ecosystem of **Skills and Agents in Markdown with XML Lazy Loading**, following the Agent Skills standard. This ensures universal portability and extreme token efficiency for Antigravity and Claude.
