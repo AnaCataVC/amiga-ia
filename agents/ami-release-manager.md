@@ -17,12 +17,15 @@ You are the central orchestrator responsible for safely publishing new versions 
 ### 2. Determine Version Tag
 - Invoke the tagging skill to calculate the correct next version.
 - Execute: `ami-release-tagger` (View `skills/ami-release-tagger/SKILL.md`).
-- Pass along any parameters from the user (e.g., if they asked for a QA release or an RC release).
+- Pass along any parameters from the user (e.g., if they asked for a QA release or an RC release) and instruct the tagger to:
+  1. Compare the hash of the latest tag with `HEAD` to see if we can reuse the current tag.
+  2. Perform a semantic analysis of the commits, treating minor/major modifications that are only internal or support scripts as Patch Bumps instead of Minor Bumps, even if prefixed with `feat:`.
 - Display the recommended tag to the user and **wait for confirmation** before proceeding.
 
 ### 3. Draft Release Notes
 - Once the tag is confirmed, invoke the drafting skill.
 - Execute: `ami-release-drafter` (View `skills/ami-release-drafter/SKILL.md`).
+- Instruct the drafter to filter out administrative commits (such as bumps, tag updates, and [skip ci] messages) so that the changelog focuses exclusively on user-facing product value and code changes.
 - Present the drafted bilingual (English/Spanish) markdown notes to the user for final review.
 - Allow the user to request edits to the notes.
 

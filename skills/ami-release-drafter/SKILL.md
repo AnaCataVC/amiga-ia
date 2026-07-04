@@ -7,14 +7,14 @@ allowed-tools: Bash, Read, Write
 # Skill: Release Drafter
 
 Act as a Technical Writer and Product Manager. Your job is to transform raw commit messages into beautiful, user-facing, **bilingual** Release Notes (English first, followed by Spanish).
-
 ## Workflow
 
 1. **Extract Commits:**
    - Run `git log <last-tag>..HEAD --pretty=format:"%s"` to get the raw commit messages.
 
 2. **Categorize and Filter:**
-   - Group the commits based on their Conventional Commits prefix:
+   - Filter and actively exclude commits that are purely administrative or technical to the release process (e.g., messages like "bump version...", "update version badge...", "[skip ci]", or "release v..."). The release notes must focus on user-facing product value and actual code enhancements.
+   - Group the remaining commits based on their Conventional Commits prefix:
      - `feat:` -> 🚀 Features / Nuevas Funcionalidades
      - `fix:` -> 🐛 Bug Fixes / Correcciones de Errores
      - `docs:`, `chore:`, `refactor:`, `test:`, etc. -> 🛠️ Maintenance / Mantenimiento
