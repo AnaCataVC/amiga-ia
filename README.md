@@ -46,7 +46,7 @@ amiga-ia/
 All skills are defined as declarative directories containing a `SKILL.md` file. The adapter scans these directories, extracts the YAML frontmatter, and provides the LLM with an XML index (`<available_skills>`). When the agent decides to use a skill, it reads the Markdown file natively to understand the instructions.
 ```yaml
 ---
-name: ami-quick-reviewer
+
 description: Reviews the code for logic errors.
 ---
 1. Read the files.
@@ -58,7 +58,7 @@ Agents are defined in `.md` files containing the persona and instructions.
 ```markdown
 # ami-commit-assistant
 You are an agent designed to create commits.
-Use the `ami-quick-reviewer` skill if necessary.
+
 ```
 
 ### 4. Included Skills & Agents
@@ -87,13 +87,13 @@ All built-in tools use the mandatory **`ami-`** prefix to ensure safe namespacin
 | Skill | **ami-pr-self-reviewer** | Acts as a critical self-reviewer for your own Pull Requests and suggests code fixes. |
 | Skill | **ami-project-architect** | Interactively sets up the initial architecture and structure of a new project. |
 | Skill | **ami-quality-auditor** | Performs a deep code quality, security, and structure audit on modified files. |
-| Skill | **ami-quick-reviewer** | Performs a static analysis of modified or untracked files before a commit. |
+
 | Skill | **ami-release-drafter** | Analyzes git commits to automatically draft bilingual release notes. |
 | Skill | **ami-release-tagger** | Analyzes git commits since the last tag and determines the next semantic version. |
-| Skill | **ami-session-summarizer** | Summarizes AI coding sessions into structured Markdown reports saved to `docs/coding-sessions/`. |
+
 | Skill | **ami-tech-debt-scanner** | Analyzes the repository for technical debt, including outdated dependencies and dead code. |
 | Skill | **ami-test-creator** | Automatically generates tests for modified code if no existing tests cover the changes. |
-| Skill | **ami-test-runner** | Finds and executes the test suite for the current project to ensure no regressions. |
+
 
 ### 5. Installation & Usage
 You can install this repository using NPM or directly as a native plugin for your CLI. Both methods work perfectly and allow you to invoke the skills.
@@ -168,7 +168,7 @@ amiga-ia/
 Todas las skills se definen como carpetas con un archivo `SKILL.md`. El adaptador lee el YAML frontmatter y le presenta a la IA un catálogo XML (`<available_skills>`). La IA usa *Lazy Loading* (carga diferida) para leer el archivo solo cuando necesita usar la habilidad.
 ```yaml
 ---
-name: ami-quick-reviewer
+
 description: Reviews the code for logic errors.
 ---
 1. Read the files.
@@ -208,13 +208,10 @@ Todas las herramientas incluidas utilizan el prefijo obligatorio **`ami-`** para
 | Skill | **ami-pr-self-reviewer** | Actúa como un auto-revisor crítico para tus propios Pull Requests y sugiere arreglos de código. |
 | Skill | **ami-project-architect** | Configura interactivamente la arquitectura y estructura inicial de un proyecto nuevo. |
 | Skill | **ami-quality-auditor** | Realiza una auditoría profunda de calidad, seguridad y estructura del código en archivos modificados. |
-| Skill | **ami-quick-reviewer** | Realiza un análisis estático de los archivos modificados antes de un commit. |
 | Skill | **ami-release-drafter** | Analiza los commits de git para redactar automáticamente notas de lanzamiento bilingües. |
 | Skill | **ami-release-tagger** | Analiza los commits desde el último tag y determina la siguiente versión semántica. |
-| Skill | **ami-session-summarizer** | Resume sesiones de IA en reportes Markdown estructurados guardados en `docs/coding-sessions/`. |
 | Skill | **ami-tech-debt-scanner** | Analiza el repositorio en busca de deuda técnica, incluyendo dependencias obsoletas y código muerto. |
 | Skill | **ami-test-creator** | Genera automáticamente pruebas para el código modificado si no existen pruebas previas. |
-| Skill | **ami-test-runner** | Encuentra y ejecuta el conjunto de pruebas del proyecto actual para asegurar que no haya regresiones. |
 
 ### 5. Instalación y Uso
 Puedes instalar este repositorio usando NPM o directamente como un plugin nativo para tu CLI. Ambos métodos funcionan perfectamente y te permiten usar las skills con normalidad.
