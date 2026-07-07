@@ -17,7 +17,7 @@ Follow these instructions to review the project's libraries and dependencies:
    - **Duplication/Overlap:** Identify if multiple libraries are being used for the same purpose (e.g., using both `axios` and `fetch`, or `lodash` and native array methods).
 
 3. **Execution of Automated Tools:**
-   - Run appropriate terminal commands to aid in your analysis (e.g., `npm outdated`, `npm audit`, `pip check`, etc.) based on the ecosystem.
+   - Run appropriate terminal commands to aid in your analysis (e.g., `npm outdated`, `npm audit` for Node.js, `pip-audit`, `pip check` for Python, or equivalent) based on the ecosystem.
 
 4. **Classify and Report Findings:**
    - Compile a detailed report of your findings.

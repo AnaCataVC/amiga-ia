@@ -2,8 +2,10 @@
 name: ami-expert-council
 description: Spawns a council of specialized subagents tailored to discuss, debate, and refine a user's idea or proposed change from multiple perspectives.
 allowed-tools:
-  - SubagentCreation
-  - AgentCommunication
+  - Agent
+  - define_subagent
+  - invoke_subagent
+  - send_message
 ---
 
 # Instructions for ami-expert-council
@@ -23,7 +25,7 @@ This skill helps you create a specialized panel of subagents to thoroughly discu
 
 3. **Instantiate the Subagents:**
    - Inform the user that you are assembling a council of experts (list their roles) to discuss the idea.
-   - Using your native environment capabilities (whether API tools or configuration files), create a distinct subagent for each expert role you identified.
+   - Using your environment's native agent or messaging tools (e.g., `Agent` tool for Claude, or `define_subagent`/`invoke_subagent`/`send_message` for Antigravity), spawn a distinct subagent for each expert role you identified.
    - For each subagent, provide a detailed system prompt instructing them to critically evaluate the user's idea from their specific domain's perspective, identify potential pitfalls, and debate with the other experts. Emphasize that they should respond concisely and stay in character.
    - Ensure these subagents are restricted to discussion only (disable their write/execute permissions).
 

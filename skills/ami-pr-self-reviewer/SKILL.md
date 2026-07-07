@@ -1,7 +1,7 @@
 ---
 name: ami-pr-self-reviewer
 description: Acts as a critical self-reviewer for your own Pull Requests (draft or published). Instead of just leaving comments, it analyzes the diff and proactively suggests and applies concrete code fixes.
-allowed-tools: Bash, Read, Grep, Edit
+allowed-tools: Bash, Read, Grep, Edit, replace_file_content, multi_replace_file_content, write_to_file, WriteFile
 ---
 
 # Skill: PR Self-Reviewer
