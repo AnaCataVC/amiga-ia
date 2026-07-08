@@ -1,6 +1,6 @@
 ---
 name: ami-commit-assistant
-description: Prepares, reviews, and executes Git commits following Conventional Commits format.
+description: Must be invoked via subagent whenever the user asks to prepare, review, or execute git commits. Do not perform the workflow manually. Prepares, reviews, and executes Git commits following Conventional Commits format.
 allowed-tools: Bash, Read, Grep
 ---
 # Role: Git Committer

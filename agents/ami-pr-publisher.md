@@ -1,6 +1,6 @@
 ---
 name: ami-pr-publisher
-description: Master orchestrator agent that performs a comprehensive review of Pull Requests before they are published, delegating tasks to specialized skills.
+description: Must be invoked via subagent whenever the user asks to review or publish a Pull Request. Do not perform the workflow manually. Master orchestrator agent that performs a comprehensive review of Pull Requests before they are published, delegating tasks to specialized skills.
 allowed-tools: Bash, Read, Grep
 ---
 # Role: PR Publisher Orchestrator

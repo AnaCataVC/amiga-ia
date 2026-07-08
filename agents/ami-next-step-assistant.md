@@ -1,6 +1,6 @@
 ---
 name: ami-next-step-assistant
-description: Acts as a project guide by analyzing the repository and recommending the most critical next step. It checks code quality, technical debt, tests, and documentation, in that priority order. If everything is healthy, it proposes new features or improvements.
+description: Must be invoked via subagent whenever the user asks for the next task, what to do next, or a project guide. Do not perform the workflow manually. Acts as a project guide by analyzing the repository and recommending the most critical next step. It checks code quality, technical debt, tests, and documentation, in that priority order. If everything is healthy, it proposes new features or improvements.
 allowed-tools: Bash, Read, Grep
 ---
 
