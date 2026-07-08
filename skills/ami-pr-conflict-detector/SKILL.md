@@ -1,6 +1,6 @@
 ---
 name: ami-pr-conflict-detector
-description: Conflict checker that should be run before proposing or generating any Pull Request to identify overlapping changes and merge conflicts.
+description: Must be triggered before creating or proposing any Pull Request. Identifies overlapping changes and merge conflicts with other open PRs.
 allowed-tools: Bash, Read, Grep
 ---
 

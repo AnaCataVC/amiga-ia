@@ -1,6 +1,6 @@
 ---
 name: ami-test-creator
-description: Automatically generates tests for modified code if no existing tests cover the changes.
+description: Must be triggered when new functionality is added and no existing tests cover the changes. Automatically generates tests for modified code.
 allowed-tools: Bash, Read, Grep, Edit, Write
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: ami-docs-updater
-description: Identifies if codebase documentation exists and updates it to reflect code changes.
+description: Must be triggered when code changes affect documented APIs, interfaces, or public behavior. Identifies if codebase documentation exists and updates it to reflect the changes.
 allowed-tools: Bash, Read, Grep, Edit, Write
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: ami-release-drafter
-description: Analyzes git commits to automatically draft comprehensive bilingual release notes (English and Spanish) grouped by feature, bug fix, and maintenance.
+description: Must be triggered before publishing any GitHub release. Analyzes git commits to automatically draft comprehensive bilingual release notes (English and Spanish) grouped by feature, bug fix, and maintenance.
 allowed-tools: Bash, Read, Write
 ---
 

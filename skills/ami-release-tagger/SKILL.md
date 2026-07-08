@@ -1,6 +1,6 @@
 ---
 name: ami-release-tagger
-description: Analyzes git commits since the last tag and determines the next semantic version. Handles stable, QA, and RC tags.
+description: Must be triggered before any release or version bump. Analyzes git commits since the last tag and determines the next semantic version. Handles stable, QA, and RC tags.
 allowed-tools: Bash, Read
 ---
 

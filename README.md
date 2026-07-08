@@ -77,22 +77,22 @@ All built-in tools use the mandatory **`ami-`** prefix to ensure safe namespacin
 | Skill | **ami-data-validator** | Validates structural consistency between code changes and data definitions. |
 | Skill | **ami-dependency-analyzer** | Analyzes the project's libraries and dependencies for unused, outdated, or undeclared packages. |
 | Skill | **ami-doc-architect** | Helps generate project documentation from scratch or adapts to existing styles. |
-| Skill | **ami-docs-updater** | Identifies if codebase documentation exists and updates it to reflect code changes. |
+| Skill | **ami-docs-updater** | Auto-triggered when code changes affect documented APIs or interfaces. Updates all relevant documentation to stay in sync. |
 | Skill | **ami-expert-council** | Spawns a council of specialized subagents tailored to discuss, debate, and refine a user's idea from multiple perspectives. |
 | Skill | **ami-learnings-extractor** | Analyzes recent code changes to extract architectural decisions, lessons, and patterns. |
 | Skill | **ami-methodical-debugger** | Performs an organized debugging process, systematically isolating the root cause without assumptions. |
 | Skill | **ami-pr-comment-analyzer** | Analyzes code review comments left by other developers on an active Pull Request. |
-| Skill | **ami-pr-conflict-detector** | Analyzes other open Pull Requests to alert if there are parallel PRs that might conflict. |
+| Skill | **ami-pr-conflict-detector** | Auto-triggered before any Pull Request. Identifies overlapping changes and merge conflicts with other open PRs. |
 | Skill | **ami-pr-peer-reviewer** | Assists in reviewing Pull Requests from other people. |
 | Skill | **ami-pr-self-reviewer** | Acts as a critical self-reviewer for your own Pull Requests and suggests code fixes. |
 | Skill | **ami-project-architect** | Interactively sets up the initial architecture and structure of a new project. |
 | Skill | **ami-quality-auditor** | Performs a deep code quality, security, and structure audit on modified files. |
 
-| Skill | **ami-release-drafter** | Analyzes git commits to automatically draft bilingual release notes. |
-| Skill | **ami-release-tagger** | Analyzes git commits since the last tag and determines the next semantic version. |
+| Skill | **ami-release-drafter** | Auto-triggered before any GitHub release. Drafts comprehensive bilingual release notes grouped by feature, fix, and maintenance. |
+| Skill | **ami-release-tagger** | Auto-triggered before any release or version bump. Determines the correct next semantic version from commits. |
 
 | Skill | **ami-tech-debt-scanner** | Analyzes the repository for technical debt, including outdated dependencies and dead code. |
-| Skill | **ami-test-creator** | Automatically generates tests for modified code if no existing tests cover the changes. |
+| Skill | **ami-test-creator** | Auto-triggered when new functionality is added without existing test coverage. Generates tests for the modified code. |
 
 
 ### 5. Installation & Usage
@@ -198,20 +198,20 @@ Todas las herramientas incluidas utilizan el prefijo obligatorio **`ami-`** para
 | Skill | **ami-data-validator** | Valida la consistencia estructural entre los cambios de código y las definiciones de datos. |
 | Skill | **ami-dependency-analyzer** | Analiza las librerías y dependencias del proyecto buscando paquetes sin usar, desactualizados o no declarados. |
 | Skill | **ami-doc-architect** | Ayuda a generar documentación del proyecto desde cero o se adapta a estilos existentes. |
-| Skill | **ami-docs-updater** | Identifica si existe documentación del código y la actualiza para reflejar los cambios. |
+| Skill | **ami-docs-updater** | Se activa automáticamente cuando cambios en el código afectan APIs o interfaces documentadas. Mantiene la documentación sincronizada. |
 | Skill | **ami-expert-council** | Crea un panel de subagentes especializados para debatir y refinar ideas desde múltiples perspectivas. |
 | Skill | **ami-learnings-extractor** | Analiza los cambios de código recientes para extraer decisiones arquitectónicas, lecciones y patrones. |
 | Skill | **ami-methodical-debugger** | Realiza un proceso de depuración organizado, aislando sistemáticamente la causa raíz sin suposiciones. |
 | Skill | **ami-pr-comment-analyzer** | Analiza los comentarios de revisión de código dejados por otros desarrolladores en un PR activo. |
-| Skill | **ami-pr-conflict-detector** | Analiza otros Pull Requests abiertos para alertar si hay conflictos paralelos. |
+| Skill | **ami-pr-conflict-detector** | Se activa automáticamente antes de cualquier Pull Request. Identifica cambios superpuestos y conflictos de merge. |
 | Skill | **ami-pr-peer-reviewer** | Ayuda a revisar los Pull Requests de otras personas. |
 | Skill | **ami-pr-self-reviewer** | Actúa como un auto-revisor crítico para tus propios Pull Requests y sugiere arreglos de código. |
 | Skill | **ami-project-architect** | Configura interactivamente la arquitectura y estructura inicial de un proyecto nuevo. |
 | Skill | **ami-quality-auditor** | Realiza una auditoría profunda de calidad, seguridad y estructura del código en archivos modificados. |
-| Skill | **ami-release-drafter** | Analiza los commits de git para redactar automáticamente notas de lanzamiento bilingües. |
-| Skill | **ami-release-tagger** | Analiza los commits desde el último tag y determina la siguiente versión semántica. |
+| Skill | **ami-release-drafter** | Se activa automáticamente antes de cualquier release de GitHub. Redacta notas de lanzamiento bilingües agrupadas por tipo. |
+| Skill | **ami-release-tagger** | Se activa automáticamente antes de cualquier release o bump de versión. Determina la siguiente versión semántica correcta. |
 | Skill | **ami-tech-debt-scanner** | Analiza el repositorio en busca de deuda técnica, incluyendo dependencias obsoletas y código muerto. |
-| Skill | **ami-test-creator** | Genera automáticamente pruebas para el código modificado si no existen pruebas previas. |
+| Skill | **ami-test-creator** | Se activa automáticamente cuando se añade nueva funcionalidad sin cobertura de pruebas existente. |
 
 ### 5. Instalación y Uso
 Puedes instalar este repositorio usando NPM o directamente como un plugin nativo para tu CLI. Ambos métodos funcionan perfectamente y te permiten usar las skills con normalidad.
