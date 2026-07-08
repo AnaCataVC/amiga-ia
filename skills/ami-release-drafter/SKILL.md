@@ -10,6 +10,7 @@ Act as a Technical Writer and Product Manager. Your job is to transform raw comm
 ## Workflow
 
 1. **Extract Commits:**
+   - Run `git fetch` to ensure the local repository has all the latest commits and tags from the remote.
    - Run `git log <last-tag>..HEAD --pretty=format:"%s"` to get the raw commit messages.
 
 2. **Categorize and Filter:**

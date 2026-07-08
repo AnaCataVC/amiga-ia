@@ -11,6 +11,7 @@ When invoked, act as a Repository Coordinator to identify potential conflicts wi
 ## Workflow
 
 1. **Fetch Open PRs:**
+   - Run `git fetch` to ensure remote tracking branches and tags are updated locally.
    - Use GitHub CLI (e.g., `gh pr list --state open`) or git commands to identify other open Pull Requests.
 
 2. **Analyze File Overlaps:**

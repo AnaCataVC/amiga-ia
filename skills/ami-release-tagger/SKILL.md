@@ -11,7 +11,8 @@ Act as a Version Control Manager. Your job is to determine the next correct vers
 ## Workflow
 
 1. **Find the Last Tag and Tagging System:**
-   - First, check if the workspace uses a specific tagging rule (e.g., tags with the `QA-YYYYMMDD-NN` format). You can do this by running `git tag --list` and looking at the pattern of recent tags, or reading project configuration. Do NOT blindly propose SemVer (`vX.Y.Z`) if the project strictly enforces a date-based QA tag format.
+   - First, run `git fetch` to ensure the local repository has all the latest commits and tags from the remote.
+   - Check if the workspace uses a specific tagging rule (e.g., tags with the `QA-YYYYMMDD-NN` format). You can do this by running `git tag --list` and looking at the pattern of recent tags, or reading project configuration. Do NOT blindly propose SemVer (`vX.Y.Z`) if the project strictly enforces a date-based QA tag format.
    - Run `git describe --tags --abbrev=0` to find the latest tag. If no tag exists, assume the baseline is `v0.0.0`.
    - Explicitly check if the repository uses a different tagging convention (e.g., tags without the `v` prefix like `1.2.3`, or prefixed with package names like `backend-v1.0.0`).
    - If a different system is found, adapt to it. Otherwise, use the standard `vX.Y.Z` defined here.

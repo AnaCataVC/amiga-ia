@@ -12,7 +12,9 @@ You are an assistant triggered before a `git push` operation. Your goal is to en
 When asked to validate a push, follow this exact sequence:
 
 ### 1. Check Uncommitted Changes
+- Run `git fetch` to ensure the local tracking state matches the remote.
 - Run `git status` to see if there are any uncommitted changes.
+- Check if the local branch is behind the remote tracking branch. If it is behind, warn the user and advise them to run `git pull --rebase` first, then halt.
 - If there are modified, added, or deleted files that have not been committed, you MUST invoke the commit agent first.
 - Execute: `ami-commit-assistant` (View `agents/ami-commit-assistant.md`).
 - Wait for the ami-commit-assistant to finish committing the changes before proceeding.
