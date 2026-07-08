@@ -91,7 +91,7 @@ All built-in tools use the mandatory **`ami-`** prefix to ensure safe namespacin
 | Skill | **ami-release-drafter** | Auto-triggered before any GitHub release. Drafts comprehensive bilingual release notes grouped by feature, fix, and maintenance. |
 | Skill | **ami-release-tagger** | Auto-triggered before any release or version bump. Determines the correct next semantic version from commits. |
 
-| Skill | **ami-tech-debt-scanner** | Analyzes the repository for technical debt, including outdated dependencies and dead code. |
+| Skill | **ami-tech-debt-scanner** | Analyzes the repository for technical debt, including outdated dependencies, dead code, and pending comments (TODOs/FIXMEs). |
 | Skill | **ami-test-creator** | Auto-triggered when new functionality is added without existing test coverage. Generates tests for the modified code. |
 
 
@@ -210,7 +210,7 @@ Todas las herramientas incluidas utilizan el prefijo obligatorio **`ami-`** para
 | Skill | **ami-quality-auditor** | Realiza una auditoría profunda de calidad, seguridad y estructura del código en archivos modificados. |
 | Skill | **ami-release-drafter** | Se activa automáticamente antes de cualquier release de GitHub. Redacta notas de lanzamiento bilingües agrupadas por tipo. |
 | Skill | **ami-release-tagger** | Se activa automáticamente antes de cualquier release o bump de versión. Determina la siguiente versión semántica correcta. |
-| Skill | **ami-tech-debt-scanner** | Analiza el repositorio en busca de deuda técnica, incluyendo dependencias obsoletas y código muerto. |
+| Skill | **ami-tech-debt-scanner** | Analiza el repositorio en busca de deuda técnica, incluyendo dependencias obsoletas, código muerto y comentarios pendientes (TODOs/FIXMEs). |
 | Skill | **ami-test-creator** | Se activa automáticamente cuando se añade nueva funcionalidad sin cobertura de pruebas existente. |
 
 ### 5. Instalación y Uso

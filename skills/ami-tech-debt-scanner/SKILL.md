@@ -18,11 +18,13 @@ Follow these instructions to scan a repository for technical debt:
      - **Dead code:** Unused variables, functions, components, or files.
      - **Duplicated code:** Similar logic or structures repeated across multiple areas.
      - **Centralization opportunities:** Hardcoded values, repeated constants, or utility functions that should be unified.
+     - **Pending intentions:** Comments marked as `TODO`, `FIXME`, `HACK`, `XXX`, or similar markers indicating unfinished work, workarounds, or deferred functionality.
      - **Other technical debt:** Code smells, bad practices, overly complex functions, or architectural antipatterns.
 
 4. **Classify and Report Findings:**
    - If no technical debt is found during your audit, you MUST simply output **"NO TECH DEBT FOUND"**. Do not list anything, and do not proceed to step 5.
-   - If technical debt is found, compile all findings into a structured list.
+   - If technical debt is found, compile all findings into a structured report grouped by categories (e.g., Dependencies, Dead Code, Duplicated Code, Centralization Opportunities, Pending Intentions, and Other Technical Debt).
+   - Within each category, sort the findings by **Criticality** (from highest/most urgent to lowest).
    - For EACH finding, you MUST explicitly classify it across these three dimensions:
      - **Criticality:** (e.g., `[HIGH]`, `[MEDIUM]`, `[LOW]`)
      - **Ease of Resolution:** (e.g., `[EASY]`, `[MODERATE]`, `[HARD]`)
