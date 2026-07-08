@@ -30,8 +30,10 @@ You are the central orchestrator responsible for safely publishing new versions 
 - Allow the user to request edits to the notes.
 
 ### 4. Update Version Files (Universal)
+- Check if there is an active CI/CD workflow (e.g., under `.github/workflows/` or other pipeline configurations) that automatically bumps package manager files (such as `package.json`, `cargo.toml`, `pyproject.toml`, etc.) upon release publication or commit.
+- If such an automation exists, you MUST NOT modify or commit those automated package manager/lock files locally. Instead, let the automated pipeline handle them.
 - Before creating the release, actively search the repository for configuration files (e.g., `package.json`, `plugin.json`, `manifest.json`) or product pages/documentation (e.g., `index.html`, `README.md`) that might contain the current version string.
-- If you find the old version hardcoded in these files, update them to match the new `<Confirm_Tag>` (without the `v` prefix if appropriate for the file).
+- If you find the old version hardcoded in these files, update them to match the new `<Confirm_Tag>` (without the `v` prefix if appropriate for the file), respecting the CI/CD rule above (e.g., only modify and commit files not handled by the automated pipeline, such as custom manifest files like `plugin.json` or HTML/Markdown documentation).
 - Create a single commit for these version bumps (e.g., `chore: bump version to <Confirm_Tag> [skip ci]`) and push it to the remote repository.
 
 ### 5. Create and Publish the Release
