@@ -3,6 +3,9 @@
 
 # Claude Code and Subagents Compatibility
 
+> [!IMPORTANT]
+> **Update (2026-07):** Claude Code now natively supports the `Agent` tool for spawning subagents (up to 5 levels deep). The `ami-expert-council` skill has been updated to reference both platforms' tools in its instructions. The core incompatibility documented below is now resolved.
+
 ## Findings regarding `define_subagent` and `invoke_subagent`
 
 Based on official Anthropic documentation and community usage patterns, the tools `define_subagent` and `invoke_subagent` are **not** native, core features of the official Claude Code CLI out of the box.
