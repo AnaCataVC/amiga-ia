@@ -87,10 +87,8 @@ All built-in tools use the mandatory **`ami-`** prefix to ensure safe namespacin
 | Skill | **ami-pr-self-reviewer** | Acts as a critical self-reviewer for your own Pull Requests and suggests code fixes. |
 | Skill | **ami-project-architect** | Interactively sets up the initial architecture and structure of a new project. |
 | Skill | **ami-quality-auditor** | Performs a deep code quality, security, and structure audit on modified files. |
-
 | Skill | **ami-release-drafter** | Auto-triggered before any GitHub release. Drafts comprehensive bilingual release notes grouped by feature, fix, and maintenance. |
 | Skill | **ami-release-tagger** | Auto-triggered before any release or version bump. Determines the correct next semantic version from commits. |
-
 | Skill | **ami-tech-debt-scanner** | Analyzes the repository for technical debt, including outdated dependencies, dead code, and pending comments (TODOs/FIXMEs). |
 | Skill | **ami-test-creator** | Auto-triggered when new functionality is added without existing test coverage. Generates tests for the modified code. |
 
