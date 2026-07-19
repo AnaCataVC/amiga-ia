@@ -1,7 +1,7 @@
 ---
 name: ami-data-validator
 description: Validates structural consistency between code changes and data definitions (DB connections, queries).
-allowed-tools: Bash, Read, Grep
+allowed-tools: Bash, Read, Grep, Edit, Write
 ---
 
 # Skill: Push Data Validator

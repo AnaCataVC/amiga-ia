@@ -1,11 +1,7 @@
 ---
 name: ami-expert-council
 description: Spawns a council of specialized subagents tailored to discuss, debate, and refine a user's idea or proposed change from multiple perspectives.
-allowed-tools:
-  - Agent
-  - define_subagent
-  - invoke_subagent
-  - send_message
+allowed-tools: Read, Agent, define_subagent, invoke_subagent, send_message
 ---
 
 # Instructions for ami-expert-council

@@ -1,7 +1,7 @@
 ---
 name: ami-context-researcher
 description: Investigates external context, forces the AI to search for up-to-date documentation, and saves findings to external-references to prevent context loss.
-allowed-tools: WebSearch, search_web, WebFetch, read_url_content, Write
+allowed-tools: Bash, Read, Grep, WebSearch, search_web, WebFetch, read_url_content, Write
 ---
 
 # Skill: Context Researcher

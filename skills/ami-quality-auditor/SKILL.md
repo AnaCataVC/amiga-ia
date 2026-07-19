@@ -1,7 +1,7 @@
 ---
 name: ami-quality-auditor
 description: Performs a deep code quality, security, and structure audit on modified files.
-allowed-tools: Bash, Read, Grep
+allowed-tools: Bash, Read, Grep, Edit, Write
 ---
 
 # Skill: Push Quality Auditor
@@ -16,7 +16,7 @@ When invoked, act as a strict Code Reviewer focused on code quality, structural 
 2. **Security & Quality Check:**
    - **Security:** Ensure there are no exposed credentials, vulnerabilities, or dangerous operations.
    - **Duplication & Dead Code:** Check if the new code introduces duplicates of existing logic. Identify any dead (unreachable) code. If duplicate logic is found, enforce centralizing the repeated functions.
-   - **Efficiency:** Ensure that there are no inefficiencies or unnecessary operations in the code. If there is a simpler and equally efficient way to implement the code, there's something wrong with your implementation.
+   - **Efficiency:** Ensure that there are no inefficiencies or unnecessary operations in the code. Flag any code that could be simplified without sacrificing efficiency or readability.
    - **Maintainability:** Ensure that the code is easy to understand and maintain. For any non-obvious code, there should be comments explaining the logic.
 
 3. **Linguistic & Comment Consistency:**

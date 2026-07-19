@@ -19,7 +19,9 @@ When invoked, act as a methodical and rigorous debugger. Your goal is to find th
 2. **Hypothesis Generation & Systematic Isolation:**
    - Formulate multiple potential hypotheses for the bug.
    - Use a "divide and conquer" or "binary search" approach to isolate the issue. Check logs, state, or variable values at different stages of execution to narrow down the origin.
-   - Test each hypothesis one by one, eliminating them based on evidence. Add temporary logging (e.g. `console.log`, `print`) or use debug tools. If using Python, consider adding temporary `import pdb; pdb.set_trace()` for step-by-step debugging, and run tests with `pytest -vv` for greater verbosity. Run the code and analyze the output.
+   - Test each hypothesis one by one, eliminating them based on evidence. Add temporary logging (e.g. `console.log`, `print`) or use the project's debug tools. Run the code and analyze the output.
+
+   > **Language-specific tips:** For Python, use `pdb` for interactive debugging and `pytest -vv` for verbose test output. Adapt these tools to the project's language and framework.
 
 3. **Root Cause Confirmation & Solution Proposal:**
    - Once a hypothesis seems correct, construct a minimal reproduction case if possible, or verify the exact failure point.

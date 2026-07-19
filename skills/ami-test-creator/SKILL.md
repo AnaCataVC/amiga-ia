@@ -11,7 +11,7 @@ When invoked, act as a Test Automation Engineer to ensure the repository has ade
 ## Workflow
 
 1. **Assess Coverage:**
-   - Review the modified files in the PR.
+   - Review the modified or target files (from the PR, working tree, or as specified by the user).
    - Scan the repository for corresponding test files (e.g., look for `*test.py`, `*.spec.js`, `*_test.go`).
    - Determine if the modified logic is adequately covered by existing tests.
 
