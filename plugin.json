@@ -1,6 +1,6 @@
 {
   "name": "amiga-ia",
-  "version": "2.4.6",
+  "version": "2.5.1",
   "description": "Universal declarative skills for agents",
   "skills": [
     "./skills/"
