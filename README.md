@@ -121,7 +121,7 @@ Once installed globally via NPM, you can run the interactive setup wizard to aut
 amiga-ia-setup
 ```
 
-> 💡 **Understanding Hooks Installation:** The package includes background hooks (e.g., pre-commit blocks, context restoring) but they are installed differently based on your method:
+> 💡 **Understanding Hooks Installation:** The package includes non-blocking background hooks (e.g., pre-commit advisory reminders, context restoring) but they are installed differently based on your method:
 > - **Native Plugin (Claude Code):** Hooks are loaded dynamically from `hooks/hooks.json`. They remain fully isolated within the plugin context and do not modify your global system settings.
 > - **NPM Wizard (Claude Code):** Hooks are permanently merged into your global `~/.claude/settings.json` file (a backup is created first to allow safe uninstallation).
 > - **Antigravity:** No bash hooks are installed. Antigravity natively ignores them when in secure mode, relying instead on its atomic planning pipeline.
@@ -239,7 +239,7 @@ Una vez instalado globalmente vía NPM, puedes ejecutar el asistente interactivo
 amiga-ia-setup
 ```
 
-> 💡 **Entendiendo la instalación de Hooks:** El paquete incluye hooks en segundo plano (ej. bloqueos pre-commit, restauración de contexto) pero se instalan diferente según el método:
+> 💡 **Entendiendo la instalación de Hooks:** El paquete incluye hooks en segundo plano no bloqueantes (ej. recordatorios informativos de pre-commit, restauración de contexto) pero se instalan diferente según el método:
 > - **Plugin Nativo (Claude Code):** Los hooks se cargan dinámicamente desde `hooks/hooks.json`. Se mantienen completamente aislados dentro del plugin y no modifican tu configuración global.
 > - **Asistente NPM (Claude Code):** Los hooks se inyectan permanentemente ("merge") en tu `~/.claude/settings.json` global (se crea un backup previo para desinstalación segura).
 > - **Antigravity:** No se instalan hooks de bash. Antigravity los ignora nativamente cuando está en modo seguro, confiando en su propio pipeline de planificación atómica.
