@@ -73,36 +73,56 @@ function deleteMatchingFiles(src, dest, isRoot = true) {
 }
 
 function mergeSettings(targetPath, sourcePath) {
-  let targetData = { hooks: {} };
+  let targetData = {};
   if (fs.existsSync(targetPath)) {
     try {
       targetData = JSON.parse(fs.readFileSync(targetPath, 'utf8'));
     } catch (e) {
-      console.warn('⚠️ Could not parse existing settings.json. Proceeding with overwrite.');
+      console.error('\n❌ ERROR: Could not parse existing settings.json (invalid JSON).');
+      console.error('   Aborting hooks merge to protect your custom settings.');
+      console.error('   Please fix the JSON syntax in ~/.claude/settings.json manually and re-run setup.\n');
+      return false;
     }
   }
   const sourceData = JSON.parse(fs.readFileSync(sourcePath, 'utf8'));
 
   if (!targetData.hooks) targetData.hooks = {};
-  
+
+  const amigaSignatures = [
+    '$CLAUDE_TOOL_ARGS',
+    'commit-assistant',
+    'push-assistant',
+    'ami-pr-publisher',
+    'ami-pr-conflict-detector',
+    'docs/coding-sessions',
+    'debugger|TODO|FIXME'
+  ];
+
+  let cleanedCount = 0;
+
   for (const [event, newHooks] of Object.entries(sourceData.hooks || {})) {
     if (!targetData.hooks[event]) {
-      targetData.hooks[event] = [...newHooks];
-    } else {
-      for (const newHook of newHooks) {
-        // Very simplistic check to avoid exact duplicates
-        const exists = targetData.hooks[event].some(h => 
-          JSON.stringify(h) === JSON.stringify(newHook) || 
-          (h.hooks && newHook.hooks && h.hooks[0]?.command === newHook.hooks[0]?.command)
-        );
-        if (!exists) {
-          targetData.hooks[event].push(newHook);
-        }
-      }
+      targetData.hooks[event] = [];
+    }
+
+    const initialLen = targetData.hooks[event].length;
+    targetData.hooks[event] = targetData.hooks[event].filter(existingHook => {
+      const cmdString = JSON.stringify(existingHook);
+      const isAmigaHook = amigaSignatures.some(sig => cmdString.includes(sig));
+      return !isAmigaHook;
+    });
+    cleanedCount += (initialLen - targetData.hooks[event].length);
+
+    for (const newHook of newHooks) {
+      targetData.hooks[event].push(newHook);
     }
   }
-  
+
   fs.writeFileSync(targetPath, JSON.stringify(targetData, null, 2));
+  if (cleanedCount > 0) {
+    console.log(`🧹 Cleaned ${cleanedCount} obsolete/duplicate Amiga IA hook(s).`);
+  }
+  return true;
 }
 
 async function main() {
@@ -137,8 +157,12 @@ async function main() {
           console.log('✅ Backup created at ~/.claude/settings.json.amiga-backup');
         }
         
-        mergeSettings(claudeSettings, sourceSettingsPath);
-        console.log('✅ Hooks successfully merged into settings.json.');
+        const merged = mergeSettings(claudeSettings, sourceSettingsPath);
+        if (merged) {
+          console.log('✅ Hooks successfully merged into settings.json.');
+        } else {
+          console.log('⚠️ Hooks merge skipped due to JSON parse error.');
+        }
       } else {
         console.log('⏭️ Hooks installation skipped.');
       }

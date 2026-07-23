@@ -18,7 +18,7 @@
           {
             "type": "command",
             "shell": "bash",
-            "command": "cmd=$(jq -r '.tool_input.command // empty'); if echo \"$cmd\" | grep -qE 'git[[:space:]]+commit'; then echo 'Commit formatting required. Run commit-assistant first.' >&2; exit 2; fi"
+            "command": "input=$(cat); re='\"command\":[[:space:]]*\"[^\"]*git[[:space:]]+commit'; if [[ \"$input\" =~ $re ]]; then echo 'Reminder: Use commit-assistant for proper commit formatting.' >&2; fi; exit 0"
           }
         ]
       },
@@ -28,7 +28,7 @@
           {
             "type": "command",
             "shell": "bash",
-            "command": "cmd=$(jq -r '.tool_input.command // empty'); if echo \"$cmd\" | grep -qE 'git[[:space:]]+push'; then echo 'Pre-push validation required. Run push-assistant agent first.' >&2; exit 2; fi"
+            "command": "input=$(cat); re='\"command\":[[:space:]]*\"[^\"]*git[[:space:]]+push'; if [[ \"$input\" =~ $re ]]; then echo 'Reminder: Run push-assistant agent before pushing code.' >&2; fi; exit 0"
           }
         ]
       },
@@ -38,7 +38,7 @@
           {
             "type": "command",
             "shell": "bash",
-            "command": "cmd=$(jq -r '.tool_input.command // empty'); if echo \"$cmd\" | grep -qE 'gh[[:space:]]+pr[[:space:]]+create'; then echo 'Conflict check and code review required. Please run the ami-pr-conflict-detector skill or the ami-pr-publisher agent first.' >&2; exit 2; fi"
+            "command": "input=$(cat); re='\"command\":[[:space:]]*\"[^\"]*gh[[:space:]]+pr[[:space:]]+create'; if [[ \"$input\" =~ $re ]]; then echo 'Reminder: Consider running ami-pr-conflict-detector or ami-pr-publisher before creating PR.' >&2; fi; exit 0"
           }
         ]
       }
@@ -50,7 +50,7 @@
           {
             "type": "command",
             "shell": "bash",
-            "command": "file=$(jq -r '.tool_input.file_path // empty'); if [ -n \"$file\" ] && [ -f \"$file\" ]; then if grep -qE 'console\\.log|debugger|TODO|FIXME' \"$file\"; then echo \"Warning: Detected debug statements or TODOs in $file. Review before commit.\" >&2; fi; fi"
+            "command": "input=$(cat); file=\"${input#*file_path\": \"}\"; file=\"${file%%\"*}\"; if [ -n \"$file\" ] && [ -f \"$file\" ]; then if grep -qE 'console\\.log|debugger|TODO|FIXME' \"$file\"; then echo \"Warning: Detected debug statements or TODOs in $file. Review before commit.\" >&2; fi; fi"
           }
         ]
       }

@@ -11,6 +11,5 @@
     "agents/ami-pr-publisher.md",
     "agents/ami-push-assistant.md",
     "agents/ami-release-manager.md"
-  ],
-  "hooks": "./hooks.json"
+  ]
 }
