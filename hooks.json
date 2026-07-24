@@ -50,7 +50,7 @@
           {
             "type": "command",
             "shell": "bash",
-            "command": "input=$(cat); file=\"${input#*file_path\": \"}\"; file=\"${file%%\"*}\"; if [ -n \"$file\" ] && [ -f \"$file\" ]; then if grep -qE 'console\\.log|debugger|TODO|FIXME' \"$file\"; then echo \"Warning: Detected debug statements or TODOs in $file. Review before commit.\" >&2; fi; fi"
+            "command": "input=$(cat); file=$(echo \"$input\" | sed -n 's/.*\"file_path\":[[:space:]]*\"\\([^\"]*\\)\".*/\\1/p'); if [ -n \"$file\" ] && [ -f \"$file\" ]; then if git ls-files --error-unmatch \"$file\" >/dev/null 2>&1; then added=$(git diff -U0 \"$file\" 2>/dev/null | grep -E '^\\+[^\\+]'); else added=$(cat \"$file\" 2>/dev/null); fi; if echo \"$added\" | grep -qE 'console\\.log|debugger|TODO|FIXME'; then echo \"Warning: Detected debug statements or TODOs in modified lines of $file. Review before commit.\" >&2; fi; fi"
           }
         ]
       }
