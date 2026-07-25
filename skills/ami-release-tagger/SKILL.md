@@ -10,8 +10,9 @@ Act as a Version Control Manager. Your job is to determine the next correct vers
 
 ## Workflow
 
-1. **Find the Last Tag and Tagging System:**
+1. **Find the Last Tag, Versioning Docs, and Tagging System:**
    - First, run `git fetch` to ensure the local repository has all the latest commits and tags from the remote.
+   - **Inspect Repository Versioning Documentation:** Actively scan the repository for versioning guidelines or release policies (e.g., `VERSIONING.md`, `docs/versioning.md`, `.agents/AGENTS.md`, `CONTRIBUTING.md`, or versioning sections in `README.md`). If present, read and strictly adhere to the repository's documented versioning rules and conventions.
    - Check if the workspace uses a specific tagging rule (e.g., tags with the `QA-YYYYMMDD-NN` format). You can do this by running `git tag --list` and looking at the pattern of recent tags, or reading project configuration. Do NOT blindly propose SemVer (`vX.Y.Z`) if the project strictly enforces a date-based QA tag format.
    - Run `git describe --tags --abbrev=0` to find the latest tag. If no tag exists, assume the baseline is `v0.0.0`.
    - Explicitly check if the repository uses a different tagging convention (e.g., tags without the `v` prefix like `1.2.3`, or prefixed with package names like `backend-v1.0.0`).
@@ -20,11 +21,10 @@ Act as a Version Control Manager. Your job is to determine the next correct vers
 
 2. **Analyze Commits Since Last Tag:**
    - Run `git log <last-tag>..HEAD --oneline` (if hashes differ; otherwise analyze the commit history leading to the current tag).
-   - Evaluate the actual impact of the changes semantically rather than blindly following commit prefixes:
-     - **Major Bump (x.0.0):** If any commit contains a `!` (e.g., `feat!:`) or `BREAKING CHANGE:` introducing breaking changes to public APIs, skills, or main interfaces.
-     - **Minor Bump (0.x.0):** If there are new features or major additions (e.g., a completely new skill or agent) that do not break backward compatibility.
-       - *Note:* If a commit is prefixed with `feat:` but actually represents a minor internal developer flow improvement, hook configuration, or refactoring, do NOT perform a Minor bump. Keep it as a Patch bump.
-     - **Patch Bump (0.0.x):** If the changes consist only of bug fixes (`fix:`), updates to existing documentation (`docs:`), tool configuration chores (`chore:`), minor refactorings (`refactor:`), or support script tweaks.
+   - Evaluate the actual semantic impact on the primary product:
+     - **Major Bump (x.0.0):** If any commit contains a `!` (e.g., `feat!:`) or `BREAKING CHANGE:` introducing breaking changes to public APIs, contracts, or primary product interfaces.
+     - **Minor Bump (0.x.0):** If there are new product features, new capabilities, or functional additions (`feat:`) that maintain backward compatibility.
+     - **Patch Bump (0.0.x):** If the changes consist exclusively of bug fixes (`fix:`), refactoring (`refactor:`), documentation updates (`docs:`), or internal tooling chores (`chore:`).
 
 3. **Determine the Base Version:**
    - Calculate the next logical SemVer base version based on the semantic analysis above. If the current tag is verified to target `HEAD` and represents the correct version, use the current tag as the base version.

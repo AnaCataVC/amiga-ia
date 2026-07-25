@@ -13,12 +13,13 @@ Act as a Technical Writer and Product Manager. Your job is to transform raw comm
    - Run `git fetch` to ensure the local repository has all the latest commits and tags from the remote.
    - Run `git log <last-tag>..HEAD --pretty=format:"%s"` to get the raw commit messages.
 
-2. **Categorize and Filter:**
-   - Filter and actively exclude commits that are purely administrative or technical to the release process (e.g., messages like "bump version...", "update version badge...", "[skip ci]", or "release v..."). The release notes must focus on user-facing product value and actual code enhancements.
+2. **Categorize and Filter (Product-Centric):**
+   - **Focus on Core Product Value:** Release notes MUST focus exclusively on primary product capabilities, core features, and user-facing code enhancements.
+   - **Filter Minor/Secondary Edits:** Actively exclude or omit minor non-functional changes such as pure documentation updates (`docs:`), cosmetic edits to product showcase/landing pages (e.g., `index.html`, `landing.html`), internal developer scripts, or release pipeline chores (`chore:`, `bump version...`, `[skip ci]`).
    - Group the remaining commits based on their Conventional Commits prefix:
      - `feat:` -> 🚀 Features / Nuevas Funcionalidades
      - `fix:` -> 🐛 Bug Fixes / Correcciones de Errores
-     - `docs:`, `chore:`, `refactor:`, `test:`, etc. -> 🛠️ Maintenance / Mantenimiento
+     - `refactor:`, `test:`, etc. -> 🛠️ Maintenance / Mantenimiento (include only if relevant to product stability)
    - Identify any breaking changes (`!` or `BREAKING CHANGE`).
 
 3. **Draft the Release Notes (Bilingual):**

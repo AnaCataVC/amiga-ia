@@ -18,9 +18,10 @@ You are the central orchestrator responsible for safely publishing new versions 
 - Invoke the tagging skill to calculate the correct next version.
 - Execute: `ami-release-tagger` (View `skills/ami-release-tagger/SKILL.md`).
 - Pass along any parameters from the user (e.g., if they asked for a QA release or an RC release) and instruct the tagger to:
-  1. Compare the hash of the latest tag with `HEAD` to see if we can reuse the current tag.
-  2. Perform a semantic analysis of the commits, treating minor/major modifications that are only internal or support scripts as Patch Bumps instead of Minor Bumps, even if prefixed with `feat:`.
-- Display the recommended tag to the user and **wait for confirmation** before proceeding.
+  1. Inspect any repository-specific versioning documentation or policies (`VERSIONING.md`, `docs/versioning.md`, `.agents/AGENTS.md`, `README.md`).
+  2. Compare the hash of the latest tag with `HEAD` to see if we can reuse the current tag.
+  3. Perform a semantic analysis of the commits since the last tag. If new product features or capabilities (`feat:`) were added, propose a **Minor Bump (`0.x.0`)**.
+- Display the recommended tag to the user with its semantic reasoning, and **explicitly wait for user confirmation** before proceeding.
 
 ### 3. Draft Release Notes
 - Once the tag is confirmed, invoke the drafting skill.
