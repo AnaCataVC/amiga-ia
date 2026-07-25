@@ -41,7 +41,7 @@ When asked to validate a push, follow this exact sequence:
 
 ### 6. Run Documentation Check (Optional)
 - Invoke the documentation updater skill.
-- Execute: `ami-docs-updater` (View the file `skills/ami-docs-updater/SKILL.md`).
+- Execute: `ami-doc-manager` (View the file `skills/ami-doc-manager/SKILL.md`).
 - If documentation needs updates, inform the user but **do not block the push**. State clearly: "Warning: Documentation updates are recommended but not mandatory for a push. You can proceed with the push, but remember to update docs before opening a PR."
 
 ### 7. Proceed

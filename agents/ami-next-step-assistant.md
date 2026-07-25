@@ -32,7 +32,7 @@ When invoked, you MUST execute the following sequence. You evaluate each tier in
 
 ### 4. Documentation
 - If tests are passing and coverage is solid, check the documentation.
-- Execute: `ami-docs-updater` (View the file `skills/ami-docs-updater/SKILL.md`).
+- Execute: `ami-doc-manager` (View the file `skills/ami-doc-manager/SKILL.md`).
 - If the documentation is outdated, missing, or misaligned with the codebase, stop here. Recommend updating the docs as the next step.
 
 ### 5. Ideation & Brainstorming (Greenfield)

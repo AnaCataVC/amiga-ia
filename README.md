@@ -76,8 +76,7 @@ All built-in tools use the mandatory **`ami-`** prefix to ensure safe namespacin
 | Skill | **ami-context-researcher** | Actively researches external documentation and saves findings to prevent context loss. |
 | Skill | **ami-data-validator** | Validates structural consistency between code changes and data definitions. |
 | Skill | **ami-dependency-analyzer** | Analyzes the project's libraries and dependencies for unused, outdated, or undeclared packages. |
-| Skill | **ami-doc-architect** | Helps generate project documentation from scratch or adapts to existing styles. |
-| Skill | **ami-docs-updater** | Auto-triggered when code changes affect documented APIs or interfaces. Updates all relevant documentation to stay in sync. |
+| Skill | **ami-doc-manager** | Comprehensive documentation manager. Automatically detects whether to architect new docs or update existing ones with code changes. |
 | Skill | **ami-expert-council** | Spawns a council of specialized subagents tailored to discuss, debate, and refine a user's idea from multiple perspectives. |
 | Skill | **ami-learnings-extractor** | Analyzes recent code changes to extract architectural decisions, lessons, and patterns. |
 | Skill | **ami-methodical-debugger** | Performs an organized debugging process, systematically isolating the root cause without assumptions. |
@@ -195,8 +194,7 @@ Todas las herramientas incluidas utilizan el prefijo obligatorio **`ami-`** para
 | Skill | **ami-context-researcher** | Investiga documentación externa activamente y guarda los hallazgos para prevenir pérdida de contexto. |
 | Skill | **ami-data-validator** | Valida la consistencia estructural entre los cambios de código y las definiciones de datos. |
 | Skill | **ami-dependency-analyzer** | Analiza las librerías y dependencias del proyecto buscando paquetes sin usar, desactualizados o no declarados. |
-| Skill | **ami-doc-architect** | Ayuda a generar documentación del proyecto desde cero o se adapta a estilos existentes. |
-| Skill | **ami-docs-updater** | Se activa automáticamente cuando cambios en el código afectan APIs o interfaces documentadas. Mantiene la documentación sincronizada. |
+| Skill | **ami-doc-manager** | Gestor integral de documentación. Detecta automáticamente si debe estructurar nueva documentación o actualizar la existente con cambios de código. |
 | Skill | **ami-expert-council** | Crea un panel de subagentes especializados para debatir y refinar ideas desde múltiples perspectivas. |
 | Skill | **ami-learnings-extractor** | Analiza los cambios de código recientes para extraer decisiones arquitectónicas, lecciones y patrones. |
 | Skill | **ami-methodical-debugger** | Realiza un proceso de depuración organizado, aislando sistemáticamente la causa raíz sin suposiciones. |

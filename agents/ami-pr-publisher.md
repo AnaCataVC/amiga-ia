@@ -33,7 +33,7 @@ When asked to review a PR or when triggered by a hook before a PR is created, yo
 
 ### 5. Enforce Documentation Update
 - Invoke the documentation updater skill.
-- Execute: `ami-docs-updater` (View the file `skills/ami-docs-updater/SKILL.md`).
+- Execute: `ami-doc-manager` (View the file `skills/ami-doc-manager/SKILL.md`).
 - Unlike the push workflow, updating the documentation is **MANDATORY** for a PR. If docs are not updated, block the PR creation until they are.
 
 ### 6. Enforce Test Coverage and Run Tests
