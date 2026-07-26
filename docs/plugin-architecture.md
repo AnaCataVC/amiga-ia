@@ -43,8 +43,8 @@ When installed as a native plugin, the expected location is:
 │   │   └── SKILL.md
 │   └── ...
 ├── agents/              # Subagent definitions (.md files)
-│   ├── ami-commit-assistant.md
 │   ├── ami-push-assistant.md
+│   ├── ami-release-manager.md
 │   └── ...
 └── hooks.json           # Optional hooks (Antigravity ignores bash hooks in secure mode)
 ```
@@ -56,11 +56,10 @@ The root `plugin.json` uses explicit `skills` and `agents` fields to declare all
 ```json
 {
   "name": "amiga-ia",
-  "version": "2.2.1",
+  "version": "2.6.0",
   "description": "Universal declarative skills for agents",
   "skills": ["./skills/"],
   "agents": [
-    "agents/ami-commit-assistant.md",
     "agents/ami-next-step-assistant.md",
     "agents/ami-pr-publisher.md",
     "agents/ami-push-assistant.md",
@@ -95,7 +94,7 @@ Claude Code uses a different layout convention. The manifest lives inside a `.cl
 │   │   └── SKILL.md
 │   └── ...
 ├── agents/                 # At repo root, NOT inside .claude-plugin/
-│   ├── ami-commit-assistant.md
+│   ├── ami-push-assistant.md
 │   └── ...
 └── hooks/
     └── hooks.json          # Hooks in separate directory, NOT inline in plugin.json

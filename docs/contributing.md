@@ -148,7 +148,7 @@ You are a specialized sub-agent responsible for...
 ```json
 {
   "agents": [
-    "agents/ami-commit-assistant.md",
+    "agents/ami-push-assistant.md",
     "agents/ami-my-agent.md"
   ]
 }
@@ -293,4 +293,4 @@ Before opening a PR, make sure you have:
 ---
 
 > [!TIP]
-> If you are unsure about anything, look at existing skills (e.g., `skills/ami-quick-reviewer/SKILL.md`) and agents (e.g., `agents/ami-commit-assistant.md`) for reference. They are great templates to follow.
+> If you are unsure about anything, look at existing skills (e.g., `skills/ami-commit-planner/SKILL.md`) and agents (e.g., `agents/ami-push-assistant.md`) for reference. They are great templates to follow.

@@ -67,6 +67,7 @@ All built-in tools use the mandatory **`ami-`** prefix to ensure safe namespacin
 
 | Type | Name | Description |
 |---|---|---|
+| Agent | **ami-expert-council** | Spawns a council of specialized subagents tailored to discuss, debate, and refine a user's idea from multiple perspectives. |
 | Agent | **ami-next-step-assistant** | Acts as a project guide by analyzing the repository and recommending the most critical next step. |
 | Agent | **ami-pr-publisher** | Master orchestrator agent that performs a comprehensive review of Pull Requests before they are published. |
 | Agent | **ami-push-assistant** | Pre-push orchestrator that performs baseline quality, security, and data consistency checks before a push. |
@@ -76,7 +77,6 @@ All built-in tools use the mandatory **`ami-`** prefix to ensure safe namespacin
 | Skill | **ami-data-validator** | Validates structural consistency between code changes and data definitions. |
 | Skill | **ami-dependency-analyzer** | Analyzes the project's libraries and dependencies for unused, outdated, or undeclared packages. |
 | Skill | **ami-doc-manager** | Comprehensive documentation manager. Automatically detects whether to architect new docs or update existing ones with code changes. |
-| Skill | **ami-expert-council** | Spawns a council of specialized subagents tailored to discuss, debate, and refine a user's idea from multiple perspectives. |
 | Skill | **ami-learnings-extractor** | Analyzes recent code changes to extract architectural decisions, lessons, and patterns. |
 | Skill | **ami-methodical-debugger** | Performs an organized debugging process, systematically isolating the root cause without assumptions. |
 | Skill | **ami-pr-comment-analyzer** | Analyzes code review comments left by other developers on an active Pull Request. |
@@ -184,6 +184,7 @@ Todas las herramientas incluidas utilizan el prefijo obligatorio **`ami-`** para
 
 | Tipo | Nombre | Descripción |
 |---|---|---|
+| Agente | **ami-expert-council** | Crea un panel de subagentes especializados para debatir y refinar ideas desde múltiples perspectivas. |
 | Agente | **ami-next-step-assistant** | Guía el proyecto analizando el repositorio y recomendando el siguiente paso más crítico. |
 | Agente | **ami-pr-publisher** | Agente orquestador maestro que realiza una revisión exhaustiva de los Pull Requests antes de publicarlos. |
 | Agente | **ami-push-assistant** | Orquestador pre-push que realiza comprobaciones de calidad, seguridad y consistencia de datos. |
@@ -193,7 +194,6 @@ Todas las herramientas incluidas utilizan el prefijo obligatorio **`ami-`** para
 | Skill | **ami-data-validator** | Valida la consistencia estructural entre los cambios de código y las definiciones de datos. |
 | Skill | **ami-dependency-analyzer** | Analiza las librerías y dependencias del proyecto buscando paquetes sin usar, desactualizados o no declarados. |
 | Skill | **ami-doc-manager** | Gestor integral de documentación. Detecta automáticamente si debe estructurar nueva documentación o actualizar la existente con cambios de código. |
-| Skill | **ami-expert-council** | Crea un panel de subagentes especializados para debatir y refinar ideas desde múltiples perspectivas. |
 | Skill | **ami-learnings-extractor** | Analiza los cambios de código recientes para extraer decisiones arquitectónicas, lecciones y patrones. |
 | Skill | **ami-methodical-debugger** | Realiza un proceso de depuración organizado, aislando sistemáticamente la causa raíz sin suposiciones. |
 | Skill | **ami-pr-comment-analyzer** | Analiza los comentarios de revisión de código dejados por otros desarrolladores en un PR activo. |

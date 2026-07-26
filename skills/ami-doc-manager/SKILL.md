@@ -29,11 +29,12 @@ Analyze the repository state and user request to determine the required operatio
 
 1. **Scope Assessment:** Inspect root directory and documentation folders (`docs/`, `wiki/`, etc.).
    - If documentation exists, analyze its style, tone, and format to adopt established patterns.
+   - **Chaotic Structure Detection:** If the existing documentation has become fragmented, chaotic, or misaligned due to rapid project evolution, proactively propose a complete documentation overhaul/restructuring plan to the user.
    - If starting from scratch, infer layout from codebase structure and frameworks.
 2. **Alignment & Structure Proposal:**
    - Define target audience (internal devs vs. end users) and technical depth.
-   - Present proposed layout and file hierarchy in chat for user review.
-   - Await explicit user approval before drafting.
+   - Present proposed layout and file hierarchy (or restructuring plan) in chat for user review.
+   - Await explicit user approval before drafting or reorganizing files.
 3. **Iterative Generation & Review:**
    - Summarize exact content to be created.
    - Write files upon approval using clean Markdown.
