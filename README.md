@@ -92,43 +92,46 @@ All built-in tools use the mandatory **`ami-`** prefix to ensure safe namespacin
 
 
 ### 5. Installation & Usage
-You can install this repository using NPM or directly as a native plugin for your CLI. Both methods work perfectly and allow you to invoke the skills.
+The official and recommended way to install **Amiga IA** is via the global NPM package:
 
-**Method A: As a Native Plugin**
-Install it directly via your assistant's plugin manager:
-
-**For Antigravity (Terminal):**
-```bash
-agy plugin install https://github.com/AnaCataVC/amiga-ia
-```
-
-**For Claude Code (Inside a Claude Code session):**
-```bash
-/plugin marketplace add AnaCataVC/amiga-ia
-/plugin install amiga-ia@amiga-ia
-```
-
-**Method B: As an NPM Package**
 ```bash
 npm install -g @anacatavc/amiga-ia
 ```
 
 **Setup Wizard (CLI):**
-Once installed globally via NPM, you can run the interactive setup wizard to automatically configure your assistant (Claude or Antigravity) with the package files:
+Run the interactive setup wizard to configure your AI assistant (Claude Code, Antigravity, or Both):
 ```bash
 amiga-ia-setup
 ```
 
-> 💡 **Understanding Hooks Installation:** The package includes non-blocking background hooks (e.g., pre-commit advisory reminders, context restoring) but they are installed differently based on your method:
-> - **Native Plugin (Claude Code):** Hooks are loaded dynamically from `hooks/hooks.json`. They remain fully isolated within the plugin context and do not modify your global system settings.
-> - **NPM Wizard (Claude Code):** Hooks are permanently merged into your global `~/.claude/settings.json` file (a backup is created first to allow safe uninstallation).
-> - **Antigravity:** No bash hooks are installed. Antigravity natively ignores them when in secure mode, relying instead on its atomic planning pipeline.
+**Diagnostic Tool (`doctor`):**
+To verify your installation and validate YAML frontmatter across all skills:
+```bash
+amiga-ia-setup doctor
+```
 
-> ⚠️ **Important:** Choose **only one** installation method (Plugin **or** NPM). Using both simultaneously will result in duplicate skill names and may cause errors in your AI assistant.
+> 💡 **Background Hooks:** Claude Code supports background hooks (pre-commit advisory reminders, session context recovery). The wizard merges recommended hooks cleanly into `~/.claude/settings.json` (creating a backup at `~/.claude/settings.json.amiga-backup`). Antigravity natively uses its atomic planning pipeline and declarative rules (`rules/ami-rules.md`).
+
+#### 5.1 What the Wizard Installs
+
+When you run `amiga-ia-setup`, the wizard configures the following global user directories:
+
+```text
+~/.claude/                          # Claude Code Global Configuration
+├── skills/ami-*/SKILL.md           # Declarative Skills (17 directories)
+├── agents/ami-*.md                 # Autonomous Subagents (5 profiles)
+├── settings.json                   # Merged Hooks (SessionStart, PreToolUse, PostToolUse)
+└── settings.json.amiga-backup      # Safe original settings backup
+
+~/.gemini/config/                   # Antigravity (Gemini) Global Configuration
+├── skills/ami-*/SKILL.md           # Declarative Skills (17 directories)
+├── agents/ami-*.md                 # Autonomous Subagents (5 profiles)
+└── rules/ami-rules.md              # Declarative Operational Rules
+```
 
 ### 6. Uninstallation
 To completely remove the package and clean up your AI assistant folders:
-1. Run `amiga-ia-setup` and select `u` (Uninstall) to safely delete the copied skills and agents.
+1. Run `amiga-ia-setup` and select `u` (Uninstall) to safely delete the copied skills, agents, and rules.
 2. Run `npm uninstall -g @anacatavc/amiga-ia` to remove the package.
 
 ### 7. Extending the Package
@@ -200,7 +203,6 @@ Todas las herramientas incluidas utilizan el prefijo obligatorio **`ami-`** para
 | Skill | **ami-pr-conflict-detector** | Se activa automáticamente antes de cualquier Pull Request. Identifica cambios superpuestos y conflictos de merge. |
 | Skill | **ami-pr-peer-reviewer** | Ayuda a revisar los Pull Requests de otras personas. |
 | Skill | **ami-pr-self-reviewer** | Actúa como un auto-revisor crítico para tus propios Pull Requests y sugiere arreglos de código. |
-| Skill | **ami-project-architect** | Configura interactivamente la arquitectura y estructura inicial de un proyecto nuevo. |
 | Skill | **ami-quality-auditor** | Realiza una auditoría profunda de calidad, seguridad y estructura del código en archivos modificados. |
 | Skill | **ami-release-drafter** | Se activa automáticamente antes de cualquier release de GitHub. Redacta notas de lanzamiento bilingües agrupadas por tipo. |
 | Skill | **ami-release-tagger** | Se activa automáticamente antes de cualquier release o bump de versión. Determina la siguiente versión semántica correcta. |
@@ -208,43 +210,46 @@ Todas las herramientas incluidas utilizan el prefijo obligatorio **`ami-`** para
 | Skill | **ami-test-creator** | Se activa automáticamente cuando se añade nueva funcionalidad sin cobertura de pruebas existente. |
 
 ### 5. Instalación y Uso
-Puedes instalar este repositorio usando NPM o directamente como un plugin nativo para tu CLI. Ambos métodos funcionan perfectamente y te permiten usar las skills con normalidad.
+La forma oficial y recomendada de instalar **Amiga IA** es mediante el paquete global de NPM:
 
-**Método A: Como Plugin Nativo**
-Instálalo directamente mediante el gestor de plugins de tu asistente:
-
-**Para Antigravity (En la terminal):**
-```bash
-agy plugin install https://github.com/AnaCataVC/amiga-ia
-```
-
-**Para Claude Code (Dentro de una sesión de Claude Code):**
-```bash
-/plugin marketplace add AnaCataVC/amiga-ia
-/plugin install amiga-ia@amiga-ia
-```
-
-**Método B: Como paquete NPM**
 ```bash
 npm install -g @anacatavc/amiga-ia
 ```
 
 **Asistente de Configuración (CLI):**
-Una vez instalado globalmente vía NPM, puedes ejecutar el asistente interactivo para configurar automáticamente tu asistente (Claude o Antigravity) con los archivos del paquete:
+Ejecuta el asistente interactivo para configurar tu asistente de IA (Claude Code, Antigravity o Ambos):
 ```bash
 amiga-ia-setup
 ```
 
-> 💡 **Entendiendo la instalación de Hooks:** El paquete incluye hooks en segundo plano no bloqueantes (ej. recordatorios informativos de pre-commit, restauración de contexto) pero se instalan diferente según el método:
-> - **Plugin Nativo (Claude Code):** Los hooks se cargan dinámicamente desde `hooks/hooks.json`. Se mantienen completamente aislados dentro del plugin y no modifican tu configuración global.
-> - **Asistente NPM (Claude Code):** Los hooks se inyectan permanentemente ("merge") en tu `~/.claude/settings.json` global (se crea un backup previo para desinstalación segura).
-> - **Antigravity:** No se instalan hooks de bash. Antigravity los ignora nativamente cuando está en modo seguro, confiando en su propio pipeline de planificación atómica.
+**Herramienta de Diagnóstico (`doctor`):**
+Para verificar la salud de tu instalación y validar el YAML frontmatter de todas las habilidades:
+```bash
+amiga-ia-setup doctor
+```
 
-> ⚠️ **Importante:** Elige **solo un** método de instalación (Plugin **o** NPM). Usar ambos simultáneamente resultará en nombres de skills duplicados y puede causar errores en tu asistente de IA.
+> 💡 **Hooks en Segundo Plano:** Claude Code soporta hooks de fondo (recordatorios informativos de pre-commit, restauración de contexto). El asistente fusiona (*merge*) los hooks recomendados de forma transparente en `~/.claude/settings.json` (creando primero un respaldo en `~/.claude/settings.json.amiga-backup`). Antigravity utiliza su pipeline de planificación atómica y reglas declarativas (`rules/ami-rules.md`).
+
+#### 5.1 Qué Instala el Asistente
+
+Al ejecutar `amiga-ia-setup`, el asistente configura los siguientes directorios globales en tu usuario:
+
+```text
+~/.claude/                          # Configuración Global de Claude Code
+├── skills/ami-*/SKILL.md           # Skills Declarativas (17 directorios)
+├── agents/ami-*.md                 # Subagentes Autónomos (5 perfiles)
+├── settings.json                   # Hooks Integrados (SessionStart, PreToolUse, PostToolUse)
+└── settings.json.amiga-backup      # Respaldo seguro de configuraciones originales
+
+~/.gemini/config/                   # Configuración Global de Antigravity (Gemini)
+├── skills/ami-*/SKILL.md           # Skills Declarativas (17 directorios)
+├── agents/ami-*.md                 # Subagentes Autónomos (5 perfiles)
+└── rules/ami-rules.md              # Reglas Declarativas Operativas
+```
 
 ### 6. Desinstalación
 Para eliminar completamente el paquete y limpiar las carpetas de tu asistente de IA:
-1. Ejecuta `amiga-ia-setup` y selecciona `u` (Uninstall) para borrar de forma segura las skills y agentes copiados.
+1. Ejecuta `amiga-ia-setup` y selecciona `u` (Uninstall) para borrar de forma segura las skills, agentes y reglas copiadas.
 2. Ejecuta `npm uninstall -g @anacatavc/amiga-ia` para eliminar el paquete.
 
 ### 7. Extendiendo el Paquete

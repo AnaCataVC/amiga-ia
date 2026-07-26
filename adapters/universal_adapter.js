@@ -36,7 +36,7 @@ class UniversalAdapter {
 
     files.forEach(file => {
       const content = fs.readFileSync(file, 'utf8');
-      const match = content.match(/^---\n([\s\S]*?)\n---/);
+      const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
       
       let name = path.basename(path.dirname(file));
       let description = 'No description provided.';
@@ -71,7 +71,7 @@ class UniversalAdapter {
       if (!file.endsWith('.md')) return;
       const filepath = path.join(baseDir, file);
       const content = fs.readFileSync(filepath, 'utf8');
-      const match = content.match(/^---\n([\s\S]*?)\n---/);
+      const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
       
       let name = path.basename(file, '.md');
       let description = 'No description provided.';

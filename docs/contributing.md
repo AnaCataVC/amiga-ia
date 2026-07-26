@@ -28,23 +28,24 @@ amiga-ia/
 ├── skills/*/SKILL.md              # Declarative skill definitions (one per directory)
 ├── agents/*.md                    # Subagent profiles (Markdown with YAML frontmatter)
 ├── adapters/universal_adapter.js  # Generates XML catalog for AI lazy loading
-├── bin/setup.js                   # Interactive CLI wizard for installation
-├── plugin.json                    # Antigravity plugin manifest
-├── .claude-plugin/                # Claude Code plugin manifest
-├── hooks.json                     # Hooks for the NPM wizard installation method
-├── hooks/hooks.json               # Hooks for the Claude Code plugin installation method
-├── docs/                          # Long-term memory, ADRs, and project documentation
-└── package.json                   # NPM package definition
+├── bin/setup.js                   # Interactive CLI wizard & diagnostic tool (`doctor`)
+├── rules/ami-rules.md             # Declarative operational rules for Antigravity
+├── agent/session_state.js         # Structured session state store ($S$)
+├── hooks.json                     # Primary hooks configuration for Claude Code
+├── hooks/hooks.json               # Auto-synced hooks copy
+├── tests/                         # Native Node.js test suite (`npm test`)
+├── docs/                          # Memory, ADRs, and project documentation
+└── package.json                   # NPM package definition (Single Source of Truth)
 ```
 
 - **`skills/`** — Each subdirectory contains a `SKILL.md` file that defines a single skill using YAML frontmatter and imperative Markdown instructions.
 - **`agents/`** — Each `.md` file defines a subagent's persona, rules, and workflow.
 - **`adapters/universal_adapter.js`** — Scans skills/agents and builds an XML index injected into the AI's system prompt.
-- **`bin/setup.js`** — The `amiga-ia-setup` CLI command that physically copies files to the user's local AI configuration folders.
-- **`plugin.json`** — The Antigravity plugin manifest listing skills, agents, and hooks.
-- **`.claude-plugin/`** — The Claude Code plugin manifest for native plugin discovery.
-- **`hooks.json`** — Hook definitions used when installing via the NPM wizard method.
-- **`hooks/hooks.json`** — Hook definitions used when installing via the Claude Code plugin method.
+- **`bin/setup.js`** — The `amiga-ia-setup` CLI command that physically copies files to local AI configuration folders and runs diagnostic checks (`doctor`).
+- **`rules/ami-rules.md`** — Declarative operational guardrails for Antigravity.
+- **`agent/session_state.js`** — Manages structured session state and task tracking.
+- **`hooks.json`** — Primary hook definitions merged into `~/.claude/settings.json`.
+- **`tests/`** — Native Node.js test runner suite (`npm test`).
 
 ---
 
@@ -211,37 +212,37 @@ The wizard includes an uninstall option that **safely removes only `ami-`-prefix
 
 ## 6. Testing Changes Locally
 
-Before submitting a PR, you should test your changes locally to ensure everything works.
+Before submitting a PR, you should test your changes locally to ensure everything works cleanly.
 
-### Option A: Run the CLI Wizard from your local copy
+### Step 1: Run Automated Unit Tests
 
-If you have the repository cloned locally, you can run the setup script directly:
+Run the native Node.js test runner suite:
+
+```bash
+npm test
+```
+
+This verifies that manifest sync, frontmatter parsing, and adapter XML generation pass cleanly.
+
+### Step 2: Run Diagnostic Health Check (`doctor`)
+
+Execute the integrated diagnostic suite:
+
+```bash
+node bin/setup.js doctor
+```
+
+This validates YAML frontmatter syntax across all `SKILL.md` files and verifies hook integrity.
+
+### Step 3: Run the CLI Wizard Locally
+
+Test the local installation flow:
 
 ```bash
 node bin/setup.js
 ```
 
-This will copy your local (modified) skills and agents to your AI configuration folders, just like the published package would.
-
-### Option B: Manual copy
-
-You can also manually copy individual files to test specific changes:
-
-```bash
-# Example: Copy a single skill to Antigravity's config
-cp -r skills/ami-my-skill ~/.gemini/config/skills/
-
-# Example: Copy a single agent to Claude's config
-cp agents/ami-my-agent.md ~/.claude/agents/
-```
-
-### Verifying
-
-After copying, start a new AI session (Antigravity or Claude Code) and confirm that:
-
-- Your new skill/agent appears in the available tools catalog.
-- The AI can invoke and execute the skill correctly.
-- The YAML frontmatter is parsed without errors.
+This will copy your local skills and agents to your AI configuration folders for live testing.
 
 ---
 
@@ -261,15 +262,6 @@ All commit messages **must** be written in **English** and follow the [Conventio
 | `style:` | Formatting, whitespace, etc. |
 | `test:` | Adding or updating tests |
 
-**Examples:**
-
-```
-feat: add ami-changelog-generator skill
-fix: correct frontmatter parsing in universal adapter
-docs: update contributing guide with CLI wizard section
-chore: bump tailwindcss to v3.5
-```
-
 ### Code Language
 
 All source code, variable names, function names, comments, and docstrings **must** be written in **English**. No exceptions.
@@ -285,8 +277,8 @@ Before opening a PR, make sure you have:
 - [ ] Used the `ami-` prefix for any new skill or agent.
 - [ ] Included proper YAML frontmatter (`name`, `description`, `allowed-tools`).
 - [ ] Added the language rule block at the end of the file.
-- [ ] Registered new agents in `plugin.json` (skills are auto-discovered).
-- [ ] Tested locally with `node bin/setup.js` or manual copy.
+- [ ] Verified `npm test` passes 100%.
+- [ ] Verified `node bin/setup.js doctor` returns 0 errors.
 - [ ] Written commit messages in English using Conventional Commits.
 - [ ] Ensured all code and comments are in English.
 

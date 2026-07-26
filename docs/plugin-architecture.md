@@ -1,25 +1,24 @@
 > **Created:** 2026-06-25
-> **Last Updated:** 2026-06-25
+> **Last Updated:** 2026-07-26
 
-# Plugin Architecture: Amiga IA
+# Architecture & Distribution: Amiga IA
 
-This document defines the official plugin architecture for **Amiga IA**, covering both supported AI platforms (Antigravity / Gemini and Claude Code) and both distribution methods (Native Plugin and NPM Wizard).
+This document defines the official architecture and distribution model for **Amiga IA**, covering both supported AI platforms (Antigravity / Gemini and Claude Code).
+
+> [!NOTE]
+> **Architectural Decision (ADR-001):** Native plugin manifests (`plugin.json` / `.claude-plugin/plugin.json`) have been deprecated in favor of **Unified NPM Distribution (`npx @anacatavc/amiga-ia-setup`)**. See [ADR-001](file:///c:/Users/anaca/Repos/amiga-ia/docs/adr-001-unified-npm-distribution.md) for full details.
 
 ---
 
 ## 1. Overview
 
-Amiga IA supports two mutually exclusive distribution methods:
+Amiga IA is distributed exclusively as an NPM package featuring an interactive setup wizard and diagnostic suite:
 
-| Method | Mechanism | Target Users |
+| Method | Mechanism | Target Environments |
 |---|---|---|
-| **Native Plugin Install** | The AI platform's built-in plugin manager installs the plugin from a registry or marketplace. Files remain immutable and are managed by the platform. | Users who want zero-friction setup and automatic updates. |
-| **NPM Package + CLI Wizard** | `npm install -g @anacatavc/amiga-ia` followed by `amiga-ia-setup` physically copies skills, agents, and hooks into the user's local configuration directories. | Users who want to customize skills, commit them to version control, or audit instructions before execution. |
+| **NPM Package + CLI Wizard** | `npm install -g @anacatavc/amiga-ia` followed by `amiga-ia-setup` physically copies skills, agents, and hooks into standard assistant configuration directories. | Claude Code (`~/.claude/`) and Antigravity (`~/.gemini/config/`). |
 
-Both methods deliver the same set of skills and agents but through different mechanisms. The underlying Markdown files (`SKILL.md`, agent definitions) are identical regardless of how they are installed.
-
-> [!CAUTION]
-> **Users must choose ONE installation method, not both simultaneously.** Installing via both the native plugin system and the NPM wizard will result in duplicate skill name conflicts, because both methods register the same `ami-*` prefixed skills into the AI's runtime. The platform will reject or behave unpredictably when two skills share the same `name` identifier.
+The underlying Markdown files (`SKILL.md`, agent definitions) are loaded dynamically by each platform using **XML Lazy Loading (`universal_adapter.js`)**.
 
 ---
 
