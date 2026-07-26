@@ -67,12 +67,11 @@ All built-in tools use the mandatory **`ami-`** prefix to ensure safe namespacin
 
 | Type | Name | Description |
 |---|---|---|
-| Agent | **ami-commit-assistant** | Prepares, reviews, and executes Git commits following Conventional Commits format. |
 | Agent | **ami-next-step-assistant** | Acts as a project guide by analyzing the repository and recommending the most critical next step. |
 | Agent | **ami-pr-publisher** | Master orchestrator agent that performs a comprehensive review of Pull Requests before they are published. |
 | Agent | **ami-push-assistant** | Pre-push orchestrator that performs baseline quality, security, and data consistency checks before a push. |
 | Agent | **ami-release-manager** | The central orchestrator agent that manages the release lifecycle. |
-| Skill | **ami-commit-planner** | Analyzes the working tree for uncommitted work and proposes a structured set of commits. |
+| Skill | **ami-commit-planner** | Analyzes the working tree, performs security/leak audits, plans Conventional Commits/amend/squash, and executes commits. |
 | Skill | **ami-context-researcher** | Actively researches external documentation and saves findings to prevent context loss. |
 | Skill | **ami-data-validator** | Validates structural consistency between code changes and data definitions. |
 | Skill | **ami-dependency-analyzer** | Analyzes the project's libraries and dependencies for unused, outdated, or undeclared packages. |
@@ -185,12 +184,11 @@ Todas las herramientas incluidas utilizan el prefijo obligatorio **`ami-`** para
 
 | Tipo | Nombre | Descripción |
 |---|---|---|
-| Agente | **ami-commit-assistant** | Prepara, revisa y ejecuta commits de Git siguiendo el formato Conventional Commits. |
 | Agente | **ami-next-step-assistant** | Guía el proyecto analizando el repositorio y recomendando el siguiente paso más crítico. |
 | Agente | **ami-pr-publisher** | Agente orquestador maestro que realiza una revisión exhaustiva de los Pull Requests antes de publicarlos. |
 | Agente | **ami-push-assistant** | Orquestador pre-push que realiza comprobaciones de calidad, seguridad y consistencia de datos. |
 | Agente | **ami-release-manager** | Agente orquestador central que gestiona el ciclo de vida de los lanzamientos (releases). |
-| Skill | **ami-commit-planner** | Analiza el working tree por cambios sin guardar y propone una estructura de commits semánticos. |
+| Skill | **ami-commit-planner** | Analiza el working tree, audita fugas de seguridad, planifica Conventional Commits/amend/squash y ejecuta commits. |
 | Skill | **ami-context-researcher** | Investiga documentación externa activamente y guarda los hallazgos para prevenir pérdida de contexto. |
 | Skill | **ami-data-validator** | Valida la consistencia estructural entre los cambios de código y las definiciones de datos. |
 | Skill | **ami-dependency-analyzer** | Analiza las librerías y dependencias del proyecto buscando paquetes sin usar, desactualizados o no declarados. |
