@@ -56,7 +56,7 @@ The root `plugin.json` uses explicit `skills` and `agents` fields to declare all
 ```json
 {
   "name": "amiga-ia",
-  "version": "2.7.0",
+  "version": "2.7.1",
   "description": "Universal declarative skills for agents",
   "skills": ["./skills/"],
   "agents": [
