@@ -18,6 +18,7 @@ const geminiDir = path.join(homeDir, '.gemini', 'config');
 
 const sourceSkillsDir = path.join(__dirname, '../skills');
 const sourceAgentsDir = path.join(__dirname, '../agents');
+const sourceRulesDir = path.join(__dirname, '../rules');
 const sourceSettingsPath = path.join(__dirname, '../hooks.json');
 
 function copyRecursiveSync(src, dest) {
@@ -64,8 +65,8 @@ function deleteMatchingFiles(src, dest, isRoot = true) {
     fs.readdirSync(src).forEach(function(childItemName) {
       deleteMatchingFiles(path.join(src, childItemName), path.join(dest, childItemName), false);
     });
-    if (!isRoot && fs.existsSync(dest) && fs.readdirSync(dest).length === 0) {
-      fs.rmdirSync(dest);
+    if (fs.existsSync(dest) && fs.readdirSync(dest).length === 0) {
+      fs.rmSync(dest, { recursive: true, force: true });
     }
   } else {
     fs.unlinkSync(dest);
@@ -125,7 +126,118 @@ function mergeSettings(targetPath, sourcePath) {
   return true;
 }
 
+function runDoctor() {
+  console.log('======================================================');
+  console.log(' 🩺 Amiga IA Diagnostic Tool (Doctor)');
+  console.log('======================================================\n');
+  let issueCount = 0;
+
+  // 1. Installation Health Check
+  console.log('🔍 Checking for legacy plugin conflicts...');
+  const geminiPluginDir = path.join(geminiDir, 'plugins', 'amiga-ia');
+  if (fs.existsSync(geminiPluginDir)) {
+    console.log(`⚠️  WARNING: Legacy plugin directory found (~/.gemini/config/plugins/amiga-ia).`);
+    console.log(`    Recommended action: Run 'npx amiga-ia-setup' to clean legacy plugin directory and migrate to NPM package installation.`);
+    issueCount++;
+  } else {
+    console.log('  ✅ No legacy plugin conflicts detected.');
+  }
+
+  // 2. YAML Frontmatter Validator
+  console.log('\n🔍 Validating SKILL.md YAML frontmatter...');
+  let invalidSkills = 0;
+  if (fs.existsSync(sourceSkillsDir)) {
+    const walkSync = (dir, filelist = []) => {
+      fs.readdirSync(dir).forEach(file => {
+        const filepath = path.join(dir, file);
+        if (fs.statSync(filepath).isDirectory()) {
+          filelist = walkSync(filepath, filelist);
+        } else if (file === 'SKILL.md') {
+          filelist.push(filepath);
+        }
+      });
+      return filelist;
+    };
+    const skillFiles = walkSync(sourceSkillsDir);
+    skillFiles.forEach(file => {
+      const content = fs.readFileSync(file, 'utf8');
+      const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+      if (!match) {
+        console.log(`❌ ERROR: Missing YAML frontmatter in ${path.relative(sourceSkillsDir, file)}`);
+        invalidSkills++;
+      } else {
+        const hasName = match[1].includes('name:');
+        const hasDesc = match[1].includes('description:');
+        const hasTools = match[1].includes('allowed-tools:');
+        if (!hasName || !hasDesc || !hasTools) {
+          console.log(`⚠️  WARNING: Incomplete YAML frontmatter in ${path.relative(sourceSkillsDir, file)} (Missing: ${[!hasName && 'name', !hasDesc && 'description', !hasTools && 'allowed-tools'].filter(Boolean).join(', ')})`);
+          invalidSkills++;
+        }
+      }
+    });
+    if (invalidSkills === 0) {
+      console.log(`  ✅ All ${skillFiles.length} skills have valid YAML frontmatter.`);
+    } else {
+      issueCount += invalidSkills;
+    }
+  }
+
+  // 3. Hooks Health Check
+  console.log('\n🔍 Checking Claude Code hooks configuration...');
+  const claudeSettingsPath = path.join(claudeDir, 'settings.json');
+  if (fs.existsSync(claudeSettingsPath)) {
+    try {
+      const settings = JSON.parse(fs.readFileSync(claudeSettingsPath, 'utf8'));
+      if (settings.hooks && (settings.hooks.SessionStart || settings.hooks.PreToolUse || settings.hooks.PostToolUse)) {
+        console.log('  ✅ Amiga IA hooks detected and settings.json is valid JSON.');
+      } else {
+        console.log('  ℹ️  No Amiga IA hooks found in ~/.claude/settings.json (Optional feature).');
+      }
+    } catch (e) {
+      console.log('❌ ERROR: ~/.claude/settings.json contains invalid JSON syntax.');
+      issueCount++;
+    }
+  } else {
+    console.log('  ℹ️  Claude Code settings file not found (~/.claude/settings.json).');
+  }
+
+  // 4. Session State GitIgnore Check
+  console.log('\n🔍 Checking .gitignore configuration for session state and coding sessions...');
+  const gitignorePath = path.resolve('.gitignore');
+  if (fs.existsSync(gitignorePath)) {
+    const gitignoreContent = fs.readFileSync(gitignorePath, 'utf8');
+    const isAmigaIgnored = gitignoreContent.split('\n').some(line => line.trim() === '.amiga-ia' || line.trim() === '.amiga-ia/');
+    const isSessionsIgnored = gitignoreContent.split('\n').some(line => line.trim() === 'docs/coding-sessions' || line.trim() === 'docs/coding-sessions/');
+
+    if (isAmigaIgnored) {
+      console.log('  ✅ .amiga-ia/ directory is properly listed in .gitignore.');
+    } else {
+      console.log('  ℹ️  .amiga-ia/ directory is not listed in .gitignore.');
+    }
+
+    if (isSessionsIgnored) {
+      console.log('  ✅ docs/coding-sessions/ directory is properly listed in .gitignore.');
+    } else {
+      console.log('  ℹ️  docs/coding-sessions/ directory is not listed in .gitignore. You can add it if you wish to keep markdown session summaries out of git history.');
+    }
+  }
+
+  console.log('\n======================================================');
+  if (issueCount === 0) {
+    console.log('✨ Diagnostic complete: All checks passed smoothly!');
+  } else {
+    console.log(`⚠️  Diagnostic complete: Found ${issueCount} warning(s)/issue(s).`);
+  }
+  console.log('======================================================\n');
+}
+
 async function main() {
+  if (process.argv.includes('doctor') || process.argv.includes('--doctor')) {
+    runDoctor();
+    rl.close();
+    return;
+  }
+
   console.log('======================================================');
   console.log(' 🌟 Welcome to Amiga IA Setup Wizard');
   console.log('======================================================');
@@ -171,16 +283,21 @@ async function main() {
 
   if (['a', 'antigravity', 'b', 'both'].includes(choice)) {
     console.log('\nInstalling for Antigravity...');
+    
+    // Clean legacy plugin directory in ~/.gemini/config/plugins/amiga-ia if it exists
     const geminiPluginDir = path.join(geminiDir, 'plugins', 'amiga-ia');
+    if (fs.existsSync(geminiPluginDir)) {
+      fs.rmSync(geminiPluginDir, { recursive: true, force: true });
+      console.log('🧹 Cleaned legacy plugin directory at ~/.gemini/config/plugins/amiga-ia');
+    }
+
     cleanOrphanedFiles(sourceSkillsDir, path.join(geminiDir, 'skills'));
+    cleanOrphanedFiles(sourceAgentsDir, path.join(geminiDir, 'agents'));
+    cleanOrphanedFiles(sourceRulesDir, path.join(geminiDir, 'rules'));
     copyRecursiveSync(sourceSkillsDir, path.join(geminiDir, 'skills'));
-    
-    if (!fs.existsSync(geminiPluginDir)) fs.mkdirSync(geminiPluginDir, { recursive: true });
-    fs.copyFileSync(path.join(__dirname, '../plugin.json'), path.join(geminiPluginDir, 'plugin.json'));
-    
-    cleanOrphanedFiles(sourceAgentsDir, path.join(geminiPluginDir, 'agents'));
-    copyRecursiveSync(sourceAgentsDir, path.join(geminiPluginDir, 'agents'));
-    console.log('✅ Skills and Agents directories successfully configured.');
+    copyRecursiveSync(sourceAgentsDir, path.join(geminiDir, 'agents'));
+    copyRecursiveSync(sourceRulesDir, path.join(geminiDir, 'rules'));
+    console.log('✅ Skills, Agents, and Rules directories successfully configured at ~/.gemini/config/');
     console.log('ℹ️ Note: Bash hooks installation skipped. Antigravity ignores bash hooks in secure mode.');
   }
 
@@ -208,10 +325,12 @@ async function main() {
     if (fs.existsSync(geminiDir)) {
       const geminiPluginDir = path.join(geminiDir, 'plugins', 'amiga-ia');
       deleteMatchingFiles(sourceSkillsDir, path.join(geminiDir, 'skills'));
+      deleteMatchingFiles(sourceAgentsDir, path.join(geminiDir, 'agents'));
+      deleteMatchingFiles(sourceRulesDir, path.join(geminiDir, 'rules'));
       if (fs.existsSync(geminiPluginDir)) {
         fs.rmSync(geminiPluginDir, { recursive: true, force: true });
       }
-      console.log('✅ Antigravity skills and agents removed.');
+      console.log('✅ Antigravity skills, agents, and rules removed.');
     }
     console.log('✅ Uninstallation complete. Safe deletion applied.');
   }
@@ -219,6 +338,32 @@ async function main() {
   if (!['c', 'claude', 'b', 'both', 'a', 'antigravity', 'u', 'uninstall'].includes(choice)) {
     console.log('Skipping configuration.');
   } else {
+    const gitignorePath = path.resolve('.gitignore');
+    if (fs.existsSync(gitignorePath)) {
+      let content = fs.readFileSync(gitignorePath, 'utf8');
+      const isAmigaIgnored = content.split('\n').some(line => line.trim() === '.amiga-ia' || line.trim() === '.amiga-ia/');
+      const isSessionsIgnored = content.split('\n').some(line => line.trim() === 'docs/coding-sessions' || line.trim() === 'docs/coding-sessions/');
+
+      if (!isAmigaIgnored) {
+        const ignoreAns = await ask('\nDo you want to add .amiga-ia/ (local session state) to your project\'s .gitignore? [y/N]: ');
+        if (ignoreAns.toLowerCase().trim() === 'y') {
+          if (content && !content.endsWith('\n')) content += '\n';
+          content += '# Amiga IA local session state\n.amiga-ia/\n';
+          fs.writeFileSync(gitignorePath, content);
+          console.log('✅ Added .amiga-ia/ to .gitignore.');
+        }
+      }
+
+      if (!isSessionsIgnored) {
+        const ignoreAns = await ask('\nDo you want to add docs/coding-sessions/ (markdown session summaries) to your project\'s .gitignore? [y/N]: ');
+        if (ignoreAns.toLowerCase().trim() === 'y') {
+          if (content && !content.endsWith('\n')) content += '\n';
+          content += '# Amiga IA session summaries\ndocs/coding-sessions/\n';
+          fs.writeFileSync(gitignorePath, content);
+          console.log('✅ Added docs/coding-sessions/ to .gitignore.');
+        }
+      }
+    }
     console.log('\n✨ Setup complete! Restart your AI assistant for changes to take effect.');
   }
   
