@@ -6,7 +6,6 @@
     "./skills/"
   ],
   "agents": [
-    "agents/ami-commit-assistant.md",
     "agents/ami-next-step-assistant.md",
     "agents/ami-pr-publisher.md",
     "agents/ami-push-assistant.md",
