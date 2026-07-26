@@ -18,27 +18,7 @@
           {
             "type": "command",
             "shell": "bash",
-            "command": "input=$(cat); re='\"command\":[[:space:]]*\"[^\"]*git[[:space:]]+commit'; if [[ \"$input\" =~ $re ]]; then echo 'Reminder: Use commit-assistant for proper commit formatting.' >&2; fi; exit 0"
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "shell": "bash",
-            "command": "input=$(cat); re='\"command\":[[:space:]]*\"[^\"]*git[[:space:]]+push'; if [[ \"$input\" =~ $re ]]; then echo 'Reminder: Run push-assistant agent before pushing code.' >&2; fi; exit 0"
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "shell": "bash",
-            "command": "input=$(cat); re='\"command\":[[:space:]]*\"[^\"]*gh[[:space:]]+pr[[:space:]]+create'; if [[ \"$input\" =~ $re ]]; then echo 'Reminder: Consider running ami-pr-conflict-detector or ami-pr-publisher before creating PR.' >&2; fi; exit 0"
+            "command": "input=$(cat); if echo \"$input\" | grep -q \"git commit\"; then echo 'Reminder: Use commit-assistant for proper commit formatting.' >&2; fi; if echo \"$input\" | grep -q \"git push\"; then echo 'Reminder: Run push-assistant agent before pushing code.' >&2; fi; if echo \"$input\" | grep -q \"gh pr create\"; then echo 'Reminder: Consider running ami-pr-conflict-detector or ami-pr-publisher before creating PR.' >&2; fi; exit 0"
           }
         ]
       }
