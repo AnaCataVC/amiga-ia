@@ -1,6 +1,6 @@
 ---
 name: ami-release-manager
-description: Must be invoked via subagent whenever the user asks to push, publish, or create a release. Do not perform the workflow manually. The central orchestrator agent that manages the release lifecycle. It calculates tags, drafts release notes, and publishes the official release on GitHub.
+description: Must be invoked via subagent whenever the user asks to publish or create an official release. Do not perform the workflow manually. The central orchestrator agent that manages the release lifecycle. It calculates tags, drafts release notes, and publishes the official release on GitHub.
 allowed-tools: Bash, Read, Edit, Write
 ---
 
@@ -23,7 +23,7 @@ You are the central orchestrator responsible for safely publishing new versions 
   3. Perform a semantic analysis of the commits since the last tag. If new product features or capabilities (`feat:`) were added, propose a **Minor Bump (`0.x.0`)**.
 - Display the recommended tag to the user with its semantic reasoning, and **explicitly wait for user confirmation** before proceeding.
 
-### 3. Update Hardcoded Version Files (Dual Search & Pre-Tag Commit)
+### 3. Update Hardcoded Version Files & Build Artifacts (Dual Search & Pre-Tag Commit)
 - **Check CI/CD Workflow Rules:** Check if an active CI/CD workflow (e.g., under `.github/workflows/`) automatically bumps package manager files (`package.json`, `cargo.toml`, `pyproject.toml`, etc.) upon release publication. If so, DO NOT modify automated package manager files locally; let the pipeline handle them.
 - **Perform Dual Search Across the Entire Codebase:**
   1. **Literal Version Search:** Search the repository using `grep_search` for the exact string of the previous/current version (e.g., `1.2.0`, `v1.2.0`, `1.2.0-rc.1`).
@@ -32,9 +32,10 @@ You are the central orchestrator responsible for safely publishing new versions 
 - **MANDATORY PRE-TAG COMMIT & PUSH:**
   - Create a single commit for these version updates (e.g., `chore: bump version to <Confirm_Tag> [skip ci]`) and push it to the remote repository.
   - **CRITICAL:** This commit MUST be created and pushed **BEFORE** creating the Git Tag or running `gh release create`, ensuring that the release Tag points to the commit containing all updated version strings across the codebase.
+- **Re-building Compiled Artifacts:** If the application requires a build step or generates binary assets (e.g., `.exe`, `.apk`, installers, or web bundles via `build.bat`, `npm run build`, etc.), execute the compilation/build script **AFTER** the version bump is updated in source files.
 
 ### 4. Draft Release Notes
-- Once the version bump commit is pushed, invoke the drafting skill.
+- Once the version bump commit is pushed and artifacts are compiled, invoke the drafting skill.
 - Execute: `ami-release-drafter` (View `skills/ami-release-drafter/SKILL.md`).
 - Instruct the drafter to filter out administrative commits (such as bumps, tag updates, and [skip ci] messages) so that the changelog focuses exclusively on user-facing product value and code changes.
 - Present the drafted bilingual (English/Spanish) markdown notes to the user for final review.
@@ -42,14 +43,15 @@ You are the central orchestrator responsible for safely publishing new versions 
 
 ### 5. Create and Publish the Release
 - After the user approves the notes and the pre-tag version bump commit is in place, execute the release creation.
+- If binary assets or installers exist (e.g., in `dist/` or `releases/`), ensure they are included as asset parameters in the `gh release create` command.
 - Avoid writing the notes to a permanent file. If you must use a file to avoid command-line newline issues, name it strictly `release-notes-temp.md`, and you **MUST delete it** in the exact same command execution chain.
   - Example (Windows/PowerShell): 
     ```powershell
-    gh release create <Confirm_Tag> -F release-notes-temp.md --title "Release <Confirm_Tag>" ; Remove-Item release-notes-temp.md
+    gh release create <Confirm_Tag> <path_to_asset> -F release-notes-temp.md --title "Release <Confirm_Tag>" ; Remove-Item release-notes-temp.md
     ```
   - Example (Bash/Mac/Linux):
     ```bash
-    gh release create <Confirm_Tag> -F release-notes-temp.md --title "Release <Confirm_Tag>" && rm release-notes-temp.md
+    gh release create <Confirm_Tag> <path_to_asset> -F release-notes-temp.md --title "Release <Confirm_Tag>" && rm release-notes-temp.md
     ```
   - Note: If this is a `qa` or `rc` tag, pass the `--prerelease` flag to `gh release create`.
 

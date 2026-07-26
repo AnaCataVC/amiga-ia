@@ -27,7 +27,7 @@ When invoked, you MUST execute the following sequence. You evaluate each tier in
 
 ### 3. Tests & Coverage
 - If tech debt is low, check the testing suite.
-- Execute: `ami-test-runner` (View the file `skills/ami-test-runner/SKILL.md`).
+- Run the project's standard test suite command (e.g., `npm test`, `pytest`, `cargo test`, `node --test`).
 - If tests fail, or if test coverage is noticeably missing for core features, stop here. Recommend fixing or writing tests (you may suggest invoking `ami-test-creator`).
 
 ### 4. Documentation

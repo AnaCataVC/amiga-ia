@@ -16,27 +16,27 @@ When asked to review a PR or when triggered by a hook before a PR is created, yo
 - **Rule:** If the PR introduces **more than 500 new lines**, you MUST pause the workflow, warn the user that the PR is very long, and ask: "This PR is quite large (>500 lines). Do you want to split it into multiple PRs, optimize the code, or proceed anyway?"
 - Only proceed if the size is acceptable or if the user explicitly approves.
 
-### 2. Base Quality & Dependency Checks
-- Invoke the ami-push-assistant to ensure base quality, security, and dependency health.
-- Execute: `ami-push-assistant` (View the file `agents/ami-push-assistant.md`).
-- Wait for the results. If any of its blocking checks fail, you MUST prompt the user to fix them before proceeding.
+### 2. Base Quality, Dependency & Data Validation Checks
+- Invoke skills directly to ensure base code quality, security, dependency health, and schema alignment:
+  - Execute: `ami-quality-auditor` (View `skills/ami-quality-auditor/SKILL.md`).
+  - Execute: `ami-dependency-analyzer` (View `skills/ami-dependency-analyzer/SKILL.md`).
+  - Execute: `ami-data-validator` (View `skills/ami-data-validator/SKILL.md`).
+- If any of these blocking checks fail, prompt the user to fix them before proceeding.
 
 ### 3. Run Parallel Conflict Check
 - Invoke the conflict detector skill to identify overlapping PRs.
-- Execute: `ami-pr-conflict-detector` (View the file `skills/ami-pr-conflict-detector/SKILL.md`).
+- Execute: `ami-pr-conflict-detector` (View `skills/ami-pr-conflict-detector/SKILL.md`).
 - If conflicts are detected with other open PRs, alert the user and ask for acknowledgment before proceeding.
 
 ### 4. Enforce Documentation Update
 - Invoke the documentation updater skill.
-- Execute: `ami-doc-manager` (View the file `skills/ami-doc-manager/SKILL.md`).
+- Execute: `ami-doc-manager` (View `skills/ami-doc-manager/SKILL.md`).
 - Unlike the push workflow, updating the documentation is **MANDATORY** for a PR. If docs are not updated, block the PR creation until they are.
 
-### 5. Enforce Test Coverage and Run Tests
-- First, check if tests exist for the modified code by invoking the test creator skill.
-- Execute: `ami-test-creator` (View the file `skills/ami-test-creator/SKILL.md`).
-- If tests are missing, wait for `ami-test-creator` to automatically generate them.
-- Once tests are confirmed to exist, invoke the test runner skill.
-- Execute: `ami-test-runner` (View the file `skills/ami-test-runner/SKILL.md`).
+### 5. Enforce Test Coverage & Run Test Suite
+- Check if tests exist for the modified code. If tests are missing or coverage is lacking, invoke the test creator skill first:
+  - Execute: `ami-test-creator` (View `skills/ami-test-creator/SKILL.md`).
+- Execute the project's standard test suite command (e.g., `npm test`, `pytest`, `cargo test`, `node --test`).
 - Ensure all tests pass. This is a **blocker**.
 
 ### 6. Generate and Approve PR Description
