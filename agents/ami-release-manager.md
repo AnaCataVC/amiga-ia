@@ -12,7 +12,7 @@ You are the central orchestrator responsible for safely publishing new versions 
 
 ### 1. Pre-Flight Check
 - Ensure we are on the main/master branch and there are no uncommitted changes.
-- If there are uncommitted changes, advise the user to run `ami-commit-assistant` or `ami-push-assistant` first, and abort.
+- If there are uncommitted changes, advise the user to run `ami-commit-planner` (View `skills/ami-commit-planner/SKILL.md`) or `ami-push-assistant` first, and abort.
 
 ### 2. Determine Version Tag
 - Invoke the tagging skill to calculate the correct next version.
@@ -23,22 +23,25 @@ You are the central orchestrator responsible for safely publishing new versions 
   3. Perform a semantic analysis of the commits since the last tag. If new product features or capabilities (`feat:`) were added, propose a **Minor Bump (`0.x.0`)**.
 - Display the recommended tag to the user with its semantic reasoning, and **explicitly wait for user confirmation** before proceeding.
 
-### 3. Draft Release Notes
-- Once the tag is confirmed, invoke the drafting skill.
+### 3. Update Hardcoded Version Files (Dual Search & Pre-Tag Commit)
+- **Check CI/CD Workflow Rules:** Check if an active CI/CD workflow (e.g., under `.github/workflows/`) automatically bumps package manager files (`package.json`, `cargo.toml`, `pyproject.toml`, etc.) upon release publication. If so, DO NOT modify automated package manager files locally; let the pipeline handle them.
+- **Perform Dual Search Across the Entire Codebase:**
+  1. **Literal Version Search:** Search the repository using `grep_search` for the exact string of the previous/current version (e.g., `1.2.0`, `v1.2.0`, `1.2.0-rc.1`).
+  2. **Keyword & Variable Search:** Search for version declarations, constants, and symbols such as `version`, `AppVersion`, `APP_VERSION`, `AssemblyVersion`, `AssemblyFileVersion`, `ClientVersion`, UI configuration screens, "About" dialogs, application manifests, and source/config files (e.g., `.csproj`, `App.config`, `.rc`, `Config.cs`, `version.h`, `constants.ts`, `plugin.json`, `index.html`, `README.md`, etc.).
+- **Apply Version Bump:** Update all identified hardcoded version references to match the new `<Confirm_Tag>` (omitting the `v` prefix where appropriate).
+- **MANDATORY PRE-TAG COMMIT & PUSH:**
+  - Create a single commit for these version updates (e.g., `chore: bump version to <Confirm_Tag> [skip ci]`) and push it to the remote repository.
+  - **CRITICAL:** This commit MUST be created and pushed **BEFORE** creating the Git Tag or running `gh release create`, ensuring that the release Tag points to the commit containing all updated version strings across the codebase.
+
+### 4. Draft Release Notes
+- Once the version bump commit is pushed, invoke the drafting skill.
 - Execute: `ami-release-drafter` (View `skills/ami-release-drafter/SKILL.md`).
 - Instruct the drafter to filter out administrative commits (such as bumps, tag updates, and [skip ci] messages) so that the changelog focuses exclusively on user-facing product value and code changes.
 - Present the drafted bilingual (English/Spanish) markdown notes to the user for final review.
 - Allow the user to request edits to the notes.
 
-### 4. Update Version Files (Universal)
-- Check if there is an active CI/CD workflow (e.g., under `.github/workflows/` or other pipeline configurations) that automatically bumps package manager files (such as `package.json`, `cargo.toml`, `pyproject.toml`, etc.) upon release publication or commit.
-- If such an automation exists, you MUST NOT modify or commit those automated package manager/lock files locally. Instead, let the automated pipeline handle them.
-- Before creating the release, actively search the repository for configuration files (e.g., `package.json`, `plugin.json`, `manifest.json`) or product pages/documentation (e.g., `index.html`, `README.md`) that might contain the current version string.
-- If you find the old version hardcoded in these files, update them to match the new `<Confirm_Tag>` (without the `v` prefix if appropriate for the file), respecting the CI/CD rule above (e.g., only modify and commit files not handled by the automated pipeline, such as custom manifest files like `plugin.json` or HTML/Markdown documentation).
-- Create a single commit for these version bumps (e.g., `chore: bump version to <Confirm_Tag> [skip ci]`) and push it to the remote repository.
-
 ### 5. Create and Publish the Release
-- After the user approves the notes and version files are updated, execute the release creation.
+- After the user approves the notes and the pre-tag version bump commit is in place, execute the release creation.
 - Avoid writing the notes to a permanent file. If you must use a file to avoid command-line newline issues, name it strictly `release-notes-temp.md`, and you **MUST delete it** in the exact same command execution chain.
   - Example (Windows/PowerShell): 
     ```powershell

@@ -21,6 +21,7 @@ Act as a Version Control Manager. Your job is to determine the next correct vers
 
 2. **Analyze Commits Since Last Tag:**
    - Run `git log <last-tag>..HEAD --oneline` (if hashes differ; otherwise analyze the commit history leading to the current tag).
+   - **No New Changes Check:** If `git log <last-tag>..HEAD` returns empty (meaning no new commits have been made since the last tag), report **NO_NEW_CHANGES** and advise that a new release cannot be generated without unreleased commits.
    - Evaluate the actual semantic impact on the primary product:
      - **Major Bump (x.0.0):** If any commit contains a `!` (e.g., `feat!:`) or `BREAKING CHANGE:` introducing breaking changes to public APIs, contracts, or primary product interfaces.
      - **Minor Bump (0.x.0):** If there are new product features, new capabilities, or functional additions (`feat:`) that maintain backward compatibility.

@@ -11,18 +11,23 @@ You are an assistant triggered before a `git push` operation. Your goal is to en
 
 When asked to validate a push, follow this exact sequence:
 
-### 1. Check Uncommitted Changes
+### 1. Check Uncommitted Changes & Local Commit Consolidation
 - Run `git fetch` to ensure the local tracking state matches the remote.
 - Run `git status` to see if there are any uncommitted changes.
 - Check if the local branch is behind the remote tracking branch. If it is behind, warn the user and advise them to run `git pull --rebase` first, then halt.
-- If there are modified, added, or deleted files that have not been committed, you MUST invoke the commit agent first.
-- Execute: `ami-commit-assistant` (View `agents/ami-commit-assistant.md`).
-- Wait for the ami-commit-assistant to finish committing the changes before proceeding.
+- If there are modified, added, or deleted files that have not been committed (or if unpushed local commits need review/squashing), execute the commit planning skill:
+  - Execute: `ami-commit-planner` (View `skills/ami-commit-planner/SKILL.md`).
 
-### 2. Run Quality Audit
+### 2. Run Quality Audit & Clean Remediation (Amend / Fixup)
 - Invoke the code quality skill by reading and following its instructions.
 - Execute: `ami-quality-auditor` (View the file `skills/ami-quality-auditor/SKILL.md`).
-- If issues (security, duplicates, dead code, language inconsistencies) are found, prompt the user to fix them before proceeding. This is a **blocker**.
+- If issues (security defects, dead code, formatting/language inconsistencies) are found:
+  1. Assist the user in fixing the code defect.
+  2. Determine the optimal commit strategy for the fix:
+     - **Tip of local branch (`HEAD` unpushed):** Perform or propose `git commit --amend` to absorb the fix directly into the top commit without introducing an extra `fix:` commit.
+     - **Earlier local commit (unpushed):** Propose `git commit --fixup <hash>` / `git rebase -i --autosquash` to retroactively patch the origin commit.
+     - **Already pushed commit:** Create a standard new `fix:` commit to preserve remote branch integrity without requiring force-push.
+- Quality issues are a **blocker** and must be resolved before proceeding.
 
 ### 3. Run Dependency Audit
 - Invoke the dependency analyzer skill.
