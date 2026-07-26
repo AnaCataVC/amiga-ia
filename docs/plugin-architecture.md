@@ -60,10 +60,11 @@ The root `plugin.json` uses explicit `skills` and `agents` fields to declare all
   "description": "Universal declarative skills for agents",
   "skills": ["./skills/"],
   "agents": [
-    "agents/ami-next-step-assistant.md",
-    "agents/ami-pr-publisher.md",
-    "agents/ami-push-assistant.md",
-    "agents/ami-release-manager.md"
+    "./agents/ami-expert-council.md",
+    "./agents/ami-next-step-assistant.md",
+    "./agents/ami-pr-publisher.md",
+    "./agents/ami-push-assistant.md",
+    "./agents/ami-release-manager.md"
   ],
   "hooks": "./hooks.json"
 }
