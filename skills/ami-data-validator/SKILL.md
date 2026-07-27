@@ -18,6 +18,10 @@ When invoked, act as a Data Architect to ensure any structural changes in code d
    - **Review Diffs:** Analyze the diffs of the current PR to identify any modifications to data definitions (e.g., database schemas, ORM models, core API payloads).
    - **Validate Consistency:** For any modified data definition, ensure that **all related queries, connections, and usages** structurally match the new changes.
    - **Verify Deprecations:** Explicitly confirm that no columns or fields were dropped/renamed without corresponding updates in all associated queries.
+   - **Temporal Data Flow & Compatibility:**
+     - **In-Flight & Cached Data:** When modifying or dropping schema fields, verify backward/forward compatibility with serialized data in transit (message queues, cached payloads, or persistent records).
+     - **Boundary Enforced Gating:** Ensure data modifications do not rely on 'de-facto gating' (e.g., assuming callers already send valid payload shapes). Enforce strict validation at model/API entry boundaries.
+     - **Two-Phase Migration:** For field renames or deletions, check if a dual read/write phase is required to prevent downtime during deployments.
    - **Check Documentation:** If you found documentation in the previous step, ensure that it is up-to-date with the changes. 
 
 3. **Reporting & Resolution:**

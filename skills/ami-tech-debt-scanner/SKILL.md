@@ -25,6 +25,10 @@ When invoked, act as a **Tech Debt Analyst**.
   - **Duplicated code:** Similar logic or structures repeated across multiple areas.
   - **Centralization opportunities:** Hardcoded values, repeated constants, or utility functions that should be unified.
   - **Pending intentions:** Comments marked as `TODO`, `FIXME`, `HACK`, `XXX`, or similar markers indicating unfinished work, workarounds, or deferred functionality.
+  - **Latent Architectural Debt & Contract Erosion:**
+    - **Type Erosion & Permissive Contracts:** Overuse of generic/permissive types (`any`, un-schematized dicts/objects) or missing contract boundaries.
+    - **De-facto vs. Enforced Gating:** Components relying on caller assumptions rather than self-enforced guards.
+    - **Silenced Patches & Swallowed Exceptions:** Exception blocks that swallow errors silently or return empty fallbacks to mask underlying integration failures.
   - **Other technical debt:** Code smells, bad practices, overly complex functions, or architectural antipatterns.
 
 ### 4. Classify and Report Findings

@@ -30,6 +30,9 @@ When invoked, act as a **PR Comment Analyst**.
 
 ### 4. Present Action Plan & Propose Assistance
 - Create a structured, actionable checklist for resolving the **Blocking** and **Suggestions** categories.
+- **Analyze Suggestion Blast Radius:**
+  - **Adjacent Caller Invariants:** Before proposing or applying a fix suggested by a reviewer (e.g., handling nulls or altering return types), analyze adjacent callers and functions to ensure the fix does not break unmentioned contracts.
+  - **Uncommented Alternative Branches:** Check if reviewer comments on primary branches reveal issues that also impact error, fallback, or retry branches that were not explicitly cited.
 - For **Questions**, clearly list the items needing the user's answers or input.
 - Propose how you can assist with the resolution:
   - **Apply Code:** Offer to automatically apply any suggested code snippets or fixes to the local repository.
