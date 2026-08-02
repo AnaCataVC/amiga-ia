@@ -6,7 +6,7 @@
 This document defines the official architecture and distribution model for **Amiga IA**, covering both supported AI platforms (Antigravity / Gemini and Claude Code).
 
 > [!NOTE]
-> **Architectural Decision (ADR-001):** Native plugin manifests (`plugin.json` / `.claude-plugin/plugin.json`) have been deprecated in favor of **Unified NPM Distribution (`npx @anacatavc/amiga-ia-setup`)**. See [ADR-001](file:///c:/Users/anaca/Repos/amiga-ia/docs/adr-001-unified-npm-distribution.md) for full details.
+> **Architectural Decision (ADR-001):** Native plugin manifests (`plugin.json` / `.claude-plugin/plugin.json`) have been deprecated in favor of **Unified NPM Distribution (`npx @anacatavc/amiga-ia-setup`)**. See [ADR-001](../adr/001-unified-npm-distribution.md) for full details.
 
 ---
 
@@ -59,11 +59,14 @@ The root `plugin.json` uses explicit `skills` and `agents` fields to declare all
   "description": "Universal declarative skills for agents",
   "skills": ["./skills/"],
   "agents": [
+    "./agents/ami-doc-architect.md",
     "./agents/ami-expert-council.md",
     "./agents/ami-next-step-assistant.md",
     "./agents/ami-pr-publisher.md",
+    "./agents/ami-pr-reviewer.md",
     "./agents/ami-push-assistant.md",
-    "./agents/ami-release-manager.md"
+    "./agents/ami-release-manager.md",
+    "./agents/ami-repo-auditor.md"
   ],
   "hooks": "./hooks.json"
 }
@@ -142,26 +145,26 @@ Claude Code uses a different layout convention. The manifest lives inside a `.cl
 
 ---
 
-## 4. Why Two `hooks.json` Files?
+## 4. Multi-Engine Hooks Architecture
 
-The repository contains two separate `hooks.json` files with **identical** hook definitions. This is intentional — each file serves a different distribution path.
+The repository supports three distinct hook engines to ensure seamless execution across different operating systems and developer environments.
 
-| File | Distribution Path | Consumed By |
+| File / Folder | Engine / Distribution Path | Consumed By / Description |
 |---|---|---|
-| `hooks.json` (repo root) | **NPM Wizard** (`bin/setup.js`) | The CLI wizard reads this file and merges the hook definitions into the user's `~/.claude/settings.json` during installation. |
-| `hooks/hooks.json` | **Claude Code Native Plugin** | Claude Code auto-discovers hooks from this path when the plugin is installed via the marketplace or `claude plugin install`. |
+| `hooks.json` (repo root) | **Bash Engine (Default / POSIX)** | Standard bash-driven hooks utilizing `jq`. Merged into `~/.claude/settings.json` via the setup wizard. |
+| `hooks-pwsh.json` | **PowerShell Engine (Windows / Pwsh)** | Native PowerShell scripts utilizing `ConvertFrom-Json`. Designed for Windows compatibility without WSL or Unix utilities. |
+| `hooks/scripts/ami-*.js` | **Universal Node.js Engine (Cross-Platform)** | Zero-dependency Node.js execution scripts that run reliably across Windows, macOS, and Linux without external binaries. |
+| `hooks/hooks.json` | **Claude Code Native Plugin Discovery** | Claude Code auto-discovers hooks from this path at runtime when installed natively as a plugin. |
 
-### Why Not Just One File?
+### Why Multiple Engine Files?
 
-The two systems look for hooks in fundamentally different locations:
-
-- **The NPM wizard** operates at build/install time. It reads from the repository root (`hooks.json`) and physically writes the hook definitions into the user's global Claude settings file.
-- **Claude Code's plugin system** operates at runtime. It expects hooks at `hooks/hooks.json` relative to the plugin root and loads them automatically.
-
-Because these are two distinct consumption mechanisms with different path expectations, maintaining both files is the simplest and most reliable approach. Both files **must** be kept in sync when hook definitions change.
+Different development environments present varied dependency constraints:
+- **POSIX environments (macOS/Linux)** thrive on lightweight shell execution (`Bash`).
+- **Windows native environments** frequently lack `bash` or `jq` in normal paths, requiring native `PowerShell` execution (`pwsh`).
+- **Universal JavaScript execution** via `node` provides an absolute fallback guarantee for cross-platform workflows.
 
 > [!WARNING]
-> When modifying hook definitions, always update **both** `hooks.json` (root) and `hooks/hooks.json` simultaneously. Forgetting one will cause inconsistent behavior depending on the user's installation method.
+> When modifying hook logic or definitions, always ensure consistency across `hooks.json`, `hooks-pwsh.json`, `hooks/scripts/`, and `hooks/hooks.json` simultaneously.
 
 ---
 
@@ -184,7 +187,7 @@ The `amiga-ia-setup` command launches an interactive CLI wizard (`bin/setup.js`)
 2. Physically copies skill directories (`skills/*/SKILL.md`) and agent files (`agents/*.md`) into the appropriate configuration folders:
    - Antigravity: `~/.gemini/config/skills/` and `~/.gemini/config/agents/`
    - Claude Code: `~/.claude/skills/` and `~/.claude/agents/`
-3. Reads `hooks.json` from the package root and merges hook definitions into the user's `~/.claude/settings.json`.
+3. Prompts the user to interactively choose their preferred hook engine (Bash, native PowerShell, or universal Node.js scripts), and cleanly merges the selected configuration into `~/.claude/settings.json`.
 
 ### Why Physical Copy Instead of Symlinks?
 

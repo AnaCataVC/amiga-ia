@@ -116,7 +116,7 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                 </div>
                 <h3 class="text-xl font-semibold mb-3 text-white" data-i18n-en="Auto-Documentation" data-i18n-es="Auto-Documentación">Auto-Documentation</h3>
-                <p class="text-slate-400 leading-relaxed" data-i18n-en="Never lose context. Automated session summaries record goals, decisions, file changes, and pending tasks behind the scenes." data-i18n-es="Nunca pierdas el contexto. Resúmenes automáticos de sesión documentan objetivos, decisiones, cambios y tareas pendientes en segundo plano.">Never lose context. Automated session summaries record goals, decisions, file changes, and pending tasks behind the scenes.</p>
+                <p class="text-slate-400 leading-relaxed" data-i18n-en="Never lose context. Intelligent declarative workflows extract coding learnings, document architectural decisions (ADRs), and keep project wikis synced." data-i18n-es="Nunca pierdas el contexto. Workflows declarativos inteligentes extraen lecciones de código, documentan decisiones arquitectónicas (ADRs) y mantienen tus wikis sincronizados.">Never lose context. Intelligent declarative workflows extract coding learnings, document architectural decisions (ADRs), and keep project wikis synced.</p>
             </div>
         </div>
 
@@ -146,12 +146,24 @@
                     <p class="text-slate-400 text-xs leading-relaxed" data-i18n-en="Automates the creation, description, and formatting of Pull Requests." data-i18n-es="Automatiza la creación, descripción y formateo de Pull Requests.">Automates the creation, description, and formatting of Pull Requests.</p>
                 </div>
                 <div class="bg-emerald-900/10 border border-emerald-500/20 rounded-xl p-5 hover:bg-emerald-900/20 transition-colors">
+                    <h4 class="text-emerald-400 font-mono text-sm mb-2">ami-pr-reviewer</h4>
+                    <p class="text-slate-400 text-xs leading-relaxed" data-i18n-en="Orchestrates structured PR code reviews using parallel subagents and capability discovery." data-i18n-es="Orquesta revisiones de PR estructuradas usando subagentes en paralelo y descubrimiento de capacidades.">Orchestrates structured PR code reviews using parallel subagents and capability discovery.</p>
+                </div>
+                <div class="bg-emerald-900/10 border border-emerald-500/20 rounded-xl p-5 hover:bg-emerald-900/20 transition-colors">
                     <h4 class="text-emerald-400 font-mono text-sm mb-2">ami-expert-council</h4>
                     <p class="text-slate-400 text-xs leading-relaxed" data-i18n-en="Spawns a council of specialized subagents tailored to discuss and refine a user's idea." data-i18n-es="Crea un panel de subagentes especializados para debatir y refinar ideas.">Spawns a council of specialized subagents tailored to discuss and refine a user's idea.</p>
                 </div>
                 <div class="bg-emerald-900/10 border border-emerald-500/20 rounded-xl p-5 hover:bg-emerald-900/20 transition-colors">
                     <h4 class="text-emerald-400 font-mono text-sm mb-2">ami-next-step-assistant</h4>
                     <p class="text-slate-400 text-xs leading-relaxed" data-i18n-en="Analyzes current repository state and proposes logical next actions." data-i18n-es="Analiza el estado actual del repositorio y propone siguientes acciones lógicas.">Analyzes current repository state and proposes logical next actions.</p>
+                </div>
+                <div class="bg-emerald-900/10 border border-emerald-500/20 rounded-xl p-5 hover:bg-emerald-900/20 transition-colors">
+                    <h4 class="text-emerald-400 font-mono text-sm mb-2">ami-doc-architect</h4>
+                    <p class="text-slate-400 text-xs leading-relaxed" data-i18n-en="Orchestrates repository-wide documentation, context research, and session learnings extraction." data-i18n-es="Orquesta en paralelo la documentación del repositorio, investigación de contexto y extracción de lecciones.">Orchestrates repository-wide documentation, context research, and session learnings extraction.</p>
+                </div>
+                <div class="bg-emerald-900/10 border border-emerald-500/20 rounded-xl p-5 hover:bg-emerald-900/20 transition-colors">
+                    <h4 class="text-emerald-400 font-mono text-sm mb-2">ami-repo-auditor</h4>
+                    <p class="text-slate-400 text-xs leading-relaxed" data-i18n-en="Orchestrates modular repository health audits, dependency scanning, and technical debt analysis." data-i18n-es="Orquesta auditorías modulares de salud del repositorio, análisis de dependencias y deuda técnica.">Orchestrates modular repository health audits, dependency scanning, and technical debt analysis.</p>
                 </div>
             </div>
 
@@ -244,11 +256,7 @@
                 <span class="w-2 h-2 rounded-full bg-blue-400"></span>
                 <span data-i18n-en="Background Hooks" data-i18n-es="Hooks en Segundo Plano">Background Hooks</span>
             </h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div class="bg-blue-900/10 border border-blue-500/20 rounded-xl p-5 hover:bg-blue-900/20 transition-colors">
-                    <h4 class="text-blue-400 font-mono text-sm mb-2">Session Context Restore</h4>
-                    <p class="text-slate-400 text-xs leading-relaxed" data-i18n-en="Injects pending tasks from previous sessions automatically on startup." data-i18n-es="Inyecta tareas pendientes de sesiones anteriores automáticamente al iniciar.">Injects pending tasks from previous sessions automatically on startup.</p>
-                </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="bg-blue-900/10 border border-blue-500/20 rounded-xl p-5 hover:bg-blue-900/20 transition-colors">
                     <h4 class="text-blue-400 font-mono text-sm mb-2">Git Pre-Flight Guards</h4>
                     <p class="text-slate-400 text-xs leading-relaxed" data-i18n-en="Blocks raw CLI git commands to enforce AI assistant review workflows." data-i18n-es="Bloquea comandos de git crudos para forzar el uso de agentes de revisión.">Blocks raw CLI git commands to enforce AI assistant review workflows.</p>

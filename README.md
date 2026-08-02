@@ -37,7 +37,11 @@ amiga-ia/
 ├── docs/                    # Persistent agent memory and architecture docs
 ├── skills/                  # Declarative Markdown skills
 │   └── */SKILL.md           # Individual skill definitions in directories
-└── hooks.json               # Claude Code native hooks configuration
+├── hooks/                   # Claude Code native and cross-platform hooks
+│   ├── hooks.json           # Plugin auto-discovery configuration
+│   └── scripts/*.js         # Universal Node.js cross-platform hook scripts
+├── hooks.json               # Claude Code native hooks configuration (Bash)
+└── hooks-pwsh.json          # Claude Code native hooks configuration (PowerShell)
 ```
 
 ### 3. Declarative Format
@@ -67,11 +71,14 @@ All built-in tools use the mandatory **`ami-`** prefix to ensure safe namespacin
 
 | Type | Name | Description |
 |---|---|---|
+| Agent | **ami-doc-architect** | Master documentation orchestrator that coordinates doc-manager, context research, and session learnings extraction. |
 | Agent | **ami-expert-council** | Spawns a council of specialized subagents tailored to discuss, debate, and refine a user's idea from multiple perspectives. |
 | Agent | **ami-next-step-assistant** | Acts as a project guide by analyzing the repository and recommending the most critical next step. |
 | Agent | **ami-pr-publisher** | Master orchestrator agent that performs a comprehensive review of Pull Requests before they are published. |
+| Agent | **ami-pr-reviewer** | Master orchestrator agent that evaluates existing Pull Requests using parallel subagents and repository capability discovery. |
 | Agent | **ami-push-assistant** | Pre-push orchestrator that performs baseline quality, security, and data consistency checks before a push. |
 | Agent | **ami-release-manager** | The central orchestrator agent that manages the release lifecycle. |
+| Agent | **ami-repo-auditor** | Master audit orchestrator that evaluates codebase health, technical debt, dependency hygiene, and security across modules. |
 | Skill | **ami-commit-planner** | Analyzes the working tree, performs security/leak audits, plans Conventional Commits/amend/squash, and executes commits. |
 | Skill | **ami-context-researcher** | Actively researches external documentation and saves findings to prevent context loss. |
 | Skill | **ami-data-validator** | Validates structural consistency between code changes and data definitions. |
@@ -99,18 +106,18 @@ npm install -g @anacatavc/amiga-ia
 ```
 
 **Setup Wizard (CLI):**
-Run the interactive setup wizard to configure your AI assistant (Claude Code, Antigravity, or Both):
+Run the interactive setup wizard to configure your AI assistant (Claude Code, Antigravity, or Both) and select your preferred shell engine (Bash, native PowerShell, or universal Node.js cross-platform scripts):
 ```bash
 amiga-ia-setup
 ```
 
 **Diagnostic Tool (`doctor`):**
-To verify your installation and validate YAML frontmatter across all skills:
+To verify your installation, check OS-incompatible shell engines, and validate YAML frontmatter across all skills:
 ```bash
 amiga-ia-setup doctor
 ```
 
-> 💡 **Background Hooks:** Claude Code supports background hooks (pre-commit advisory reminders, session context recovery). The wizard merges recommended hooks cleanly into `~/.claude/settings.json` (creating a backup at `~/.claude/settings.json.amiga-backup`). Antigravity natively uses its atomic planning pipeline and declarative rules (`rules/ami-rules.md`).
+> 💡 **Background Hooks & Engine Selection:** Claude Code supports background hooks (pre-commit advisory reminders and tool interception). The setup wizard offers interactive engine selection (Bash, PowerShell, or zero-dependency Node.js), cleanly merging configurations into `~/.claude/settings.json` (creating a backup at `~/.claude/settings.json.amiga-backup`). Antigravity natively uses its atomic planning pipeline and declarative rules (`rules/ami-rules.md`).
 
 #### 5.1 What the Wizard Installs
 
@@ -119,13 +126,13 @@ When you run `amiga-ia-setup`, the wizard configures the following global user d
 ```text
 ~/.claude/                          # Claude Code Global Configuration
 ├── skills/ami-*/SKILL.md           # Declarative Skills (17 directories)
-├── agents/ami-*.md                 # Autonomous Subagents (5 profiles)
-├── settings.json                   # Merged Hooks (SessionStart, PreToolUse, PostToolUse)
+├── agents/ami-*.md                 # Autonomous Subagents (8 profiles)
+├── settings.json                   # Merged Hooks (PreToolUse, PostToolUse)
 └── settings.json.amiga-backup      # Safe original settings backup
 
 ~/.gemini/config/                   # Antigravity (Gemini) Global Configuration
 ├── skills/ami-*/SKILL.md           # Declarative Skills (17 directories)
-├── agents/ami-*.md                 # Autonomous Subagents (5 profiles)
+├── agents/ami-*.md                 # Autonomous Subagents (8 profiles)
 └── rules/ami-rules.md              # Declarative Operational Rules
 ```
 
@@ -158,7 +165,11 @@ amiga-ia/
 ├── docs/                    # Memoria persistente y documentación del proyecto
 ├── skills/                  # Skills declarativas en Markdown
 │   └── */SKILL.md           # Definiciones individuales de skills
-└── hooks.json               # Configuración nativa de hooks para Claude Code
+├── hooks/                   # Hooks nativos y scripts multiplataforma
+│   ├── hooks.json           # Configuración para descubrimiento automático
+│   └── scripts/*.js         # Scripts de hooks universales en Node.js
+├── hooks.json               # Configuración nativa de hooks para Claude Code (Bash)
+└── hooks-pwsh.json          # Configuración nativa de hooks para Claude Code (PowerShell)
 ```
 
 ### 3. Formato Declarativo
@@ -187,11 +198,14 @@ Todas las herramientas incluidas utilizan el prefijo obligatorio **`ami-`** para
 
 | Tipo | Nombre | Descripción |
 |---|---|---|
+| Agente | **ami-doc-architect** | Agente orquestador de documentación que coordina creación, investigación de contexto y extracción de lecciones en paralelo. |
 | Agente | **ami-expert-council** | Crea un panel de subagentes especializados para debatir y refinar ideas desde múltiples perspectivas. |
 | Agente | **ami-next-step-assistant** | Guía el proyecto analizando el repositorio y recomendando el siguiente paso más crítico. |
 | Agente | **ami-pr-publisher** | Agente orquestador maestro que realiza una revisión exhaustiva de los Pull Requests antes de publicarlos. |
+| Agente | **ami-pr-reviewer** | Agente orquestador maestro que evalúa Pull Requests existentes usando subagentes en paralelo y descubrimiento de capacidades del repositorio. |
 | Agente | **ami-push-assistant** | Orquestador pre-push que realiza comprobaciones de calidad, seguridad y consistencia de datos. |
 | Agente | **ami-release-manager** | Agente orquestador central que gestiona el ciclo de vida de los lanzamientos (releases). |
+| Agente | **ami-repo-auditor** | Agente orquestador de auditoría que evalúa en paralelo deuda técnica, higiene de dependencias y seguridad por módulos. |
 | Skill | **ami-commit-planner** | Analiza el working tree, audita fugas de seguridad, planifica Conventional Commits/amend/squash y ejecuta commits. |
 | Skill | **ami-context-researcher** | Investiga documentación externa activamente y guarda los hallazgos para prevenir pérdida de contexto. |
 | Skill | **ami-data-validator** | Valida la consistencia estructural entre los cambios de código y las definiciones de datos. |
@@ -217,18 +231,18 @@ npm install -g @anacatavc/amiga-ia
 ```
 
 **Asistente de Configuración (CLI):**
-Ejecuta el asistente interactivo para configurar tu asistente de IA (Claude Code, Antigravity o Ambos):
+Ejecuta el asistente interactivo para configurar tu asistente de IA (Claude Code, Antigravity o Ambos) y elegir el motor de shell de tu preferencia (Bash, PowerShell nativo o scripts universales en Node.js):
 ```bash
 amiga-ia-setup
 ```
 
 **Herramienta de Diagnóstico (`doctor`):**
-Para verificar la salud de tu instalación y validar el YAML frontmatter de todas las habilidades:
+Para verificar la salud de tu instalación, detectar motores de shell incompatibles con tu OS y validar el YAML frontmatter de todas las habilidades:
 ```bash
 amiga-ia-setup doctor
 ```
 
-> 💡 **Hooks en Segundo Plano:** Claude Code soporta hooks de fondo (recordatorios informativos de pre-commit, restauración de contexto). El asistente fusiona (*merge*) los hooks recomendados de forma transparente en `~/.claude/settings.json` (creando primero un respaldo en `~/.claude/settings.json.amiga-backup`). Antigravity utiliza su pipeline de planificación atómica y reglas declarativas (`rules/ami-rules.md`).
+> 💡 **Hooks en Segundo Plano y Selección de Motor:** Claude Code soporta hooks de fondo (recordatorios informativos de pre-commit e interdicción de herramientas). El asistente ofrece selección interactiva de motor de hooks (Bash, PowerShell o Node.js universal), fusionando (*merge*) los hooks de forma transparente en `~/.claude/settings.json` (creando primero un respaldo en `~/.claude/settings.json.amiga-backup`). Antigravity utiliza su pipeline de planificación atómica y reglas declarativas (`rules/ami-rules.md`).
 
 #### 5.1 Qué Instala el Asistente
 
@@ -237,13 +251,13 @@ Al ejecutar `amiga-ia-setup`, el asistente configura los siguientes directorios 
 ```text
 ~/.claude/                          # Configuración Global de Claude Code
 ├── skills/ami-*/SKILL.md           # Skills Declarativas (17 directorios)
-├── agents/ami-*.md                 # Subagentes Autónomos (5 perfiles)
-├── settings.json                   # Hooks Integrados (SessionStart, PreToolUse, PostToolUse)
+├── agents/ami-*.md                 # Subagentes Autónomos (8 perfiles)
+├── settings.json                   # Hooks Integrados (PreToolUse, PostToolUse)
 └── settings.json.amiga-backup      # Respaldo seguro de configuraciones originales
 
 ~/.gemini/config/                   # Configuración Global de Antigravity (Gemini)
 ├── skills/ami-*/SKILL.md           # Skills Declarativas (17 directorios)
-├── agents/ami-*.md                 # Subagentes Autónomos (5 perfiles)
+├── agents/ami-*.md                 # Subagentes Autónomos (8 perfiles)
 └── rules/ami-rules.md              # Reglas Declarativas Operativas
 ```
 

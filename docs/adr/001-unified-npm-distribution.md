@@ -12,7 +12,7 @@ Previously, **Amiga IA** supported two parallel distribution models:
 Maintaining both distribution channels led to several critical architectural challenges:
 * **Configuration Drift & Duplication:** Synchronizing metadata across `package.json`, root `plugin.json`, `.claude-plugin/plugin.json`, `hooks.json`, and `hooks/hooks.json` required complex build pipelines and increased the surface area for silent version mismatches.
 * **Duplicate Skill Conflict Risk:** If a user installed Amiga IA via both the native plugin system and the NPM CLI wizard, both systems registered identical `ami-*` skills into global AI assistant paths, causing duplicate skill collisions.
-* **Sandbox & Hook Asymmetry:** Native plugins had restricted access to background hooks due to assistant sandboxing, whereas the NPM CLI wizard cleanly merges background hooks (`SessionStart`, `PreToolUse`, `PostToolUse`) into `~/.claude/settings.json` with safe backups (`settings.json.amiga-backup`).
+* **Sandbox & Hook Asymmetry:** Native plugins had restricted access to background hooks due to assistant sandboxing, whereas the NPM CLI wizard cleanly merges background hooks (`PreToolUse`, `PostToolUse`) into `~/.claude/settings.json` with safe backups (`settings.json.amiga-backup`).
 
 ## Decision
 

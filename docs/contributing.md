@@ -30,9 +30,9 @@ amiga-ia/
 ├── adapters/universal_adapter.js  # Generates XML catalog for AI lazy loading
 ├── bin/setup.js                   # Interactive CLI wizard & diagnostic tool (`doctor`)
 ├── rules/ami-rules.md             # Declarative operational rules for Antigravity
-├── agent/session_state.js         # Structured session state store ($S$)
-├── hooks.json                     # Primary hooks configuration for Claude Code
-├── hooks/hooks.json               # Auto-synced hooks copy
+├── agent/                         # Boilerplate agent library definitions
+├── hooks.json / hooks-pwsh.json   # Primary hook definitions (Bash and PowerShell variants)
+├── hooks/                         # Auto-synced hooks copy and universal Node.js scripts
 ├── tests/                         # Native Node.js test suite (`npm test`)
 ├── docs/                          # Memory, ADRs, and project documentation
 └── package.json                   # NPM package definition (Single Source of Truth)
@@ -43,8 +43,9 @@ amiga-ia/
 - **`adapters/universal_adapter.js`** — Scans skills/agents and builds an XML index injected into the AI's system prompt.
 - **`bin/setup.js`** — The `amiga-ia-setup` CLI command that physically copies files to local AI configuration folders and runs diagnostic checks (`doctor`).
 - **`rules/ami-rules.md`** — Declarative operational guardrails for Antigravity.
-- **`agent/session_state.js`** — Manages structured session state and task tracking.
-- **`hooks.json`** — Primary hook definitions merged into `~/.claude/settings.json`.
+- **`agent/`** — Boilerplate agent entrypoint library exporting adapter utilities.
+- **`hooks.json` / `hooks-pwsh.json`** — Primary hook definitions (Bash and PowerShell engine variants) merged into `~/.claude/settings.json` via the setup wizard.
+- **`hooks/scripts/*.js`** — Universal Node.js hook scripts supporting zero-dependency cross-platform execution.
 - **`tests/`** — Native Node.js test runner suite (`npm test`).
 
 ---

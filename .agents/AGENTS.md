@@ -46,6 +46,8 @@ The repository is distributed as an NPM package:
 ├── agent/                       ← Main entrypoint exporting libraries
 ├── skills/*/SKILL.md            ← Skill directories with YAML and detailed Markdown
 ├── agents/*.md                  ← Subagent profiles in Markdown
-├── hooks.json                   ← Hooks config (used by NPM wizard for merging)
+├── hooks/scripts/*.js           ← Universal cross-platform Node.js hook scripts
+├── hooks.json                   ← Hooks config (Bash engine, used by NPM wizard for merging)
+├── hooks-pwsh.json              ← Hooks config (PowerShell engine, used by NPM wizard for merging)
 └── hooks/hooks.json             ← Hooks config (used by Claude Code plugin discovery)
 ```
