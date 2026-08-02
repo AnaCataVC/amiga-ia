@@ -88,14 +88,14 @@ describe('Amiga IA setup.js mergeSettings tests', () => {
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
-  test('should exclude SessionStart hook when options.includeSessionStart is false', () => {
+  test('should not include SessionStart hook when merging settings from source hooks', () => {
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'amiga-test-'));
     const testSettingsPath = path.join(tmpDir, 'settings.json');
     const sourceHooksPath = path.resolve('hooks.json');
 
     fs.writeFileSync(testSettingsPath, '{}');
 
-    const result = mergeSettingsFunc(fs, path, testSettingsPath, sourceHooksPath, { includeSessionStart: false });
+    const result = mergeSettingsFunc(fs, path, testSettingsPath, sourceHooksPath);
     assert.strictEqual(result, true);
 
     const updatedData = JSON.parse(fs.readFileSync(testSettingsPath, 'utf8'));
@@ -105,7 +105,7 @@ describe('Amiga IA setup.js mergeSettings tests', () => {
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
-  test('should preserve user custom SessionStart hooks when options.includeSessionStart is false and remove only Amiga SessionStart hook', () => {
+  test('should purge legacy Amiga SessionStart hooks while preserving user custom SessionStart hooks', () => {
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'amiga-test-'));
     const testSettingsPath = path.join(tmpDir, 'settings.json');
     const sourceHooksPath = path.resolve('hooks.json');
@@ -129,7 +129,7 @@ describe('Amiga IA setup.js mergeSettings tests', () => {
 
     fs.writeFileSync(testSettingsPath, JSON.stringify(mockSettingsWithCustomSession, null, 2));
 
-    const result = mergeSettingsFunc(fs, path, testSettingsPath, sourceHooksPath, { includeSessionStart: false });
+    const result = mergeSettingsFunc(fs, path, testSettingsPath, sourceHooksPath);
     assert.strictEqual(result, true);
 
     const updatedData = JSON.parse(fs.readFileSync(testSettingsPath, 'utf8'));

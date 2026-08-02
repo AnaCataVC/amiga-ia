@@ -1,16 +1,5 @@
 {
   "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "shell": "pwsh",
-            "command": "if (Test-Path docs/coding-sessions) { $latest = Get-ChildItem 'docs/coding-sessions/*_session-summary.md' -EA SilentlyContinue | Sort-Object LastWriteTime -Descending | Select-Object -First 1; if ($latest) { Write-Output ('Context from previous session (' + $latest.Name + '):'); $flag = $false; foreach ($line in (Get-Content $latest.FullName)) { if ($line -match '^## Pending Tasks') { $flag = $true; Write-Output $line } elseif ($line -match '^##') { $flag = $false } elseif ($flag) { Write-Output $line } } } }"
-          }
-        ]
-      }
-    ],
     "PreToolUse": [
       {
         "matcher": "Bash|PowerShell",

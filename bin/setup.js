@@ -73,7 +73,7 @@ function deleteMatchingFiles(src, dest, isRoot = true) {
   }
 }
 
-function mergeSettings(targetPath, sourcePath, options = { includeSessionStart: true }) {
+function mergeSettings(targetPath, sourcePath, options = {}) {
   let targetData = {};
   if (fs.existsSync(targetPath)) {
     try {
@@ -87,10 +87,6 @@ function mergeSettings(targetPath, sourcePath, options = { includeSessionStart: 
   }
   const sourceData = JSON.parse(fs.readFileSync(sourcePath, 'utf8'));
 
-  if (!options.includeSessionStart && sourceData.hooks && sourceData.hooks.SessionStart) {
-    delete sourceData.hooks.SessionStart;
-  }
-
   if (!targetData.hooks) targetData.hooks = {};
 
   const amigaSignatures = [
@@ -98,6 +94,7 @@ function mergeSettings(targetPath, sourcePath, options = { includeSessionStart: 
     'commit-assistant',
     'push-assistant',
     'ami-pr-publisher',
+    'ami-pr-reviewer',
     'ami-pr-conflict-detector',
     'docs/coding-sessions',
     'debugger|TODO|FIXME',
@@ -137,17 +134,21 @@ function mergeSettings(targetPath, sourcePath, options = { includeSessionStart: 
   return true;
 }
 
-function installNodeHooks(claudeDir, settingsPath, options = { includeSessionStart: true }) {
+function installNodeHooks(claudeDir, settingsPath, options = {}) {
   const hooksDir = path.join(claudeDir, 'hooks');
   if (!fs.existsSync(hooksDir)) fs.mkdirSync(hooksDir, { recursive: true });
 
   const sourceScripts = path.join(__dirname, '../hooks/scripts');
-  const scriptFiles = ['ami-session-start.js', 'ami-pre-tool-use.js', 'ami-post-tool-use.js'];
+  const scriptFiles = ['ami-pre-tool-use.js', 'ami-post-tool-use.js'];
   for (const file of scriptFiles) {
     const srcFile = path.join(sourceScripts, file);
     if (fs.existsSync(srcFile)) {
       fs.copyFileSync(srcFile, path.join(hooksDir, file));
     }
+  }
+  const legacyScript = path.join(hooksDir, 'ami-session-start.js');
+  if (fs.existsSync(legacyScript)) {
+    try { fs.unlinkSync(legacyScript); } catch (e) {}
   }
   console.log('✅ Hook scripts copied to ~/.claude/hooks/');
 
@@ -158,9 +159,6 @@ function installNodeHooks(claudeDir, settingsPath, options = { includeSessionSta
       PostToolUse: [{ matcher: 'Edit|Write', hooks: [{ type: 'command', command: nodeCmd('ami-post-tool-use.js') }] }]
     }
   };
-  if (options.includeSessionStart) {
-    hooksConfig.hooks.SessionStart = [{ hooks: [{ type: 'command', command: nodeCmd('ami-session-start.js') }] }];
-  }
 
   const tmpFile = path.join(claudeDir, '.amiga-hooks-tmp.json');
   fs.writeFileSync(tmpFile, JSON.stringify(hooksConfig, null, 2));
@@ -233,7 +231,7 @@ function runDoctor() {
   if (fs.existsSync(claudeSettingsPath)) {
     try {
       const settings = JSON.parse(fs.readFileSync(claudeSettingsPath, 'utf8'));
-      if (settings.hooks && (settings.hooks.SessionStart || settings.hooks.PreToolUse || settings.hooks.PostToolUse)) {
+      if (settings.hooks && (settings.hooks.PreToolUse || settings.hooks.PostToolUse)) {
         console.log('  ✅ Amiga IA hooks detected and settings.json is valid JSON.');
 
         const isWindows = os.platform() === 'win32';
@@ -247,7 +245,7 @@ function runDoctor() {
           }
         });
 
-        const amigaSigs = ['commit-assistant', 'push-assistant', 'ami-pr-publisher', 'ami-pr-conflict-detector', 'docs/coding-sessions', 'debugger|TODO|FIXME', 'ami-session-start', 'ami-pre-tool-use', 'ami-post-tool-use'];
+        const amigaSigs = ['commit-assistant', 'push-assistant', 'ami-pr-publisher', 'ami-pr-reviewer', 'ami-pr-conflict-detector', 'docs/coding-sessions', 'debugger|TODO|FIXME', 'ami-session-start', 'ami-pre-tool-use', 'ami-post-tool-use'];
         const isAmigaHook = (cmd) => cmd && typeof cmd === 'string' && amigaSigs.some(sig => cmd.includes(sig));
 
         const hasNodeHooks = hookCmds.some(h => isAmigaHook(h.command) && h.command.includes('node '));
@@ -280,25 +278,12 @@ function runDoctor() {
     console.log('  ℹ️  Claude Code settings file not found (~/.claude/settings.json).');
   }
 
-  // 4. Session State GitIgnore Check
-  console.log('\n🔍 Checking .gitignore configuration for session state and coding sessions...');
-  const gitignorePath = path.resolve('.gitignore');
-  if (fs.existsSync(gitignorePath)) {
-    const gitignoreContent = fs.readFileSync(gitignorePath, 'utf8');
-    const isAmigaIgnored = gitignoreContent.split('\n').some(line => line.trim() === '.amiga-ia' || line.trim() === '.amiga-ia/');
-    const isSessionsIgnored = gitignoreContent.split('\n').some(line => line.trim() === 'docs/coding-sessions' || line.trim() === 'docs/coding-sessions/');
-
-    if (isAmigaIgnored) {
-      console.log('  ✅ .amiga-ia/ directory is properly listed in .gitignore.');
-    } else {
-      console.log('  ℹ️  .amiga-ia/ directory is not listed in .gitignore.');
-    }
-
-    if (isSessionsIgnored) {
-      console.log('  ✅ docs/coding-sessions/ directory is properly listed in .gitignore.');
-    } else {
-      console.log('  ℹ️  docs/coding-sessions/ directory is not listed in .gitignore. You can add it if you wish to keep markdown session summaries out of git history.');
-    }
+  // 4. Legacy Directory Check
+  const sessionsDir = path.resolve('docs', 'coding-sessions');
+  if (fs.existsSync(sessionsDir)) {
+    console.log('\n🔍 Checking project workspace for legacy structures...');
+    console.log('  💡 ADVISORY: Found legacy docs/coding-sessions/ directory.');
+    console.log('     Recommendation: Extract any valuable architectural insights or pending tasks using ami-learnings-extractor and ami-doc-manager skills, and then delete docs/coding-sessions/ to save tokens and keep your repository clean.');
   }
 
   console.log('\n======================================================');
@@ -357,18 +342,14 @@ async function main() {
         );
         const engine = engineAns.toLowerCase().trim() || 'n';
 
-        const sessionAns = await ask('Enable SessionStart hook for automatic context restoration across sessions? (Only useful if you store session summaries in docs/coding-sessions/) [y/N]: ');
-        const includeSessionStart = sessionAns.toLowerCase().trim() === 'y';
-        const options = { includeSessionStart };
-
         let merged = false;
         if (engine === 'b' || engine === 'bash') {
-          merged = mergeSettings(claudeSettings, sourceSettingsPath, options);
+          merged = mergeSettings(claudeSettings, sourceSettingsPath);
         } else if (engine === 'p' || engine === 'powershell' || engine === 'pwsh') {
           const pwshSettingsPath = path.join(__dirname, '../hooks-pwsh.json');
-          merged = mergeSettings(claudeSettings, pwshSettingsPath, options);
+          merged = mergeSettings(claudeSettings, pwshSettingsPath);
         } else {
-          merged = installNodeHooks(claudeDir, claudeSettings, options);
+          merged = installNodeHooks(claudeDir, claudeSettings);
         }
 
         if (merged) {
@@ -443,31 +424,10 @@ async function main() {
   if (!['c', 'claude', 'b', 'both', 'a', 'antigravity', 'u', 'uninstall'].includes(choice)) {
     console.log('Skipping configuration.');
   } else {
-    const gitignorePath = path.resolve('.gitignore');
-    if (fs.existsSync(gitignorePath)) {
-      let content = fs.readFileSync(gitignorePath, 'utf8');
-      const isAmigaIgnored = content.split('\n').some(line => line.trim() === '.amiga-ia' || line.trim() === '.amiga-ia/');
-      const isSessionsIgnored = content.split('\n').some(line => line.trim() === 'docs/coding-sessions' || line.trim() === 'docs/coding-sessions/');
-
-      if (!isAmigaIgnored) {
-        const ignoreAns = await ask('\nDo you want to add .amiga-ia/ (local session state) to your project\'s .gitignore? [y/N]: ');
-        if (ignoreAns.toLowerCase().trim() === 'y') {
-          if (content && !content.endsWith('\n')) content += '\n';
-          content += '# Amiga IA local session state\n.amiga-ia/\n';
-          fs.writeFileSync(gitignorePath, content);
-          console.log('✅ Added .amiga-ia/ to .gitignore.');
-        }
-      }
-
-      if (!isSessionsIgnored) {
-        const ignoreAns = await ask('\nDo you want to add docs/coding-sessions/ (markdown session summaries) to your project\'s .gitignore? [y/N]: ');
-        if (ignoreAns.toLowerCase().trim() === 'y') {
-          if (content && !content.endsWith('\n')) content += '\n';
-          content += '# Amiga IA session summaries\ndocs/coding-sessions/\n';
-          fs.writeFileSync(gitignorePath, content);
-          console.log('✅ Added docs/coding-sessions/ to .gitignore.');
-        }
-      }
+    const sessionsDir = path.resolve('docs', 'coding-sessions');
+    if (fs.existsSync(sessionsDir)) {
+      console.log('\n💡 ADVISORY: Found legacy docs/coding-sessions/ directory.');
+      console.log('   Recommendation: Extract any valuable architectural insights or pending tasks using ami-learnings-extractor and ami-doc-manager skills, and then delete docs/coding-sessions/ to save tokens and keep your repository clean.');
     }
     console.log('\n✨ Setup complete! Restart your AI assistant for changes to take effect.');
   }

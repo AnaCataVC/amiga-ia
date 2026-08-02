@@ -1,6 +1,3 @@
 settings.local.json
 node_modules/
 releases/
-
-# Amiga IA local session state
-.amiga-ia/
