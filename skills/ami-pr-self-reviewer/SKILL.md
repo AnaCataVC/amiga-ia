@@ -1,6 +1,6 @@
 ---
 name: ami-pr-self-reviewer
-description: Acts as a critical self-reviewer for your own Pull Requests (draft or published). Instead of just leaving comments, it analyzes the diff and proactively suggests and applies concrete code fixes.
+description: Use ONLY when reviewing YOUR OWN Pull Requests, local branches, or work-in-progress code before publishing. Instead of leaving comments, it acts as a stringent Senior Engineer to proactively find flaws and apply concrete code fixes locally. If reviewing a teammate's or another person's Pull Request to leave review comments, use ami-pr-peer-reviewer instead.
 allowed-tools: Bash, Read, Grep, Edit, Write
 ---
 
@@ -10,9 +10,10 @@ When this skill is invoked, you act as a stringent Senior Engineer reviewing the
 
 ## Workflow
 
-1. **Context Identification:**
+1. **Context Identification & Validation:**
    - Ask the user which PR, branch, or specific commit they want you to review.
-   - If a PR URL or number is provided, read the diff.
+   - **CRITICAL AUTHORSHIP CHECK:** Identify if the PR or code belongs to another developer or teammate. This skill is exclusively for reviewing and directly fixing the user's OWN code. If the user is trying to review someone else's PR or give peer feedback to a teammate, **IMMEDIATELY STOP**, explain the difference between both skills, and recommend switching to **`ami-pr-peer-reviewer`** (which focuses on interactive QA, criticality observations, and publishing GitHub review comments without altering local files). Offer to invoke `ami-pr-peer-reviewer` right away.
+   - If a PR URL or number is provided and belongs to the user, read the diff.
    - If it's a local branch, analyze the uncommitted changes or recent commits since branching from the main branch.
 
 2. **Strict Self-Audit:**

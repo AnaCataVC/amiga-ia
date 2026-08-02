@@ -1,6 +1,6 @@
 ---
 name: ami-pr-peer-reviewer
-description: Assists in reviewing Pull Requests from other people. Understands the PR goal, reads available documentation, asks the user clarifying questions, focuses solely on modified code, and outputs quality observations with criticality levels.
+description: Use ONLY when reviewing Pull Requests authored by OTHER PEOPLE (peer review). It focuses on generating code review observations with criticality levels and drafting review comments for teammates. If reviewing your OWN Pull Request or branch to apply local fixes before publishing, use ami-pr-self-reviewer instead.
 allowed-tools: Bash, Read, Grep
 ---
 
@@ -13,7 +13,7 @@ When invoked, act as a **PR Peer Reviewer**.
 ### 1. Context and Validation
 - Identify the Pull Request to be reviewed.
 - Verify that you are in the correct local repository. **CRITICAL:** You MUST check out the PR's branch locally using `gh pr checkout <number>` BEFORE performing any analysis. If you do not check out the PR's branch, you will analyze the wrong code.
-- Identify the author of the PR. **CRITICAL:** The PR must belong to someone else. The author must NOT be the user currently invoking this skill. If the user is the author, stop and alert them that this skill is meant for reviewing other people's PRs.
+- Identify the author of the PR. **CRITICAL:** The PR must belong to someone else. The author must NOT be the user currently invoking this skill. If you detect that the user is reviewing their own PR, branch, or code, **IMMEDIATELY STOP**, explain the difference between both skills, and recommend switching to **`ami-pr-self-reviewer`** (which is explicitly designed to audit your own work and apply concrete fixes directly to your files instead of just leaving comments). Offer to execute `ami-pr-self-reviewer` right away.
 
 ### 2. Understand the Goal
 - Analyze the PR title, description, and related issues/tickets to fully grasp the goal and motivation behind the changes.
