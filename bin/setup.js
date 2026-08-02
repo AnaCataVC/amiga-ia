@@ -73,7 +73,7 @@ function deleteMatchingFiles(src, dest, isRoot = true) {
   }
 }
 
-function mergeSettings(targetPath, sourcePath) {
+function mergeSettings(targetPath, sourcePath, options = { includeSessionStart: true }) {
   let targetData = {};
   if (fs.existsSync(targetPath)) {
     try {
@@ -87,6 +87,10 @@ function mergeSettings(targetPath, sourcePath) {
   }
   const sourceData = JSON.parse(fs.readFileSync(sourcePath, 'utf8'));
 
+  if (!options.includeSessionStart && sourceData.hooks && sourceData.hooks.SessionStart) {
+    delete sourceData.hooks.SessionStart;
+  }
+
   if (!targetData.hooks) targetData.hooks = {};
 
   const amigaSignatures = [
@@ -96,16 +100,15 @@ function mergeSettings(targetPath, sourcePath) {
     'ami-pr-publisher',
     'ami-pr-conflict-detector',
     'docs/coding-sessions',
-    'debugger|TODO|FIXME'
+    'debugger|TODO|FIXME',
+    'ami-session-start',
+    'ami-pre-tool-use',
+    'ami-post-tool-use'
   ];
 
   let cleanedCount = 0;
 
-  for (const [event, newHooks] of Object.entries(sourceData.hooks || {})) {
-    if (!targetData.hooks[event]) {
-      targetData.hooks[event] = [];
-    }
-
+  for (const event of Object.keys(targetData.hooks || {})) {
     const initialLen = targetData.hooks[event].length;
     targetData.hooks[event] = targetData.hooks[event].filter(existingHook => {
       const cmdString = JSON.stringify(existingHook);
@@ -113,7 +116,15 @@ function mergeSettings(targetPath, sourcePath) {
       return !isAmigaHook;
     });
     cleanedCount += (initialLen - targetData.hooks[event].length);
+    if (targetData.hooks[event].length === 0) {
+      delete targetData.hooks[event];
+    }
+  }
 
+  for (const [event, newHooks] of Object.entries(sourceData.hooks || {})) {
+    if (!targetData.hooks[event]) {
+      targetData.hooks[event] = [];
+    }
     for (const newHook of newHooks) {
       targetData.hooks[event].push(newHook);
     }
@@ -124,6 +135,40 @@ function mergeSettings(targetPath, sourcePath) {
     console.log(`🧹 Cleaned ${cleanedCount} obsolete/duplicate Amiga IA hook(s).`);
   }
   return true;
+}
+
+function installNodeHooks(claudeDir, settingsPath, options = { includeSessionStart: true }) {
+  const hooksDir = path.join(claudeDir, 'hooks');
+  if (!fs.existsSync(hooksDir)) fs.mkdirSync(hooksDir, { recursive: true });
+
+  const sourceScripts = path.join(__dirname, '../hooks/scripts');
+  const scriptFiles = ['ami-session-start.js', 'ami-pre-tool-use.js', 'ami-post-tool-use.js'];
+  for (const file of scriptFiles) {
+    const srcFile = path.join(sourceScripts, file);
+    if (fs.existsSync(srcFile)) {
+      fs.copyFileSync(srcFile, path.join(hooksDir, file));
+    }
+  }
+  console.log('✅ Hook scripts copied to ~/.claude/hooks/');
+
+  const nodeCmd = (script) => `node "${path.join(hooksDir, script).replace(/\\/g, '/')}"`;
+  const hooksConfig = {
+    hooks: {
+      PreToolUse: [{ matcher: 'Bash|PowerShell', hooks: [{ type: 'command', command: nodeCmd('ami-pre-tool-use.js') }] }],
+      PostToolUse: [{ matcher: 'Edit|Write', hooks: [{ type: 'command', command: nodeCmd('ami-post-tool-use.js') }] }]
+    }
+  };
+  if (options.includeSessionStart) {
+    hooksConfig.hooks.SessionStart = [{ hooks: [{ type: 'command', command: nodeCmd('ami-session-start.js') }] }];
+  }
+
+  const tmpFile = path.join(claudeDir, '.amiga-hooks-tmp.json');
+  fs.writeFileSync(tmpFile, JSON.stringify(hooksConfig, null, 2));
+  const result = mergeSettings(settingsPath, tmpFile, options);
+  if (fs.existsSync(tmpFile)) {
+    fs.unlinkSync(tmpFile);
+  }
+  return result;
 }
 
 function runDoctor() {
@@ -190,6 +235,40 @@ function runDoctor() {
       const settings = JSON.parse(fs.readFileSync(claudeSettingsPath, 'utf8'));
       if (settings.hooks && (settings.hooks.SessionStart || settings.hooks.PreToolUse || settings.hooks.PostToolUse)) {
         console.log('  ✅ Amiga IA hooks detected and settings.json is valid JSON.');
+
+        const isWindows = os.platform() === 'win32';
+        const hookEvents = Object.values(settings.hooks).flat();
+        const hookCmds = [];
+        hookEvents.forEach(h => {
+          if (h && h.hooks && Array.isArray(h.hooks)) {
+            h.hooks.forEach(subHook => {
+              if (subHook && subHook.command) hookCmds.push(subHook);
+            });
+          }
+        });
+
+        const amigaSigs = ['commit-assistant', 'push-assistant', 'ami-pr-publisher', 'ami-pr-conflict-detector', 'docs/coding-sessions', 'debugger|TODO|FIXME', 'ami-session-start', 'ami-pre-tool-use', 'ami-post-tool-use'];
+        const isAmigaHook = (cmd) => cmd && typeof cmd === 'string' && amigaSigs.some(sig => cmd.includes(sig));
+
+        const hasNodeHooks = hookCmds.some(h => isAmigaHook(h.command) && h.command.includes('node '));
+        const hasBashHooks = hookCmds.some(h => isAmigaHook(h.command) && !h.command.includes('node ') && (h.shell === 'bash' || !h.shell));
+        const hasPwshHooks = hookCmds.some(h => isAmigaHook(h.command) && !h.command.includes('node ') && (h.shell === 'pwsh' || h.shell === 'powershell'));
+
+        if (hasNodeHooks) {
+          console.log('  ✅ Node.js hooks detected — universal cross-platform support.');
+        } else if (hasPwshHooks && isWindows) {
+          console.log('  ✅ PowerShell hooks detected — compatible with Windows.');
+        } else if (hasBashHooks && !isWindows) {
+          console.log('  ✅ Bash hooks detected — compatible with Unix/macOS.');
+        } else if (hasBashHooks && isWindows) {
+          console.log('  ⚠️  WARNING: Bash hooks detected on Windows. They may fail without Git Bash setup.');
+          console.log("     Recommendation: Run 'npx amiga-ia-setup' and select Node.js (universal) or PowerShell hooks.");
+          issueCount++;
+        } else if (hasPwshHooks && !isWindows) {
+          console.log('  ⚠️  WARNING: PowerShell hooks detected on a non-Windows OS.');
+          console.log("     Recommendation: Run 'npx amiga-ia-setup' and select Node.js (universal) or Bash hooks.");
+          issueCount++;
+        }
       } else {
         console.log('  ℹ️  No Amiga IA hooks found in ~/.claude/settings.json (Optional feature).');
       }
@@ -269,9 +348,31 @@ async function main() {
           console.log('✅ Backup created at ~/.claude/settings.json.amiga-backup');
         }
         
-        const merged = mergeSettings(claudeSettings, sourceSettingsPath);
+        const engineAns = await ask(
+          `\nWhich hook engine should be used?\n` +
+          `  [n] Node.js (Universal - works on any OS) ← recommended\n` +
+          `  [b] Bash (macOS/Linux)\n` +
+          `  [p] PowerShell (Windows)\n` +
+          `  [n/b/p] (default: n): `
+        );
+        const engine = engineAns.toLowerCase().trim() || 'n';
+
+        const sessionAns = await ask('Enable SessionStart hook for automatic context restoration across sessions? (Only useful if you store session summaries in docs/coding-sessions/) [y/N]: ');
+        const includeSessionStart = sessionAns.toLowerCase().trim() === 'y';
+        const options = { includeSessionStart };
+
+        let merged = false;
+        if (engine === 'b' || engine === 'bash') {
+          merged = mergeSettings(claudeSettings, sourceSettingsPath, options);
+        } else if (engine === 'p' || engine === 'powershell' || engine === 'pwsh') {
+          const pwshSettingsPath = path.join(__dirname, '../hooks-pwsh.json');
+          merged = mergeSettings(claudeSettings, pwshSettingsPath, options);
+        } else {
+          merged = installNodeHooks(claudeDir, claudeSettings, options);
+        }
+
         if (merged) {
-          console.log('✅ Hooks successfully merged into settings.json.');
+          console.log('✅ Hooks successfully configured and merged into settings.json.');
         } else {
           console.log('⚠️ Hooks merge skipped due to JSON parse error.');
         }
@@ -306,7 +407,11 @@ async function main() {
     if (fs.existsSync(claudeDir)) {
       deleteMatchingFiles(sourceSkillsDir, path.join(claudeDir, 'skills'));
       deleteMatchingFiles(sourceAgentsDir, path.join(claudeDir, 'agents'));
-      console.log('✅ Claude Code skills removed.');
+      const sourceScriptsDir = path.join(__dirname, '../hooks/scripts');
+      if (fs.existsSync(sourceScriptsDir)) {
+        deleteMatchingFiles(sourceScriptsDir, path.join(claudeDir, 'hooks'));
+      }
+      console.log('✅ Claude Code skills and hook scripts removed.');
       
       const hookAns = await ask('Do you want to remove the Amiga IA Hooks from Claude Code settings? [y/N]: ');
       if (hookAns.toLowerCase().trim() === 'y') {

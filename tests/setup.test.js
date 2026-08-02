@@ -6,9 +6,9 @@ const os = require('os');
 
 // Extract mergeSettings logic from setup.js for unit testing
 const setupCode = fs.readFileSync(path.join(__dirname, '../bin/setup.js'), 'utf8');
-const mergeSettingsFunc = new Function('fs', 'path', 'targetPath', 'sourcePath', `
+const mergeSettingsFunc = new Function('fs', 'path', 'targetPath', 'sourcePath', 'options', `
   ${setupCode.slice(setupCode.indexOf('function mergeSettings'), setupCode.indexOf('async function main'))}
-  return mergeSettings(targetPath, sourcePath);
+  return mergeSettings(targetPath, sourcePath, options);
 `);
 
 describe('Amiga IA setup.js mergeSettings tests', () => {
@@ -84,6 +84,58 @@ describe('Amiga IA setup.js mergeSettings tests', () => {
     // Check all hooks are non-blocking exit 0
     const noExit2 = !JSON.stringify(updatedData).includes('exit 2');
     assert.strictEqual(noExit2, true);
+
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  test('should exclude SessionStart hook when options.includeSessionStart is false', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'amiga-test-'));
+    const testSettingsPath = path.join(tmpDir, 'settings.json');
+    const sourceHooksPath = path.resolve('hooks.json');
+
+    fs.writeFileSync(testSettingsPath, '{}');
+
+    const result = mergeSettingsFunc(fs, path, testSettingsPath, sourceHooksPath, { includeSessionStart: false });
+    assert.strictEqual(result, true);
+
+    const updatedData = JSON.parse(fs.readFileSync(testSettingsPath, 'utf8'));
+    assert.strictEqual(updatedData.hooks.SessionStart, undefined);
+    assert.notStrictEqual(updatedData.hooks.PreToolUse, undefined);
+
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  test('should preserve user custom SessionStart hooks when options.includeSessionStart is false and remove only Amiga SessionStart hook', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'amiga-test-'));
+    const testSettingsPath = path.join(tmpDir, 'settings.json');
+    const sourceHooksPath = path.resolve('hooks.json');
+
+    const mockSettingsWithCustomSession = {
+      "hooks": {
+        "SessionStart": [
+          {
+            "hooks": [
+              { "type": "command", "command": "node my-custom-tracker.js" }
+            ]
+          },
+          {
+            "hooks": [
+              { "type": "command", "shell": "bash", "command": "if [ -d 'docs/coding-sessions' ]; then echo test; fi" }
+            ]
+          }
+        ]
+      }
+    };
+
+    fs.writeFileSync(testSettingsPath, JSON.stringify(mockSettingsWithCustomSession, null, 2));
+
+    const result = mergeSettingsFunc(fs, path, testSettingsPath, sourceHooksPath, { includeSessionStart: false });
+    assert.strictEqual(result, true);
+
+    const updatedData = JSON.parse(fs.readFileSync(testSettingsPath, 'utf8'));
+    assert.strictEqual(updatedData.hooks.SessionStart.length, 1);
+    assert.strictEqual(updatedData.hooks.SessionStart[0].hooks[0].command, 'node my-custom-tracker.js');
+    assert.notStrictEqual(updatedData.hooks.PreToolUse, undefined);
 
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
