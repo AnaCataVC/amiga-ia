@@ -1,4 +1,4 @@
-# Amiga IA - Universal Declarative Skills & Agents
+# Amiga IA - Autonomous Agentic Suite & Declarative Skills
 
 <p align="center">
   <img src="./favicon.png" alt="Amiga IA Logo" width="120" />
@@ -24,104 +24,96 @@
 ## English
 
 ### 1. Project Description
-**Amiga IA** is a centralized repository for storing *declarative skills*, *declarative agents*, and a *universal adapter* that are 100% cross-compatible with **Antigravity (Gemini)** and **Claude Code**. It provides a single source of truth for modern, modular AI capabilities formatted using the **Agent Skills (Markdown + Lazy Loading)** standard.
+**Amiga IA** is a comprehensive ecosystem of *autonomous subagents*, *stateless guardrail hooks*, and *portable declarative skills* designed to elevate AI coding assistants from passive command executors into proactive team collaborators. Engineered specifically for **Antigravity (Gemini)** and **Claude Code**, Amiga IA provides a single source of truth for scalable AI capability management built on the **Agent Skills (Markdown + Lazy Loading)** standard. 
 
-### 2. Repository Structure
+With **v3.0.0 ("The Agentic Evolution")**, Amiga IA introduces decentralized multi-skill orchestration, enabling specialized subagents to autonomously discover repository tools and conduct parallel code reviews, repository health audits, and automated documentation without requiring step-by-step human guidance.
+
+### 2. Technologies & Architectural Innovations
+* **Agent Skills (XML + Markdown Lazy Loading):** A token-efficient architecture where an index of available tools is compiled into the system prompt, allowing AI models to open and consume imperative skill instructions only when actively required.
+* **Multi-Skill Parallel Orchestration (ADR-002):** Decentralized subagent profiles (such as `ami-pr-reviewer`, `ami-doc-architect`, and `ami-repo-auditor`) coordinate parallel worker threads to scan codebase technical debt, verify pre-push consistency, and review code concurrently.
+* **Zero-Overhead Stateless Execution (ADR-003):** Background security hooks are optimized for token economy and zero memory pollution, operating seamlessly across native Bash, Windows PowerShell, and zero-dependency Node.js execution engines.
+* **Interactive CLI Wizard (`amiga-ia-setup`):** An automated setup, migration, and diagnostic suite built in Node.js that cleanly installs skills, merges configurations into AI user settings, and dynamically checks system health.
+
+### 3. Key Learnings (Developer Takeaways)
+Building and scaling Amiga IA through its evolution into a fully agentic ecosystem yielded significant engineering lessons:
+* **Agentic vs. Passive Prompting:** Traditional step-by-step imperative scripts break down as codebases scale. Transitioning to autonomous subagent profiles that reason about project goals, discover local tools, and delegate worker threads in parallel proved dramatically more robust and scalable than monolithic prompt engineering.
+* **Token Economy & Statelessness:** Early iterations utilized persistent background caching to store local session summaries. Iterative analysis revealed that retaining stale context across session restarts degraded LLM inference speed and inflated token consumption. Depreciating session state caching in favor of stateless, on-demand reactive inspections (ADR-003) drastically boosted system responsiveness and precision.
+* **Cross-Platform & Multi-Engine Unification:** Achieving 100% cross-compatibility between disparate AI runtimes (Anthropic's Claude Code and Google's Antigravity) and distinct operating systems (Linux/macOS Bash vs. Windows PowerShell) required abstracting hook logic into universal, zero-dependency Node.js wrappers and enforcing strict XML capability indexing.
+
+### 4. Repository Structure
 ```text
 amiga-ia/
-├── package.json             # NPM Package definition
+├── package.json             # NPM Package registry definition & Single Source of Truth
 ├── agent/                   # Boilerplate Agent entrypoint (agent.js)
-├── adapters/                # Universal adapter (universal_adapter.js)
-├── agents/                  # Declarative Markdown agents
-│   └── *.md                 # Individual agent definitions
-├── docs/                    # Persistent agent memory and architecture docs
-├── skills/                  # Declarative Markdown skills
-│   └── */SKILL.md           # Individual skill definitions in directories
-├── hooks/                   # Claude Code native and cross-platform hooks
+├── adapters/                # Universal XML catalog compiler (universal_adapter.js)
+├── agents/                  # Autonomous Subagent profiles in Markdown (ami-*.md)
+├── docs/                    # Persistent agent memory & documentation tree
+│   ├── adr/                 # Architectural Decision Records (ADRs)
+│   ├── architecture/        # Deep structural & adapter engineering guides
+│   └── learning/            # Captured session learnings and iterative patterns
+├── skills/                  # Declarative Markdown skills (ami-*/SKILL.md)
+├── hooks/                   # Claude Code native and cross-platform guardrail hooks
 │   ├── hooks.json           # Plugin auto-discovery configuration
-│   └── scripts/*.js         # Universal Node.js cross-platform hook scripts
-├── hooks.json               # Claude Code native hooks configuration (Bash)
-└── hooks-pwsh.json          # Claude Code native hooks configuration (PowerShell)
+│   └── scripts/*.js         # Universal Node.js cross-platform hook wrappers
+├── hooks.json               # Claude Code native hooks configuration (Bash engine)
+└── hooks-pwsh.json          # Claude Code native hooks configuration (PowerShell engine)
 ```
 
-### 3. Declarative Format
+### 5. Included Skills & Agents
 
-#### Skills
-All skills are defined as declarative directories containing a `SKILL.md` file. The adapter scans these directories, extracts the YAML frontmatter, and provides the LLM with an XML index (`<available_skills>`). When the agent decides to use a skill, it reads the Markdown file natively to understand the instructions.
-```yaml
----
-
-description: Reviews the code for logic errors.
----
-1. Read the files.
-2. Run tests.
-```
-
-#### Agents
-Agents are defined in `.md` files containing the persona and instructions.
-```markdown
-# ami-commit-assistant
-You are an agent designed to create commits.
-
-```
-
-### 4. Included Skills & Agents
-
-All built-in tools use the mandatory **`ami-`** prefix to ensure safe namespacing and prevent collisions.
+All built-in capabilities strictly utilize the **`ami-`** namespace prefix to prevent collisions with external AI ecosystems.
 
 | Type | Name | Description |
 |---|---|---|
-| Agent | **ami-doc-architect** | Master documentation orchestrator that coordinates doc-manager, context research, and session learnings extraction. |
-| Agent | **ami-expert-council** | Spawns a council of specialized subagents tailored to discuss, debate, and refine a user's idea from multiple perspectives. |
-| Agent | **ami-next-step-assistant** | Acts as a project guide by analyzing the repository and recommending the most critical next step. |
-| Agent | **ami-pr-publisher** | Master orchestrator agent that performs a comprehensive review of Pull Requests before they are published. |
-| Agent | **ami-pr-reviewer** | Master orchestrator agent that evaluates existing Pull Requests using parallel subagents and repository capability discovery. |
-| Agent | **ami-push-assistant** | Pre-push orchestrator that performs baseline quality, security, and data consistency checks before a push. |
-| Agent | **ami-release-manager** | The central orchestrator agent that manages the release lifecycle. |
-| Agent | **ami-repo-auditor** | Master audit orchestrator that evaluates codebase health, technical debt, dependency hygiene, and security across modules. |
-| Skill | **ami-commit-planner** | Analyzes the working tree, performs security/leak audits, plans Conventional Commits/amend/squash, and executes commits. |
-| Skill | **ami-context-researcher** | Actively researches external documentation and saves findings to prevent context loss. |
-| Skill | **ami-data-validator** | Validates structural consistency between code changes and data definitions. |
-| Skill | **ami-dependency-analyzer** | Analyzes the project's libraries and dependencies for unused, outdated, or undeclared packages. |
-| Skill | **ami-doc-manager** | Comprehensive documentation manager. Automatically detects whether to architect new docs or update existing ones with code changes. |
-| Skill | **ami-learnings-extractor** | Analyzes recent code changes to extract architectural decisions, lessons, and patterns. |
-| Skill | **ami-methodical-debugger** | Performs an organized debugging process, systematically isolating the root cause without assumptions. |
-| Skill | **ami-pr-comment-analyzer** | Analyzes code review comments left by other developers on an active Pull Request. |
-| Skill | **ami-pr-conflict-detector** | Auto-triggered before any Pull Request. Identifies overlapping changes and merge conflicts with other open PRs. |
-| Skill | **ami-pr-peer-reviewer** | Assists in reviewing Pull Requests from other people. |
-| Skill | **ami-pr-self-reviewer** | Acts as a critical self-reviewer for your own Pull Requests and suggests code fixes. |
-| Skill | **ami-project-architect** | Interactively sets up the initial architecture and structure of a new project. |
-| Skill | **ami-quality-auditor** | Performs a deep code quality, security, and structure audit on modified files. |
-| Skill | **ami-release-drafter** | Auto-triggered before any GitHub release. Drafts comprehensive bilingual release notes grouped by feature, fix, and maintenance. |
-| Skill | **ami-release-tagger** | Auto-triggered before any release or version bump. Determines the correct next semantic version from commits. |
-| Skill | **ami-tech-debt-scanner** | Analyzes the repository for technical debt, including outdated dependencies, dead code, and pending comments (TODOs/FIXMEs). |
-| Skill | **ami-test-creator** | Auto-triggered when new functionality is added without existing test coverage. Generates tests for the modified code. |
+| Agent | **ami-doc-architect** | Master documentation orchestrator that coordinates doc-manager, context research, and session learnings extraction in parallel. |
+| Agent | **ami-expert-council** | Spawns a council of specialized subagents tailored to discuss, debate, and refine a user's architectural idea from multiple perspectives. |
+| Agent | **ami-next-step-assistant** | Acts as an automated project guide by evaluating repository health and recommending the most critical next action. |
+| Agent | **ami-pr-publisher** | Master orchestrator agent that performs a comprehensive review, summary drafting, and conflict audit on Pull Requests before publishing. |
+| Agent | **ami-pr-reviewer** | Master orchestrator agent that evaluates existing Pull Requests using parallel worker subagents and automated capability discovery. |
+| Agent | **ami-push-assistant** | Pre-push orchestrator that conducts baseline quality, security leak scans, and data consistency checks before pushing code. |
+| Agent | **ami-release-manager** | Central orchestrator agent that automates version tag calculation, bilingual semantic changelog drafting, and GitHub release publication. |
+| Agent | **ami-repo-auditor** | Master audit orchestrator that evaluates codebase technical debt, dependency hygiene, and security across modules concurrently. |
+| Skill | **ami-commit-planner** | Analyzes the working tree, performs security/leak audits, plans Conventional Commits/amend/squash, and executes staged git actions. |
+| Skill | **ami-context-researcher** | Actively researches up-to-date external documentation and persists findings in references to prevent context degradation. |
+| Skill | **ami-data-validator** | Validates structural consistency between source code changes and data layer definitions (schemas, queries). |
+| Skill | **ami-dependency-analyzer** | Audits project library health, detecting unused, outdated, vulnerable, or phantom dependencies. |
+| Skill | **ami-doc-manager** | Comprehensive documentation manager. Detects whether to architect new docs from scratch or synchronize existing wikis with code diffs. |
+| Skill | **ami-learnings-extractor** | Inspects recent codebase edits to extract architectural decisions, lessons, antipatterns, and surprises into persistent memory. |
+| Skill | **ami-methodical-debugger** | Performs an evidence-based debugging procedure, isolating root causes without guesswork and writing regression tests. |
+| Skill | **ami-pr-comment-analyzer** | Analyzes code review observations left by teammates on active PRs, organizing action items and formulating accurate replies. |
+| Skill | **ami-pr-conflict-detector** | Auto-triggered prior to PR publishing or review. Detects overlapping commit histories and potential merge conflicts across active branches. |
+| Skill | **ami-pr-peer-reviewer** | Assists in conducting code reviews on teammates' Pull Requests, producing categorized architectural and logic observations. |
+| Skill | **ami-pr-self-reviewer** | Operates as a stringent Senior Engineer reviewing your own work-in-progress code, identifying bugs and proactively applying local code fixes. |
+| Skill | **ami-project-architect** | Interactively scaffolds project architectures, technology stacks, directory hierarchies, and bilingual starter documentation. |
+| Skill | **ami-quality-auditor** | Conducts deep inspections on modified code for maintainability, modular design best practices, security flaws, and structural soundness. |
+| Skill | **ami-release-drafter** | Auto-triggered prior to publishing releases. Parses commit histories to draft structured bilingual release notes grouped by semantic type. |
+| Skill | **ami-release-tagger** | Auto-triggered before release bumps. Evaluates git histories against semantic versioning laws to compute precise stable or QA tags. |
+| Skill | **ami-tech-debt-scanner** | Scans repositories for technical debt, obsolete imports, duplicated logic, dead code, and pending comments (TODOs/FIXMEs). |
+| Skill | **ami-test-creator** | Auto-triggered when new features lack automated test coverage. Crafts focused unit and regression tests tailored to modified code. |
 
-
-### 5. Installation & Usage
-The official and recommended way to install **Amiga IA** is via the global NPM package:
+### 6. Installation & Usage
+The official and recommended setup method is installing Amiga IA globally via the NPM package registry:
 
 ```bash
 npm install -g @anacatavc/amiga-ia
 ```
 
-**Setup Wizard (CLI):**
-Run the interactive setup wizard to configure your AI assistant (Claude Code, Antigravity, or Both) and select your preferred shell engine (Bash, native PowerShell, or universal Node.js cross-platform scripts):
+**Interactive Setup Wizard (CLI):**
+Launch the setup wizard to configure your preferred AI coding assistants (Claude Code, Antigravity, or Both) and select your target shell runtime (Bash, native Windows PowerShell, or universal zero-dependency Node.js scripts):
 ```bash
 amiga-ia-setup
 ```
 
-**Diagnostic Tool (`doctor`):**
-To verify your installation, check OS-incompatible shell engines, and validate YAML frontmatter across all skills:
+**System Diagnostic & Health Tool (`doctor`):**
+To verify global installation integrity, check for OS shell incompatibilities, validate YAML frontmatter schemas, and receive automated cleanup advisories for deprecated legacy folders:
 ```bash
 amiga-ia-setup doctor
 ```
 
-> 💡 **Background Hooks & Engine Selection:** Claude Code supports background hooks (pre-commit advisory reminders and tool interception). The setup wizard offers interactive engine selection (Bash, PowerShell, or zero-dependency Node.js), cleanly merging configurations into `~/.claude/settings.json` (creating a backup at `~/.claude/settings.json.amiga-backup`). Antigravity natively uses its atomic planning pipeline and declarative rules (`rules/ami-rules.md`).
+> 💡 **Background Hooks & Engine Selection:** Claude Code supports automated pre-commit advisory reminders and security interdictions. The interactive setup wizard cleanly merges these non-blocking guardrails into `~/.claude/settings.json` while generating an automated rollback backup at `~/.claude/settings.json.amiga-backup`. Google Antigravity natively executes its atomic planning pipeline and enforces declarative guardrails via `rules/ami-rules.md`.
 
-#### 5.1 What the Wizard Installs
-
-When you run `amiga-ia-setup`, the wizard configures the following global user directories:
+#### 6.1 Global Directories Configured
+When running `amiga-ia-setup`, the CLI wizard populates your home directory with clean, isolated capability configurations:
 
 ```text
 ~/.claude/                          # Claude Code Global Configuration
@@ -136,15 +128,15 @@ When you run `amiga-ia-setup`, the wizard configures the following global user d
 └── rules/ami-rules.md              # Declarative Operational Rules
 ```
 
-### 6. Uninstallation
-To completely remove the package and clean up your AI assistant folders:
-1. Run `amiga-ia-setup` and select `u` (Uninstall) to safely delete the copied skills, agents, and rules.
-2. Run `npm uninstall -g @anacatavc/amiga-ia` to remove the package.
+### 7. Uninstallation
+To cleanly detach Amiga IA from your AI coding environments:
+1. Run `amiga-ia-setup` and select option `u` (Uninstall) to cleanly remove all copied skills, agents, rules, and hook injections from your settings.
+2. Run `npm uninstall -g @anacatavc/amiga-ia` to purge the CLI package from your system.
 
-### 7. Extending the Package
-* **Naming Convention (`ami-` prefix):** All custom skills and agents MUST be prefixed with `ami-` (e.g., `ami-test-runner`). This ensures safe namespacing, prevents collisions with other global AI tools, and keeps the ecosystem organized.
-* **To add a new skill:** Create a new `skills/ami-<name>/SKILL.md` directory and file with YAML frontmatter.
-* **To add a new agent:** Create a new `agents/ami-<name>.md` file.
+### 8. Extending the Ecosystem
+* **Mandatory Naming Convention (`ami-` prefix):** All custom skills and agent profiles MUST begin with `ami-` (e.g., `ami-db-migrator`). This ensures clean namespace separation and protects your custom tools from external conflicts.
+* **Adding a New Skill:** Create a folder at `skills/ami-<name>/` containing a `SKILL.md` instruction file configured with standard YAML frontmatter.
+* **Adding a New Agent:** Create an autonomous persona file at `agents/ami-<name>.md` detailing behavior rules, skill invocation authorizations, and coordination directives.
 
 ---
 
@@ -152,121 +144,116 @@ To completely remove the package and clean up your AI assistant folders:
 ## Español
 
 ### 1. Descripción del Proyecto
-**Amiga IA** es un repositorio centralizado diseñado para almacenar *skills declarativas*, *agentes declarativos* y un *adaptador universal* que son 100% compatibles tanto con **Antigravity (Gemini)** como con **Claude Code**. Proporciona una única fuente de verdad para un ecosistema de IA estructurado bajo el estándar **Agent Skills (Markdown + Lazy Loading)**.
+**Amiga IA** es un ecosistema integral de *subagentes autónomos*, *hooks de seguridad sin estado* y *skills declarativas portátiles* diseñado para transformar a los asistentes de código por inteligencia artificial de simples ejecutores pasivos a colaboradores proactivos. Desarrollado nativamente para **Antigravity (Gemini)** y **Claude Code**, Amiga IA ofrece una única fuente de verdad para la gestión escalable de capacidades bajo el estándar de **Agent Skills (Markdown + Carga Diferida / Lazy Loading)**.
 
-### 2. Estructura del Repositorio
+Con la versión **v3.0.0 ("The Agentic Evolution")**, Amiga IA introduce la orquestación multi-habilidad descentralizada, permitiendo que subagentes especializados descubran herramientas locales y ejecuten revisiones en paralelo de código, auditorías de salud y autodiagnósticos arquitectónicos sin depender de supervisión humana constante ni instrucciones paso a paso.
+
+### 2. Tecnologías e Innovaciones Arquitectónicas
+* **Agent Skills (XML + Carga Diferida / Lazy Loading):** Arquitectura optimizada para el ahorro de tokens donde un índice con el catálogo de herramientas se inyecta en el prompt base, permitiendo al LLM abrir y leer el archivo Markdown de instrucciones solo cuando necesita usar una habilidad específica.
+* **Orquestación Multi-Habilidad en Paralelo (ADR-002):** Perfiles de subagente descentralizados (como `ami-pr-reviewer`, `ami-doc-architect` y `ami-repo-auditor`) coordinan flujos de trabajo concurrentes para inspeccionar deuda técnica, validar coherencia antes de un push y revisar PRs en simultáneo.
+* **Ejecución Ligera Sin Estado (Zero-Overhead, ADR-003):** Los hooks en segundo plano están optimizados para la economía de tokens y cero contaminación del contexto de memoria, ejecutándose con fluidez mediante Bash, PowerShell nativo de Windows o scripts de Node.js sin dependencias externas.
+* **Asistente CLI Interactivo (`amiga-ia-setup`):** Herramienta desarrollada en Node.js que instala habilidades, realiza fusiones (*merge*) seguras con la configuración local de tus asistentes de IA, purga automáticamente sistemas heredados y audita la salud general del entorno.
+
+### 3. Aprendizajes Clave (Key Learnings)
+El desarrollo y evolución iterativa de Amiga IA hacia un ecosistema plenamente agéntico proporcionó valiosas lecciones de ingeniería de software e inteligencia artificial:
+* **IA Agéntica vs. Prompts Pasivos:** Las instrucciones imperativas paso a paso tienden a romperse a medida que las bases de código crecen. Migrar hacia subagentes autónomos que razunan sobre objetivos globales, exploran el repositorio y coordinan revisiones en paralelo demostró ser exponencialmente más resistente, preciso y escalable que la ingeniería de prompts tradicional.
+* **Economía de Tokens y Arquitectura Sin Estado:** Las primeras versiones del proyecto dependían de cachés obligatorias para persistir resúmenes locales de sesión. El análisis continuo demostró que arrastrar este contexto acumulado en cada inicio degradaba la velocidad de respuesta del modelo y elevaba innecesariamente el consumo de tokens. La retirada radical del estado de sesión en favor de inspecciones reactivas en tiempo real (ADR-003) devolvió al sistema su agilidad e inmediatez.
+* **Universalidad Multi-Ecosistema:** Lograr 100% de compatibilidad operativa entre motores con arquitecturas distintas (Claude Code de Anthropic y Antigravity de Google) en múltiples sistemas operativos requirió encapsular la lógica de interdicción en wrappers transversales de Node.js y normalizar el catálogo de herramientas mediante un índice XML dinámico y estricto.
+
+### 4. Estructura del Repositorio
 ```text
 amiga-ia/
-├── package.json             # Definición del paquete NPM
-├── agent/                   # Entrypoint del agente (agent.js)
-├── adapters/                # Adaptador universal (universal_adapter.js)
-├── agents/                  # Agentes declarativos en Markdown
-│   └── *.md                 # Definiciones individuales de agentes
-├── docs/                    # Memoria persistente y documentación del proyecto
-├── skills/                  # Skills declarativas en Markdown
-│   └── */SKILL.md           # Definiciones individuales de skills
-├── hooks/                   # Hooks nativos y scripts multiplataforma
-│   ├── hooks.json           # Configuración para descubrimiento automático
-│   └── scripts/*.js         # Scripts de hooks universales en Node.js
-├── hooks.json               # Configuración nativa de hooks para Claude Code (Bash)
-└── hooks-pwsh.json          # Configuración nativa de hooks para Claude Code (PowerShell)
+├── package.json             # Registro del paquete NPM y Fuente Única de Verdad
+├── agent/                   # Punto de entrada base para librerías del agente (agent.js)
+├── adapters/                # Compilador del índice XML universal (universal_adapter.js)
+├── agents/                  # Perfiles de Subagentes Autónomos en Markdown (ami-*.md)
+├── docs/                    # Memoria persistente y árbol de documentación del proyecto
+│   ├── adr/                 # Registros de Decisiones Arquitectónicas (ADRs)
+│   ├── architecture/        # Guías técnicas de ingeniería (ej. universal adapter)
+│   └── learning/            # Lecciones de sesión capturadas y patrones iterativos
+├── skills/                  # Skills declarativas en Markdown (ami-*/SKILL.md)
+├── hooks/                   # Hooks de seguridad nativos y scripts multiplataforma
+│   ├── hooks.json           # Configuración para auto-descubrimiento en plugins
+│   └── scripts/*.js         # Scripts de hooks universales transversales en Node.js
+├── hooks.json               # Configuración nativa de hooks de Claude Code (Motor Bash)
+└── hooks-pwsh.json          # Configuración nativa de hooks de Claude Code (Motor PowerShell)
 ```
 
-### 3. Formato Declarativo
+### 5. Skills y Agentes Incluidos
 
-#### Skills
-Todas las skills se definen como carpetas con un archivo `SKILL.md`. El adaptador lee el YAML frontmatter y le presenta a la IA un catálogo XML (`<available_skills>`). La IA usa *Lazy Loading* (carga diferida) para leer el archivo solo cuando necesita usar la habilidad.
-```yaml
----
-
-description: Reviews the code for logic errors.
----
-1. Read the files.
-2. Run tests.
-```
-
-#### Agentes
-Los agentes se definen en archivos `.md`. Contienen el prompt principal del asistente.
-```markdown
-# ami-commit-assistant
-You are an expert git agent.
-```
-
-### 4. Skills y Agentes Incluidos
-
-Todas las herramientas incluidas utilizan el prefijo obligatorio **`ami-`** para garantizar un namespacing seguro y evitar colisiones.
+Todas las capacidades incluidas emplean de forma estricta el prefijo de espacio de nombres **`ami-`** para prevenir colisiones en el ecosistema.
 
 | Tipo | Nombre | Descripción |
 |---|---|---|
-| Agente | **ami-doc-architect** | Agente orquestador de documentación que coordina creación, investigación de contexto y extracción de lecciones en paralelo. |
-| Agente | **ami-expert-council** | Crea un panel de subagentes especializados para debatir y refinar ideas desde múltiples perspectivas. |
-| Agente | **ami-next-step-assistant** | Guía el proyecto analizando el repositorio y recomendando el siguiente paso más crítico. |
-| Agente | **ami-pr-publisher** | Agente orquestador maestro que realiza una revisión exhaustiva de los Pull Requests antes de publicarlos. |
-| Agente | **ami-pr-reviewer** | Agente orquestador maestro que evalúa Pull Requests existentes usando subagentes en paralelo y descubrimiento de capacidades del repositorio. |
-| Agente | **ami-push-assistant** | Orquestador pre-push que realiza comprobaciones de calidad, seguridad y consistencia de datos. |
-| Agente | **ami-release-manager** | Agente orquestador central que gestiona el ciclo de vida de los lanzamientos (releases). |
-| Agente | **ami-repo-auditor** | Agente orquestador de auditoría que evalúa en paralelo deuda técnica, higiene de dependencias y seguridad por módulos. |
-| Skill | **ami-commit-planner** | Analiza el working tree, audita fugas de seguridad, planifica Conventional Commits/amend/squash y ejecuta commits. |
-| Skill | **ami-context-researcher** | Investiga documentación externa activamente y guarda los hallazgos para prevenir pérdida de contexto. |
-| Skill | **ami-data-validator** | Valida la consistencia estructural entre los cambios de código y las definiciones de datos. |
-| Skill | **ami-dependency-analyzer** | Analiza las librerías y dependencias del proyecto buscando paquetes sin usar, desactualizados o no declarados. |
-| Skill | **ami-doc-manager** | Gestor integral de documentación. Detecta automáticamente si debe estructurar nueva documentación o actualizar la existente con cambios de código. |
-| Skill | **ami-learnings-extractor** | Analiza los cambios de código recientes para extraer decisiones arquitectónicas, lecciones y patrones. |
-| Skill | **ami-methodical-debugger** | Realiza un proceso de depuración organizado, aislando sistemáticamente la causa raíz sin suposiciones. |
-| Skill | **ami-pr-comment-analyzer** | Analiza los comentarios de revisión de código dejados por otros desarrolladores en un PR activo. |
-| Skill | **ami-pr-conflict-detector** | Se activa automáticamente antes de cualquier Pull Request. Identifica cambios superpuestos y conflictos de merge. |
-| Skill | **ami-pr-peer-reviewer** | Ayuda a revisar los Pull Requests de otras personas. |
-| Skill | **ami-pr-self-reviewer** | Actúa como un auto-revisor crítico para tus propios Pull Requests y sugiere arreglos de código. |
-| Skill | **ami-quality-auditor** | Realiza una auditoría profunda de calidad, seguridad y estructura del código en archivos modificados. |
-| Skill | **ami-release-drafter** | Se activa automáticamente antes de cualquier release de GitHub. Redacta notas de lanzamiento bilingües agrupadas por tipo. |
-| Skill | **ami-release-tagger** | Se activa automáticamente antes de cualquier release o bump de versión. Determina la siguiente versión semántica correcta. |
-| Skill | **ami-tech-debt-scanner** | Analiza el repositorio en busca de deuda técnica, incluyendo dependencias obsoletas, código muerto y comentarios pendientes (TODOs/FIXMEs). |
-| Skill | **ami-test-creator** | Se activa automáticamente cuando se añade nueva funcionalidad sin cobertura de pruebas existente. |
+| Agente | **ami-doc-architect** | Agente maestro de documentación que orquesta en paralelo la creación de wikis, investigación de contexto externo y extracción de lecciones. |
+| Agente | **ami-expert-council** | Convoca una mesa redonda de subagentes especializados para debatir, analizar y refinar una idea o decisión arquitectónica desde múltiples perspectivas. |
+| Agente | **ami-next-step-assistant** | Guía de proyecto automatizada que evalúa la salud del repositorio y recomienda el siguiente paso crítico en pruebas, deuda o calidad. |
+| Agente | **ami-pr-publisher** | Agente maestro que ejecuta revisiones integrales, redacción de resúmenes ejecutivos y verificación de conflictos antes de publicar un Pull Request. |
+| Agente | **ami-pr-reviewer** | Orquestador maestro que evalúa Pull Requests activos desplegando subagentes paralelos y descubrimiento automático de herramientas locales. |
+| Agente | **ami-push-assistant** | Orquestador pre-push que ejecuta auditorías de calidad, escaneo de fugas de secretos y coherencia estructural antes de enviar código al remoto. |
+| Agente | **ami-release-manager** | Orquestador central del ciclo de lanzamientos que calcula versiones semánticas, redacta changelogs bilingües y publica el release oficial en GitHub. |
+| Agente | **ami-repo-auditor** | Agente maestro de auditoría que evalúa concurrentemente deuda técnica, higiene de librerías y vulnerabilidades en todo el código base. |
+| Skill | **ami-commit-planner** | Analiza el árbol de trabajo actual, audita seguridad/secretos, planifica Conventional Commits/amend/squash y ejecuta las transacciones en Git. |
+| Skill | **ami-context-researcher** | Investiga documentación externa actualizada en tiempo real y guarda hallazgos en referencias para evitar la obsolrescencia de contexto. |
+| Skill | **ami-data-validator** | Valida la consistencia estructural entre los cambios aplicados en el código y las definiciones del backend (esquemas y consultas BD). |
+| Skill | **ami-dependency-analyzer** | Audita las librerías del proyecto para identificar paquetes sin uso, versiones obsoletas, vulnerabilidades o dependencias fantasma. |
+| Skill | **ami-doc-manager** | Gestor integral de documentación. Detecta automáticamente si debe crear documentos desde cero o sincronizar wikis existentes con el historial de Git. |
+| Skill | **ami-learnings-extractor** | Analiza las modificaciones recientes en el código para documentar decisiones arquitectónicas, lecciones y antipatrones descubiertos en la sesión. |
+| Skill | **ami-methodical-debugger** | Ejecuta un protocolo de depuración científica basado en evidencias, aislando causas raíz sin conjeturas y escribiendo pruebas automáticas. |
+| Skill | **ami-pr-comment-analyzer** | Procesa observaciones de revisión de código dejadas por compañeros de equipo en PRs activos, estructurando tareas pendientes y borradores de respuesta. |
+| Skill | **ami-pr-conflict-detector** | Se ejecuta antes de revisar o abrir un PR. Identifica colisiones en historiales de Git y posibles conflictos de merge entre ramas paralelas. |
+| Skill | **ami-pr-peer-reviewer** | Asiste en la revisión voluntaria de Pull Requests de otros desarrolladores, estructurando observaciones arquitectónicas y de lógica por nivel de criticidad. |
+| Skill | **ami-pr-self-reviewer** | Actúa como un exigente Ingeniero Senior revisando tu propio código antes de publicarlo, proponiendo y aplicando proactivamente correcciones locales. |
+| Skill | **ami-project-architect** | Construye de forma interactiva la arquitectura base de un nuevo proyecto, stack tecnológico, árbol de directorios y un README inicial bilingüe. |
+| Skill | **ami-quality-auditor** | Audita los archivos modificados verificando legibilidad, diseño modular, principios DRY, seguridad y buenas prácticas del framework. |
+| Skill | **ami-release-drafter** | Se ejecuta antes de generar lanzamientos. Inspecciona commits para redactar notas de release bilingües categorizadas por mejoras y correcciones. |
+| Skill | **ami-release-tagger** | Se ejecuta antes de subir versiones. Analiza el historial de Git para calcular con precisión matemática la siguiente etiqueta semántica o Release Candidate. |
+| Skill | **ami-tech-debt-scanner** | Escanea el repositorio buscando deuda técnica, módulos obsoletos, lógica duplicada, código muerto y marcadores pendientes (TODOs/FIXMEs). |
+| Skill | **ami-test-creator** | Se ejecuta automáticamente cuando se incorpora código nuevo sin pruebas unitarias. Crea tests enfocados en proteger las nuevas funciones. |
 
-### 5. Instalación y Uso
-La forma oficial y recomendada de instalar **Amiga IA** es mediante el paquete global de NPM:
+### 6. Instalación y Uso
+El método oficial y recomendado para integrar **Amiga IA** es mediante la instalación del paquete global de NPM:
 
 ```bash
 npm install -g @anacatavc/amiga-ia
 ```
 
-**Asistente de Configuración (CLI):**
-Ejecuta el asistente interactivo para configurar tu asistente de IA (Claude Code, Antigravity o Ambos) y elegir el motor de shell de tu preferencia (Bash, PowerShell nativo o scripts universales en Node.js):
+**Asistente Interactivo de Configuración (CLI):**
+Ejecuta el asistente CLI para elegir tus entornos de IA activos (Claude Code, Antigravity o Ambos) y seleccionar tu motor de shell favorito (Bash, PowerShell nativo o scripts universales en Node.js):
 ```bash
 amiga-ia-setup
 ```
 
-**Herramienta de Diagnóstico (`doctor`):**
-Para verificar la salud de tu instalación, detectar motores de shell incompatibles con tu OS y validar el YAML frontmatter de todas las habilidades:
+**Herramienta de Diagnóstico del Sistema (`doctor`):**
+Para verificar la salud y permisos del sistema, consultar incompatibilities del sistema operativo y validar que la sintaxis YAML frontmatter sea 100% correcta:
 ```bash
 amiga-ia-setup doctor
 ```
 
-> 💡 **Hooks en Segundo Plano y Selección de Motor:** Claude Code soporta hooks de fondo (recordatorios informativos de pre-commit e interdicción de herramientas). El asistente ofrece selección interactiva de motor de hooks (Bash, PowerShell o Node.js universal), fusionando (*merge*) los hooks de forma transparente en `~/.claude/settings.json` (creando primero un respaldo en `~/.claude/settings.json.amiga-backup`). Antigravity utiliza su pipeline de planificación atómica y reglas declarativas (`rules/ami-rules.md`).
+> 💡 **Hooks de Seguridad y Selección de Motor:** Claude Code es compatible con recordatorios de pre-commit y bloqueos de seguridad. El asistente CLI fusiona limpiamente estas reglas ligeras en `~/.claude/settings.json`, generando un respaldo de seguridad en `~/.claude/settings.json.amiga-backup`. Google Antigravity ejecuta estas directrices nativamente mediante su pipeline atómico y el archivo de reglas `rules/ami-rules.md`.
 
-#### 5.1 Qué Instala el Asistente
-
-Al ejecutar `amiga-ia-setup`, el asistente configura los siguientes directorios globales en tu usuario:
+#### 6.1 Directorios Globales Instalados
+Al ejecutar `amiga-ia-setup`, el asistente estructura de forma segura las siguientes carpetas en el usuario raíz del sistema:
 
 ```text
 ~/.claude/                          # Configuración Global de Claude Code
 ├── skills/ami-*/SKILL.md           # Skills Declarativas (17 directorios)
 ├── agents/ami-*.md                 # Subagentes Autónomos (8 perfiles)
-├── settings.json                   # Hooks Integrados (PreToolUse, PostToolUse)
-└── settings.json.amiga-backup      # Respaldo seguro de configuraciones originales
+├── settings.json                   # Hooks Fusionados (PreToolUse, PostToolUse)
+└── settings.json.amiga-backup      # Respaldo intacto del archivo original de usuario
 
 ~/.gemini/config/                   # Configuración Global de Antigravity (Gemini)
 ├── skills/ami-*/SKILL.md           # Skills Declarativas (17 directorios)
 ├── agents/ami-*.md                 # Subagentes Autónomos (8 perfiles)
-└── rules/ami-rules.md              # Reglas Declarativas Operativas
+└── rules/ami-rules.md              # Reglas Operativas Declarativas
 ```
 
-### 6. Desinstalación
-Para eliminar completamente el paquete y limpiar las carpetas de tu asistente de IA:
-1. Ejecuta `amiga-ia-setup` y selecciona `u` (Uninstall) para borrar de forma segura las skills, agentes y reglas copiadas.
-2. Ejecuta `npm uninstall -g @anacatavc/amiga-ia` para eliminar el paquete.
+### 7. Desinstalación
+Para retirar limpiamente Amiga IA y devolver tu configuración al estado original:
+1. Ejecuta `amiga-ia-setup` y selecciona la opción `u` (Uninstall) para eliminar en segundos todas las habilidades, subagentes, reglas y hooks fusionados.
+2. Ejecuta `npm uninstall -g @anacatavc/amiga-ia` para retirar el paquete del sistema.
 
-### 7. Extendiendo el Paquete
-* **Convención de Nombres (Prefijo `ami-`):** Todas las skills y agentes personalizados DEBEN llevar el prefijo `ami-` (ej. `ami-test-runner`). Esto garantiza un namespacing seguro, evita colisiones con otras herramientas de IA globales, y mantiene el ecosistema organizado.
-* **Para añadir una nueva skill:** Crea una carpeta y archivo `skills/ami-<nombre>/SKILL.md` con metadata en YAML.
-* **Para añadir un nuevo agente:** Crea un archivo `agents/ami-<nombre>.md`.
+### 8. Extendiendo el Ecosistema
+* **Convención Obligatoria (Prefijo `ami-`):** Toda habilidad o subagente personalizado DEBE llevar el prefijo de espacio de nombres `ami-` (ej. `ami-devops-checker`). Esto preserva el orden e impide choques con terceros.
+* **Agregar una Nueva Skill:** Construye un directorio en `skills/ami-<nombre>/` que contenga un archivo `SKILL.md` estructurado con cabecera YAML frontmatter y cuerpo en Markdown.
+* **Agregar un Nuevo Agente:** Crea un perfil de subagente autónomo en `agents/ami-<nombre>.md` detallando su personalidad, herramientas autorizadas y estrategias de delegación.
