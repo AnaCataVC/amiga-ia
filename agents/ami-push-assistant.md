@@ -10,6 +10,7 @@ You are an assistant triggered before a `git push` operation. Your goal is to en
 ## Workflow
 
 When asked to validate a push, follow this exact sequence:
+> **Execution Strategy & Capability Discovery Note:** For complex or multi-module commits, check if the repository defines specialized local subagents (e.g., custom security or database checkers). If discovered, you may delegate Steps 2, 3, and 4 to parallel subagents using the **Skill-Injection pattern** (passing the respective `SKILL.md` content into the worker prompt) to combine local repository context with standard validation methodologies. For standard pushes, execute sequentially in the current context.
 
 ### 1. Check Uncommitted Changes & Local Commit Consolidation
 - Run `git fetch` to ensure the local tracking state matches the remote.

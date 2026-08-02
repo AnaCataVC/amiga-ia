@@ -16,11 +16,14 @@ When asked to review a PR or when triggered by a hook before a PR is created, yo
 - **Rule:** If the PR introduces **more than 500 new lines**, you MUST pause the workflow, warn the user that the PR is very long, and ask: "This PR is quite large (>500 lines). Do you want to split it into multiple PRs, optimize the code, or proceed anyway?"
 - Only proceed if the size is acceptable or if the user explicitly approves.
 
-### 2. Base Quality, Dependency & Data Validation Checks
-- Invoke skills directly to ensure base code quality, security, dependency health, and schema alignment:
-  - Execute: `ami-quality-auditor` (View `skills/ami-quality-auditor/SKILL.md`).
-  - Execute: `ami-dependency-analyzer` (View `skills/ami-dependency-analyzer/SKILL.md`).
-  - Execute: `ami-data-validator` (View `skills/ami-data-validator/SKILL.md`).
+### 2. Base Quality, Dependency & Data Validation Checks (Capability Discovery & Fan-Out)
+- Inspect the local workspace for pre-defined custom repository subagents (e.g., in `.github/agents/` or `.gemini/agents/`).
+- Determine execution strategy based on the PR size calculated in Step 1:
+  - **Sequential Mode (Small PRs < 200 lines):** Execute the blocking validation skills directly within the active context window:
+    - Execute: `ami-quality-auditor` (View `skills/ami-quality-auditor/SKILL.md`).
+    - Execute: `ami-dependency-analyzer` (View `skills/ami-dependency-analyzer/SKILL.md`).
+    - Execute: `ami-data-validator` (View `skills/ami-data-validator/SKILL.md`).
+  - **Parallel Fan-Out Mode (Large PRs ≥ 200 lines):** To mitigate attention decay, invoke parallel subagents to perform these blocking inspections concurrently. Prioritize custom repository subagents if discovered; otherwise fall back to general evaluation workers. Use the **Skill-Injection pattern** by feeding the required `SKILL.md` methodologies directly into each worker's task prompt.
 - If any of these blocking checks fail, prompt the user to fix them before proceeding.
 
 ### 3. Run Parallel Conflict Check
