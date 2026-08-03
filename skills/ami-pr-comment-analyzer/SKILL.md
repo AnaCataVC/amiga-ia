@@ -39,8 +39,9 @@ When invoked, act as a **PR Comment Analyst**.
   - **Reply:** Offer to draft and submit replies to the comments.
 - **Wait for the user's input**, approval of the proposed actions, and answers to any pending questions before proceeding.
 
-### 5. Execute Actions
+### 5. Execute Actions & Stack Synchronization
 - **Apply Changes:** Modify the local files to apply the approved code suggestions and fixes.
+- **Stacked PR Restacking:** If the current branch is an intermediate layer in a **Stacked PRs** hierarchy (e.g., managed via `gh stack` or Graphite `gt`), remind the user (or offer) to execute the appropriate stack resync command (`gh stack sync` or `gt restack` / `gt sync`) after committing fixes, ensuring clean cascading rebases across dependent upper layers without introducing phantom conflicts.
 - **Draft & Submit Replies:** Draft replies based on the applied fixes and the user's answers. Present the drafts for review, making sure they are in the same language and tone used in the original comments. If the user approves the drafts, submit them directly using the GitHub CLI/API.
 - **Track Progress:** Check off items from the action plan as they are completed.
 

@@ -11,10 +11,11 @@ You are the Master Agent responsible for conducting a thorough, multi-step revie
 
 When asked to review a PR or when triggered by a hook before a PR is created, you MUST follow this exact sequence:
 
-### 1. Calculate PR Size
+### 1. Calculate PR Size & Stacked PR Remediation
 - Use Git commands (e.g., `git diff --stat`) to calculate the number of new lines in the current changes.
-- **Rule:** If the PR introduces **more than 500 new lines**, you MUST pause the workflow, warn the user that the PR is very long, and ask: "This PR is quite large (>500 lines). Do you want to split it into multiple PRs, optimize the code, or proceed anyway?"
-- Only proceed if the size is acceptable or if the user explicitly approves.
+- **Rule:** If the PR introduces **more than 500 new lines**, you MUST pause the workflow, warn the user that the PR is very long, and ask: "This PR is quite large (>500 lines). Do you want to split it into multiple PRs, adopt a Stacked PRs workflow (`gh stack` or Graphite `gt`) to organize changes into sequential architectural layers, optimize the code, or proceed anyway?"
+- If the user agrees to adopt a Stacked PRs workflow, help them decompose the feature into ordered dependent branches (e.g., database schema -> backend logic -> UI components) before continuing.
+- Only proceed if the size is acceptable, a splitting/stacking plan is agreed upon, or if the user explicitly approves proceeding as a single PR.
 
 ### 2. Base Quality, Dependency & Data Validation Checks (Capability Discovery & Fan-Out)
 - Inspect the local workspace for pre-defined custom repository subagents (e.g., in `.github/agents/` or `.gemini/agents/`).
@@ -42,15 +43,19 @@ When asked to review a PR or when triggered by a hook before a PR is created, yo
 - Execute the project's standard test suite command (e.g., `npm test`, `pytest`, `cargo test`, `node --test`).
 - Ensure all tests pass. This is a **blocker**.
 
-### 6. Generate and Approve PR Description
+### 6. Generate and Approve PR Description & Stack-Aware Publishing
 - Once all previous steps pass, generate a comprehensive PR Description.
 - The description MUST include:
   1. **Reason for the change:** Why this is being done.
   2. **What changed:** A clear summary of the modifications.
   3. **Comparative Table:** A Markdown table showing the behavior *Before* the PR vs. *After* the PR.
+  4. **Stack Hierarchy (if applicable):** If the PR is part of a Stacked PR workflow, clearly list the sequence of branches (base layer -> current layer -> dependent layers) to orient reviewers.
 - Output this description directly to the chat interface for the user to review.
 - Ask the user: "Do you approve this PR description? (Yes/No)"
-- If the user approves, you may proceed to upload it (e.g., via `gh pr create --body "..."` or by executing the appropriate git/gh commands depending on user context).
+- If the user approves, proceed to upload it using the command appropriate for their active workflow:
+  - For standard workflows: execute `gh pr create --body "..."`.
+  - For GitHub native stack workflows (`gh-stack`): execute `gh stack submit` (or recommend running it) to preserve cascading base linkages.
+  - For Graphite stack workflows: execute `gt submit --stack` (or recommend running it).
 
 
 ---

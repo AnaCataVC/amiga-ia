@@ -14,14 +14,15 @@ When invoked, act as a Repository Coordinator to identify potential conflicts wi
    - Run `git fetch` to ensure remote tracking branches and tags are updated locally.
    - Use GitHub CLI (e.g., `gh pr list --state open`) or git commands to identify other open Pull Requests.
 
-2. **Analyze File Overlaps:**
-   - For each open PR, use `gh pr view <PR_NUMBER> --json files` or similar git commands to see which files they modify.
+2. **Analyze File Overlaps & Stack Dependencies:**
+   - For each open PR, use `gh pr view <PR_NUMBER> --json files,baseRefName,headRefName` or similar git commands to see which files they modify and their branch topology.
    - Compare the list of files modified in the other open PRs with the files modified in the current local PR.
+   - **Stacked PR Awareness:** Check branch relationships. If the current PR's base branch (`baseRefName`) matches another open PR's head branch (`headRefName`), or vice-versa, recognize this as a **Stacked PR hierarchy** (parent-child dependent branches).
 
 3. **Determine Conflicts:**
    - If there is no overlap in files, or no other open PRs exist, let the user know and terminate the skill.
-   - If there is an overlap (the same files are being modified in other open PRs), alert the user.
-   - Attempt to analyze if the overlapping modifications will cause a direct git merge conflict or a logical conflict.
+   - If there is an overlap in files between two branches that form a parent-child relationship in a Stacked PR hierarchy, categorize the overlap as an **Expected Stack Dependency** rather than a parallel git merge conflict. Inform the user without triggering a conflict warning or blocking workflow.
+   - If there is an overlap between independent parallel branches, alert the user and analyze whether the overlapping modifications will cause a direct git merge conflict or a logical conflict.
 
 4. **Reporting:**
    - Provide a clear warning listing the parallel PRs (PR number, Title, Author and Date) that touch the same files.

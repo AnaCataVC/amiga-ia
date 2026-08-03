@@ -23,8 +23,11 @@ When invoked, act as a **PR Peer Reviewer**.
 - Before analyzing the code deeply, determine if you fully understand the PR's intent and architectural context.
 - If there is any ambiguity or missing context, **ASK THE USER**. Ask as many questions as needed to ensure you completely understand the context, domain, and objective of the PR before proceeding. Wait for their answers.
 
-### 4. Strict Code Analysis
+### 4. Strict Code Analysis & Stack-Aware Evaluation
 - Once all questions are answered and the context is clear, review the PR diff.
+- **Stacked PR Awareness:** Check if the PR is an intermediate or top layer in a **Stacked PRs** sequence (by checking `baseRefName`).
+  - If reviewing multiple dependent PRs in a stack, advise reviewing from the bottom up (foundational base PR first) to maintain structural context.
+  - Ensure diff analysis is isolated **exclusively against the PR's direct parent branch (`baseRefName`)**, evaluating only incremental layer deltas without compounding changes from earlier layers.
 - Observe **ONLY** the code that is introduced (added) or removed (deleted) in the PR. Avoid commenting on pre-existing code that is out of scope, unless it directly interacts with the new changes in a problematic way.
 - Analyze the changes for code quality, potential bugs, edge cases, security, performance, and best practices.
 - **Validate every path, not just the happy path.** Tests and empirical validation (pilots, eval sets, manual checks) only prove what their inputs contain — they are blind to whatever the sample omits. So reason beyond them:

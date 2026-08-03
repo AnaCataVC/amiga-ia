@@ -10,11 +10,13 @@ When this skill is invoked, you act as a stringent Senior Engineer reviewing the
 
 ## Workflow
 
-1. **Context Identification & Validation:**
+1. **Context Identification, Validation & Dynamic Diffing:**
    - Ask the user which PR, branch, or specific commit they want you to review.
    - **CRITICAL AUTHORSHIP CHECK:** Identify if the PR or code belongs to another developer or teammate. This skill is exclusively for reviewing and directly fixing the user's OWN code. If the user is trying to review someone else's PR or give peer feedback to a teammate, **IMMEDIATELY STOP**, explain the difference between both skills, and recommend switching to **`ami-pr-peer-reviewer`** (which focuses on interactive QA, criticality observations, and publishing GitHub review comments without altering local files). Offer to invoke `ami-pr-peer-reviewer` right away.
-   - If a PR URL or number is provided and belongs to the user, read the diff.
-   - If it's a local branch, analyze the uncommitted changes or recent commits since branching from the main branch.
+   - If a PR URL or number is provided and belongs to the user, read the diff directly against its configured base branch (`baseRefName`).
+   - If it's a local branch, determine its target base branch:
+     - **Stacked PR Awareness:** Check if the local branch builds upon an intermediate layer in a **Stacked PRs** chain rather than branching directly from `main` or `master` (e.g., verifying `baseRefName` via GitHub CLI or stacking tools like `gh stack` / Graphite `gt`).
+     - Analyze uncommitted changes or recent commits **strictly against its direct parent branch (`baseRefName`)**, preventing redundant review of lower layers in the stack.
 
 2. **Strict Self-Audit:**
    - Analyze the diff explicitly looking for:
