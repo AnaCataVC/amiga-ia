@@ -10,6 +10,10 @@ const mergeSettingsFunc = new Function('fs', 'path', 'targetPath', 'sourcePath',
   ${setupCode.slice(setupCode.indexOf('function mergeSettings'), setupCode.indexOf('async function main'))}
   return mergeSettings(targetPath, sourcePath, options);
 `);
+const isNewerVersionFunc = new Function('current', 'latest', `
+  ${setupCode.slice(setupCode.indexOf('function isNewerVersion'), setupCode.indexOf('function getLatestNpmVersion'))}
+  return isNewerVersion(current, latest);
+`);
 
 describe('Amiga IA setup.js mergeSettings tests', () => {
 
@@ -138,6 +142,25 @@ describe('Amiga IA setup.js mergeSettings tests', () => {
     assert.notStrictEqual(updatedData.hooks.PreToolUse, undefined);
 
     fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+});
+
+describe('Amiga IA setup.js doctor update detection tests', () => {
+
+  test('should detect when latest version on NPM is newer than current installed version', () => {
+    assert.strictEqual(isNewerVersionFunc('3.0.0', '3.1.0'), true);
+    assert.strictEqual(isNewerVersionFunc('3.0.0', '4.0.0'), true);
+    assert.strictEqual(isNewerVersionFunc('2.9.9', '3.0.0'), true);
+    assert.strictEqual(isNewerVersionFunc('0.0.1', '0.0.2'), true);
+  });
+
+  test('should return false when current version matches or exceeds latest version on NPM', () => {
+    assert.strictEqual(isNewerVersionFunc('3.0.0', '3.0.0'), false);
+    assert.strictEqual(isNewerVersionFunc('3.1.0', '3.0.0'), false);
+    assert.strictEqual(isNewerVersionFunc('3.0.0-beta.1', '3.0.0'), false);
+    assert.strictEqual(isNewerVersionFunc('unknown', '3.0.0'), false);
+    assert.strictEqual(isNewerVersionFunc('3.0.0', null), false);
   });
 
 });

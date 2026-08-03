@@ -4,6 +4,7 @@ const readline = require('readline');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+const https = require('https');
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -169,14 +170,85 @@ function installNodeHooks(claudeDir, settingsPath, options = {}) {
   return result;
 }
 
-function runDoctor() {
+function isNewerVersion(current, latest) {
+  if (!current || !latest || current === 'unknown') return false;
+  const parse = (v) => v.replace(/^v/, '').split('-')[0].split('.').map(x => parseInt(x, 10) || 0);
+  const c = parse(current);
+  const l = parse(latest);
+  for (let i = 0; i < Math.max(c.length, l.length); i++) {
+    const numC = c[i] || 0;
+    const numL = l[i] || 0;
+    if (numL > numC) return true;
+    if (numL < numC) return false;
+  }
+  return false;
+}
+
+function getLatestNpmVersion(packageName) {
+  return new Promise((resolve) => {
+    const req = https.get(`https://registry.npmjs.org/${packageName}/latest`, { timeout: 3000 }, (res) => {
+      if (res.statusCode !== 200) {
+        res.resume();
+        return resolve(null);
+      }
+      let data = '';
+      res.on('data', (chunk) => { data += chunk; });
+      res.on('end', () => {
+        try {
+          const json = JSON.parse(data);
+          resolve(json.version || null);
+        } catch (e) {
+          resolve(null);
+        }
+      });
+    });
+    req.on('error', () => resolve(null));
+    req.on('timeout', () => {
+      req.destroy();
+      resolve(null);
+    });
+  });
+}
+
+function getPackageInfo() {
+  const pkgPath = path.join(__dirname, '../package.json');
+  let version = 'unknown';
+  let name = '@anacatavc/amiga-ia';
+  if (fs.existsSync(pkgPath)) {
+    try {
+      const pkgData = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+      version = pkgData.version || version;
+      name = pkgData.name || name;
+    } catch (e) {}
+  }
+  return { name, version };
+}
+
+async function runDoctor() {
+  const { name: pkgName, version: currentVersion } = getPackageInfo();
   console.log('======================================================');
-  console.log(' 🩺 Amiga IA Diagnostic Tool (Doctor)');
+  console.log(` 🩺 Amiga IA Diagnostic Tool (Doctor) [v${currentVersion}]`);
   console.log('======================================================\n');
   let issueCount = 0;
 
-  // 1. Installation Health Check
-  console.log('🔍 Checking for legacy plugin conflicts...');
+  // 1. Package Version & Update Status
+  console.log('🔍 Checking package version and update status...');
+  console.log(`  Current installed version: v${currentVersion}`);
+  const latestVersion = await getLatestNpmVersion(pkgName);
+  if (latestVersion) {
+    if (isNewerVersion(currentVersion, latestVersion)) {
+      console.log(`  💡 ADVISORY: A new version (v${latestVersion}) is available on NPM!`);
+      console.log(`     Recommendation: Run 'npx ${pkgName}@latest' or update via your package manager to enjoy the latest capabilities and bug fixes.`);
+      // Note: Update availability is treated as an informational advisory and does not increment issueCount
+    } else {
+      console.log(`  ✅ You are using the latest published version (v${latestVersion}).`);
+    }
+  } else {
+    console.log(`  ℹ️  Could not reach NPM registry to check for updates (offline or timed out).`);
+  }
+
+  // 2. Installation Health Check
+  console.log('\n🔍 Checking for legacy plugin conflicts...');
   const geminiPluginDir = path.join(geminiDir, 'plugins', 'amiga-ia');
   if (fs.existsSync(geminiPluginDir)) {
     console.log(`⚠️  WARNING: Legacy plugin directory found (~/.gemini/config/plugins/amiga-ia).`);
@@ -186,7 +258,7 @@ function runDoctor() {
     console.log('  ✅ No legacy plugin conflicts detected.');
   }
 
-  // 2. YAML Frontmatter Validator
+  // 3. YAML Frontmatter Validator
   console.log('\n🔍 Validating SKILL.md YAML frontmatter...');
   let invalidSkills = 0;
   if (fs.existsSync(sourceSkillsDir)) {
@@ -225,7 +297,7 @@ function runDoctor() {
     }
   }
 
-  // 3. Hooks Health Check
+  // 4. Hooks Health Check
   console.log('\n🔍 Checking Claude Code hooks configuration...');
   const claudeSettingsPath = path.join(claudeDir, 'settings.json');
   if (fs.existsSync(claudeSettingsPath)) {
@@ -278,7 +350,7 @@ function runDoctor() {
     console.log('  ℹ️  Claude Code settings file not found (~/.claude/settings.json).');
   }
 
-  // 4. Legacy Directory Check
+  // 5. Legacy Directory Check
   const sessionsDir = path.resolve('docs', 'coding-sessions');
   if (fs.existsSync(sessionsDir)) {
     console.log('\n🔍 Checking project workspace for legacy structures...');
@@ -297,13 +369,14 @@ function runDoctor() {
 
 async function main() {
   if (process.argv.includes('doctor') || process.argv.includes('--doctor')) {
-    runDoctor();
+    await runDoctor();
     rl.close();
     return;
   }
 
+  const { version: currentVersion } = getPackageInfo();
   console.log('======================================================');
-  console.log(' 🌟 Welcome to Amiga IA Setup Wizard');
+  console.log(` 🌟 Welcome to Amiga IA Setup Wizard [v${currentVersion}]`);
   console.log('======================================================');
   console.log('This wizard will install the Amiga IA Universal Agent Skills');
   console.log('into your local AI environments.\n');
