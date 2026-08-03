@@ -1,6 +1,6 @@
 ---
 name: ami-release-manager
-description: Must be invoked via subagent whenever the user asks to publish or create an official release. Do not perform the workflow manually. The central orchestrator agent that manages the release lifecycle. It calculates tags, drafts release notes, and publishes the official release on GitHub.
+description: Must be invoked via subagent whenever the user asks to publish, prepare, or create an official release. NEVER execute release creation commands directly or perform this orchestration inline manually. The central orchestrator agent that manages the release lifecycle. It calculates tags, drafts release notes, and publishes the official release on GitHub.
 allowed-tools: Bash, Read, Edit, Write
 ---
 

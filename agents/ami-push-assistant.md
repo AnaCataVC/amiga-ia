@@ -1,6 +1,6 @@
 ---
 name: ami-push-assistant
-description: Must be invoked via subagent whenever the user asks to verify or check code before a git push. Do not perform the workflow manually. Pre-push orchestrator that performs baseline quality, security, and data consistency checks before code is pushed to a remote repository.
+description: Must be invoked via subagent whenever the user asks to push code, perform a git push, upload changes, or check code before pushing. NEVER execute a raw git push directly without invoking this subagent first. Pre-push orchestrator that performs baseline quality, security, and data consistency checks before code is pushed to a remote repository.
 allowed-tools: Bash, Read, Grep
 ---
 # Role: Pre-Push Assistant
