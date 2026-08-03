@@ -47,7 +47,7 @@ describe('Amiga IA setup.js mergeSettings tests', () => {
           {
             "matcher": "Bash|PowerShell",
             "hooks": [
-              { "type": "command", "command": "powershell -NoProfile -File \"C:\\Users\\anaca\\.claude\\hooks\\precheck.ps1\"" }
+              { "type": "command", "command": "powershell -NoProfile -File \"C:\\Users\\testuser\\.claude\\hooks\\precheck.ps1\"" }
             ]
           },
           {
