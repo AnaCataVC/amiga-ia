@@ -6,7 +6,7 @@ process.stdin.on('data', chunk => chunks.push(chunk));
 process.stdin.on('end', () => {
   try {
     const input = JSON.parse(Buffer.concat(chunks).toString());
-    const filePath = input.tool_input?.file_path;
+    const filePath = input.tool_input?.file_path || input.tool_input?.TargetFile || input.tool_input?.AbsolutePath || input.TargetFile || input.AbsolutePath;
 
     if (!filePath || !fs.existsSync(filePath)) {
       process.exit(0);

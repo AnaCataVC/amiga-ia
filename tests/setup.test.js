@@ -10,6 +10,10 @@ const mergeSettingsFunc = new Function('fs', 'path', 'targetPath', 'sourcePath',
   ${setupCode.slice(setupCode.indexOf('function mergeSettings'), setupCode.indexOf('async function main'))}
   return mergeSettings(targetPath, sourcePath, options);
 `);
+const installNodeHooksFunc = new Function('fs', 'path', '__dirname', 'targetDir', 'settingsPath', 'options', `
+  ${setupCode.slice(setupCode.indexOf('function mergeSettings'), setupCode.indexOf('function isNewerVersion'))}
+  return installNodeHooks(targetDir, settingsPath, options);
+`);
 const isNewerVersionFunc = new Function('current', 'latest', `
   ${setupCode.slice(setupCode.indexOf('function isNewerVersion'), setupCode.indexOf('function getLatestNpmVersion'))}
   return isNewerVersion(current, latest);
@@ -161,6 +165,27 @@ describe('Amiga IA setup.js doctor update detection tests', () => {
     assert.strictEqual(isNewerVersionFunc('3.0.0-beta.1', '3.0.0'), false);
     assert.strictEqual(isNewerVersionFunc('unknown', '3.0.0'), false);
     assert.strictEqual(isNewerVersionFunc('3.0.0', null), false);
+  });
+
+});
+
+describe('Amiga IA setup.js installNodeHooks universal tests', () => {
+
+  test('should install universal Node.js hook scripts and configure matchers for both Claude Code and Antigravity', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'amiga-universal-test-'));
+    const testSettingsPath = path.join(tmpDir, 'hooks.json');
+
+    const result = installNodeHooksFunc(fs, path, __dirname, tmpDir, testSettingsPath);
+
+    assert.strictEqual(result, true);
+    assert.strictEqual(fs.existsSync(path.join(tmpDir, 'hooks', 'ami-pre-tool-use.js')), true);
+    assert.strictEqual(fs.existsSync(path.join(tmpDir, 'hooks', 'ami-post-tool-use.js')), true);
+
+    const updatedData = JSON.parse(fs.readFileSync(testSettingsPath, 'utf8'));
+    assert.strictEqual(updatedData.hooks.PreToolUse[0].matcher, 'Bash|PowerShell|run_command');
+    assert.strictEqual(updatedData.hooks.PostToolUse[0].matcher, 'Edit|Write|write_to_file|replace_file_content|multi_replace_file_content');
+
+    fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
 });

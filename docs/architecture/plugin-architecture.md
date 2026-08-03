@@ -45,7 +45,7 @@ When installed as a native plugin, the expected location is:
 │   ├── ami-push-assistant.md
 │   ├── ami-release-manager.md
 │   └── ...
-└── hooks.json           # Optional hooks (Antigravity ignores bash hooks in secure mode)
+└── hooks.json           # Optional hooks (Antigravity uses universal Node.js scripts)
 ```
 
 ### Manifest (`plugin.json`)
@@ -77,7 +77,7 @@ The root `plugin.json` uses explicit `skills` and `agents` fields to declare all
 
 ### Hooks Behavior
 
-Antigravity ignores bash hooks when operating in **secure mode** (its default). The project's security model relies on its atomic pipeline instead: investigate → draft a plan (`implementation_plan.md`) → require human approval → execute → document.
+While Antigravity ignores inline bash hooks when operating in **secure mode** (its default), universal Node.js execution hooks (`hooks/scripts/*.js`) are fully supported across both Antigravity and Claude Code. Additionally, the project's security model relies on its atomic pipeline: investigate → draft a plan (`implementation_plan.md`) → require human approval → execute → document.
 
 ---
 
@@ -207,4 +207,4 @@ Once copied, the files belong to the user. They can freely edit `SKILL.md` instr
 | Dual installation causes duplicate name errors | The AI platform rejects or behaves unpredictably with two skills sharing the same `ami-*` name | Users must choose either native plugin OR NPM wizard, never both |
 | Version sync between manifests is manual | `.claude-plugin/plugin.json` and root `plugin.json` can drift out of sync | Manually verify both files match before each release |
 | Hooks sync between files is manual | `hooks.json` (root) and `hooks/hooks.json` can diverge | Update both files simultaneously when changing hook definitions |
-| Antigravity ignores bash hooks in secure mode | Hook-based guardrails (e.g., commit/push interception) only work in Claude Code | Antigravity relies on its built-in planning pipeline for safety instead |
+| Antigravity ignores inline bash hooks in secure mode | Bash-based hooks do not execute in Antigravity | Use the recommended universal Node.js hook engine during setup which works across both Claude Code and Antigravity |

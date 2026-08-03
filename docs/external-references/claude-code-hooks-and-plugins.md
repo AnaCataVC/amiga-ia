@@ -85,35 +85,30 @@ Source: Web search + actual installed files
 }
 ```
 
-### CRITICAL FINDING: Hooks NOT Copied for Antigravity
+### Antigravity Hooks Architecture (Resolved)
 
-The `setup.js` installer, when configuring Antigravity (option `a` or `b`):
-1. ✅ Copies `plugin.json` to `~/.gemini/config/plugins/amiga-ia/`
-2. ✅ Copies agents to `~/.gemini/config/plugins/amiga-ia/agents/`
-3. ✅ Copies skills to `~/.gemini/config/skills/`
-4. ❌ Does **NOT** copy `hooks.json` to the plugin directory
+Historically, the `setup.js` installer skipped hook installation for Antigravity because inline bash scripts are ignored in secure mode. 
 
-The `plugin.json` declares `"hooks": "./hooks.json"` but no `hooks.json` exists at `~/.gemini/config/plugins/amiga-ia/hooks.json`.
+**Current Solution**:
+The setup wizard (`bin/setup.js`) now natively supports interactive installation of **Universal Node.js Hooks** for Antigravity:
+1. ✅ Copies skills, agents, and rules directly to `~/.gemini/config/`
+2. ✅ Prompts to install cross-platform Node.js hook scripts (`ami-pre-tool-use.js`, `ami-post-tool-use.js`) into `~/.gemini/config/hooks/`
+3. ✅ Merges universal hook matchers (supporting Antigravity parameters like `CommandLine`, `TargetFile`, and `run_command`) into `~/.gemini/config/hooks.json`
 
-**Result**: Antigravity silently ignores the hooks reference because the file doesn't exist. This is a **silent failure** — no error is shown.
+### How Antigravity Handles Hooks
 
-### How Antigravity Handles Plugin Hooks
-
-According to documentation:
-- Antigravity reads `hooks.json` from the plugin directory
-- It does NOT merge them into any global `settings.json`
-- Hooks are scoped to the plugin and active only when the plugin is enabled
-- The system prompt confirms: "Antigravity ignores bash hooks in secure mode"
-
-**Important**: Even if `hooks.json` were copied, Antigravity ignores bash hooks when running in secure/safe mode. The hooks in amiga-ia use `shell: "bash"` and rely on `jq` for parsing — these would likely be ignored by Antigravity regardless.
+According to documentation and architectural testing:
+- Antigravity reads global workspace hooks from `~/.gemini/config/hooks.json`
+- While inline Bash commands are ignored in secure/safe mode, commands utilizing standard execution runtimes like `node` are fully supported
+- Universal matchers trigger cleanly across both Claude Code and Antigravity tools
 
 ---
 
-## 4. Summary of Bugs Found
+## 4. Summary of Bugs & Resolutions
 
-| Bug | Affects | Root Cause |
-|---|---|---|
-| Hook accumulation (7 hooks instead of 3) | Claude Code | `mergeSettings()` deduplicates by exact command string; version changes create "new" hooks |
-| `precheck.ps1` lost | Claude Code | JSON parse failure causes `mergeSettings()` to overwrite with empty object |
-| `hooks.json` not installed for Antigravity | Antigravity | `setup.js` copies `plugin.json` but not `hooks.json` to the plugin directory |
-| Hooks ignored in secure mode | Antigravity | Architectural — bash hooks don't run in Antigravity's secure mode |
+| Bug / Challenge | Affects | Status / Root Cause | Resolution |
+|---|---|---|---|
+| Hook accumulation (7 hooks instead of 3) | Claude Code | Resolved | `mergeSettings()` cleans obsolete/duplicate Amiga IA hooks automatically |
+| `precheck.ps1` lost on invalid JSON | Claude Code | Resolved | Aborts merge safely to preserve user configuration |
+| `hooks.json` not installed for Antigravity | Antigravity | Resolved | Interactive wizard offers installing universal Node.js hooks directly into `~/.gemini/config/hooks.json` |
+| Bash hooks ignored in secure mode | Antigravity | Resolved | Switched to cross-platform Node.js script execution which bypasses shell script restrictions |

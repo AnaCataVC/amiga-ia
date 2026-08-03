@@ -32,7 +32,7 @@ This repository has evolved into an ecosystem of **Skills and Agents in Markdown
 3. **Native Execution:** The AI reads the XML index and uses its own file reading tool (`view_file`) to open and process `SKILL.md` only when it decides it's needed.
 
 ## Built-in Security (Planning Mode)
-Antigravity ignores bash hooks when in safe mode. Its security relies on its atomic pipeline: investigate, draft a plan (`implementation_plan.md`), require human approval, execute using `task.md`, and document with `walkthrough.md`.
+While Antigravity ignores inline bash hooks in safe/secure mode, it actively supports universal Node.js execution hooks configured via `hooks.json`. Furthermore, its security relies on its atomic pipeline: investigate, draft a plan (`implementation_plan.md`), require human approval, execute using `task.md`, and document with `walkthrough.md`.
 
 ## Strict Hierarchy Summary
 The repository is distributed as an NPM package:

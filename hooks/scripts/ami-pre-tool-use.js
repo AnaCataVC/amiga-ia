@@ -3,7 +3,7 @@ process.stdin.on('data', chunk => chunks.push(chunk));
 process.stdin.on('end', () => {
   try {
     const input = JSON.parse(Buffer.concat(chunks).toString());
-    const command = input.tool_input?.command || '';
+    const command = input.tool_input?.command || input.tool_input?.CommandLine || input.CommandLine || '';
 
     if (command.includes('git commit')) {
       console.error('Reminder: Use commit-assistant for proper commit formatting.');

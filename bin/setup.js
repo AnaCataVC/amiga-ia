@@ -135,8 +135,8 @@ function mergeSettings(targetPath, sourcePath, options = {}) {
   return true;
 }
 
-function installNodeHooks(claudeDir, settingsPath, options = {}) {
-  const hooksDir = path.join(claudeDir, 'hooks');
+function installNodeHooks(targetDir, settingsPath, options = {}) {
+  const hooksDir = path.join(targetDir, 'hooks');
   if (!fs.existsSync(hooksDir)) fs.mkdirSync(hooksDir, { recursive: true });
 
   const sourceScripts = path.join(__dirname, '../hooks/scripts');
@@ -151,17 +151,17 @@ function installNodeHooks(claudeDir, settingsPath, options = {}) {
   if (fs.existsSync(legacyScript)) {
     try { fs.unlinkSync(legacyScript); } catch (e) {}
   }
-  console.log('✅ Hook scripts copied to ~/.claude/hooks/');
+  console.log(`✅ Hook scripts copied to ${hooksDir}`);
 
   const nodeCmd = (script) => `node "${path.join(hooksDir, script).replace(/\\/g, '/')}"`;
   const hooksConfig = {
     hooks: {
-      PreToolUse: [{ matcher: 'Bash|PowerShell', hooks: [{ type: 'command', command: nodeCmd('ami-pre-tool-use.js') }] }],
-      PostToolUse: [{ matcher: 'Edit|Write', hooks: [{ type: 'command', command: nodeCmd('ami-post-tool-use.js') }] }]
+      PreToolUse: [{ matcher: 'Bash|PowerShell|run_command', hooks: [{ type: 'command', command: nodeCmd('ami-pre-tool-use.js') }] }],
+      PostToolUse: [{ matcher: 'Edit|Write|write_to_file|replace_file_content|multi_replace_file_content', hooks: [{ type: 'command', command: nodeCmd('ami-post-tool-use.js') }] }]
     }
   };
 
-  const tmpFile = path.join(claudeDir, '.amiga-hooks-tmp.json');
+  const tmpFile = path.join(targetDir, '.amiga-hooks-tmp.json');
   fs.writeFileSync(tmpFile, JSON.stringify(hooksConfig, null, 2));
   const result = mergeSettings(settingsPath, tmpFile, options);
   if (fs.existsSync(tmpFile)) {
@@ -453,7 +453,23 @@ async function main() {
     copyRecursiveSync(sourceAgentsDir, path.join(geminiDir, 'agents'));
     copyRecursiveSync(sourceRulesDir, path.join(geminiDir, 'rules'));
     console.log('✅ Skills, Agents, and Rules directories successfully configured at ~/.gemini/config/');
-    console.log('ℹ️ Note: Bash hooks installation skipped. Antigravity ignores bash hooks in secure mode.');
+
+    if (fs.existsSync(sourceSettingsPath)) {
+      console.log('\nAntigravity supports background Hooks via universal Node.js scripts (Pre-commit reminders, Debug statement checks).');
+      const hookAns = await ask('Install recommended universal Amiga IA Hooks for Antigravity? [y/N]: ');
+      if (hookAns.toLowerCase().trim() === 'y') {
+        if (!fs.existsSync(geminiDir)) fs.mkdirSync(geminiDir, { recursive: true });
+        const geminiSettings = path.join(geminiDir, 'hooks.json');
+        const merged = installNodeHooks(geminiDir, geminiSettings);
+        if (merged) {
+          console.log('✅ Universal Node.js Hooks successfully configured at ~/.gemini/config/hooks.json.');
+        } else {
+          console.log('⚠️ Hooks configuration skipped due to JSON parse error.');
+        }
+      } else {
+        console.log('⏭️ Hooks installation skipped for Antigravity.');
+      }
+    }
   }
 
   if (['u', 'uninstall'].includes(choice)) {
@@ -486,10 +502,27 @@ async function main() {
       deleteMatchingFiles(sourceSkillsDir, path.join(geminiDir, 'skills'));
       deleteMatchingFiles(sourceAgentsDir, path.join(geminiDir, 'agents'));
       deleteMatchingFiles(sourceRulesDir, path.join(geminiDir, 'rules'));
+      const sourceScriptsDir = path.join(__dirname, '../hooks/scripts');
+      if (fs.existsSync(sourceScriptsDir)) {
+        deleteMatchingFiles(sourceScriptsDir, path.join(geminiDir, 'hooks'));
+      }
       if (fs.existsSync(geminiPluginDir)) {
         fs.rmSync(geminiPluginDir, { recursive: true, force: true });
       }
-      console.log('✅ Antigravity skills, agents, and rules removed.');
+      console.log('✅ Antigravity skills, agents, rules, and hook scripts removed.');
+
+      const geminiHooksConfig = path.join(geminiDir, 'hooks.json');
+      if (fs.existsSync(geminiHooksConfig)) {
+        const hookAnsGem = await ask('Do you want to remove the Amiga IA Hooks config from Antigravity (~/.gemini/config/hooks.json)? [y/N]: ');
+        if (hookAnsGem.toLowerCase().trim() === 'y') {
+          try {
+            fs.unlinkSync(geminiHooksConfig);
+            console.log('✅ Removed ~/.gemini/config/hooks.json.');
+          } catch (e) {
+            console.log('⚠️ Could not remove ~/.gemini/config/hooks.json.');
+          }
+        }
+      }
     }
     console.log('✅ Uninstallation complete. Safe deletion applied.');
   }
