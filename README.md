@@ -65,6 +65,7 @@ All built-in capabilities strictly utilize the **`ami-`** namespace prefix to pr
 
 | Type | Name | Description |
 |---|---|---|
+| Agent | **ami-data-scientist** | Master orchestrator agent for Data & SQL. Coordinates exploratory dataset profiling, database query optimizations, and executive dashboards. |
 | Agent | **ami-doc-architect** | Master documentation orchestrator that coordinates doc-manager, context research, and session learnings extraction in parallel. |
 | Agent | **ami-expert-council** | Spawns a council of specialized subagents tailored to discuss, debate, and refine a user's architectural idea from multiple perspectives. |
 | Agent | **ami-next-step-assistant** | Acts as an automated project guide by evaluating repository health and recommending the most critical next action. |
@@ -75,6 +76,8 @@ All built-in capabilities strictly utilize the **`ami-`** namespace prefix to pr
 | Agent | **ami-repo-auditor** | Master audit orchestrator that evaluates codebase technical debt, dependency hygiene, and security across modules concurrently. |
 | Skill | **ami-commit-planner** | Analyzes the working tree, performs security/leak audits, plans Conventional Commits/amend/squash, and executes staged git actions. |
 | Skill | **ami-context-researcher** | Actively researches up-to-date external documentation and persists findings in references to prevent context degradation. |
+| Skill | **ami-dashboard-builder** | Builds interactive web dashboards and publication-quality Python visualizations from analytical datasets and KPIs. |
+| Skill | **ami-data-profiler** | Performs exploratory data analysis (EDA), quantifies null distributions, detects outliers, and audits methodological validity. |
 | Skill | **ami-data-validator** | Validates structural consistency between source code changes and data layer definitions (schemas, queries). |
 | Skill | **ami-dependency-analyzer** | Audits project library health, detecting unused, outdated, vulnerable, or phantom dependencies. |
 | Skill | **ami-doc-manager** | Comprehensive documentation manager. Detects whether to architect new docs from scratch or synchronize existing wikis with code diffs. |
@@ -88,8 +91,10 @@ All built-in capabilities strictly utilize the **`ami-`** namespace prefix to pr
 | Skill | **ami-quality-auditor** | Conducts deep inspections on modified code for maintainability, modular design best practices, security flaws, and structural soundness. |
 | Skill | **ami-release-drafter** | Auto-triggered prior to publishing releases. Parses commit histories to draft structured bilingual release notes grouped by semantic type. |
 | Skill | **ami-release-tagger** | Auto-triggered before release bumps. Evaluates git histories against semantic versioning laws to compute precise stable or QA tags. |
+| Skill | **ami-sql-optimizer** | Writes and refactors SQL across major database dialects, eliminates query anti-patterns, and recommends high-impact indexes. |
 | Skill | **ami-tech-debt-scanner** | Scans repositories for technical debt, obsolete imports, duplicated logic, dead code, and pending comments (TODOs/FIXMEs). |
 | Skill | **ami-test-creator** | Auto-triggered when new features lack automated test coverage. Crafts focused unit and regression tests tailored to modified code. |
+| Skill | **ami-test-strategist** | Designed to run before writing tests. Formulates QA test strategies, pyramid distributions, mocking boundaries, and CI quality gates. |
 
 ### 6. Installation & Usage
 The official and recommended setup method is installing Amiga IA globally via the NPM package registry:
@@ -185,8 +190,9 @@ Todas las capacidades incluidas emplean de forma estricta el prefijo de espacio 
 
 | Tipo | Nombre | Descripción |
 |---|---|---|
+| Agente | **ami-data-scientist** | Agente maestro de la Suite de Datos y SQL. Orquesta análisis exploratorio, optimización de consultas en base de datos y dashboards ejecutivos. |
 | Agente | **ami-doc-architect** | Agente maestro de documentación que orquesta en paralelo la creación de wikis, investigación de contexto externo y extracción de lecciones. |
-| Agente | **ami-expert-council** | Convoca una mesa redonda de subagentes especializados para debatir, analizar y refinar una idea o decisión arquitectónica desde múltiples perspectivas. |
+| Agente | **ami-expert-council** | Convoca una mesa redonda de subagentes especializados para debatir, analizar y refinar una idea o decisión arquitectónica desde múltiples perspectives. |
 | Agente | **ami-next-step-assistant** | Guía de proyecto automatizada que evalúa la salud del repositorio y recomienda el siguiente paso crítico en pruebas, deuda o calidad. |
 | Agente | **ami-pr-publisher** | Agente maestro que ejecuta revisiones integrales, redacción de resúmenes ejecutivos y verificación de conflictos antes de publicar un Pull Request. |
 | Agente | **ami-pr-reviewer** | Orquestador maestro que evalúa Pull Requests activos desplegando subagentes paralelos y descubrimiento automático de herramientas locales. |
@@ -195,6 +201,8 @@ Todas las capacidades incluidas emplean de forma estricta el prefijo de espacio 
 | Agente | **ami-repo-auditor** | Agente maestro de auditoría que evalúa concurrentemente deuda técnica, higiene de librerías y vulnerabilidades en todo el código base. |
 | Skill | **ami-commit-planner** | Analiza el árbol de trabajo actual, audita seguridad/secretos, planifica Conventional Commits/amend/squash y ejecuta las transacciones en Git. |
 | Skill | **ami-context-researcher** | Investiga documentación externa actualizada en tiempo real y guarda hallazgos en referencias para evitar la obsolrescencia de contexto. |
+| Skill | **ami-dashboard-builder** | Construye dashboards web interactivos y visualizaciones profesionales en Python a partir de conjuntos de datos y KPIs. |
+| Skill | **ami-data-profiler** | Realiza análisis exploratorio de datos (EDA), cuantifica distribuciones nulas, detecta anomalías y audita validez metodológica. |
 | Skill | **ami-data-validator** | Valida la consistencia estructural entre los cambios aplicados en el código y las definiciones del backend (esquemas y consultas BD). |
 | Skill | **ami-dependency-analyzer** | Audita las librerías del proyecto para identificar paquetes sin uso, versiones obsoletas, vulnerabilidades o dependencias fantasma. |
 | Skill | **ami-doc-manager** | Gestor integral de documentación. Detecta automáticamente si debe crear documentos desde cero o sincronizar wikis existentes con el historial de Git. |
@@ -208,8 +216,10 @@ Todas las capacidades incluidas emplean de forma estricta el prefijo de espacio 
 | Skill | **ami-quality-auditor** | Audita los archivos modificados verificando legibilidad, diseño modular, principios DRY, seguridad y buenas prácticas del framework. |
 | Skill | **ami-release-drafter** | Se ejecuta antes de generar lanzamientos. Inspecciona commits para redactar notas de release bilingües categorizadas por mejoras y correcciones. |
 | Skill | **ami-release-tagger** | Se ejecuta antes de subir versiones. Analiza el historial de Git para calcular con precisión matemática la siguiente etiqueta semántica o Release Candidate. |
+| Skill | **ami-sql-optimizer** | Redacta y optimiza SQL multinivel (PostgreSQL, BigQuery, Snowflake, etc.), elimina anti-patrones y recomienda índices eficaces. |
 | Skill | **ami-tech-debt-scanner** | Escanea el repositorio buscando deuda técnica, módulos obsoletos, lógica duplicada, código muerto y marcadores pendientes (TODOs/FIXMEs). |
 | Skill | **ami-test-creator** | Se ejecuta automáticamente cuando se incorpora código nuevo sin pruebas unitarias. Crea tests enfocados en proteger las nuevas funciones. |
+| Skill | **ami-test-strategist** | Se ejecuta antes de programar tests. Diseña estrategias generales de QA, piramidación de pruebas, políticas de mocking y puertas de calidad en CI. |
 
 ### 6. Instalación y Uso
 El método oficial y recomendado para integrar **Amiga IA** es mediante la instalación del paquete global de NPM:
