@@ -358,7 +358,7 @@ async function runDoctor() {
   }
 
   if (hasOutdatedOrUntrackedEnv) {
-    console.log(`     Recommendation: Run 'npx ${pkgName}-setup@latest' (or 'amiga-ia-setup') and select your AI assistants to upgrade local files and sync version tracking.`);
+    console.log(`     Recommendation: Run 'amiga-ia-setup' and select your AI assistants to upgrade local files and sync version tracking.`);
     issueCount++;
   } else if (anyInstalled) {
     console.log(`  ✅ All installed AI assistant environments match executing package version v${currentVersion}.`);
@@ -369,7 +369,7 @@ async function runDoctor() {
   if (latestVersion) {
     if (isNewerVersion(currentVersion, latestVersion)) {
       console.log(`  💡 ADVISORY: A newer version (v${latestVersion}) is available on NPM!`);
-      console.log(`     Recommendation: Run 'npx ${pkgName}@latest' or update via your package manager to enjoy the latest capabilities and bug fixes.`);
+      console.log(`     Recommendation: Run 'npm install -g ${pkgName}@latest' to update your global package and enjoy the latest capabilities and bug fixes.`);
       // Note: Update availability is treated as an informational advisory and does not increment issueCount
     } else {
       console.log(`  ✅ Executing CLI package matches the latest published version on NPM (v${latestVersion}).`);
@@ -383,7 +383,7 @@ async function runDoctor() {
   const geminiPluginDir = path.join(geminiDir, 'plugins', 'amiga-ia');
   if (fs.existsSync(geminiPluginDir)) {
     console.log(`⚠️  WARNING: Legacy plugin directory found (~/.gemini/config/plugins/amiga-ia).`);
-    console.log(`    Recommended action: Run 'npx amiga-ia-setup' to clean legacy plugin directory and migrate to NPM package installation.`);
+    console.log(`    Recommended action: Run 'amiga-ia-setup' to clean legacy plugin directory and migrate to NPM package installation.`);
     issueCount++;
   } else {
     console.log('  ✅ No legacy plugin conflicts detected.');
@@ -463,11 +463,11 @@ async function runDoctor() {
           console.log('  ✅ Bash hooks detected — compatible with Unix/macOS.');
         } else if (hasBashHooks && isWindows) {
           console.log('  ⚠️  WARNING: Bash hooks detected on Windows. They may fail without Git Bash setup.');
-          console.log("     Recommendation: Run 'npx amiga-ia-setup' and select Node.js (universal) or PowerShell hooks.");
+          console.log("     Recommendation: Run 'amiga-ia-setup' and select Node.js (universal) or PowerShell hooks.");
           issueCount++;
         } else if (hasPwshHooks && !isWindows) {
           console.log('  ⚠️  WARNING: PowerShell hooks detected on a non-Windows OS.');
-          console.log("     Recommendation: Run 'npx amiga-ia-setup' and select Node.js (universal) or Bash hooks.");
+          console.log("     Recommendation: Run 'amiga-ia-setup' and select Node.js (universal) or Bash hooks.");
           issueCount++;
         }
       } else {
