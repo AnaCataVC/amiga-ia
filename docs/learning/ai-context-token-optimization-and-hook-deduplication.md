@@ -34,15 +34,15 @@ When designing frameworks that dynamically inject capabilities, available skills
 
 ---
 
-## 2. Preventing Claude Code Hook Deduplication Failures
+## 2. Preventing Hook Deduplication Failures & Shell Bloat
 
 ### The Gotcha
-When configuring background runtime hooks in `settings.json` or engine-specific manifests (`hooks-pwsh.json`), developers often attempt to place short logic blocks or shell expressions directly inline within the command string. 
+When configuring background runtime hooks in `settings.json` or engine-specific manifests (`hooks.json`, `hooks-pwsh.json`), developers often attempt to place short logic blocks or shell expressions directly inline within the command string. 
 
-On Windows platforms utilizing PowerShell, inline scripts require complex string escaping (e.g., quotes, variables, line breaks). Because Claude Code enforces event hook deduplication by performing literal string equivalence matching against registered commands, differences in OS shell escaping or JSON string formatting cause deduplication logic to fail. This results in duplicate hooks registering repeatedly during session initialization, triggering duplicate execution runs and bloated context window injections (~200 tokens per command).
+On Windows platforms utilizing PowerShell, inline scripts require complex string escaping (e.g., quotes, variables, line breaks). Because Claude Code enforces event hook deduplication by performing literal string equivalence matching against registered commands, differences in OS shell escaping or JSON string formatting cause deduplication logic to fail. This results in duplicate hooks registering repeatedly during session initialization, triggering duplicate execution runs and bloated context window injections (~200 tokens per command). Similarly, on POSIX systems, lengthy inline Bash pipelines with `jq`, `sed`, and `git diff` inflate recurring System Prompt overhead by ~150 tokens per command.
 
 ### The Solution: External Script Dispatch
-Never use inline multi-command shell script strings for AI event hooks. Always standardize on invoking an external runtime script file with simple, predictable parameters:
+Never use inline multi-command shell script strings for AI event hooks. Always standardize on invoking dedicated external runtime script files (`ami-hooks.ps1`, `ami-hooks.sh`, or universal `.js` wrappers) with simple, predictable parameters:
 ```json
 {
   "command": "pwsh",
@@ -51,7 +51,7 @@ Never use inline multi-command shell script strings for AI event hooks. Always s
 ```
 * Ensures deterministic string-matching for deduplication engines across Windows, macOS, and Linux.
 * Reduces hook configuration token overhead down to **~15 tokens per hook**.
-* Allows complex runtime routing and telemetry log injection to evolve inside standard version-controlled script files without modifying engine configuration schemas.
+* Allows complex runtime routing and telemetry log injection to evolve inside standard version-controlled script files without modifying engine configuration schemas or saturating context memory.
 
 ---
 
@@ -81,3 +81,28 @@ To ensure enterprise robustness when evaluating runtime inputs (such as JSON too
    }
    ```
 This dual-tier evaluation pattern guarantees high runtime resilience without breaking tool call execution loops or leaking unhandled stack traces into the user's interactive CLI chat window.
+
+---
+
+## 4. Defensive POSIX / Bash Stream Parsing for Multi-Schema AI Environments
+
+### The Gotcha: Varied JSON Schemas and Fragile Exit Codes in Shell Hooks
+When executing POSIX background hooks via Bash across multiple AI CLI engines (e.g., Claude Code vs. Google Antigravity), tool execution events stream heterogeneous JSON payloads via standard input (`stdin`). For example, Claude Code references target files via `"file_path"`, whereas Antigravity utilizes `"TargetFile"` or `"AbsolutePath"`. Furthermore, standard POSIX text tools like `grep` return exit status `1` when no pattern matches are found, which can inadvertently cause shell scripts under restrictive runtime evaluators to terminate with error states, aborting agent operations.
+
+### The Solution: Multi-Schema Regex Grouping and Silent Fallback Evaluation
+To build bulletproof, dependency-free Bash runtime scripts:
+
+1. **Grouped Multi-Schema Property Extraction:** Use portable POSIX regex character groups in `sed` to simultaneously extract file targets across differing CLI architectures without requiring external JSON parsers like `jq`:
+   ```bash
+   file=$(echo "$input" | sed -n 's/.*"\(file_path\|TargetFile\|AbsolutePath\)":[[:space:]]*"\([^"]*\)".*/\2/p' | head -n 1)
+   ```
+2. **Defensive Fallbacks on Inspection Commands:** Wrap stream evaluation tools and Git diff inspections with explicit fallback operators (`|| echo ""`) and error redirections (`2>/dev/null`) to guarantee zero-code exit returns under all operational edge cases:
+   ```bash
+   added=$(git diff -U0 "$file" 2>/dev/null | grep -E '^\+[^\\+]' || echo "")
+   if [ -n "$added" ]; then
+     if echo "$added" | grep -E -q "console\.log|debugger|TODO|FIXME"; then
+       echo "Warning: Detected debug statements in $file. Review before commit." >&2
+     fi
+   fi
+   ```
+This ensures seamless compatibility across disparate AI suites while maintaining zero structural dependency requirements on host operating systems.

@@ -32,7 +32,7 @@ With **v3.0.0 ("The Agentic Evolution")**, Amiga IA introduces decentralized mul
 * **Agent Skills (XML + Markdown Lazy Loading):** A token-efficient architecture where an index of available tools is compiled into the system prompt, allowing AI models to open and consume imperative skill instructions only when actively required.
 * **Multi-Skill Parallel Orchestration (ADR-002):** Decentralized subagent profiles (such as `ami-pr-reviewer`, `ami-doc-architect`, and `ami-repo-auditor`) coordinate parallel worker threads to scan codebase technical debt, verify pre-push consistency, and review code concurrently.
 * **Zero-Overhead Stateless Execution (ADR-003):** Background security hooks are optimized for token economy and zero memory pollution, operating seamlessly across native Bash, Windows PowerShell, and zero-dependency Node.js execution engines.
-* **Compact System Prompt & Unified Hook Optimization (ADR-004):** Refactored Universal Adapter XML generation to use root-relative compact attributes and migrated inline PowerShell commands to an external execution script (`hooks/scripts/ami-hooks.ps1`). This achieved a verified **36.3% reduction (-1,211 tokens/turn)** in recurring System Prompt overhead (dropping from 3,335 to 2,124 tokens/turn), faster LLM inference, and zero Windows hook deduplication errors.
+* **Compact System Prompt & Unified Hook Optimization (ADR-004):** Refactored Universal Adapter XML generation to use root-relative compact attributes and migrated inline PowerShell and Bash commands to external runtime scripts (`hooks/scripts/ami-hooks.ps1` & `ami-hooks.sh`). This achieved a verified **36.3% reduction (-1,211 tokens/turn)** in recurring System Prompt overhead (dropping from 3,335 to 2,124 tokens/turn), faster LLM inference, and zero hook deduplication errors.
 * **Interactive CLI Wizard (`amiga-ia-setup`):** An automated setup, migration, and diagnostic suite built in Node.js that cleanly installs skills, merges configurations into AI user settings, and dynamically checks system health.
 
 ### 3. Key Learnings (Developer Takeaways)
@@ -56,7 +56,7 @@ amiga-ia/
 ├── skills/                  # Declarative Markdown skills (ami-*/SKILL.md)
 ├── hooks/                   # Claude Code native and cross-platform guardrail hooks
 │   ├── hooks.json           # Plugin auto-discovery configuration
-│   └── scripts/             # External runtime hooks (ami-*.js wrappers & ami-hooks.ps1)
+│   └── scripts/             # External runtime hooks (.js wrappers, ami-hooks.ps1, & ami-hooks.sh)
 ├── hooks.json               # Claude Code native hooks configuration (Bash engine)
 └── hooks-pwsh.json          # Claude Code native hooks configuration (PowerShell engine)
 ```
@@ -159,7 +159,7 @@ Con la versión **v3.0.0 ("The Agentic Evolution")**, Amiga IA introduce la orqu
 * **Agent Skills (XML + Carga Diferida / Lazy Loading):** Arquitectura optimizada para el ahorro de tokens donde un índice con el catálogo de herramientas se inyecta en el prompt base, permitiendo al LLM abrir y leer el archivo Markdown de instrucciones solo cuando necesita usar una habilidad específica.
 * **Orquestación Multi-Habilidad en Paralelo (ADR-002):** Perfiles de subagente descentralizados (como `ami-pr-reviewer`, `ami-doc-architect` y `ami-repo-auditor`) coordinan flujos de trabajo concurrentes para inspeccionar deuda técnica, validar coherencia antes de un push y revisar PRs en simultáneo.
 * **Ejecución Ligera Sin Estado (Zero-Overhead, ADR-003):** Los hooks en segundo plano están optimizados para la economía de tokens y cero contaminación del contexto de memoria, ejecutándose con fluidez mediante Bash, PowerShell nativo de Windows o scripts de Node.js sin dependencias externas.
-* **Optimización del Prompt del Sistema y Hooks Unificados (ADR-004):** Refactorización del adaptador universal hacia atributos XML compactos con ruta raíz relativa, y migración de comandos en línea de PowerShell a un script externo (`hooks/scripts/ami-hooks.ps1`). Esto logró una reducción verificada del **36.3% (-1,211 tokens por turno)** en la sobrecarga recurrente del Prompt del Sistema (cayendo de 3,335 a 2,124 tokens/turno), acelerando la inferencia del modelo y eliminando errores de duplicidad en Windows.
+* **Optimización del Prompt del Sistema y Hooks Unificados (ADR-004):** Refactorización del adaptador universal hacia atributos XML compactos con ruta raíz relativa, y migración de comandos en línea de PowerShell y Bash a scripts externos de tiempo de ejecución (`hooks/scripts/ami-hooks.ps1` y `ami-hooks.sh`). Esto logró una reducción verificada del **36.3% (-1,211 tokens por turno)** en la sobrecarga recurrente del Prompt del Sistema (cayendo de 3,335 a 2,124 tokens/turno), acelerando la inferencia del modelo y eliminando errores de duplicidad en terminal.
 * **Asistente CLI Interactivo (`amiga-ia-setup`):** Herramienta desarrollada en Node.js que instala habilidades, realiza fusiones (*merge*) seguras con la configuración local de tus asistentes de IA, purga automáticamente sistemas heredados y audita la salud general del entorno.
 
 ### 3. Aprendizajes Clave (Key Learnings)
@@ -183,7 +183,7 @@ amiga-ia/
 ├── skills/                  # Skills declarativas en Markdown (ami-*/SKILL.md)
 ├── hooks/                   # Hooks de seguridad nativos y scripts multiplataforma
 │   ├── hooks.json           # Configuración para auto-descubrimiento en plugins
-│   └── scripts/             # Scripts externos universales (ami-*.js y ami-hooks.ps1)
+│   └── scripts/             # Scripts externos universales (.js, ami-hooks.ps1 y ami-hooks.sh)
 ├── hooks.json               # Configuración nativa de hooks de Claude Code (Motor Bash)
 └── hooks-pwsh.json          # Configuración nativa de hooks de Claude Code (Motor PowerShell)
 ```
