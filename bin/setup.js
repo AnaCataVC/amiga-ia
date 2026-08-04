@@ -101,7 +101,8 @@ function mergeSettings(targetPath, sourcePath, options = {}) {
     'debugger|TODO|FIXME',
     'ami-session-start',
     'ami-pre-tool-use',
-    'ami-post-tool-use'
+    'ami-post-tool-use',
+    'ami-hooks'
   ];
 
   let cleanedCount = 0;
@@ -162,6 +163,34 @@ function installNodeHooks(targetDir, settingsPath, options = {}) {
   };
 
   const tmpFile = path.join(targetDir, '.amiga-hooks-tmp.json');
+  fs.writeFileSync(tmpFile, JSON.stringify(hooksConfig, null, 2));
+  const result = mergeSettings(settingsPath, tmpFile, options);
+  if (fs.existsSync(tmpFile)) {
+    fs.unlinkSync(tmpFile);
+  }
+  return result;
+}
+
+function installPwshHooks(targetDir, settingsPath, options = {}) {
+  const hooksDir = path.join(targetDir, 'hooks');
+  if (!fs.existsSync(hooksDir)) fs.mkdirSync(hooksDir, { recursive: true });
+
+  const sourceScripts = path.join(__dirname, '../hooks/scripts');
+  const srcFile = path.join(sourceScripts, 'ami-hooks.ps1');
+  if (fs.existsSync(srcFile)) {
+    fs.copyFileSync(srcFile, path.join(hooksDir, 'ami-hooks.ps1'));
+  }
+  console.log(`✅ PowerShell hook script copied to ${hooksDir}`);
+
+  const pwshCmd = (event) => `pwsh -NoProfile -ExecutionPolicy Bypass -File "${path.join(hooksDir, 'ami-hooks.ps1').replace(/\\/g, '/')}" -Event ${event}`;
+  const hooksConfig = {
+    hooks: {
+      PreToolUse: [{ matcher: 'Bash|PowerShell|run_command', hooks: [{ type: 'command', shell: 'pwsh', command: pwshCmd('PreToolUse') }] }],
+      PostToolUse: [{ matcher: 'Edit|Write|write_to_file|replace_file_content|multi_replace_file_content', hooks: [{ type: 'command', shell: 'pwsh', command: pwshCmd('PostToolUse') }] }]
+    }
+  };
+
+  const tmpFile = path.join(targetDir, '.amiga-hooks-tmp-pwsh.json');
   fs.writeFileSync(tmpFile, JSON.stringify(hooksConfig, null, 2));
   const result = mergeSettings(settingsPath, tmpFile, options);
   if (fs.existsSync(tmpFile)) {
@@ -317,7 +346,7 @@ async function runDoctor() {
           }
         });
 
-        const amigaSigs = ['commit-assistant', 'push-assistant', 'ami-pr-publisher', 'ami-pr-reviewer', 'ami-pr-conflict-detector', 'docs/coding-sessions', 'debugger|TODO|FIXME', 'ami-session-start', 'ami-pre-tool-use', 'ami-post-tool-use'];
+        const amigaSigs = ['commit-assistant', 'push-assistant', 'ami-pr-publisher', 'ami-pr-reviewer', 'ami-pr-conflict-detector', 'docs/coding-sessions', 'debugger|TODO|FIXME', 'ami-session-start', 'ami-pre-tool-use', 'ami-post-tool-use', 'ami-hooks'];
         const isAmigaHook = (cmd) => cmd && typeof cmd === 'string' && amigaSigs.some(sig => cmd.includes(sig));
 
         const hasNodeHooks = hookCmds.some(h => isAmigaHook(h.command) && h.command.includes('node '));
@@ -419,8 +448,7 @@ async function main() {
         if (engine === 'b' || engine === 'bash') {
           merged = mergeSettings(claudeSettings, sourceSettingsPath);
         } else if (engine === 'p' || engine === 'powershell' || engine === 'pwsh') {
-          const pwshSettingsPath = path.join(__dirname, '../hooks-pwsh.json');
-          merged = mergeSettings(claudeSettings, pwshSettingsPath);
+          merged = installPwshHooks(claudeDir, claudeSettings);
         } else {
           merged = installNodeHooks(claudeDir, claudeSettings);
         }

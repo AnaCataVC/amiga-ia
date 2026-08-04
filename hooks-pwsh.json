@@ -2,24 +2,24 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Bash|PowerShell",
+        "matcher": "Bash|PowerShell|run_command",
         "hooks": [
           {
             "type": "command",
             "shell": "pwsh",
-            "command": "$inp = [Console]::In.ReadToEnd(); if ($inp -match 'git commit') { [Console]::Error.WriteLine('Reminder: Use commit-assistant for proper commit formatting.') }; if ($inp -match 'git push') { [Console]::Error.WriteLine('Reminder: Run push-assistant agent before pushing code.') }; if ($inp -match 'gh pr create') { [Console]::Error.WriteLine('Reminder: Consider running ami-pr-conflict-detector or ami-pr-publisher before creating PR.') }; exit 0"
+            "command": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"./hooks/scripts/ami-hooks.ps1\" -Event PreToolUse"
           }
         ]
       }
     ],
     "PostToolUse": [
       {
-        "matcher": "Edit|Write",
+        "matcher": "Edit|Write|write_to_file|replace_file_content|multi_replace_file_content",
         "hooks": [
           {
             "type": "command",
             "shell": "pwsh",
-            "command": "$inp = [Console]::In.ReadToEnd(); if ($inp -match '\"file_path\"\\s*:\\s*\"([^\"]*)\"') { $file = $Matches[1]; if (Test-Path $file) { $null = git ls-files --error-unmatch $file 2>$null; if ($LASTEXITCODE -eq 0) { $added = git diff -U0 $file 2>$null | Out-String } else { $added = Get-Content $file -Raw -EA SilentlyContinue }; if ($added -match 'console\\.log|debugger|TODO|FIXME') { [Console]::Error.WriteLine('Warning: Detected debug statements or TODOs in modified lines of ' + $file + '. Review before commit.') } } }"
+            "command": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"./hooks/scripts/ami-hooks.ps1\" -Event PostToolUse"
           }
         ]
       }
