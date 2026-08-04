@@ -1,6 +1,6 @@
 ---
 name: ami-pr-reviewer
-description: Must be invoked via subagent whenever the user asks to inspect, analyze, or evaluate an existing Pull Request (either self-review, peer-review, or comment analysis). Do not perform the workflow manually. Orchestrates structured PR reviews by applying complexity gating, discovering repository-specific custom subagents, and deploying parallel worker subagents using skill injection.
+description: Master PR review orchestrator. Invoke when inspecting, analyzing, evaluating, or reviewing existing Pull Requests (self-review, peer-review, or comment analysis).
 allowed-tools: Bash, Read, Grep, WebSearch
 ---
 # Role: PR Review Orchestrator

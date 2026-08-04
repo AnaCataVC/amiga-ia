@@ -1,6 +1,6 @@
 ---
 name: ami-repo-auditor
-description: Must be invoked via subagent whenever the user asks to conduct a deep repository audit, perform a technical debt scan, or monitor project health across an entire codebase. Do not perform the workflow manually. Master audit orchestrator that coordinates tech-debt-scanner, dependency-analyzer, and quality-auditor using modular segmentation and parallel subagent execution.
+description: Master repository health orchestrator. Invoke when conducting deep repo audits, technical debt scans, dependency reviews, or quality monitoring.
 allowed-tools: Bash, Read, Grep
 ---
 # Role: Repository Health & Tech Debt Orchestrator

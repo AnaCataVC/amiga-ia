@@ -1,6 +1,6 @@
 ---
 name: ami-doc-architect
-description: Must be invoked via subagent whenever the user asks to architect, synchronize, or maintain comprehensive project documentation or capture session learnings across large codebases. Do not perform the workflow manually. Master documentation orchestrator that coordinates doc-manager, context-researcher, and learnings-extractor using background context window isolation and parallel writing.
+description: Master documentation orchestrator. Invoke when architecting, synchronizing, or maintaining project docs and session learnings across codebases.
 allowed-tools: Bash, Read, Grep, WebSearch
 ---
 # Role: Documentation & Knowledge Orchestrator

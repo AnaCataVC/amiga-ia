@@ -49,16 +49,18 @@ class UniversalAdapter {
         });
       }
 
-      skills.push(`  <skill>\n    <name>${name}</name>\n    <description>${description}</description>\n    <location>${file}</location>\n  </skill>`);
+      const relPath = path.relative(baseDir, file).replace(/\\/g, '/');
+      skills.push(`  <skill name="${name}" file="${relPath}">${description}</skill>`);
     });
 
     if (skills.length === 0) return '';
 
+    const normalizedBase = baseDir.replace(/\\/g, '/');
     return [
-      '<available_skills>',
+      `<available_skills root_dir="${normalizedBase}">`,
       ...skills,
       '</available_skills>',
-      'If you need to use a skill, use your file reading tool to read the file at <location> and follow its instructions.'
+      'If you need to use a skill, use your file reading tool to read the complete file path at root_dir/file and follow its instructions.'
     ].join('\n');
   }
 
@@ -84,16 +86,18 @@ class UniversalAdapter {
         });
       }
 
-      agents.push(`  <agent>\n    <name>${name}</name>\n    <description>${description}</description>\n    <location>${filepath}</location>\n  </agent>`);
+      const relPath = path.relative(baseDir, filepath).replace(/\\/g, '/');
+      agents.push(`  <agent name="${name}" file="${relPath}">${description}</agent>`);
     });
 
     if (agents.length === 0) return '';
 
+    const normalizedBase = baseDir.replace(/\\/g, '/');
     return [
-      '<available_agents>',
+      `<available_agents root_dir="${normalizedBase}">`,
       ...agents,
       '</available_agents>',
-      'If you need to use an agent, use your file reading tool to read the file at <location> and follow its instructions.'
+      'If you need to use an agent, use your file reading tool to read the complete file path at root_dir/file and follow its instructions.'
     ].join('\n');
   }
 

@@ -1,6 +1,6 @@
 ---
 name: ami-expert-council
-description: Must be invoked via subagent whenever the user asks to assemble an expert panel, debate a complex feature, or evaluate an architectural idea from multiple perspectives. Spawns a council of specialized subagents to discuss and refine ideas.
+description: Master debate orchestrator. Invoke to assemble an expert panel or council of subagents to debate complex features and architectural decisions.
 allowed-tools: Read, Agent, define_subagent, invoke_subagent, send_message
 ---
 
