@@ -2,24 +2,24 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Bash",
+        "matcher": "Bash|PowerShell|run_command",
         "hooks": [
           {
             "type": "command",
             "shell": "bash",
-            "command": "input=$(cat); if echo \"$input\" | grep -q \"git commit\"; then echo 'Reminder: Use commit-assistant for proper commit formatting.' >&2; fi; if echo \"$input\" | grep -q \"git push\"; then echo 'Reminder: Run push-assistant agent before pushing code.' >&2; fi; if echo \"$input\" | grep -q \"gh pr create\"; then echo 'Reminder: Consider running ami-pr-conflict-detector or ami-pr-publisher before creating PR.' >&2; fi; exit 0"
+            "command": "bash ./hooks/scripts/ami-hooks.sh -e PreToolUse"
           }
         ]
       }
     ],
     "PostToolUse": [
       {
-        "matcher": "Edit|Write",
+        "matcher": "Edit|Write|write_to_file|replace_file_content|multi_replace_file_content",
         "hooks": [
           {
             "type": "command",
             "shell": "bash",
-            "command": "input=$(cat); file=$(echo \"$input\" | sed -n 's/.*\"file_path\":[[:space:]]*\"\\([^\"]*\\)\".*/\\1/p'); if [ -n \"$file\" ] && [ -f \"$file\" ]; then if git ls-files --error-unmatch \"$file\" >/dev/null 2>&1; then added=$(git diff -U0 \"$file\" 2>/dev/null | grep -E '^\\+[^\\+]'); else added=$(cat \"$file\" 2>/dev/null); fi; if echo \"$added\" | grep -qE 'console\\.log|debugger|TODO|FIXME'; then echo \"Warning: Detected debug statements or TODOs in modified lines of $file. Review before commit.\" >&2; fi; fi"
+            "command": "bash ./hooks/scripts/ami-hooks.sh -e PostToolUse"
           }
         ]
       }

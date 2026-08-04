@@ -14,9 +14,25 @@ const installNodeHooksFunc = new Function('fs', 'path', '__dirname', 'targetDir'
   ${setupCode.slice(setupCode.indexOf('function mergeSettings'), setupCode.indexOf('function isNewerVersion'))}
   return installNodeHooks(targetDir, settingsPath, options);
 `);
+const installPwshHooksFunc = new Function('fs', 'path', '__dirname', 'targetDir', 'settingsPath', 'options', `
+  ${setupCode.slice(setupCode.indexOf('function mergeSettings'), setupCode.indexOf('function isNewerVersion'))}
+  return installPwshHooks(targetDir, settingsPath, options);
+`);
+const installBashHooksFunc = new Function('fs', 'path', '__dirname', 'targetDir', 'settingsPath', 'options', `
+  ${setupCode.slice(setupCode.indexOf('function mergeSettings'), setupCode.indexOf('function isNewerVersion'))}
+  return installBashHooks(targetDir, settingsPath, options);
+`);
 const isNewerVersionFunc = new Function('current', 'latest', `
   ${setupCode.slice(setupCode.indexOf('function isNewerVersion'), setupCode.indexOf('function getLatestNpmVersion'))}
   return isNewerVersion(current, latest);
+`);
+const saveVersionManifestFunc = new Function('fs', 'path', 'targetDir', 'version', `
+  ${setupCode.slice(setupCode.indexOf('function saveVersionManifest'), setupCode.indexOf('async function runDoctor'))}
+  return saveVersionManifest(targetDir, version);
+`);
+const getInstalledEnvironmentStatusFunc = new Function('fs', 'path', 'targetDir', `
+  ${setupCode.slice(setupCode.indexOf('function saveVersionManifest'), setupCode.indexOf('async function runDoctor'))}
+  return getInstalledEnvironmentStatus(targetDir);
 `);
 
 describe('Amiga IA setup.js mergeSettings tests', () => {
@@ -184,6 +200,83 @@ describe('Amiga IA setup.js installNodeHooks universal tests', () => {
     const updatedData = JSON.parse(fs.readFileSync(testSettingsPath, 'utf8'));
     assert.strictEqual(updatedData.hooks.PreToolUse[0].matcher, 'Bash|PowerShell|run_command');
     assert.strictEqual(updatedData.hooks.PostToolUse[0].matcher, 'Edit|Write|write_to_file|replace_file_content|multi_replace_file_content');
+
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+});
+
+describe('Amiga IA setup.js installPwshHooks tests', () => {
+
+  test('should install external PowerShell hook script and configure matchers', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'amiga-pwsh-test-'));
+    const testSettingsPath = path.join(tmpDir, 'hooks-pwsh.json');
+
+    const result = installPwshHooksFunc(fs, path, __dirname, tmpDir, testSettingsPath);
+
+    assert.strictEqual(result, true);
+    assert.strictEqual(fs.existsSync(path.join(tmpDir, 'hooks', 'ami-hooks.ps1')), true);
+
+    const updatedData = JSON.parse(fs.readFileSync(testSettingsPath, 'utf8'));
+    assert.strictEqual(updatedData.hooks.PreToolUse[0].matcher, 'Bash|PowerShell|run_command');
+    assert.strictEqual(updatedData.hooks.PostToolUse[0].matcher, 'Edit|Write|write_to_file|replace_file_content|multi_replace_file_content');
+
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+});
+
+describe('Amiga IA setup.js installBashHooks tests', () => {
+
+  test('should install external Bash hook script and configure matchers', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'amiga-bash-test-'));
+    const testSettingsPath = path.join(tmpDir, 'hooks-bash.json');
+
+    const result = installBashHooksFunc(fs, path, __dirname, tmpDir, testSettingsPath);
+
+    assert.strictEqual(result, true);
+    assert.strictEqual(fs.existsSync(path.join(tmpDir, 'hooks', 'ami-hooks.sh')), true);
+
+    const updatedData = JSON.parse(fs.readFileSync(testSettingsPath, 'utf8'));
+    assert.strictEqual(updatedData.hooks.PreToolUse[0].matcher, 'Bash|PowerShell|run_command');
+    assert.strictEqual(updatedData.hooks.PostToolUse[0].matcher, 'Edit|Write|write_to_file|replace_file_content|multi_replace_file_content');
+
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+});
+
+describe('Amiga IA setup.js version manifest and environment tracking tests', () => {
+
+  test('should accurately report status for uninstalled environment', () => {
+    const tmpDir = path.join(os.tmpdir(), 'amiga-non-existent-env');
+    const status = getInstalledEnvironmentStatusFunc(fs, path, tmpDir);
+    assert.strictEqual(status.installed, false);
+    assert.strictEqual(status.status, 'Not configured / Not installed');
+  });
+
+  test('should detect legacy/untracked installation when skills exist without version manifest', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'amiga-legacy-env-'));
+    fs.mkdirSync(path.join(tmpDir, 'skills'), { recursive: true });
+
+    const status = getInstalledEnvironmentStatusFunc(fs, path, tmpDir);
+    assert.strictEqual(status.installed, true);
+    assert.strictEqual(status.version, 'untracked');
+    assert.strictEqual(status.status, 'Legacy / Untracked (installed without version manifest)');
+
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  test('should save and correctly detect installed version manifest in local environment', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'amiga-modern-env-'));
+
+    saveVersionManifestFunc(fs, path, tmpDir, '3.3.0');
+
+    const status = getInstalledEnvironmentStatusFunc(fs, path, tmpDir);
+    assert.strictEqual(status.installed, true);
+    assert.strictEqual(status.version, '3.3.0');
+    assert.strictEqual(status.status, 'v3.3.0');
+    assert.ok(status.installedAt !== undefined);
 
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });

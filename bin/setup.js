@@ -199,6 +199,34 @@ function installPwshHooks(targetDir, settingsPath, options = {}) {
   return result;
 }
 
+function installBashHooks(targetDir, settingsPath, options = {}) {
+  const hooksDir = path.join(targetDir, 'hooks');
+  if (!fs.existsSync(hooksDir)) fs.mkdirSync(hooksDir, { recursive: true });
+
+  const sourceScripts = path.join(__dirname, '../hooks/scripts');
+  const srcFile = path.join(sourceScripts, 'ami-hooks.sh');
+  if (fs.existsSync(srcFile)) {
+    fs.copyFileSync(srcFile, path.join(hooksDir, 'ami-hooks.sh'));
+  }
+  console.log(`✅ Bash hook script copied to ${hooksDir}`);
+
+  const bashCmd = (event) => `bash "${path.join(hooksDir, 'ami-hooks.sh').replace(/\\/g, '/')}" -e ${event}`;
+  const hooksConfig = {
+    hooks: {
+      PreToolUse: [{ matcher: 'Bash|PowerShell|run_command', hooks: [{ type: 'command', shell: 'bash', command: bashCmd('PreToolUse') }] }],
+      PostToolUse: [{ matcher: 'Edit|Write|write_to_file|replace_file_content|multi_replace_file_content', hooks: [{ type: 'command', shell: 'bash', command: bashCmd('PostToolUse') }] }]
+    }
+  };
+
+  const tmpFile = path.join(targetDir, '.amiga-hooks-tmp-bash.json');
+  fs.writeFileSync(tmpFile, JSON.stringify(hooksConfig, null, 2));
+  const result = mergeSettings(settingsPath, tmpFile, options);
+  if (fs.existsSync(tmpFile)) {
+    fs.unlinkSync(tmpFile);
+  }
+  return result;
+}
+
 function isNewerVersion(current, latest) {
   if (!current || !latest || current === 'unknown') return false;
   const parse = (v) => v.replace(/^v/, '').split('-')[0].split('.').map(x => parseInt(x, 10) || 0);
@@ -253,6 +281,42 @@ function getPackageInfo() {
   return { name, version };
 }
 
+function saveVersionManifest(targetDir, version) {
+  try {
+    if (!fs.existsSync(targetDir)) {
+      fs.mkdirSync(targetDir, { recursive: true });
+    }
+    const manifestPath = path.join(targetDir, '.amiga-version.json');
+    const data = JSON.stringify({
+      name: '@anacatavc/amiga-ia',
+      version: version,
+      installedAt: new Date().toISOString()
+    }, null, 2);
+    fs.writeFileSync(manifestPath, data);
+  } catch (e) {}
+}
+
+function getInstalledEnvironmentStatus(targetDir) {
+  if (!fs.existsSync(targetDir)) {
+    return { installed: false, version: null, status: 'Not configured / Not installed' };
+  }
+  const manifestPath = path.join(targetDir, '.amiga-version.json');
+  if (fs.existsSync(manifestPath)) {
+    try {
+      const data = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+      if (data && data.version) {
+        return { installed: true, version: data.version, status: `v${data.version}`, installedAt: data.installedAt };
+      }
+    } catch (e) {}
+  }
+  const skillsDir = path.join(targetDir, 'skills');
+  const agentsDir = path.join(targetDir, 'agents');
+  if (fs.existsSync(skillsDir) || fs.existsSync(agentsDir)) {
+    return { installed: true, version: 'untracked', status: 'Legacy / Untracked (installed without version manifest)' };
+  }
+  return { installed: false, version: null, status: 'Not configured / Not installed' };
+}
+
 async function runDoctor() {
   const { name: pkgName, version: currentVersion } = getPackageInfo();
   console.log('======================================================');
@@ -260,17 +324,55 @@ async function runDoctor() {
   console.log('======================================================\n');
   let issueCount = 0;
 
-  // 1. Package Version & Update Status
-  console.log('🔍 Checking package version and update status...');
-  console.log(`  Current installed version: v${currentVersion}`);
+  // 1. Package & Environment Version Diagnostic
+  console.log('🔍 Checking package & installed environment versions...');
+  console.log(`  📦 Executing CLI package version: v${currentVersion}`);
+  
+  const claudeStatus = getInstalledEnvironmentStatus(claudeDir);
+  const geminiStatus = getInstalledEnvironmentStatus(geminiDir);
+  
+  const formatStatus = (status) => {
+    if (!status.installed) return `ℹ️  ${status.status}`;
+    if (status.version === 'untracked') return `⚠️  ${status.status}`;
+    const dateStr = status.installedAt ? ` (installed ${status.installedAt.split('T')[0]})` : '';
+    return `✅ v${status.version}${dateStr}`;
+  };
+  console.log(`  🤖 Claude Code installed environment: ${formatStatus(claudeStatus)}`);
+  console.log(`  🤖 Antigravity installed environment: ${formatStatus(geminiStatus)}`);
+
+  const anyInstalled = claudeStatus.installed || geminiStatus.installed;
+  let hasOutdatedOrUntrackedEnv = false;
+
+  if (claudeStatus.installed) {
+    if (claudeStatus.version === 'untracked' || isNewerVersion(claudeStatus.version, currentVersion)) {
+      hasOutdatedOrUntrackedEnv = true;
+      console.log(`  ⚠️  WARNING: Claude Code skills/agents are outdated relative to executing package v${currentVersion} (or lacking version tracking).`);
+    }
+  }
+
+  if (geminiStatus.installed) {
+    if (geminiStatus.version === 'untracked' || isNewerVersion(geminiStatus.version, currentVersion)) {
+      hasOutdatedOrUntrackedEnv = true;
+      console.log(`  ⚠️  WARNING: Antigravity skills/agents are outdated relative to executing package v${currentVersion} (or lacking version tracking).`);
+    }
+  }
+
+  if (hasOutdatedOrUntrackedEnv) {
+    console.log(`     Recommendation: Run 'npx ${pkgName}-setup@latest' (or 'amiga-ia-setup') and select your AI assistants to upgrade local files and sync version tracking.`);
+    issueCount++;
+  } else if (anyInstalled) {
+    console.log(`  ✅ All installed AI assistant environments match executing package version v${currentVersion}.`);
+  }
+
+  console.log('\n🔍 Checking NPM registry for updates...');
   const latestVersion = await getLatestNpmVersion(pkgName);
   if (latestVersion) {
     if (isNewerVersion(currentVersion, latestVersion)) {
-      console.log(`  💡 ADVISORY: A new version (v${latestVersion}) is available on NPM!`);
+      console.log(`  💡 ADVISORY: A newer version (v${latestVersion}) is available on NPM!`);
       console.log(`     Recommendation: Run 'npx ${pkgName}@latest' or update via your package manager to enjoy the latest capabilities and bug fixes.`);
       // Note: Update availability is treated as an informational advisory and does not increment issueCount
     } else {
-      console.log(`  ✅ You are using the latest published version (v${latestVersion}).`);
+      console.log(`  ✅ Executing CLI package matches the latest published version on NPM (v${latestVersion}).`);
     }
   } else {
     console.log(`  ℹ️  Could not reach NPM registry to check for updates (offline or timed out).`);
@@ -419,6 +521,7 @@ async function main() {
     cleanOrphanedFiles(sourceAgentsDir, path.join(claudeDir, 'agents'));
     copyRecursiveSync(sourceSkillsDir, path.join(claudeDir, 'skills'));
     copyRecursiveSync(sourceAgentsDir, path.join(claudeDir, 'agents'));
+    saveVersionManifest(claudeDir, currentVersion);
     console.log('✅ Skills and Agents directories successfully configured.');
 
     if (fs.existsSync(sourceSettingsPath)) {
@@ -446,7 +549,7 @@ async function main() {
 
         let merged = false;
         if (engine === 'b' || engine === 'bash') {
-          merged = mergeSettings(claudeSettings, sourceSettingsPath);
+          merged = installBashHooks(claudeDir, claudeSettings);
         } else if (engine === 'p' || engine === 'powershell' || engine === 'pwsh') {
           merged = installPwshHooks(claudeDir, claudeSettings);
         } else {
@@ -480,6 +583,7 @@ async function main() {
     copyRecursiveSync(sourceSkillsDir, path.join(geminiDir, 'skills'));
     copyRecursiveSync(sourceAgentsDir, path.join(geminiDir, 'agents'));
     copyRecursiveSync(sourceRulesDir, path.join(geminiDir, 'rules'));
+    saveVersionManifest(geminiDir, currentVersion);
     console.log('✅ Skills, Agents, and Rules directories successfully configured at ~/.gemini/config/');
 
     if (fs.existsSync(sourceSettingsPath)) {
@@ -505,6 +609,10 @@ async function main() {
     if (fs.existsSync(claudeDir)) {
       deleteMatchingFiles(sourceSkillsDir, path.join(claudeDir, 'skills'));
       deleteMatchingFiles(sourceAgentsDir, path.join(claudeDir, 'agents'));
+      const claudeManifest = path.join(claudeDir, '.amiga-version.json');
+      if (fs.existsSync(claudeManifest)) {
+        try { fs.unlinkSync(claudeManifest); } catch (e) {}
+      }
       const sourceScriptsDir = path.join(__dirname, '../hooks/scripts');
       if (fs.existsSync(sourceScriptsDir)) {
         deleteMatchingFiles(sourceScriptsDir, path.join(claudeDir, 'hooks'));
@@ -530,6 +638,10 @@ async function main() {
       deleteMatchingFiles(sourceSkillsDir, path.join(geminiDir, 'skills'));
       deleteMatchingFiles(sourceAgentsDir, path.join(geminiDir, 'agents'));
       deleteMatchingFiles(sourceRulesDir, path.join(geminiDir, 'rules'));
+      const geminiManifest = path.join(geminiDir, '.amiga-version.json');
+      if (fs.existsSync(geminiManifest)) {
+        try { fs.unlinkSync(geminiManifest); } catch (e) {}
+      }
       const sourceScriptsDir = path.join(__dirname, '../hooks/scripts');
       if (fs.existsSync(sourceScriptsDir)) {
         deleteMatchingFiles(sourceScriptsDir, path.join(geminiDir, 'hooks'));
