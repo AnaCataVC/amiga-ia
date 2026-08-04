@@ -1,5 +1,5 @@
 > **Created:** 2026-06-25
-> **Last Updated:** 2026-07-26
+> **Last Updated:** 2026-08-04
 
 # Architecture & Distribution: Amiga IA
 
@@ -147,12 +147,13 @@ Claude Code uses a different layout convention. The manifest lives inside a `.cl
 
 ## 4. Multi-Engine Hooks Architecture
 
-The repository supports three distinct hook engines to ensure seamless execution across different operating systems and developer environments.
+The repository supports distinct hook execution engines to ensure seamless guardrail enforcement across diverse operating systems and developer environments.
 
 | File / Folder | Engine / Distribution Path | Consumed By / Description |
 |---|---|---|
 | `hooks.json` (repo root) | **Bash Engine (Default / POSIX)** | Standard bash-driven hooks utilizing `jq`. Merged into `~/.claude/settings.json` via the setup wizard. |
-| `hooks-pwsh.json` | **PowerShell Engine (Windows / Pwsh)** | Native PowerShell scripts utilizing `ConvertFrom-Json`. Designed for Windows compatibility without WSL or Unix utilities. |
+| `hooks-pwsh.json` | **PowerShell Engine (Windows / Pwsh)** | Configures lightweight parameter-driven executions (`pwsh -File ./hooks/scripts/ami-hooks.ps1 -Event PreToolUse`). Replaced legacy inline commands (ADR-004) to prevent Windows deduplication bugs and cut hook token overhead from ~200 to ~15 tokens per command. |
+| `hooks/scripts/ami-hooks.ps1` | **Externalized PowerShell Runtime Script** | Unified execution script handling PowerShell event interceptions with defensive `try/catch` logic and `ConvertFrom-Json` regex fallbacks without requiring WSL or Unix binaries. |
 | `hooks/scripts/ami-*.js` | **Universal Node.js Engine (Cross-Platform)** | Zero-dependency Node.js execution scripts that run reliably across Windows, macOS, and Linux without external binaries. |
 | `hooks/hooks.json` | **Claude Code Native Plugin Discovery** | Claude Code auto-discovers hooks from this path at runtime when installed natively as a plugin. |
 
@@ -160,11 +161,11 @@ The repository supports three distinct hook engines to ensure seamless execution
 
 Different development environments present varied dependency constraints:
 - **POSIX environments (macOS/Linux)** thrive on lightweight shell execution (`Bash`).
-- **Windows native environments** frequently lack `bash` or `jq` in normal paths, requiring native `PowerShell` execution (`pwsh`).
+- **Windows native environments** frequently lack `bash` or `jq` in normal paths, requiring native `PowerShell` execution (`pwsh`). To prevent string-matching deduplication bugs, PowerShell execution relies on the unified external script `ami-hooks.ps1`.
 - **Universal JavaScript execution** via `node` provides an absolute fallback guarantee for cross-platform workflows.
 
 > [!WARNING]
-> When modifying hook logic or definitions, always ensure consistency across `hooks.json`, `hooks-pwsh.json`, `hooks/scripts/`, and `hooks/hooks.json` simultaneously.
+> When modifying hook logic or definitions, always ensure operational consistency across `hooks.json`, `hooks-pwsh.json`, `hooks/scripts/` (both `.js` wrappers and `ami-hooks.ps1`), and `hooks/hooks.json` simultaneously.
 
 ---
 
