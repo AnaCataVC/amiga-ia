@@ -35,32 +35,29 @@ During wizard installation workflows, generate a small metadata manifest file (`
 When running diagnostic audits, design filesystem discovery logic with fallback heuristics to handle older installations that were configured prior to version manifest tracking:
 
 ```javascript
+function hasAmigaItems(targetDir) {
+  // Inspect content dynamically for expected capability prefix ('ami-')
+  // instead of trusting empty structural folders.
+}
+
 function getInstalledEnvironmentStatus(targetDir) {
-  if (!fs.existsSync(targetDir)) {
+  // 1. Hard check: If the directory lacks actual capability files, it is NOT installed,
+  //    even if an orphaned .amiga-version.json manifest was left behind by manual deletion.
+  if (!fs.existsSync(targetDir) || !hasAmigaItems(targetDir)) {
     return { installed: false, version: null, status: 'Not configured / Not installed' };
   }
+  
   const manifestPath = path.join(targetDir, '.amiga-version.json');
   if (fs.existsSync(manifestPath)) {
-    try {
-      const data = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-      if (data && data.version) {
-        return { installed: true, version: data.version, status: `v${data.version}`, installedAt: data.installedAt };
-      }
-    } catch (e) {
-      // Ignore syntax errors and drop down to heuristic check
-    }
+    // ... return manifest version
   }
-  // Retrocompatibility check for pre-manifest installations
-  const skillsDir = path.join(targetDir, 'skills');
-  const agentsDir = path.join(targetDir, 'agents');
-  if (fs.existsSync(skillsDir) || fs.existsSync(agentsDir)) {
-    return { installed: true, version: 'untracked', status: 'Legacy / Untracked (installed without version manifest)' };
-  }
-  return { installed: false, version: null, status: 'Not configured / Not installed' };
+  
+  // 2. Retrocompatibility fallback: Content exists, but no manifest.
+  return { installed: true, version: 'untracked', status: 'Legacy / Untracked (installed without version manifest)' };
 }
 ```
 
-* **Why:** By actively verifying physical capability subdirectories (`skills/`, `agents/`) when `.amiga-version.json` is missing, the diagnostic tool avoids false negative reports and instead categorizes the environment as `⚠️ Legacy / Untracked`. It then displays actionable guidance advising developers to re-run the setup wizard to synchronize version tracking cleanly.
+* **Why / Gotcha:** Initially, diagnostics relied purely on the presence of the `.amiga-version.json` file or empty `skills/` directories. This caused massive false positives: if a user manually deleted their skills but left the manifest or an empty directory behind, the CLI erroneously reported the environment as fully installed (or Legacy/Untracked). By actively verifying that capability files (`ami-*`) physically exist inside those directories before parsing the manifest, diagnostics become bulletproof against manual tampering or incomplete uninstallations.
 
 ### 3. Resilient Declarative XML Testing
 When developing unit tests for universal adapters that generate XML schema representations for AI system prompts, avoid asserting strictly closed elemental tag strings:
@@ -68,7 +65,12 @@ When developing unit tests for universal adapters that generate XML schema repre
 * **Resilient Assertion:** `assert.ok(xml.includes('<available_skills'));` or check for element attribute substrings like `name="ami-test-skill"`.
 * **Why:** Verifying unclosed element prefix strings guarantees that automated test suites remain resilient against additive attribute expansion without sacrificing schema verification fidelity.
 
+### 4. Programmatic Configuration Uninstallation (Avoiding Static Backups)
+When setup wizards inject settings into user-owned configuration files (like `settings.json`), it is tempting to create a `.backup` file before injection and restore it during uninstallation. 
+* **The Danger:** Static backups are extremely fragile. If the backup file is created late (e.g., during a second run of the wizard), the backup itself will contain the injected settings. Restoring it during uninstallation leaves the user with "ghost" configurations that the CLI claims to have removed.
+* **The Solution:** Uninstallation of injected settings must always be executed **programmatically**. Parse the JSON, filter out the specific injected signatures, and write it back. This guarantees a clean removal regardless of backup state and perfectly preserves any bespoke user customizations.
+
 ---
 
 ## Best Practice Takeaway
-Always decouple package execution versions from installed environment states using declarative version manifests. Pair explicit manifest tracking with defensive filesystem fallback heuristics to ensure legacy developer installations upgrade seamlessly without disruption or confusing diagnostic output.
+Always decouple package execution versions from installed environment states using declarative version manifests. Pair explicit manifest tracking with dynamic, content-aware filesystem verification (`ami-*`) to prevent false positives from manual deletions. Finally, when modifying user configurations, favor surgical programmatic injection and removal over fragile static `.backup` restorations.

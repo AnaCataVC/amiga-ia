@@ -34,6 +34,10 @@ const getInstalledEnvironmentStatusFunc = new Function('fs', 'path', 'targetDir'
   ${setupCode.slice(setupCode.indexOf('function saveVersionManifest'), setupCode.indexOf('async function runDoctor'))}
   return getInstalledEnvironmentStatus(targetDir);
 `);
+const removeAmigaHooksFunc = new Function('fs', 'path', 'targetPath', `
+  ${setupCode.slice(setupCode.indexOf('function removeAmigaHooks'), setupCode.indexOf('function installNodeHooks'))}
+  return removeAmigaHooks(targetPath);
+`);
 
 describe('Amiga IA setup.js mergeSettings tests', () => {
 
@@ -257,7 +261,7 @@ describe('Amiga IA setup.js version manifest and environment tracking tests', ()
 
   test('should detect legacy/untracked installation when skills exist without version manifest', () => {
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'amiga-legacy-env-'));
-    fs.mkdirSync(path.join(tmpDir, 'skills'), { recursive: true });
+    fs.mkdirSync(path.join(tmpDir, 'skills', 'ami-test-skill'), { recursive: true });
 
     const status = getInstalledEnvironmentStatusFunc(fs, path, tmpDir);
     assert.strictEqual(status.installed, true);
@@ -269,6 +273,7 @@ describe('Amiga IA setup.js version manifest and environment tracking tests', ()
 
   test('should save and correctly detect installed version manifest in local environment', () => {
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'amiga-modern-env-'));
+    fs.mkdirSync(path.join(tmpDir, 'skills', 'ami-test-skill'), { recursive: true });
 
     saveVersionManifestFunc(fs, path, tmpDir, '3.3.0');
 
@@ -277,6 +282,62 @@ describe('Amiga IA setup.js version manifest and environment tracking tests', ()
     assert.strictEqual(status.version, '3.3.0');
     assert.strictEqual(status.status, 'v3.3.0');
     assert.ok(status.installedAt !== undefined);
+
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  test('should report uninstalled when skills folder is empty or only contains non-Amiga files (even if manifest exists)', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'amiga-empty-env-'));
+    fs.mkdirSync(path.join(tmpDir, 'skills', 'custom-non-ami-skill'), { recursive: true });
+    saveVersionManifestFunc(fs, path, tmpDir, '3.3.0');
+
+    const status = getInstalledEnvironmentStatusFunc(fs, path, tmpDir);
+    assert.strictEqual(status.installed, false);
+    assert.strictEqual(status.status, 'Not configured / Not installed');
+
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  test('should programmatically remove Amiga IA hooks from settings.json during uninstall', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'amiga-hook-remove-test-'));
+    const testSettingsPath = path.join(tmpDir, 'settings.json');
+    const mockSettings = {
+      "model": "opus[1m]",
+      "hooks": {
+        "PreToolUse": [
+          {
+            "matcher": "Bash",
+            "hooks": [
+              { "type": "command", "command": "node C:\\\\users\\\\test\\\\hooks\\\\ami-pre-tool-use.js" }
+            ]
+          },
+          {
+            "matcher": "Bash",
+            "hooks": [
+              { "type": "command", "command": "node my-custom-hook.js" }
+            ]
+          }
+        ],
+        "PostToolUse": [
+          {
+            "matcher": "Edit",
+            "hooks": [
+              { "type": "command", "command": "node C:\\\\users\\\\test\\\\hooks\\\\ami-post-tool-use.js" }
+            ]
+          }
+        ]
+      }
+    };
+    fs.writeFileSync(testSettingsPath, JSON.stringify(mockSettings, null, 2));
+
+    const result = removeAmigaHooksFunc(fs, path, testSettingsPath);
+    assert.strictEqual(result, true);
+
+    const updated = JSON.parse(fs.readFileSync(testSettingsPath, 'utf8'));
+    assert.strictEqual(updated.model, 'opus[1m]');
+    assert.strictEqual(updated.hooks.PreToolUse.length, 1);
+    assert.strictEqual(updated.hooks.PreToolUse[0].hooks[0].command, 'node my-custom-hook.js');
+    assert.strictEqual(updated.hooks.PostToolUse, undefined);
 
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
