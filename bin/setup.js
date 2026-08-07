@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 const https = require('https');
-const { select, confirm, checkbox } = require('@inquirer/prompts');
+const { select, confirm, multiselect, isCancel } = require('@clack/prompts');
 const pc = require('picocolors');
 
 const homeDir = os.homedir();
@@ -566,14 +566,16 @@ async function runInstall() {
   console.log('This wizard will install the Amiga IA Universal Agent Skills');
   console.log('into your local AI environments.\n');
 
-  const choices = await checkbox({
+  const choices = await multiselect({
     message: 'Which assistants do you want to configure?',
-    choices: [
-      { name: 'Claude Code', value: 'claude', checked: true },
-      { name: 'Antigravity (Gemini)', value: 'antigravity', checked: true }
+    options: [
+      { label: 'Claude Code', value: 'claude' },
+      { label: 'Antigravity (Gemini)', value: 'antigravity' }
     ],
+    initialValues: ['claude', 'antigravity'],
     required: true
   });
+  if (isCancel(choices)) process.exit(0);
 
   if (choices.includes('claude')) {
     console.log(pc.blue('\nInstalling for Claude Code...'));
@@ -586,7 +588,8 @@ async function runInstall() {
 
     if (fs.existsSync(sourceSettingsPath)) {
       console.log('\nClaude Code supports powerful background Hooks (Pre-commit checks, context restoring).');
-      const installHooks = await confirm({ message: 'Install recommended Amiga IA Hooks? (We will merge them and create a backup)', default: true });
+      const installHooks = await confirm({ message: 'Install recommended Amiga IA Hooks? (We will merge them and create a backup)', initialValue: true });
+      if (isCancel(installHooks)) process.exit(0);
       if (installHooks) {
         if (!fs.existsSync(claudeDir)) fs.mkdirSync(claudeDir, { recursive: true });
         
@@ -600,12 +603,13 @@ async function runInstall() {
         
         const engine = await select({
           message: 'Which hook engine should be used?',
-          choices: [
-            { name: 'Node.js (Universal - works on any OS) ← recommended', value: 'n' },
-            { name: 'Bash (macOS/Linux)', value: 'b' },
-            { name: 'PowerShell (Windows)', value: 'p' }
+          options: [
+            { label: 'Node.js (Universal - works on any OS) ← recommended', value: 'n' },
+            { label: 'Bash (macOS/Linux)', value: 'b' },
+            { label: 'PowerShell (Windows)', value: 'p' }
           ]
         });
+        if (isCancel(engine)) process.exit(0);
 
         let merged = false;
         if (engine === 'b') {
@@ -646,7 +650,8 @@ async function runInstall() {
 
     if (fs.existsSync(sourceSettingsPath)) {
       console.log('\nAntigravity supports background Hooks via universal Node.js scripts (Pre-commit reminders, Debug statement checks).');
-      const installHooks = await confirm({ message: 'Install recommended universal Amiga IA Hooks for Antigravity?', default: true });
+      const installHooks = await confirm({ message: 'Install recommended universal Amiga IA Hooks for Antigravity?', initialValue: true });
+      if (isCancel(installHooks)) process.exit(0);
       if (installHooks) {
         if (!fs.existsSync(geminiDir)) fs.mkdirSync(geminiDir, { recursive: true });
         const geminiSettings = path.join(geminiDir, 'hooks.json');
@@ -682,7 +687,8 @@ async function runUninstall() {
     }
     console.log(pc.green('✅ Claude Code skills and hook scripts removed.'));
     
-    const removeHooks = await confirm({ message: 'Do you want to remove the Amiga IA Hooks from Claude Code settings?', default: true });
+    const removeHooks = await confirm({ message: 'Do you want to remove the Amiga IA Hooks from Claude Code settings?', initialValue: true });
+    if (isCancel(removeHooks)) process.exit(0);
     if (removeHooks) {
       const claudeSettings = path.join(claudeDir, 'settings.json');
       const backupPath = path.join(claudeDir, 'settings.json.amiga-backup');
@@ -722,7 +728,8 @@ async function runUninstall() {
 
     const geminiHooksConfig = path.join(geminiDir, 'hooks.json');
     if (fs.existsSync(geminiHooksConfig)) {
-      const removeGeminiHooks = await confirm({ message: 'Do you want to remove the Amiga IA Hooks config from Antigravity (~/.gemini/config/hooks.json)?', default: true });
+      const removeGeminiHooks = await confirm({ message: 'Do you want to remove the Amiga IA Hooks config from Antigravity (~/.gemini/config/hooks.json)?', initialValue: true });
+      if (isCancel(removeGeminiHooks)) process.exit(0);
       if (removeGeminiHooks) {
         try {
           fs.unlinkSync(geminiHooksConfig);
@@ -753,13 +760,14 @@ async function showPrimaryMenu() {
 
   const action = await select({
     message: 'What would you like to do?',
-    choices: [
-      { name: 'Install / Configure Assistants', value: 'install' },
-      { name: 'Run Amiga Doctor (Diagnostics)', value: 'doctor' },
-      { name: 'Uninstall Amiga IA', value: 'uninstall' },
-      { name: 'Exit', value: 'exit' }
+    options: [
+      { label: 'Install / Configure Assistants', value: 'install' },
+      { label: 'Run Amiga Doctor (Diagnostics)', value: 'doctor' },
+      { label: 'Uninstall Amiga IA', value: 'uninstall' },
+      { label: 'Exit', value: 'exit' }
     ]
   });
+  if (isCancel(action)) process.exit(0);
 
   if (action === 'install') {
     await runInstall();
