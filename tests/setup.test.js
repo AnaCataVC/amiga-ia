@@ -39,6 +39,11 @@ const removeAmigaHooksFunc = new Function('fs', 'path', 'targetPath', `
   return removeAmigaHooks(targetPath);
 `);
 
+const copyRecursiveSyncFunc = new Function('fs', 'path', 'src', 'dest', 'targetEnv', `
+  ${setupCode.slice(setupCode.indexOf('function copyRecursiveSync'), setupCode.indexOf('function cleanOrphanedFiles'))}
+  return copyRecursiveSync(src, dest, targetEnv);
+`);
+
 describe('Amiga IA setup.js mergeSettings tests', () => {
 
   test('should abort and return false on invalid JSON target without modifying the file', () => {
@@ -339,6 +344,44 @@ describe('Amiga IA setup.js version manifest and environment tracking tests', ()
     assert.strictEqual(updated.hooks.PreToolUse[0].hooks[0].command, 'node my-custom-hook.js');
     assert.strictEqual(updated.hooks.PostToolUse, undefined);
 
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+});
+
+describe('Amiga IA setup.js copyRecursiveSync tests', () => {
+
+  test('should replace .gemini/agents/ with .claude/agents/ in markdown files when targetEnv is claude', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'amiga-copy-test-'));
+    const srcDir = path.join(tmpDir, 'src');
+    const destDir = path.join(tmpDir, 'dest');
+    fs.mkdirSync(srcDir, { recursive: true });
+    
+    const testMdPath = path.join(srcDir, 'test-agent.md');
+    fs.writeFileSync(testMdPath, 'Local workspace agents can be found in .gemini/agents/ folder.');
+    
+    copyRecursiveSyncFunc(fs, path, srcDir, destDir, 'claude');
+    
+    const copiedContent = fs.readFileSync(path.join(destDir, 'test-agent.md'), 'utf8');
+    assert.strictEqual(copiedContent, 'Local workspace agents can be found in .claude/agents/ folder.');
+    
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  test('should NOT replace .gemini/agents/ in markdown files when targetEnv is antigravity', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'amiga-copy-test-2-'));
+    const srcDir = path.join(tmpDir, 'src');
+    const destDir = path.join(tmpDir, 'dest');
+    fs.mkdirSync(srcDir, { recursive: true });
+    
+    const testMdPath = path.join(srcDir, 'test-agent.md');
+    fs.writeFileSync(testMdPath, 'Local workspace agents can be found in .gemini/agents/ folder.');
+    
+    copyRecursiveSyncFunc(fs, path, srcDir, destDir, 'antigravity');
+    
+    const copiedContent = fs.readFileSync(path.join(destDir, 'test-agent.md'), 'utf8');
+    assert.strictEqual(copiedContent, 'Local workspace agents can be found in .gemini/agents/ folder.');
+    
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 

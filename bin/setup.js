@@ -16,7 +16,7 @@ const sourceAgentsDir = path.join(__dirname, '../agents');
 const sourceRulesDir = path.join(__dirname, '../rules');
 const sourceSettingsPath = path.join(__dirname, '../hooks.json');
 
-function copyRecursiveSync(src, dest) {
+function copyRecursiveSync(src, dest, targetEnv = null) {
   if (!fs.existsSync(src)) return;
   const isDirectory = fs.statSync(src).isDirectory();
   if (isDirectory) {
@@ -24,10 +24,16 @@ function copyRecursiveSync(src, dest) {
       fs.mkdirSync(dest, { recursive: true });
     }
     fs.readdirSync(src).forEach(function(childItemName) {
-      copyRecursiveSync(path.join(src, childItemName), path.join(dest, childItemName));
+      copyRecursiveSync(path.join(src, childItemName), path.join(dest, childItemName), targetEnv);
     });
   } else {
-    fs.copyFileSync(src, dest);
+    if (targetEnv === 'claude' && dest.endsWith('.md')) {
+      let content = fs.readFileSync(src, 'utf8');
+      content = content.replace(/\.gemini\/agents\//g, '.claude/agents/');
+      fs.writeFileSync(dest, content);
+    } else {
+      fs.copyFileSync(src, dest);
+    }
   }
 }
 
@@ -581,8 +587,8 @@ async function runInstall() {
     console.log(pc.blue('\nInstalling for Claude Code...'));
     cleanOrphanedFiles(sourceSkillsDir, path.join(claudeDir, 'skills'));
     cleanOrphanedFiles(sourceAgentsDir, path.join(claudeDir, 'agents'));
-    copyRecursiveSync(sourceSkillsDir, path.join(claudeDir, 'skills'));
-    copyRecursiveSync(sourceAgentsDir, path.join(claudeDir, 'agents'));
+    copyRecursiveSync(sourceSkillsDir, path.join(claudeDir, 'skills'), 'claude');
+    copyRecursiveSync(sourceAgentsDir, path.join(claudeDir, 'agents'), 'claude');
     saveVersionManifest(claudeDir, currentVersion);
     console.log(pc.green('✅ Skills and Agents directories successfully configured.'));
 
@@ -642,9 +648,9 @@ async function runInstall() {
     cleanOrphanedFiles(sourceSkillsDir, path.join(geminiDir, 'skills'));
     cleanOrphanedFiles(sourceAgentsDir, path.join(geminiDir, 'agents'));
     cleanOrphanedFiles(sourceRulesDir, path.join(geminiDir, 'rules'));
-    copyRecursiveSync(sourceSkillsDir, path.join(geminiDir, 'skills'));
-    copyRecursiveSync(sourceAgentsDir, path.join(geminiDir, 'agents'));
-    copyRecursiveSync(sourceRulesDir, path.join(geminiDir, 'rules'));
+    copyRecursiveSync(sourceSkillsDir, path.join(geminiDir, 'skills'), 'antigravity');
+    copyRecursiveSync(sourceAgentsDir, path.join(geminiDir, 'agents'), 'antigravity');
+    copyRecursiveSync(sourceRulesDir, path.join(geminiDir, 'rules'), 'antigravity');
     saveVersionManifest(geminiDir, currentVersion);
     console.log(pc.green('✅ Skills, Agents, and Rules directories successfully configured at ~/.gemini/config/'));
 
