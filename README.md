@@ -1,4 +1,4 @@
-# Amiga IA - Autonomous Agentic Suite & Declarative Skills
+﻿# Amiga IA - Autonomous Agentic Suite & Declarative Skills
 
 <p align="center">
   <img src="./favicon.png" alt="Amiga IA Logo" width="120" />
@@ -91,8 +91,8 @@ All built-in capabilities strictly utilize the **`ami-`** namespace prefix to pr
 | Skill | **ami-pr-self-reviewer** | Operates as a stringent Senior Engineer reviewing your own work-in-progress code, identifying bugs and proactively applying local code fixes. |
 | Skill | **ami-project-architect** | Interactively scaffolds project architectures, technology stacks, directory hierarchies, and bilingual starter documentation. |
 | Skill | **ami-quality-auditor** | Conducts deep inspections on modified code for maintainability, modular design best practices, security flaws, and structural soundness. |
-| Skill | **ami-release-drafter** | Auto-triggered prior to publishing releases. Parses commit histories to draft structured bilingual release notes grouped by semantic type. |
-| Skill | **ami-release-tagger** | Auto-triggered before release bumps. Evaluates git histories against semantic versioning laws to compute precise stable or QA tags. |
+| Skill | **ami-draft-release** | Auto-triggered prior to publishing releases. Parses commit histories to draft structured bilingual release notes grouped by semantic type. |
+| Skill | **ami-tag-release** | Auto-triggered before release bumps. Evaluates git histories against semantic versioning laws to compute precise stable or QA tags. |
 | Skill | **ami-sql-optimizer** | Writes and refactors SQL across major database dialects, eliminates query anti-patterns, and recommends high-impact indexes. |
 | Skill | **ami-tech-debt-scanner** | Scans repositories for technical debt, obsolete imports, duplicated logic, dead code, and pending comments (TODOs/FIXMEs). |
 | Skill | **ami-test-creator** | Auto-triggered when new features lack automated test coverage. Crafts focused unit and regression tests tailored to modified code. |
@@ -218,8 +218,8 @@ Todas las capacidades incluidas emplean de forma estricta el prefijo de espacio 
 | Skill | **ami-pr-self-reviewer** | Actúa como un exigente Ingeniero Senior revisando tu propio código antes de publicarlo, proponiendo y aplicando proactivamente correcciones locales. |
 | Skill | **ami-project-architect** | Construye de forma interactiva la arquitectura base de un nuevo proyecto, stack tecnológico, árbol de directorios y un README inicial bilingüe. |
 | Skill | **ami-quality-auditor** | Audita los archivos modificados verificando legibilidad, diseño modular, principios DRY, seguridad y buenas prácticas del framework. |
-| Skill | **ami-release-drafter** | Se ejecuta antes de generar lanzamientos. Inspecciona commits para redactar notas de release bilingües categorizadas por mejoras y correcciones. |
-| Skill | **ami-release-tagger** | Se ejecuta antes de subir versiones. Analiza el historial de Git para calcular con precisión matemática la siguiente etiqueta semántica o Release Candidate. |
+| Skill | **ami-draft-release** | Se ejecuta antes de generar lanzamientos. Inspecciona commits para redactar notas de release bilingües categorizadas por mejoras y correcciones. |
+| Skill | **ami-tag-release** | Se ejecuta antes de subir versiones. Analiza el historial de Git para calcular con precisión matemática la siguiente etiqueta semántica o Release Candidate. |
 | Skill | **ami-sql-optimizer** | Redacta y optimiza SQL multinivel (PostgreSQL, BigQuery, Snowflake, etc.), elimina anti-patrones y recomienda índices eficaces. |
 | Skill | **ami-tech-debt-scanner** | Escanea el repositorio buscando deuda técnica, módulos obsoletos, lógica duplicada, código muerto y marcadores pendientes (TODOs/FIXMEs). |
 | Skill | **ami-test-creator** | Se ejecuta automáticamente cuando se incorpora código nuevo sin pruebas unitarias. Crea tests enfocados en proteger las nuevas funciones. |

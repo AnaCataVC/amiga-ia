@@ -1,4 +1,4 @@
-> **Created:** 2026-08-04
+﻿> **Created:** 2026-08-04
 > **Last Updated:** 2026-08-04
 
 # Token Consumption Audit & Optimization Strategy for Agent Skills
@@ -30,7 +30,7 @@ Skills operate via **Lazy Loading**: only their YAML Frontmatter description is 
 | :--- | :---: | :---: | :---: |
 | **`ami-pr-peer-reviewer`** | 83 tokens | 1,432 tokens | 1,432 tokens |
 | **`ami-pr-self-reviewer`** | 95 tokens | 1,047 tokens | 1,047 tokens |
-| **`ami-release-tagger`** | 45 tokens | 1,037 tokens | 1,037 tokens |
+| **`ami-tag-release`** | 45 tokens | 1,037 tokens | 1,037 tokens |
 | **`ami-tech-debt-scanner`** | 54 tokens | 992 tokens | 992 tokens |
 | **`ami-data-profiler`** | 55 tokens | 988 tokens | 988 tokens |
 | **`ami-dashboard-builder`** | 45 tokens | 962 tokens | 962 tokens |
@@ -45,7 +45,7 @@ Skills operate via **Lazy Loading**: only their YAML Frontmatter description is 
 | **`ami-doc-manager`** | 47 tokens | 748 tokens | 748 tokens |
 | **`ami-quality-auditor`** | 21 tokens | 645 tokens | 645 tokens |
 | **`ami-dependency-analyzer`** | 53 tokens | 617 tokens | 617 tokens |
-| **`ami-release-drafter`** | 54 tokens | 603 tokens | 603 tokens |
+| **`ami-draft-release`** | 54 tokens | 603 tokens | 603 tokens |
 | **`ami-learnings-extractor`** | 37 tokens | 587 tokens | 587 tokens |
 | **`ami-pr-conflict-detector`** | 36 tokens | 535 tokens | 535 tokens |
 | **`ami-test-creator`** | 37 tokens | 435 tokens | 435 tokens |
@@ -109,7 +109,7 @@ To optimize token efficiency without sacrificing functional capabilities, four c
 * **The Solution:** Enforce strict delegation: orchestrator subagents should load complex skills inside their isolated background contexts (`invoke_subagent`). When finished, only a condensed summary message returns to the main conversation.
 
 ### Strategy 4: Progressive Disclosure for Heavy Skills (>1,000 tokens)
-* **The Problem:** Skills such as `ami-pr-peer-reviewer` (1,432 t), `ami-pr-self-reviewer` (1,047 t), and `ami-release-tagger` (1,037 t) load large reference examples instantly upon execution.
+* **The Problem:** Skills such as `ami-pr-peer-reviewer` (1,432 t), `ami-pr-self-reviewer` (1,047 t), and `ami-tag-release` (1,037 t) load large reference examples instantly upon execution.
 * **The Solution:** Refactor skills larger than 1,000 tokens into a tiered file hierarchy, keeping the primary `SKILL.md` slim (~300–400 tokens) while extracting extended checklists into auxiliary reference documents (`references/*.md`) loaded only when necessary.
 
 ---
