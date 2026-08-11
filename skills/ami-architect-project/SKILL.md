@@ -1,5 +1,5 @@
 ---
-name: ami-project-architect
+name: ami-architect-project
 description: Interactively sets up the initial architecture of a new project. It gathers requirements, researches technologies, proposes a stack and folder structure with constant user interaction, and finally scaffolds the initial files and a comprehensive README.md.
 allowed-tools: Bash, Read, Grep, WebSearch, search_web, Write
 ---
