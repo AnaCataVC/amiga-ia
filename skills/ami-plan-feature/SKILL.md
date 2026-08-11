@@ -1,7 +1,7 @@
 ---
 name: ami-plan-feature
 description: Feature planning and orchestration workflow. Takes a raw idea, investigates external context and internal codebase, drafts a comprehensive implementation plan, and orchestrates execution.
-allowed-tools: Bash, Read, Grep, WebSearch, invoke_subagent, write_to_file
+allowed-tools: Bash, Read, Grep, WebSearch, search_web, invoke_subagent, Write, Edit
 ---
 
 # Skill: Plan Feature

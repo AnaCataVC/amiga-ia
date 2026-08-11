@@ -1,7 +1,7 @@
 ---
 name: ami-tech-lead
 description: Master Project Planning & Architecture Orchestrator. Invoke for greenfield architecture setup, project health evaluation, and feature planning/orchestration.
-allowed-tools: Bash, Read, Grep, WebSearch, search_web, invoke_subagent, write_to_file
+allowed-tools: Bash, Read, Grep, WebSearch, search_web, invoke_subagent, Write, Edit
 ---
 
 # Role: Tech Lead
