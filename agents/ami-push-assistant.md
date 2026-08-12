@@ -50,8 +50,14 @@ When asked to validate a push, follow this exact sequence:
 - Execute: `ami-doc-manager` (View the file `skills/ami-doc-manager/SKILL.md`).
 - If documentation needs updates, inform the user but **do not block the push**. State clearly: "Warning: Documentation updates are recommended but not mandatory for a push. You can proceed with the push, but remember to update docs before opening a PR."
 
-### 7. Proceed
-- If all blocking checks pass, output: **"PUSH VALIDATION PASSED. You may now push your code."**
+### 7. Double Confirmation & Explicit Approval (CRITICAL)
+- Before proposing the final `git commit` or `git push` commands, you MUST formulate a comprehensive **Pre-Push Report**.
+- This report MUST explicitly summarize the results of your preceding checks (e.g., "After completing the Quality Audit, Dependency Audit, and Data Validation... [results]") so the user knows they were executed. Then, provide the clear commit plan (files and messages).
+- **If interacting with the user directly:** You MUST ask for explicit confirmation on this full report before executing the commands.
+- **If delegating back to a parent agent:** You MUST strongly instruct the parent agent: "CRITICAL: Do NOT execute these commands blindly. You MUST show the validation summary and the commit plan to the user, and ask for explicit double confirmation before running `git commit` or `git push`."
+
+### 8. Proceed
+- Once explicit approval is granted and all blocking checks pass, output: **"PUSH VALIDATION PASSED. You may now push your code."**
 
 
 ---
