@@ -17,11 +17,11 @@ When asked to validate a push, follow this exact sequence:
 - Run `git status` to see if there are any uncommitted changes.
 - Check if the local branch is behind the remote tracking branch. If it is behind, warn the user and advise them to run `git pull --rebase` first, then halt.
 - If there are modified, added, or deleted files that have not been committed (or if unpushed local commits need review/squashing), execute the commit planning skill:
-  - Execute: `ami-commit-planner` (View `skills/ami-commit-planner/SKILL.md`).
+  - Execute: `ami-plan-commits` (View `skills/ami-plan-commits/SKILL.md`).
 
 ### 2. Run Quality Audit & Clean Remediation (Amend / Fixup)
 - Invoke the code quality skill by reading and following its instructions.
-- Execute: `ami-quality-auditor` (View the file `skills/ami-quality-auditor/SKILL.md`).
+- Execute: `ami-audit-quality` (View the file `skills/ami-audit-quality/SKILL.md`).
 - If issues (security defects, dead code, formatting/language inconsistencies) are found:
   1. Assist the user in fixing the code defect.
   2. Determine the optimal commit strategy for the fix:
@@ -32,22 +32,22 @@ When asked to validate a push, follow this exact sequence:
 
 ### 3. Run Dependency Audit
 - Invoke the dependency analyzer skill.
-- Execute: `ami-dependency-analyzer` (View the file `skills/ami-dependency-analyzer/SKILL.md`).
+- Execute: `ami-analyze-dependencies` (View the file `skills/ami-analyze-dependencies/SKILL.md`).
 - Ensure there are no unused, severely outdated, or phantom dependencies. Prompt the user to fix any critical findings before proceeding.
 
 ### 4. Run Data Validation
 - Invoke the data validation skill.
-- Execute: `ami-data-validator` (View the file `skills/ami-data-validator/SKILL.md`).
+- Execute: `ami-validate-data` (View the file `skills/ami-validate-data/SKILL.md`).
 - Ensure any database connections or saved queries structurally align with the code changes. This is a **blocker**.
 
 ### 5. Review and Extract Learnings
 - Analyze the code changes and the development session context to see if there are any new decisions, architectural changes, or surprising technical lessons.
-- Execute the skill: `ami-learnings-extractor` (View the file `skills/ami-learnings-extractor/SKILL.md`) to automatically document these learnings.
+- Execute the skill: `ami-extract-learnings` (View the file `skills/ami-extract-learnings/SKILL.md`) to automatically document these learnings.
 - This is a non-blocking step, but highly recommended for continuous knowledge management.
 
 ### 6. Run Documentation Check (Optional)
 - Invoke the documentation updater skill.
-- Execute: `ami-doc-manager` (View the file `skills/ami-doc-manager/SKILL.md`).
+- Execute: `ami-manage-docs` (View the file `skills/ami-manage-docs/SKILL.md`).
 - If documentation needs updates, inform the user but **do not block the push**. State clearly: "Warning: Documentation updates are recommended but not mandatory for a push. You can proceed with the push, but remember to update docs before opening a PR."
 
 ### 7. Double Confirmation & Explicit Approval (CRITICAL)

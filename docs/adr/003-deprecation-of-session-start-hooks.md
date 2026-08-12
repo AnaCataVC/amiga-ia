@@ -19,7 +19,7 @@ We have decided to **deprecate and remove the `SessionStart` event hook** and co
 
 ### Key Architectural Changes:
 1. **Removal of Hook Execution:** Purged `ami-session-start.js` from `hooks/scripts/` and removed `"SessionStart"` array definitions from all engine manifests (`hooks.json`, `hooks-pwsh.json`, and `hooks/hooks.json`).
-2. **Transition to Lazy-Loaded Knowledge:** Knowledge preservation transitions from automatic push-based prompt injection to **on-demand, pull-based declarative execution**. Users and subagents explicitly invoke specialized skills (`ami-learnings-extractor`, `ami-doc-manager`) only when knowledge needs to be persisted or retrieved.
+2. **Transition to Lazy-Loaded Knowledge:** Knowledge preservation transitions from automatic push-based prompt injection to **on-demand, pull-based declarative execution**. Users and subagents explicitly invoke specialized skills (`ami-extract-learnings`, `ami-manage-docs`) only when knowledge needs to be persisted or retrieved.
 3. **Automated Settings Clean-Up:** Maintained legacy hook signatures (`ami-session-start`, `docs/coding-sessions`) inside `bin/setup.js` (`mergeSettings`) so existing developer environments automatically clean-strip old hook configurations from their global `~/.claude/settings.json` file upon updating the package.
 4. **Interactive Migration Advisory:** To protect against silent historical data loss, `amiga-ia-setup doctor` now actively inspects local user workspaces. If a legacy `docs/coding-sessions/` directory is found on disk, it outputs an interactive advisory tip recommending the execution of knowledge extraction skills before safely deleting the directory.
 5. **UI & Catalog Consistency:** Removed the `Session Context Restore` capability card from product showcase surfaces (`index.html`) and updated feature descriptions to focus on declarative architecture documentation and learning extraction.
@@ -33,4 +33,4 @@ We have decided to **deprecate and remove the `SessionStart` event hook** and co
 * **Backward-Compatible Clean Up:** Existing installations seamlessly shed obsolete configurations without manual configuration tweaking.
 
 ### Negative / Mitigation
-* **Manual Trigger for Knowledge Capture:** Developers must intentionally invoke `/ami-learnings-extractor` or rely on subagent end-of-task reviews rather than relying on silent background scripting. This is mitigated by clear user documentation and guidance from orchestrator agents like `ami-next-step-assistant`.
+* **Manual Trigger for Knowledge Capture:** Developers must intentionally invoke `/ami-extract-learnings` or rely on subagent end-of-task reviews rather than relying on silent background scripting. This is mitigated by clear user documentation and guidance from orchestrator agents like `ami-next-step-assistant`.

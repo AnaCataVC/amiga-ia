@@ -74,11 +74,11 @@ Integrating stacked PR principles into the `amiga-ia` agent ecosystem enhances c
 - **Oversized PR Remediation (Step 1):** Currently, when a PR introduces $>500$ lines, the agent halts and asks the user to split or optimize it. With stacked PR knowledge, the agent should proactively recommend and offer to execute a **Stacked PR feature decomposition** (using `gh stack` or Graphite `gt`), organizing the monolithic diff into ordered architectural layers (e.g., `schema` $\rightarrow$ `logic` $\rightarrow$ `ui`).
 - **Stack-Aware Publishing (Step 6):** Instead of defaulting solely to `gh pr create`, the agent should check for active stacking CLIs (`gh stack` or `gt`). If detected, it should recommend or execute `gh stack submit` or `gt submit --stack` and automatically append stack hierarchy metadata to the generated PR description.
 
-### 2. `ami-pr-conflict-detector` (Pre-PR Conflict Skill)
+### 2. `ami-detect-pr-conflicts` (Pre-PR Conflict Skill)
 - **Dependency vs. Conflict Differentiation:** Currently, the detector warns whenever open PRs overlap on the same files. In a stacked architecture, child branches inherit and often expand files from parent branches. The detector must check PR base targets (`gh pr view --json baseRefName,headRefName`). If PR $B$'s base is PR $A$'s head, overlapping files must be categorized as an **Expected Stack Dependency** rather than an unwanted parallel git conflict.
 
-### 3. `ami-pr-self-reviewer` & `ami-pr-peer-reviewer` (Code Review Skills)
-- **Dynamic Base Branch Diffing:** In `ami-pr-self-reviewer`, analyzing local branch changes should avoid assuming comparisons against `main` or `master`. The skill should verify the specific parent branch to audit only the incremental delta introduced by the current layer.
+### 3. `ami-review-self-pr` & `ami-review-peer-pr` (Code Review Skills)
+- **Dynamic Base Branch Diffing:** In `ami-review-self-pr`, analyzing local branch changes should avoid assuming comparisons against `main` or `master`. The skill should verify the specific parent branch to audit only the incremental delta introduced by the current layer.
 - **Bottom-Up Review Strategy:** In peer reviews, if a PR is identified as part of a stack, the reviewer agent should advise the human user (or coordinate subagents) to review from the foundational base layer upwards to preserve architectural context.
 
 ---

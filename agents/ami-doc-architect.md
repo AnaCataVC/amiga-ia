@@ -20,18 +20,18 @@ When asked to document a repository, create project wikis, or synchronize docume
 
 ### 2. Deep Context Research (Context Window Isolation)
 - Before modifying or writing documentation, perform historical and technical background checks without cluttering the main interactive user chat:
-  - Spawn an isolated read-only research subagent (`research` or invoking `ami-context-researcher`) to explore commit history, verify external dependencies, and trace data flow across modified modules.
+  - Spawn an isolated read-only research subagent (`research` or invoking `ami-research-context`) to explore commit history, verify external dependencies, and trace data flow across modified modules.
   - Compile an organized research brief summarizing technical truths before drafting documentation.
 
 ### 3. Multi-Skill Orchestration
 - Coordinate the execution of specialized documentation skills based on the identified scope:
-  - **Core Doc Maintenance:** Invoke and execute `ami-doc-manager` (View `skills/ami-doc-manager/SKILL.md`) to architect new docs or update existing guides with verified facts.
-  - **Learnings & ADR Harvesting:** Invoke and execute `ami-learnings-extractor` (View `skills/ami-learnings-extractor/SKILL.md`) to capture persistent architectural decisions and technical lessons into long-term memory.
+  - **Core Doc Maintenance:** Invoke and execute `ami-manage-docs` (View `skills/ami-manage-docs/SKILL.md`) to architect new docs or update existing guides with verified facts.
+  - **Learnings & ADR Harvesting:** Invoke and execute `ami-extract-learnings` (View `skills/ami-extract-learnings/SKILL.md`) to capture persistent architectural decisions and technical lessons into long-term memory.
 
 ### 4. Complexity Gating & Parallel Fan-Out
 - Apply threshold gating based on workspace complexity:
   - **Localized Updates (< 3 files / single module):** Execute documentation synchronization directly within the primary agent context window.
-  - **Workspace-Wide Synchronization (Multi-module or > 3 docs):** To prevent attention decay and speed up generation, fan out parallel background worker subagents using the **Skill-Injection pattern**. Assign distinct documentation components (e.g., API references vs. tutorial walkthroughs vs. package READMEs) to independent subagents by injecting `skills/ami-doc-manager/SKILL.md` into each worker's instructions.
+  - **Workspace-Wide Synchronization (Multi-module or > 3 docs):** To prevent attention decay and speed up generation, fan out parallel background worker subagents using the **Skill-Injection pattern**. Assign distinct documentation components (e.g., API references vs. tutorial walkthroughs vs. package READMEs) to independent subagents by injecting `skills/ami-manage-docs/SKILL.md` into each worker's instructions.
 
 ### 5. Review & Publish
 - Present a clean, structured summary of generated or updated documentation files in the primary chat window.

@@ -16,8 +16,8 @@ When designing frameworks that dynamically inject capabilities, available skills
   ```xml
   <available_skills>
     <skill>
-      <name>ami-doc-manager</name>
-      <location>C:/Users/anaca/Repos/amiga-ia/skills/ami-doc-manager/SKILL.md</location>
+      <name>ami-manage-docs</name>
+      <location>C:/Users/anaca/Repos/amiga-ia/skills/ami-manage-docs/SKILL.md</location>
     </skill>
   </available_skills>
   ```
@@ -27,7 +27,7 @@ When designing frameworks that dynamically inject capabilities, available skills
   Declare the absolute root path once in the top-level container attribute, and use compact self-closing tags with relative paths for individual items:
   ```xml
   <available_skills root_dir="C:/Users/anaca/Repos/amiga-ia">
-    <skill name="ami-doc-manager" file="skills/ami-doc-manager/SKILL.md" />
+    <skill name="ami-manage-docs" file="skills/ami-manage-docs/SKILL.md" />
   </available_skills>
   ```
   In practice, adopting this attribute-driven, root-relative indexing pattern reduced static System Prompt overhead by **1,211 tokens per turn (-36.3%)**—dropping baseline consumption from 3,335 to 2,124 tokens/turn without any loss of functional recall or navigation accuracy by the AI model.

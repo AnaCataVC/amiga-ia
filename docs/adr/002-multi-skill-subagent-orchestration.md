@@ -23,7 +23,7 @@ Skills (`skills/*/SKILL.md`) serve exclusively as declarative procedural knowled
 Orchestrator Agents (`agents/*.md`) MUST conduct proactive workspace inspection (scanning directories like `.github/agents/` or `.gemini/agents/`) prior to spawning generalist subagents. When repository-defined domain workers (e.g., custom enterprise security or database review agents) exist, the orchestrator delegates tasks directly to them, ensuring organizational engineering protocols and internal business constraints are respected.
 
 ### 3. The Skill-Injection Pattern
-Instead of skills invoking subagents, Orchestrator Agents deploy concurrent background workers via **Skill-Injection**. The orchestrator passes the contents or file paths of one or more relevant `SKILL.md` procedural recipes directly into an isolated subagent worker's initial prompt (e.g., injecting `ami-tech-debt-scanner`, `ami-dependency-analyzer`, and `ami-quality-auditor` into parallel worker subagents across distinct repository modules).
+Instead of skills invoking subagents, Orchestrator Agents deploy concurrent background workers via **Skill-Injection**. The orchestrator passes the contents or file paths of one or more relevant `SKILL.md` procedural recipes directly into an isolated subagent worker's initial prompt (e.g., injecting `ami-scan-tech-debt`, `ami-analyze-dependencies`, and `ami-audit-quality` into parallel worker subagents across distinct repository modules).
 
 ### 4. Complexity Gating
 Orchestrators apply conditional execution thresholds based on task footprint:

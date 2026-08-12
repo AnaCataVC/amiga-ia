@@ -21,25 +21,25 @@ When asked to review a PR or when triggered by a hook before a PR is created, yo
 - Inspect the local workspace for pre-defined custom repository subagents (e.g., in `.github/agents/` or `.gemini/agents/`).
 - Determine execution strategy based on the PR size calculated in Step 1:
   - **Sequential Mode (Small PRs < 200 lines):** Execute the blocking validation skills directly within the active context window:
-    - Execute: `ami-quality-auditor` (View `skills/ami-quality-auditor/SKILL.md`).
-    - Execute: `ami-dependency-analyzer` (View `skills/ami-dependency-analyzer/SKILL.md`).
-    - Execute: `ami-data-validator` (View `skills/ami-data-validator/SKILL.md`).
+    - Execute: `ami-audit-quality` (View `skills/ami-audit-quality/SKILL.md`).
+    - Execute: `ami-analyze-dependencies` (View `skills/ami-analyze-dependencies/SKILL.md`).
+    - Execute: `ami-validate-data` (View `skills/ami-validate-data/SKILL.md`).
   - **Parallel Fan-Out Mode (Large PRs ≥ 200 lines):** To mitigate attention decay, invoke parallel subagents to perform these blocking inspections concurrently. Prioritize custom repository subagents if discovered; otherwise fall back to general evaluation workers. Use the **Skill-Injection pattern** by feeding the required `SKILL.md` methodologies directly into each worker's task prompt.
 - If any of these blocking checks fail, prompt the user to fix them before proceeding.
 
 ### 3. Run Parallel Conflict Check
 - Invoke the conflict detector skill to identify overlapping PRs.
-- Execute: `ami-pr-conflict-detector` (View `skills/ami-pr-conflict-detector/SKILL.md`).
+- Execute: `ami-detect-pr-conflicts` (View `skills/ami-detect-pr-conflicts/SKILL.md`).
 - If conflicts are detected with other open PRs, alert the user and ask for acknowledgment before proceeding.
 
 ### 4. Enforce Documentation Update
 - Invoke the documentation updater skill.
-- Execute: `ami-doc-manager` (View `skills/ami-doc-manager/SKILL.md`).
+- Execute: `ami-manage-docs` (View `skills/ami-manage-docs/SKILL.md`).
 - Unlike the push workflow, updating the documentation is **MANDATORY** for a PR. If docs are not updated, block the PR creation until they are.
 
 ### 5. Enforce Test Coverage & Run Test Suite
 - Check if tests exist for the modified code. If tests are missing or coverage is lacking, invoke the test creator skill first:
-  - Execute: `ami-test-creator` (View `skills/ami-test-creator/SKILL.md`).
+  - Execute: `ami-create-tests` (View `skills/ami-create-tests/SKILL.md`).
 - Execute the project's standard test suite command (e.g., `npm test`, `pytest`, `cargo test`, `node --test`).
 - Ensure all tests pass. This is a **blocker**.
 

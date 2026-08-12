@@ -28,27 +28,27 @@ Skills operate via **Lazy Loading**: only their YAML Frontmatter description is 
 
 | Skill Name | Catalog (Frontmatter Description) | Execution Body (Dynamic Load) | Total Size |
 | :--- | :---: | :---: | :---: |
-| **`ami-pr-peer-reviewer`** | 83 tokens | 1,432 tokens | 1,432 tokens |
-| **`ami-pr-self-reviewer`** | 95 tokens | 1,047 tokens | 1,047 tokens |
+| **`ami-review-peer-pr`** | 83 tokens | 1,432 tokens | 1,432 tokens |
+| **`ami-review-self-pr`** | 95 tokens | 1,047 tokens | 1,047 tokens |
 | **`ami-tag-release`** | 45 tokens | 1,037 tokens | 1,037 tokens |
-| **`ami-tech-debt-scanner`** | 54 tokens | 992 tokens | 992 tokens |
-| **`ami-data-profiler`** | 55 tokens | 988 tokens | 988 tokens |
-| **`ami-dashboard-builder`** | 45 tokens | 962 tokens | 962 tokens |
+| **`ami-scan-tech-debt`** | 54 tokens | 992 tokens | 992 tokens |
+| **`ami-profile-data`** | 55 tokens | 988 tokens | 988 tokens |
+| **`ami-build-dashboard`** | 45 tokens | 962 tokens | 962 tokens |
 | **`ami-project-architect`** | 68 tokens | 959 tokens | 959 tokens |
-| **`ami-commit-planner`** | 34 tokens | 944 tokens | 944 tokens |
-| **`ami-pr-comment-analyzer`** | 38 tokens | 918 tokens | 918 tokens |
-| **`ami-context-researcher`** | 40 tokens | 891 tokens | 891 tokens |
-| **`ami-methodical-debugger`** | 70 tokens | 825 tokens | 825 tokens |
-| **`ami-test-strategist`** | 48 tokens | 821 tokens | 821 tokens |
-| **`ami-sql-optimizer`** | 54 tokens | 808 tokens | 808 tokens |
-| **`ami-data-validator`** | 27 tokens | 798 tokens | 798 tokens |
-| **`ami-doc-manager`** | 47 tokens | 748 tokens | 748 tokens |
-| **`ami-quality-auditor`** | 21 tokens | 645 tokens | 645 tokens |
-| **`ami-dependency-analyzer`** | 53 tokens | 617 tokens | 617 tokens |
+| **`ami-plan-commits`** | 34 tokens | 944 tokens | 944 tokens |
+| **`ami-analyze-pr-comments`** | 38 tokens | 918 tokens | 918 tokens |
+| **`ami-research-context`** | 40 tokens | 891 tokens | 891 tokens |
+| **`ami-debug-issue`** | 70 tokens | 825 tokens | 825 tokens |
+| **`ami-design-test-strategy`** | 48 tokens | 821 tokens | 821 tokens |
+| **`ami-optimize-sql`** | 54 tokens | 808 tokens | 808 tokens |
+| **`ami-validate-data`** | 27 tokens | 798 tokens | 798 tokens |
+| **`ami-manage-docs`** | 47 tokens | 748 tokens | 748 tokens |
+| **`ami-audit-quality`** | 21 tokens | 645 tokens | 645 tokens |
+| **`ami-analyze-dependencies`** | 53 tokens | 617 tokens | 617 tokens |
 | **`ami-draft-release`** | 54 tokens | 603 tokens | 603 tokens |
-| **`ami-learnings-extractor`** | 37 tokens | 587 tokens | 587 tokens |
-| **`ami-pr-conflict-detector`** | 36 tokens | 535 tokens | 535 tokens |
-| **`ami-test-creator`** | 37 tokens | 435 tokens | 435 tokens |
+| **`ami-extract-learnings`** | 37 tokens | 587 tokens | 587 tokens |
+| **`ami-detect-pr-conflicts`** | 36 tokens | 535 tokens | 535 tokens |
+| **`ami-create-tests`** | 37 tokens | 435 tokens | 435 tokens |
 | **TOTALS** | **1,041 tokens** | **17,592 tokens** | **17,592 tokens** |
 
 ---
@@ -100,16 +100,16 @@ To optimize token efficiency without sacrificing functional capabilities, four c
 * **The Solution:** Modify `adapters/universal_adapter.js` to declare the project root path once in the wrapper tag attribute (`root_dir`) and utilize self-closing tags with relative attribute paths:
   ```xml
   <available_skills root_dir="/path/to/project/skills">
-    <skill name="ami-pr-peer-reviewer" file="ami-pr-peer-reviewer/SKILL.md">Review PRs authored by teammates; generates criticality observations.</skill>
+    <skill name="ami-review-peer-pr" file="ami-review-peer-pr/SKILL.md">Review PRs authored by teammates; generates criticality observations.</skill>
   </available_skills>
   ```
 
 ### Strategy 3: Subagent-Scoped Skill Execution (Context Insulation)
-* **The Problem:** When the parent agent directly reads heavy skills (>1,000 tokens like `ami-pr-peer-reviewer`), those tokens remain in the primary session history, accelerating conversational autocompaction.
+* **The Problem:** When the parent agent directly reads heavy skills (>1,000 tokens like `ami-review-peer-pr`), those tokens remain in the primary session history, accelerating conversational autocompaction.
 * **The Solution:** Enforce strict delegation: orchestrator subagents should load complex skills inside their isolated background contexts (`invoke_subagent`). When finished, only a condensed summary message returns to the main conversation.
 
 ### Strategy 4: Progressive Disclosure for Heavy Skills (>1,000 tokens)
-* **The Problem:** Skills such as `ami-pr-peer-reviewer` (1,432 t), `ami-pr-self-reviewer` (1,047 t), and `ami-tag-release` (1,037 t) load large reference examples instantly upon execution.
+* **The Problem:** Skills such as `ami-review-peer-pr` (1,432 t), `ami-review-self-pr` (1,047 t), and `ami-tag-release` (1,037 t) load large reference examples instantly upon execution.
 * **The Solution:** Refactor skills larger than 1,000 tokens into a tiered file hierarchy, keeping the primary `SKILL.md` slim (~300–400 tokens) while extracting extended checklists into auxiliary reference documents (`references/*.md`) loaded only when necessary.
 
 ---

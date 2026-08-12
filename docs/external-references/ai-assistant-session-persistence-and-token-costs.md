@@ -58,6 +58,6 @@ Modern engineering repositories MUST implement a separation between **transactio
 
 * **Short-Term Transactional State:** Managed strictly by the native AI assistant engine (`claude --continue`, Antigravity `task.md` / `transcript.jsonl`). Zero repository file bloat, zero background bash scripts.
 * **Long-Term Curated Knowledge:** Handled via declarative Markdown skills with XML index catalogs. When an agent needs domain understanding, it actively executes a pull request using specialized workflows:
-  * **`ami-doc-manager`**: Keeps architectural documentation (`docs/`) synchronized with actual codebase diffs.
-  * **`ami-learnings-extractor`**: Curates explicit Architecture Decision Records (`docs/adr/`) and technical patterns (`docs/learning/`), saving only high-signal architectural decisions while filtering out conversational noise.
-  * **`ami-context-researcher`**: Validates live external framework docs and persists verifiable technical truth in `docs/external-references/`.
+  * **`ami-manage-docs`**: Keeps architectural documentation (`docs/`) synchronized with actual codebase diffs.
+  * **`ami-extract-learnings`**: Curates explicit Architecture Decision Records (`docs/adr/`) and technical patterns (`docs/learning/`), saving only high-signal architectural decisions while filtering out conversational noise.
+  * **`ami-research-context`**: Validates live external framework docs and persists verifiable technical truth in `docs/external-references/`.

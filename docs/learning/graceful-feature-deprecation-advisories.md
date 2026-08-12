@@ -21,10 +21,10 @@ Instead of forcing automatic file deletions or abandoning user data, extend diag
   const sessionsDir = path.resolve('docs', 'coding-sessions');
   if (fs.existsSync(sessionsDir)) {
     console.log('  💡 ADVISORY: Found legacy docs/coding-sessions/ directory.');
-    console.log('     Recommendation: Extract any valuable architectural insights or pending tasks using ami-learnings-extractor and ami-doc-manager skills, and then delete docs/coding-sessions/ to save tokens and keep your repository clean.');
+    console.log('     Recommendation: Extract any valuable architectural insights or pending tasks using ami-extract-learnings and ami-manage-docs skills, and then delete docs/coding-sessions/ to save tokens and keep your repository clean.');
   }
   ```
-* **Why:** This empowers the user with an actionable, intelligent remediation path. It bridges the old architecture with modern capabilities by explicitly directing developers to invoke knowledge extraction workflows (`ami-learnings-extractor`, `ami-doc-manager`) to synthesize remaining historical context into long-term records (ADRs or wikis) before deleting the leftover folder.
+* **Why:** This empowers the user with an actionable, intelligent remediation path. It bridges the old architecture with modern capabilities by explicitly directing developers to invoke knowledge extraction workflows (`ami-extract-learnings`, `ami-manage-docs`) to synthesize remaining historical context into long-term records (ADRs or wikis) before deleting the leftover folder.
 
 ## Best Practice Takeaway
 

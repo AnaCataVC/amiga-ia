@@ -21,7 +21,7 @@ Establish a strict **Single Source of Truth (DRY)** separation between Skills an
   - Act as **lightweight orchestrators** that sequence execution across multiple skills.
   - Manage **human-in-the-loop safety gates** by requesting explicit user approval in the chat.
   - Execute final CLI actions (`git commit`, `git push`, `gh release`).
-  - Single-skill wrapper agents (such as `ami-commit-assistant`) were consolidated directly into the underlying skill (`ami-commit-planner`) to eliminate redundant orchestration layers.
+  - Single-skill wrapper agents (such as `ami-commit-assistant`) were consolidated directly into the underlying skill (`ami-plan-commits`) to eliminate redundant orchestration layers.
 
 ---
 

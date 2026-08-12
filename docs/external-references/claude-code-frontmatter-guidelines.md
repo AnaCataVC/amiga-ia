@@ -9,7 +9,7 @@ During the development of Agent Skills (Markdown definitions for subagents and s
 However, we discovered that this causes compatibility issues when these skills are loaded natively by **Claude Code**. To ensure universal portability and adhere to the principle of least privilege, we made the architectural decision to strictly use `allowed-tools:`.
 
 ## Research Findings
-Using the `/ami-context-researcher` skill, we gathered the following technical constraints regarding Claude Code's architecture:
+Using the `/ami-research-context` skill, we gathered the following technical constraints regarding Claude Code's architecture:
 
 1. **Strict YAML Frontmatter Directive:** In Claude Code, `allowed-tools` is the official property used within the YAML frontmatter of custom skills or slash commands to restrict or define the toolset available to the agent during that specific task.
 2. **Syntax and Granularity:** Tools can be specified generally or with granular constraints using the `ToolName(specifier)` format. For example, `Bash(npm run *)` allows the agent to run NPM scripts but blocks other arbitrary bash commands.
@@ -22,7 +22,7 @@ Using the `/ami-context-researcher` skill, we gathered the following technical c
 
 ## Extended Research: Agents, Skills & Frontmatter Guidelines
 
-Further research using the `/ami-context-researcher` skill revealed critical structural and semantic constraints for Claude Code:
+Further research using the `/ami-research-context` skill revealed critical structural and semantic constraints for Claude Code:
 
 ### 1. Skills vs. Subagents vs. Commands
 Claude Code differentiates the file structures depending on the entity's purpose:

@@ -13,9 +13,9 @@ When invoked to analyze or review an existing Pull Request, follow this strict o
 
 ### 1. Determine Review Context, Stack Topology & Calculate Diff Metrics
 - Determine the objective of the review:
-  - **Peer-Review:** Evaluating someone else's code (`ami-pr-peer-reviewer`).
-  - **Self-Review:** Auditing your own PR before seeking external review (`ami-pr-self-reviewer`).
-  - **Comment Analysis:** Parsing and organizing developer review comments on an active PR (`ami-pr-comment-analyzer`).
+  - **Peer-Review:** Evaluating someone else's code (`ami-review-peer-pr`).
+  - **Self-Review:** Auditing your own PR before seeking external review (`ami-review-self-pr`).
+  - **Comment Analysis:** Parsing and organizing developer review comments on an active PR (`ami-analyze-pr-comments`).
 - **Detect Stack Topology:** Check if the target PR is part of a **Stacked PRs** sequence by checking its base branch and dependent branches (e.g., via `gh pr view --json baseRefName,headRefName` or stacking CLI metadata like `gh stack` / Graphite `gt`).
   - If reviewing an entire stacked feature sequence, enforce a **Bottom-Up Review Strategy**: evaluate foundational base layers first before assessing upper dependent layers to preserve architectural coherence.
 - Use Git or GitHub CLI commands (e.g., `gh pr diff --stat` or `git diff --stat`) against the PR's direct base reference (`baseRefName`) to calculate the exact lines changed, file counts, and architectural domains affected.
@@ -28,14 +28,14 @@ When invoked to analyze or review an existing Pull Request, follow this strict o
 ### 3. Execution Strategy: Complexity Gating & Parallel Fan-Out
 - Select your execution strategy based on workload volume:
   - **Sequential Mode (Small PRs < 200 lines / < 3 files):**
-    - Do not spawn subagents. Execute the relevant review skill (`ami-pr-peer-reviewer`, `ami-pr-self-reviewer`, or `ami-pr-comment-analyzer`) sequentially within your current context window to ensure instantaneous feedback and eliminate token tax.
+    - Do not spawn subagents. Execute the relevant review skill (`ami-review-peer-pr`, `ami-review-self-pr`, or `ami-analyze-pr-comments`) sequentially within your current context window to ensure instantaneous feedback and eliminate token tax.
   - **Parallel Fan-Out Mode (Large PRs ≥ 200 lines or multi-module diffs):**
     - Prevent attention decay by fanning out concurrent worker subagents (using `invoke_subagent` or platform-appropriate subagent execution commands).
     - **The Skill-Injection Pattern:** When delegating tasks to subagents (whether discovered custom repository subagents or default general research subagents), read and inject the target skill recipe directly into each worker's prompt:
-      - For general code quality, security defects, or dead code: inject `skills/ami-quality-auditor/SKILL.md`.
-      - For third-party library additions or updates: inject `skills/ami-dependency-analyzer/SKILL.md`.
-      - For database queries, schemas, or models: inject `skills/ami-data-validator/SKILL.md`.
-      - For specialized code chunk evaluation: inject the core heuristics from `skills/ami-pr-peer-reviewer/SKILL.md` or `skills/ami-pr-self-reviewer/SKILL.md`.
+      - For general code quality, security defects, or dead code: inject `skills/ami-audit-quality/SKILL.md`.
+      - For third-party library additions or updates: inject `skills/ami-analyze-dependencies/SKILL.md`.
+      - For database queries, schemas, or models: inject `skills/ami-validate-data/SKILL.md`.
+      - For specialized code chunk evaluation: inject the core heuristics from `skills/ami-review-peer-pr/SKILL.md` or `skills/ami-review-self-pr/SKILL.md`.
 
 ### 4. Consolidated Executive Reporting & Interactive Action
 - Collect the analytical outputs from all sequential steps or background worker subagents.

@@ -11,10 +11,10 @@ This rule file provides declarative operational guardrails for Antigravity agent
 
 ## 2. Pre-Push Verification
 - Run code quality checks, linter, and tests before executing `git push`.
-- Run the `ami-push-assistant` agent or `ami-quality-auditor` skill before pushing modifications to remote branches.
+- Run the `ami-push-assistant` agent or `ami-audit-quality` skill before pushing modifications to remote branches.
 
 ## 3. Pull Request Safety
-- Run `ami-pr-conflict-detector` before proposing or creating any Pull Request.
+- Run `ami-detect-pr-conflicts` before proposing or creating any Pull Request.
 - Ensure branch is rebased cleanly with the primary target branch.
 
 ## 4. Code Quality & Debug Leak Prevention

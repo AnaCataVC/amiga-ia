@@ -21,9 +21,9 @@ When invoked to perform an overall repository audit, clean up tech debt, or insp
 
 ### 3. Multi-Skill Parallel Fan-Out (The Audit Triad)
 - To prevent attention decay over large file volumes, deploy concurrent background worker subagents using the **Skill-Injection pattern**, directing each worker to evaluate specific modules against specialized audit skills:
-  - **Technical Debt & Dead Code Inspection:** Inject `skills/ami-tech-debt-scanner/SKILL.md` into worker prompts to uncover duplicated abstractions, obsolete TODOs/FIXMEs, and unreferenced code.
-  - **Dependency Hygiene & Vulnerability Scanning:** Inject `skills/ami-dependency-analyzer/SKILL.md` into worker prompts to audit lockfiles, outdated library versions, and undeclared packages.
-  - **Static Quality & Security Audit:** Inject `skills/ami-quality-auditor/SKILL.md` into worker prompts to detect structural flaws and static security defect risks.
+  - **Technical Debt & Dead Code Inspection:** Inject `skills/ami-scan-tech-debt/SKILL.md` into worker prompts to uncover duplicated abstractions, obsolete TODOs/FIXMEs, and unreferenced code.
+  - **Dependency Hygiene & Vulnerability Scanning:** Inject `skills/ami-analyze-dependencies/SKILL.md` into worker prompts to audit lockfiles, outdated library versions, and undeclared packages.
+  - **Static Quality & Security Audit:** Inject `skills/ami-audit-quality/SKILL.md` into worker prompts to detect structural flaws and static security defect risks.
 - For small repositories or single-folder investigations, execute these checks sequentially inside the active context window to preserve token economy.
 
 ### 4. Executive Health Scorecard Reporting
