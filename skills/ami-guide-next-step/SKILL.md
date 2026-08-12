@@ -14,7 +14,7 @@ When invoked, you MUST execute the following sequence. You evaluate each tier in
 
 ### 1. Code Quality & General Review
 - Invoke the code quality auditor.
-- Execute: `ami-quality-auditor` (View the file `skills/ami-quality-auditor/SKILL.md`).
+- Execute: `ami-audit-quality` (View the file `skills/ami-audit-quality/SKILL.md`).
 - If there are critical code smells, security issues, or architectural flaws, stop here. Present fixing these issues as the next step.
 
 ### 2. Technical Debt
@@ -22,17 +22,17 @@ When invoked, you MUST execute the following sequence. You evaluate each tier in
 - First, check if a documented tech debt file exists (e.g., `docs/tech-debt.md`).
   - If it exists, read the file to find the Date of the last scan. Inform the user of this date and ask if they want to use this existing report to pay off debt, or if they prefer to run a fresh scan.
   - If it does not exist, or if the user chooses a fresh scan, invoke the tech debt scanner:
-    - Execute: `ami-tech-debt-scanner` (View the file `skills/ami-tech-debt-scanner/SKILL.md`).
+    - Execute: `ami-scan-tech-debt` (View the file `skills/ami-scan-tech-debt/SKILL.md`).
 - If there are outdated dependencies, dead code, or high-risk technical debt (either from the existing file or the new scan), stop here. Present a prioritized list of tech debt to pay off.
 
 ### 3. Tests & Coverage
 - If tech debt is low, check the testing suite.
 - Run the project's standard test suite command (e.g., `npm test`, `pytest`, `cargo test`, `node --test`).
-- If tests fail, or if test coverage is noticeably missing for core features, stop here. Recommend fixing or writing tests (you may suggest invoking `ami-test-creator`).
+- If tests fail, or if test coverage is noticeably missing for core features, stop here. Recommend fixing or writing tests (you may suggest invoking `ami-create-tests`).
 
 ### 4. Documentation
 - If tests are passing and coverage is solid, check the documentation.
-- Execute: `ami-doc-manager` (View the file `skills/ami-doc-manager/SKILL.md`).
+- Execute: `ami-manage-docs` (View the file `skills/ami-manage-docs/SKILL.md`).
 - If the documentation is outdated, missing, or misaligned with the codebase, stop here. Recommend updating the docs as the next step.
 
 ### 5. Ideation & Brainstorming (Greenfield)

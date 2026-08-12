@@ -14,7 +14,7 @@ When invoked to plan a feature, you MUST follow this sequence:
 
 ### 1. External Context Investigation
 - Ask yourself: Does this feature require integration with external APIs, third-party libraries, or complex external architecture (e.g., Stripe, Supabase, OAuth)?
-- If yes, use the `ami-context-researcher` skill (or invoke it via subagent) to fetch the latest documentation, constraints, and best practices.
+- If yes, use the `ami-research-context` skill (or invoke it via subagent) to fetch the latest documentation, constraints, and best practices.
 - Ensure the external context is saved to the repository's long-term memory (`docs/external-references/`).
 
 ### 2. Internal Codebase Mapping
@@ -47,7 +47,7 @@ When invoked to plan a feature, you MUST follow this sequence:
 
 ### 7. Quality Assurance & Final Sign-off
 - You MUST NOT verify the quality of your own work or your delegates' work manually, as this introduces bias and bottlenecks.
-- Once execution is complete, you MUST invoke an independent QA subagent (using `ami-quality-auditor` or `ami-repo-auditor`) to verify that the feature meets the original constraints and quality standards.
+- Once execution is complete, you MUST invoke an independent QA subagent (using `ami-audit-quality` or `ami-repo-auditor`) to verify that the feature meets the original constraints and quality standards.
 - Review the QA agent's final report. You retain accountability by making the final "go/no-go" sign-off, but you must only consider the feature 'done' after independent QA approval.
 
 ---
