@@ -96,7 +96,7 @@ function mergeSettings(targetPath, sourcePath, options = {}) {
     'push-assistant',
     'ami-pr-publisher',
     'ami-pr-reviewer',
-    'ami-pr-conflict-detector',
+    'ami-detect-pr-conflicts',
     'docs/coding-sessions',
     'debugger|TODO|FIXME',
     'ami-session-start',
@@ -148,7 +148,7 @@ function removeAmigaHooks(targetPath) {
       'push-assistant',
       'ami-pr-publisher',
       'ami-pr-reviewer',
-      'ami-pr-conflict-detector',
+      'ami-detect-pr-conflicts',
       'docs/coding-sessions',
       'debugger|TODO|FIXME',
       'ami-session-start',
@@ -505,7 +505,7 @@ async function runDoctor() {
           }
         });
 
-        const amigaSigs = ['commit-assistant', 'push-assistant', 'ami-pr-publisher', 'ami-pr-reviewer', 'ami-pr-conflict-detector', 'docs/coding-sessions', 'debugger|TODO|FIXME', 'ami-session-start', 'ami-pre-tool-use', 'ami-post-tool-use', 'ami-hooks'];
+        const amigaSigs = ['commit-assistant', 'push-assistant', 'ami-pr-publisher', 'ami-pr-reviewer', 'ami-detect-pr-conflicts', 'docs/coding-sessions', 'debugger|TODO|FIXME', 'ami-session-start', 'ami-pre-tool-use', 'ami-post-tool-use', 'ami-hooks'];
         const isAmigaHook = (cmd) => cmd && typeof cmd === 'string' && amigaSigs.some(sig => cmd.includes(sig));
 
         const hasNodeHooks = hookCmds.some(h => isAmigaHook(h.command) && h.command.includes('node '));
@@ -543,7 +543,7 @@ async function runDoctor() {
   if (fs.existsSync(sessionsDir)) {
     console.log(pc.blue('\n🔍 Checking project workspace for legacy structures...'));
     console.log(pc.cyan('  💡 ADVISORY: Found legacy docs/coding-sessions/ directory.'));
-    console.log(pc.gray('     Recommendation: Extract any valuable architectural insights or pending tasks using ami-learnings-extractor and ami-doc-manager skills, and then delete docs/coding-sessions/ to save tokens and keep your repository clean.'));
+    console.log(pc.gray('     Recommendation: Extract any valuable architectural insights or pending tasks using ami-extract-learnings and ami-manage-docs skills, and then delete docs/coding-sessions/ to save tokens and keep your repository clean.'));
   }
 
   console.log(pc.cyan('\n======================================================'));
@@ -559,7 +559,7 @@ function checkLegacyDirs() {
   const sessionsDir = path.resolve('docs', 'coding-sessions');
   if (fs.existsSync(sessionsDir)) {
     console.log(pc.cyan('\n💡 ADVISORY: Found legacy docs/coding-sessions/ directory.'));
-    console.log(pc.gray('   Recommendation: Extract any valuable architectural insights or pending tasks using ami-learnings-extractor and ami-doc-manager skills, and then delete docs/coding-sessions/ to save tokens and keep your repository clean.'));
+    console.log(pc.gray('   Recommendation: Extract any valuable architectural insights or pending tasks using ami-extract-learnings and ami-manage-docs skills, and then delete docs/coding-sessions/ to save tokens and keep your repository clean.'));
   }
   console.log(pc.magenta('\n✨ Setup complete! Restart your AI assistant for changes to take effect.\n'));
 }

@@ -12,7 +12,7 @@ process.stdin.on('end', () => {
       console.error('Reminder: Run push-assistant agent before pushing code.');
     }
     if (command.includes('gh pr create')) {
-      console.error('Reminder: Consider running ami-pr-conflict-detector or ami-pr-publisher before creating PR.');
+      console.error('Reminder: Consider running ami-detect-pr-conflicts or ami-pr-publisher before creating PR.');
     }
   } catch { /* Don't block on parse errors */ }
   process.exit(0);

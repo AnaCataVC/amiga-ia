@@ -40,7 +40,7 @@ if [ "$event" = "PreToolUse" ]; then
   fi
   # Check for GitHub PR creation
   if echo "$input" | grep -E -q "gh pr create"; then
-    echo "Reminder: Consider running ami-pr-conflict-detector or ami-pr-publisher before creating PR." >&2
+    echo "Reminder: Consider running ami-detect-pr-conflicts or ami-pr-publisher before creating PR." >&2
   fi
 elif [ "$event" = "PostToolUse" ]; then
   # Extract file path from JSON input (supports Claude Code file_path and Antigravity TargetFile/AbsolutePath)

@@ -44,7 +44,7 @@ try {
             [Console]::Error.WriteLine('Reminder: Run push-assistant agent before pushing code.')
         }
         if ($cmd -match 'gh pr create') {
-            [Console]::Error.WriteLine('Reminder: Consider running ami-pr-conflict-detector or ami-pr-publisher before creating PR.')
+            [Console]::Error.WriteLine('Reminder: Consider running ami-detect-pr-conflicts or ami-pr-publisher before creating PR.')
         }
     }
     elseif ($Event -eq 'PostToolUse') {
