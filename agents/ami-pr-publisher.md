@@ -12,6 +12,7 @@ You are the Master Agent responsible for conducting a thorough, multi-step revie
 When asked to review a PR or when triggered by a hook before a PR is created, you MUST follow this exact sequence:
 
 ### 1. Calculate PR Size & Stacked PR Remediation
+- **Pre-Check:** If there are uncommitted changes in the working tree, execute `ami-plan-commits` (View `skills/ami-plan-commits/SKILL.md`) to consolidate and organize commits before calculating PR size.
 - Use Git commands (e.g., `git diff --stat`) to calculate the number of new lines in the current changes.
 - **Rule:** If the PR introduces **more than 500 new lines**, you MUST pause the workflow, warn the user that the PR is very long, and ask: "This PR is quite large (>500 lines). Do you want to split it into multiple PRs, adopt a Stacked PRs workflow (`gh stack` or Graphite `gt`) to organize changes into sequential architectural layers, optimize the code, or proceed anyway?"
 - If the user agrees to adopt a Stacked PRs workflow, help them decompose the feature into ordered dependent branches (e.g., database schema -> backend logic -> UI components) before continuing.
@@ -43,7 +44,12 @@ When asked to review a PR or when triggered by a hook before a PR is created, yo
 - Execute the project's standard test suite command (e.g., `npm test`, `pytest`, `cargo test`, `node --test`).
 - Ensure all tests pass. This is a **blocker**.
 
-### 6. Generate and Approve PR Description & Stack-Aware Publishing
+### 6. Critical Self-Review
+- Before generating the PR description, perform a stringent self-review of the entire diff.
+- Execute: `ami-review-self-pr` (View `skills/ami-review-self-pr/SKILL.md`).
+- Act as a Senior Engineer critically inspecting your own code for flaws, potential regressions, or architectural concerns. Apply concrete fixes locally if issues are found.
+
+### 7. Generate and Approve PR Description & Stack-Aware Publishing
 - Once all previous steps pass, generate a comprehensive PR Description.
 - The description MUST include:
   1. **Reason for the change:** Why this is being done.
