@@ -63,6 +63,32 @@ description: A test agent.
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
+  test('should parse skills and agents correctly even when files contain UTF-8 BOM', () => {
+    const tmpSkillsDir = fs.mkdtempSync(path.join(os.tmpdir(), 'amiga-bom-skills-'));
+    const skillSubDir = path.join(tmpSkillsDir, 'ami-bom-skill');
+    fs.mkdirSync(skillSubDir, { recursive: true });
+
+    // Prepend UTF-8 BOM (\uFEFF)
+    const bomSkillContent = '\uFEFF---\nname: ami-bom-skill\ndescription: Skill with BOM.\nallowed-tools: Bash\n---\n# Skill';
+    fs.writeFileSync(path.join(skillSubDir, 'SKILL.md'), bomSkillContent, 'utf8');
+
+    const tmpAgentsDir = fs.mkdtempSync(path.join(os.tmpdir(), 'amiga-bom-agents-'));
+    const bomAgentContent = '\uFEFF---\nname: ami-bom-agent\ndescription: Agent with BOM.\nallowed-tools: Bash\n---\n# Agent';
+    fs.writeFileSync(path.join(tmpAgentsDir, 'ami-bom-agent.md'), bomAgentContent, 'utf8');
+
+    const adapter = new UniversalAdapter('antigravity');
+    const skillsXml = adapter.generateSkillsXml(tmpSkillsDir);
+    const agentsXml = adapter.generateAgentsXml(tmpAgentsDir);
+
+    assert.ok(skillsXml.includes('name="ami-bom-skill"'));
+    assert.ok(skillsXml.includes('Skill with BOM.'));
+    assert.ok(agentsXml.includes('name="ami-bom-agent"'));
+    assert.ok(agentsXml.includes('Agent with BOM.'));
+
+    fs.rmSync(tmpSkillsDir, { recursive: true, force: true });
+    fs.rmSync(tmpAgentsDir, { recursive: true, force: true });
+  });
+
   test('should compile full system prompt correctly', () => {
     const adapter = new UniversalAdapter('antigravity');
     const systemPrompt = adapter.getSystemPrompt(path.resolve('skills'), path.resolve('agents'));

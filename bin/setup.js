@@ -447,8 +447,28 @@ async function runDoctor() {
   }
 
   // 3. YAML Frontmatter Validator
-  console.log(pc.blue('\n🔍 Validating SKILL.md YAML frontmatter...'));
-  let invalidSkills = 0;
+  console.log(pc.blue('\n🔍 Validating YAML frontmatter for skills and agents...'));
+  let invalidDefinitions = 0;
+
+  const validateDefinitionFrontmatter = (filepath, baseDir, typeLabel) => {
+    const content = fs.readFileSync(filepath, 'utf8').replace(/^\uFEFF/, '');
+    const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+    const relPath = path.relative(baseDir, filepath);
+    if (!match) {
+      console.log(pc.red(`❌ ERROR: Missing YAML frontmatter in ${typeLabel} ${relPath}`));
+      return false;
+    }
+    const hasName = match[1].includes('name:');
+    const hasDesc = match[1].includes('description:');
+    const hasTools = match[1].includes('allowed-tools:');
+    if (!hasName || !hasDesc || !hasTools) {
+      console.log(pc.yellow(`⚠️  WARNING: Incomplete YAML frontmatter in ${typeLabel} ${relPath} (Missing: ${[!hasName && 'name', !hasDesc && 'description', !hasTools && 'allowed-tools'].filter(Boolean).join(', ')})`));
+      return false;
+    }
+    return true;
+  };
+
+  let totalSkills = 0;
   if (fs.existsSync(sourceSkillsDir)) {
     const walkSync = (dir, filelist = []) => {
       fs.readdirSync(dir).forEach(file => {
@@ -462,27 +482,31 @@ async function runDoctor() {
       return filelist;
     };
     const skillFiles = walkSync(sourceSkillsDir);
+    totalSkills = skillFiles.length;
     skillFiles.forEach(file => {
-      const content = fs.readFileSync(file, 'utf8');
-      const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
-      if (!match) {
-        console.log(pc.red(`❌ ERROR: Missing YAML frontmatter in ${path.relative(sourceSkillsDir, file)}`));
-        invalidSkills++;
-      } else {
-        const hasName = match[1].includes('name:');
-        const hasDesc = match[1].includes('description:');
-        const hasTools = match[1].includes('allowed-tools:');
-        if (!hasName || !hasDesc || !hasTools) {
-          console.log(pc.yellow(`⚠️  WARNING: Incomplete YAML frontmatter in ${path.relative(sourceSkillsDir, file)} (Missing: ${[!hasName && 'name', !hasDesc && 'description', !hasTools && 'allowed-tools'].filter(Boolean).join(', ')})`));
-          invalidSkills++;
-        }
+      if (!validateDefinitionFrontmatter(file, sourceSkillsDir, 'skill')) {
+        invalidDefinitions++;
       }
     });
-    if (invalidSkills === 0) {
-      console.log(pc.green(`  ✅ All ${skillFiles.length} skills have valid YAML frontmatter.`));
-    } else {
-      issueCount += invalidSkills;
-    }
+  }
+
+  let totalAgents = 0;
+  if (fs.existsSync(sourceAgentsDir)) {
+    const agentFiles = fs.readdirSync(sourceAgentsDir)
+      .filter(file => file.endsWith('.md'))
+      .map(file => path.join(sourceAgentsDir, file));
+    totalAgents = agentFiles.length;
+    agentFiles.forEach(file => {
+      if (!validateDefinitionFrontmatter(file, sourceAgentsDir, 'agent')) {
+        invalidDefinitions++;
+      }
+    });
+  }
+
+  if (invalidDefinitions === 0) {
+    console.log(pc.green(`  ✅ All ${totalSkills} skills and ${totalAgents} agents have valid YAML frontmatter.`));
+  } else {
+    issueCount += invalidDefinitions;
   }
 
   // 4. Hooks Health Check

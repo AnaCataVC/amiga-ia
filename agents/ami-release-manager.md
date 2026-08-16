@@ -1,4 +1,4 @@
-﻿---
+---
 name: ami-release-manager
 description: Master release lifecycle orchestrator. Invoke when publishing, preparing, or creating official GitHub releases, calculating tags, and drafting release notes.
 allowed-tools: Bash, Read, Edit, Write

@@ -1,4 +1,4 @@
-﻿> **Created:** 2026-08-04
+> **Created:** 2026-08-04
 > **Last Updated:** 2026-08-04
 
 # Token Consumption Audit & Optimization Strategy for Agent Skills

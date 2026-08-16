@@ -1,4 +1,4 @@
-﻿# Amiga IA - Autonomous Agentic Suite & Declarative Skills
+# Amiga IA - Autonomous Agentic Suite & Declarative Skills
 
 <p align="center">
   <img src="./favicon.png" alt="Amiga IA Logo" width="120" />
