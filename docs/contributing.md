@@ -144,19 +144,8 @@ You are a specialized sub-agent responsible for...
 
 ### Registering the Agent
 
-> [!WARNING]
-> Auto-discovery does **not** work for agents. You must manually register the agent in the root `plugin.json` file by adding its path to the `agents` array:
-
-```json
-{
-  "agents": [
-    "agents/ami-push-assistant.md",
-    "agents/ami-my-agent.md"
-  ]
-}
-```
-
-If you skip this step, the agent will exist in the repository but will not be discovered by Antigravity.
+> [!NOTE]
+> **Dynamic Auto-Discovery:** You do **not** need to manually register agents in any static manifest. The [Universal Adapter](architecture/universal-adapter.md) (`adapters/universal_adapter.js`) automatically discovers any new `.md` file in `agents/` that contains valid YAML frontmatter, compiles it into the system prompt index, and the [CLI Wizard](architecture/cli-setup-wizard.md) (`bin/setup.js`) installs it into the local AI configuration directories.
 
 ---
 
@@ -197,7 +186,8 @@ The `bin/setup.js` script (exposed as the `amiga-ia-setup` command) is an intera
 #### Antigravity (Gemini)
 
 - **Skills** → `~/.gemini/config/skills/`
-- **Plugin** → Creates the plugin directory at `~/.gemini/config/plugins/amiga-ia/`
+- **Agents** → `~/.gemini/config/agents/`
+- **Rules** → `~/.gemini/config/rules/`
 
 ### How It Works
 

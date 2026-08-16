@@ -70,33 +70,35 @@ All built-in capabilities strictly utilize the **`ami-`** namespace prefix to pr
 | Agent | **ami-data-scientist** | Master orchestrator agent for Data & SQL. Coordinates exploratory dataset profiling, database query optimizations, and executive dashboards. |
 | Agent | **ami-doc-architect** | Master documentation orchestrator that coordinates doc-manager, context research, and session learnings extraction in parallel. |
 | Agent | **ami-expert-council** | Spawns a council of specialized subagents tailored to discuss, debate, and refine a user's architectural idea from multiple perspectives. |
-| Agent | **ami-next-step-assistant** | Acts as an automated project guide by evaluating repository health and recommending the most critical next action. |
 | Agent | **ami-pr-publisher** | Master orchestrator agent that performs a comprehensive review, summary drafting, and conflict audit on Pull Requests before publishing. |
 | Agent | **ami-pr-reviewer** | Master orchestrator agent that evaluates existing Pull Requests using parallel worker subagents and automated capability discovery. |
 | Agent | **ami-push-assistant** | Pre-push orchestrator that conducts baseline quality, security leak scans, and data consistency checks before pushing code. |
 | Agent | **ami-release-manager** | Central orchestrator agent that automates version tag calculation, bilingual semantic changelog drafting, and GitHub release publication. |
 | Agent | **ami-repo-auditor** | Master audit orchestrator that evaluates codebase technical debt, dependency hygiene, and security across modules concurrently. |
-| Skill | **ami-plan-commits** | Analyzes the working tree, performs security/leak audits, plans Conventional Commits/amend/squash, and executes staged git actions. |
-| Skill | **ami-research-context** | Actively researches up-to-date external documentation and persists findings in references to prevent context degradation. |
-| Skill | **ami-build-dashboard** | Builds interactive web dashboards and publication-quality Python visualizations from analytical datasets and KPIs. |
-| Skill | **ami-profile-data** | Performs exploratory data analysis (EDA), quantifies null distributions, detects outliers, and audits methodological validity. |
-| Skill | **ami-validate-data** | Validates structural consistency between source code changes and data layer definitions (schemas, queries). |
+| Agent | **ami-tech-lead** | Master Project Planning & Architecture Orchestrator. Evaluates repository health, plans features, and coordinates architectural design. |
 | Skill | **ami-analyze-dependencies** | Audits project library health, detecting unused, outdated, vulnerable, or phantom dependencies. |
-| Skill | **ami-manage-docs** | Comprehensive documentation manager. Detects whether to architect new docs from scratch or synchronize existing wikis with code diffs. |
-| Skill | **ami-extract-learnings** | Inspects recent codebase edits to extract architectural decisions, lessons, antipatterns, and surprises into persistent memory. |
-| Skill | **ami-debug-issue** | Performs an evidence-based debugging procedure, isolating root causes without guesswork and writing regression tests. |
 | Skill | **ami-analyze-pr-comments** | Analyzes code review observations left by teammates on active PRs, organizing action items and formulating accurate replies. |
+| Skill | **ami-architect-project** | Interactively scaffolds project architectures, technology stacks, directory hierarchies, and bilingual starter documentation. |
+| Skill | **ami-audit-quality** | Conducts deep inspections on modified code for maintainability, modular design best practices, security flaws, and structural soundness. |
+| Skill | **ami-build-dashboard** | Builds interactive web dashboards and publication-quality Python visualizations from analytical datasets and KPIs. |
+| Skill | **ami-create-tests** | Auto-triggered when new features lack automated test coverage. Crafts focused unit and regression tests tailored to modified code. |
+| Skill | **ami-debug-issue** | Performs an evidence-based debugging procedure, isolating root causes without guesswork and writing regression tests. |
+| Skill | **ami-design-test-strategy** | Designed to run before writing tests. Formulates QA test strategies, pyramid distributions, mocking boundaries, and CI quality gates. |
 | Skill | **ami-detect-pr-conflicts** | Auto-triggered prior to PR publishing or review. Detects overlapping commit histories and potential merge conflicts across active branches. |
+| Skill | **ami-draft-release** | Auto-triggered prior to publishing releases. Parses commit histories to draft structured bilingual release notes grouped by semantic type. |
+| Skill | **ami-extract-learnings** | Inspects recent codebase edits to extract architectural decisions, lessons, antipatterns, and surprises into persistent memory. |
+| Skill | **ami-guide-next-step** | Scans multi-dimensional project health, prioritizing tests, tech debt, code quality, and recommending optimal next steps. |
+| Skill | **ami-manage-docs** | Comprehensive documentation manager. Detects whether to architect new docs from scratch or synchronize existing wikis with code diffs. |
+| Skill | **ami-optimize-sql** | Writes and refactors SQL across major database dialects, eliminates query anti-patterns, and recommends high-impact indexes. |
+| Skill | **ami-plan-commits** | Analyzes the working tree, performs security/leak audits, plans Conventional Commits/amend/squash, and executes staged git actions. |
+| Skill | **ami-plan-feature** | Formulates comprehensive feature implementation plans, investigating codebase context and coordinating execution. |
+| Skill | **ami-profile-data** | Performs exploratory data analysis (EDA), quantifies null distributions, detects outliers, and audits methodological validity. |
+| Skill | **ami-research-context** | Actively researches up-to-date external documentation and persists findings in references to prevent context degradation. |
 | Skill | **ami-review-peer-pr** | Assists in conducting code reviews on teammates' Pull Requests, producing categorized architectural and logic observations. |
 | Skill | **ami-review-self-pr** | Operates as a stringent Senior Engineer reviewing your own work-in-progress code, identifying bugs and proactively applying local code fixes. |
-| Skill | **ami-project-architect** | Interactively scaffolds project architectures, technology stacks, directory hierarchies, and bilingual starter documentation. |
-| Skill | **ami-audit-quality** | Conducts deep inspections on modified code for maintainability, modular design best practices, security flaws, and structural soundness. |
-| Skill | **ami-draft-release** | Auto-triggered prior to publishing releases. Parses commit histories to draft structured bilingual release notes grouped by semantic type. |
-| Skill | **ami-tag-release** | Auto-triggered before release bumps. Evaluates git histories against semantic versioning laws to compute precise stable or QA tags. |
-| Skill | **ami-optimize-sql** | Writes and refactors SQL across major database dialects, eliminates query anti-patterns, and recommends high-impact indexes. |
 | Skill | **ami-scan-tech-debt** | Scans repositories for technical debt, obsolete imports, duplicated logic, dead code, and pending comments (TODOs/FIXMEs). |
-| Skill | **ami-create-tests** | Auto-triggered when new features lack automated test coverage. Crafts focused unit and regression tests tailored to modified code. |
-| Skill | **ami-design-test-strategy** | Designed to run before writing tests. Formulates QA test strategies, pyramid distributions, mocking boundaries, and CI quality gates. |
+| Skill | **ami-tag-release** | Auto-triggered before release bumps. Evaluates git histories against semantic versioning laws to compute precise stable or QA tags. |
+| Skill | **ami-validate-data** | Validates structural consistency between source code changes and data layer definitions (schemas, queries). |
 
 ### 6. Installation & Usage
 The official and recommended setup method is installing Amiga IA globally via the NPM package registry:
@@ -124,14 +126,14 @@ When running `amiga-ia-setup`, the CLI wizard populates your home directory with
 
 ```text
 ~/.claude/                          # Claude Code Global Configuration
-├── skills/ami-*/SKILL.md           # Declarative Skills (17 directories)
-├── agents/ami-*.md                 # Autonomous Subagents (8 profiles)
+├── skills/ami-*/SKILL.md           # Declarative Skills (23 directories)
+├── agents/ami-*.md                 # Autonomous Subagents (9 profiles)
 ├── settings.json                   # Merged Hooks (PreToolUse, PostToolUse)
 └── settings.json.amiga-backup      # Safe original settings backup
 
 ~/.gemini/config/                   # Antigravity (Gemini) Global Configuration
-├── skills/ami-*/SKILL.md           # Declarative Skills (17 directories)
-├── agents/ami-*.md                 # Autonomous Subagents (8 profiles)
+├── skills/ami-*/SKILL.md           # Declarative Skills (23 directories)
+├── agents/ami-*.md                 # Autonomous Subagents (9 profiles)
 └── rules/ami-rules.md              # Declarative Operational Rules
 ```
 
@@ -196,34 +198,36 @@ Todas las capacidades incluidas emplean de forma estricta el prefijo de espacio 
 |---|---|---|
 | Agente | **ami-data-scientist** | Agente maestro de la Suite de Datos y SQL. Orquesta análisis exploratorio, optimización de consultas en base de datos y dashboards ejecutivos. |
 | Agente | **ami-doc-architect** | Agente maestro de documentación que orquesta en paralelo la creación de wikis, investigación de contexto externo y extracción de lecciones. |
-| Agente | **ami-expert-council** | Convoca una mesa redonda de subagentes especializados para debatir, analizar y refinar una idea o decisión arquitectónica desde múltiples perspectives. |
-| Agente | **ami-next-step-assistant** | Guía de proyecto automatizada que evalúa la salud del repositorio y recomienda el siguiente paso crítico en pruebas, deuda o calidad. |
+| Agente | **ami-expert-council** | Convoca una mesa redonda de subagentes especializados para debatir, analizar y refinar una idea o decisión arquitectónica desde múltiples perspectivas. |
 | Agente | **ami-pr-publisher** | Agente maestro que ejecuta revisiones integrales, redacción de resúmenes ejecutivos y verificación de conflictos antes de publicar un Pull Request. |
 | Agente | **ami-pr-reviewer** | Orquestador maestro que evalúa Pull Requests activos desplegando subagentes paralelos y descubrimiento automático de herramientas locales. |
 | Agente | **ami-push-assistant** | Orquestador pre-push que ejecuta auditorías de calidad, escaneo de fugas de secretos y coherencia estructural antes de enviar código al remoto. |
 | Agente | **ami-release-manager** | Orquestador central del ciclo de lanzamientos que calcula versiones semánticas, redacta changelogs bilingües y publica el release oficial en GitHub. |
 | Agente | **ami-repo-auditor** | Agente maestro de auditoría que evalúa concurrentemente deuda técnica, higiene de librerías y vulnerabilidades en todo el código base. |
-| Skill | **ami-plan-commits** | Analiza el árbol de trabajo actual, audita seguridad/secretos, planifica Conventional Commits/amend/squash y ejecuta las transacciones en Git. |
-| Skill | **ami-research-context** | Investiga documentación externa actualizada en tiempo real y guarda hallazgos en referencias para evitar la obsolrescencia de contexto. |
-| Skill | **ami-build-dashboard** | Construye dashboards web interactivos y visualizaciones profesionales en Python a partir de conjuntos de datos y KPIs. |
-| Skill | **ami-profile-data** | Realiza análisis exploratorio de datos (EDA), cuantifica distribuciones nulas, detecta anomalías y audita validez metodológica. |
-| Skill | **ami-validate-data** | Valida la consistencia estructural entre los cambios aplicados en el código y las definiciones del backend (esquemas y consultas BD). |
+| Agente | **ami-tech-lead** | Agente maestro de planificación y arquitectura. Evalúa la salud del repositorio, planifica nuevas características y guía decisiones técnicas. |
 | Skill | **ami-analyze-dependencies** | Audita las librerías del proyecto para identificar paquetes sin uso, versiones obsoletas, vulnerabilidades o dependencias fantasma. |
-| Skill | **ami-manage-docs** | Gestor integral de documentación. Detecta automáticamente si debe crear documentos desde cero o sincronizar wikis existentes con el historial de Git. |
-| Skill | **ami-extract-learnings** | Analiza las modificaciones recientes en el código para documentar decisiones arquitectónicas, lecciones y antipatrones descubiertos en la sesión. |
-| Skill | **ami-debug-issue** | Ejecuta un protocolo de depuración científica basado en evidencias, aislando causas raíz sin conjeturas y escribiendo pruebas automáticas. |
 | Skill | **ami-analyze-pr-comments** | Procesa observaciones de revisión de código dejadas por compañeros de equipo en PRs activos, estructurando tareas pendientes y borradores de respuesta. |
+| Skill | **ami-architect-project** | Construye de forma interactiva la arquitectura base de un nuevo proyecto, stack tecnológico, árbol de directorios y un README inicial bilingüe. |
+| Skill | **ami-audit-quality** | Audita los archivos modificados verificando legibilidad, diseño modular, principios DRY, seguridad y buenas prácticas del framework. |
+| Skill | **ami-build-dashboard** | Construye dashboards web interactivos y visualizaciones profesionales en Python a partir de conjuntos de datos y KPIs. |
+| Skill | **ami-create-tests** | Se ejecuta automáticamente cuando se incorpora código nuevo sin pruebas unitarias. Crea tests enfocados en proteger las nuevas funciones. |
+| Skill | **ami-debug-issue** | Ejecuta un protocolo de depuración científica basado en evidencias, aislando causas raíz sin conjeturas y escribiendo pruebas automáticas. |
+| Skill | **ami-design-test-strategy** | Se ejecuta antes de programar tests. Diseña estrategias generales de QA, piramidación de pruebas, políticas de mocking y puertas de calidad en CI. |
 | Skill | **ami-detect-pr-conflicts** | Se ejecuta antes de revisar o abrir un PR. Identifica colisiones en historiales de Git y posibles conflictos de merge entre ramas paralelas. |
+| Skill | **ami-draft-release** | Se ejecuta antes de generar lanzamientos. Inspecciona commits para redactar notas de release bilingües categorizadas por mejoras y correcciones. |
+| Skill | **ami-extract-learnings** | Analiza las modificaciones recientes en el código para documentar decisiones arquitectónicas, lecciones y antipatrones descubiertos en la sesión. |
+| Skill | **ami-guide-next-step** | Escanea la salud multidimensional del proyecto priorizando deuda técnica, calidad y pruebas, y recomienda el siguiente paso óptimo. |
+| Skill | **ami-manage-docs** | Gestor integral de documentación. Detecta automáticamente si debe crear documentos desde cero o sincronizar wikis existentes con el historial de Git. |
+| Skill | **ami-optimize-sql** | Redacta y optimiza SQL multinivel (PostgreSQL, BigQuery, Snowflake, etc.), elimina anti-patrones y recomienda índices eficaces. |
+| Skill | **ami-plan-commits** | Analiza el árbol de trabajo actual, audita seguridad/secretos, planifica Conventional Commits/amend/squash y ejecuta las transacciones en Git. |
+| Skill | **ami-plan-feature** | Formula planes integrales de implementación para nuevas características, investigando el contexto y coordinando la ejecución. |
+| Skill | **ami-profile-data** | Realiza análisis exploratorio de datos (EDA), cuantifica distribuciones nulas, detecta anomalías y audita validez metodológica. |
+| Skill | **ami-research-context** | Investiga documentación externa actualizada en tiempo real y guarda hallazgos en referencias para evitar la obsolescencia de contexto. |
 | Skill | **ami-review-peer-pr** | Asiste en la revisión voluntaria de Pull Requests de otros desarrolladores, estructurando observaciones arquitectónicas y de lógica por nivel de criticidad. |
 | Skill | **ami-review-self-pr** | Actúa como un exigente Ingeniero Senior revisando tu propio código antes de publicarlo, proponiendo y aplicando proactivamente correcciones locales. |
-| Skill | **ami-project-architect** | Construye de forma interactiva la arquitectura base de un nuevo proyecto, stack tecnológico, árbol de directorios y un README inicial bilingüe. |
-| Skill | **ami-audit-quality** | Audita los archivos modificados verificando legibilidad, diseño modular, principios DRY, seguridad y buenas prácticas del framework. |
-| Skill | **ami-draft-release** | Se ejecuta antes de generar lanzamientos. Inspecciona commits para redactar notas de release bilingües categorizadas por mejoras y correcciones. |
-| Skill | **ami-tag-release** | Se ejecuta antes de subir versiones. Analiza el historial de Git para calcular con precisión matemática la siguiente etiqueta semántica o Release Candidate. |
-| Skill | **ami-optimize-sql** | Redacta y optimiza SQL multinivel (PostgreSQL, BigQuery, Snowflake, etc.), elimina anti-patrones y recomienda índices eficaces. |
 | Skill | **ami-scan-tech-debt** | Escanea el repositorio buscando deuda técnica, módulos obsoletos, lógica duplicada, código muerto y marcadores pendientes (TODOs/FIXMEs). |
-| Skill | **ami-create-tests** | Se ejecuta automáticamente cuando se incorpora código nuevo sin pruebas unitarias. Crea tests enfocados en proteger las nuevas funciones. |
-| Skill | **ami-design-test-strategy** | Se ejecuta antes de programar tests. Diseña estrategias generales de QA, piramidación de pruebas, políticas de mocking y puertas de calidad en CI. |
+| Skill | **ami-tag-release** | Se ejecuta antes de subir versiones. Analiza el historial de Git para calcular con precisión matemática la siguiente etiqueta semántica o Release Candidate. |
+| Skill | **ami-validate-data** | Valida la consistencia estructural entre los cambios aplicados en el código y las definiciones del backend (esquemas y consultas BD). |
 
 ### 6. Instalación y Uso
 El método oficial y recomendado para integrar **Amiga IA** es mediante la instalación del paquete global de NPM:
@@ -251,14 +255,14 @@ Al ejecutar `amiga-ia-setup`, el asistente estructura de forma segura las siguie
 
 ```text
 ~/.claude/                          # Configuración Global de Claude Code
-├── skills/ami-*/SKILL.md           # Skills Declarativas (17 directorios)
-├── agents/ami-*.md                 # Subagentes Autónomos (8 perfiles)
+├── skills/ami-*/SKILL.md           # Skills Declarativas (23 directorios)
+├── agents/ami-*.md                 # Subagentes Autónomos (9 perfiles)
 ├── settings.json                   # Hooks Fusionados (PreToolUse, PostToolUse)
 └── settings.json.amiga-backup      # Respaldo intacto del archivo original de usuario
 
 ~/.gemini/config/                   # Configuración Global de Antigravity (Gemini)
-├── skills/ami-*/SKILL.md           # Skills Declarativas (17 directorios)
-├── agents/ami-*.md                 # Subagentes Autónomos (8 perfiles)
+├── skills/ami-*/SKILL.md           # Skills Declarativas (23 directorios)
+├── agents/ami-*.md                 # Subagentes Autónomos (9 perfiles)
 └── rules/ami-rules.md              # Reglas Operativas Declarativas
 ```
 

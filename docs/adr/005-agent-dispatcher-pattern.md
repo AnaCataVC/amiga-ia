@@ -1,4 +1,4 @@
-# ADR 003: Agent Dispatcher Pattern & Noun/Verb Naming Convention
+# ADR 005: Agent Dispatcher Pattern & Noun/Verb Naming Convention
 
 ## Status
 Accepted

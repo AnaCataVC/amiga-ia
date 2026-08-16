@@ -1,28 +1,33 @@
 > **Created:** 2026-06-25
-> **Last Updated:** 2026-08-04
+> **Last Updated:** 2026-08-16
 
 # Architecture & Distribution: Amiga IA
 
-This document defines the official architecture and distribution model for **Amiga IA**, covering both supported AI platforms (Antigravity / Gemini and Claude Code).
+This document outlines the architectural evolution and distribution model for **Amiga IA**, covering both supported AI platforms (Antigravity / Gemini and Claude Code).
 
 > [!NOTE]
-> **Architectural Decision (ADR-001):** Native plugin manifests (`plugin.json` / `.claude-plugin/plugin.json`) have been deprecated in favor of **Unified NPM Distribution (`npx @anacatavc/amiga-ia-setup`)**. See [ADR-001](../adr/001-unified-npm-distribution.md) for full details.
+> **Architectural Decision (ADR-001):** Native plugin manifests (`plugin.json` / `.claude-plugin/plugin.json`) have been deprecated in favor of **Unified NPM Distribution (`amiga-ia-setup`)**. See [ADR-001](../adr/001-unified-npm-distribution.md) for full details.
 
 ---
 
-## 1. Overview
+## 1. Unified Distribution Model (Active Standard)
 
-Amiga IA is distributed exclusively as an NPM package featuring an interactive setup wizard and diagnostic suite:
+Amiga IA is distributed as a global NPM package featuring an automated setup wizard and diagnostic suite:
 
-| Method | Mechanism | Target Environments |
+| Distribution Method | Mechanism | Target Environments |
 |---|---|---|
-| **NPM Package + CLI Wizard** | `npm install -g @anacatavc/amiga-ia` followed by `amiga-ia-setup` physically copies skills, agents, and hooks into standard assistant configuration directories. | Claude Code (`~/.claude/`) and Antigravity (`~/.gemini/config/`). |
+| **NPM Package + CLI Wizard** | `npm install -g @anacatavc/amiga-ia` followed by `amiga-ia-setup` physically copies skills, agents, and rules into standard configuration directories. | Claude Code (`~/.claude/`) and Antigravity (`~/.gemini/config/`). |
 
-The underlying Markdown files (`SKILL.md`, agent definitions) are loaded dynamically by each platform using **XML Lazy Loading (`universal_adapter.js`)**.
+The underlying Markdown files (`SKILL.md`, agent definitions) are loaded dynamically by each platform using **XML Lazy Loading (`universal_adapter.js`)**. For dedicated subsystem guides, see:
+- [Universal Adapter Specification](universal-adapter.md)
+- [Multi-Engine Hooks Architecture](hooks-multi-engine.md)
+- [CLI Setup Wizard & Diagnostics](cli-setup-wizard.md)
 
 ---
 
-## 2. Antigravity (Gemini) Plugin Structure
+## 2. Legacy Platform Manifests (Deprecated per ADR-001)
+
+*This section is preserved for historical context regarding early manifest-based installations prior to v2.8.0 / v3.0.0.*
 
 When installed as a native plugin, the expected location is:
 
