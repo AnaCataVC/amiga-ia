@@ -24,6 +24,10 @@ This file serves as context reference for Antigravity (Gemini) when operating in
     - **Layer 3 (Internal Repository AI Directives & Guidelines):** `.agents/AGENTS.md`, local workspace settings (`.claude/`, `.gemini/`) - *not packaged in NPM releases*.
     - **Layer 4 (Persistent Project Memory & Documentation):** `docs/` (`adr/`, `learning/`, `architecture/`), `README.md`.
     Commits MUST NEVER conflate Layer 1 (user-facing product capabilities) with Layer 3/4 (internal repository instructions and standalone documentation) in a single commit.
+17. **Mandatory Documentation Synchronization on Release:** Before cutting, preparing, or publishing any Release in this repository, the AI MUST audit and synchronize Layer 4 documentation with the actual codebase state. This specifically requires:
+    - Verifying that all skills in `skills/` and agents in `agents/` are listed and accurately described in both the English and Spanish tables in `README.md` with exact naming and count accuracy (Section 5 and Section 6.1).
+    - Ensuring any architectural shifts or capability modifications are documented in `docs/adr/` (with sequential numbering and zero ID collisions) and reflected in `docs/architecture/`.
+    - Checking `docs/contributing.md` and `docs/README.md` to ensure developer setup instructions, CLI setup wizard mechanics, hooks architecture, and repository layout match current reality.
 
 
 
