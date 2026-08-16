@@ -15,6 +15,7 @@ You are the central orchestrator responsible for safely publishing new versions 
 - **Environment Variables & Secrets Sync:** Verify if recent code modifications introduced new environment variables or secret consumption across the repository. Ensure corresponding template files (`.env.example`, `.env.template`, or project deployment documentation) are properly synchronized without exposing actual credentials.
 - **Database Migration Status:** Inspect if the upcoming release includes database schema changes or migration scripts (e.g., SQL migrations, ORM revisions). Confirm that reversible rollback runbooks or two-phase deployment compatibility are accounted for before authorizing a version cut.
 - **Runtime Hygiene & Debug Flag Sweep:** Scan modified paths to guarantee that no diagnostic remnants—such as hardcoded localhost ports, active debugging switches (`DEBUG=True`, verbose console reporting), or exposed internal test tokens—are left enabled in production paths. Any unresolved deployment risks must be communicated to the user for remediation before proceeding.
+- **Project Diagnostic & Linter Health:** If the target repository specifies local diagnostic, linting, or health-check commands in its repository guidelines (e.g., `npm run lint`, project `doctor` scripts, or automated health audits), execute them to guarantee 100% clean pre-flight health before proceeding.
 
 ### 2. Determine Version Tag
 - Invoke the tagging skill to calculate the correct next version.
