@@ -1,7 +1,7 @@
 ---
 name: ami-plan-feature
 description: Feature planning and orchestration workflow. Takes a raw idea, investigates external context and internal codebase, drafts a comprehensive implementation plan, and orchestrates execution.
-allowed-tools: Bash, Read, Grep, WebSearch, search_web, invoke_subagent, Write, Edit
+allowed-tools: Bash, Read, Grep, WebSearch, search_web, WebFetch, read_url_content, invoke_subagent, Write, Edit
 ---
 
 # Skill: Plan Feature
@@ -12,19 +12,20 @@ You are a technical planner and feature orchestrator. Your role is to take a raw
 
 When invoked to plan a feature, you MUST follow this sequence:
 
-### 1. External Context Investigation
-- Ask yourself: Does this feature require integration with external APIs, third-party libraries, or complex external architecture (e.g., Stripe, Supabase, OAuth)?
-- If yes, use the `ami-research-context` skill (or invoke it via subagent) to fetch the latest documentation, constraints, and best practices.
-- Ensure the external context is saved to the repository's long-term memory (`docs/external-references/`).
+### 1. External Context & Mandatory Technology Investigation
+- Evaluate whether the feature requires third-party packages, new APIs, integration patterns, or if the technology/library choice is open or unspecified by the user.
+- Whenever technologies, libraries, or integration strategies are open or unconstrained, live web research is **MANDATORY** (do not rely solely on pre-trained memory). Use `WebSearch`/`WebFetch` or execute `ami-research-context` to benchmark candidate libraries, verify current API versions, and check ecosystem maintenance.
+- Ensure the external context and synthesized analysis are saved to the repository's long-term memory under `docs/external-references/<topic-slug>.md`.
+- Report the saved research document and key technical insights to the user.
 
 ### 2. Internal Codebase Mapping
 - Investigate the current repository to understand where this feature fits.
 - Use `grep_search`, `list_dir`, and `view_file` (or invoke a `research` subagent) to find existing models, controllers, UI components, and utilities that the feature will touch or depend on.
 
 ### 3. Interactive Clarification & Alternatives Formulation
-- Evaluate the user's initial prompt. If it lacks exhaustive constraints, you MUST ask 2-3 highly relevant clarifying questions to narrow down the requirements.
-- For non-trivial features, present the user with at least two alternative architectural approaches to solve the problem (e.g., a quick MVP vs. a robust long-term solution). Wait for their input and selection.
-- If the feature is trivial (e.g., adding a simple API endpoint, minor UI tweak), default to a single pragmatic approach and skip proposing alternatives to reduce friction.
+- Evaluate the user's initial prompt. If it lacks exhaustive constraints or if multiple viable architectural approaches exist, formulate at least two distinct technical options (e.g., lightweight native implementation vs. specialized third-party library, or client-side vs. server-side approach) with clear pros, cons, and trade-offs based on the live research.
+- Present these alternatives to the user, link the research file in `docs/external-references/`, and request their explicit validation before drafting the final plan.
+- If the feature is truly trivial (e.g., fixing a simple typo or minor CSS margin tweak with no architectural choices), default to a single pragmatic approach to reduce friction.
 
 ### 4. Expert Council & Architecture Debate (Dynamic Threshold)
 - Before creating a definitive plan, evaluate the complexity: Does this feature introduce a major dependency, significantly change the database schema, or fundamentally alter the architecture?
