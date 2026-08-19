@@ -196,11 +196,11 @@ describe('Amiga IA setup.js doctor update detection tests', () => {
 
 describe('Amiga IA setup.js installNodeHooks universal tests', () => {
 
-  test('should install universal Node.js hook scripts and configure matchers for both Claude Code and Antigravity', () => {
-    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'amiga-universal-test-'));
+  test('should install universal Node.js hook scripts and configure relative paths for Antigravity', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'amiga-universal-gemini-test-'));
     const testSettingsPath = path.join(tmpDir, 'hooks.json');
 
-    const result = installNodeHooksFunc(fs, path, __dirname, tmpDir, testSettingsPath);
+    const result = installNodeHooksFunc(fs, path, __dirname, tmpDir, testSettingsPath, { targetEnv: 'antigravity' });
 
     assert.strictEqual(result, true);
     assert.strictEqual(fs.existsSync(path.join(tmpDir, 'hooks', 'ami-pre-tool-use.js')), true);
@@ -208,7 +208,27 @@ describe('Amiga IA setup.js installNodeHooks universal tests', () => {
 
     const updatedData = JSON.parse(fs.readFileSync(testSettingsPath, 'utf8'));
     assert.strictEqual(updatedData.hooks.PreToolUse[0].matcher, 'Bash|PowerShell|run_command');
+    assert.strictEqual(updatedData.hooks.PreToolUse[0].hooks[0].command, 'node ./hooks/ami-pre-tool-use.js');
     assert.strictEqual(updatedData.hooks.PostToolUse[0].matcher, 'Edit|Write|write_to_file|replace_file_content|multi_replace_file_content');
+    assert.strictEqual(updatedData.hooks.PostToolUse[0].hooks[0].command, 'node ./hooks/ami-post-tool-use.js');
+
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  test('should install universal Node.js hook scripts and configure absolute paths for Claude Code', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'amiga-universal-claude-test-'));
+    const testSettingsPath = path.join(tmpDir, 'settings.json');
+
+    const result = installNodeHooksFunc(fs, path, __dirname, tmpDir, testSettingsPath, { targetEnv: 'claude' });
+
+    assert.strictEqual(result, true);
+    assert.strictEqual(fs.existsSync(path.join(tmpDir, 'hooks', 'ami-pre-tool-use.js')), true);
+    assert.strictEqual(fs.existsSync(path.join(tmpDir, 'hooks', 'ami-post-tool-use.js')), true);
+
+    const updatedData = JSON.parse(fs.readFileSync(testSettingsPath, 'utf8'));
+    assert.strictEqual(updatedData.hooks.PreToolUse[0].matcher, 'Bash|PowerShell|run_command');
+    assert.ok(updatedData.hooks.PreToolUse[0].hooks[0].command.includes('ami-pre-tool-use.js'));
+    assert.ok(!updatedData.hooks.PreToolUse[0].hooks[0].command.startsWith('node ./hooks/'));
 
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });

@@ -199,7 +199,11 @@ function installNodeHooks(targetDir, settingsPath, options = {}) {
   }
   console.log(`✅ Hook scripts copied to ${hooksDir}`);
 
-  const nodeCmd = (script) => `node "${path.join(hooksDir, script).replace(/\\/g, '/')}"`;
+  const isAntigravity = options.targetEnv === 'antigravity' || (options.targetEnv !== 'claude' && (path.basename(settingsPath) === 'hooks.json' || (typeof geminiDir !== 'undefined' && targetDir === geminiDir)));
+  const nodeCmd = (script) => isAntigravity
+    ? `node ./hooks/${script}`
+    : `node "${path.join(hooksDir, script).replace(/\\/g, '/')}"`;
+
   const hooksConfig = {
     hooks: {
       PreToolUse: [{ matcher: 'Bash|PowerShell|run_command', hooks: [{ type: 'command', command: nodeCmd('ami-pre-tool-use.js') }] }],
@@ -562,6 +566,45 @@ async function runDoctor() {
     console.log(pc.gray('  ℹ️  Claude Code settings file not found (~/.claude/settings.json).'));
   }
 
+  console.log(pc.blue('\n🔍 Checking Antigravity hooks configuration...'));
+  const geminiHooksPath = path.join(geminiDir, 'hooks.json');
+  if (fs.existsSync(geminiHooksPath)) {
+    try {
+      const geminiHooks = JSON.parse(fs.readFileSync(geminiHooksPath, 'utf8'));
+      if (geminiHooks.hooks && (geminiHooks.hooks.PreToolUse || geminiHooks.hooks.PostToolUse)) {
+        console.log(pc.green('  ✅ Amiga IA hooks detected and ~/.gemini/config/hooks.json is valid JSON.'));
+
+        const hookEvents = Object.values(geminiHooks.hooks).flat();
+        const hookCmds = [];
+        hookEvents.forEach(h => {
+          if (h && h.hooks && Array.isArray(h.hooks)) {
+            h.hooks.forEach(subHook => {
+              if (subHook && subHook.command) hookCmds.push(subHook);
+            });
+          }
+        });
+
+        const hasMalformedQuotedPath = hookCmds.some(h => typeof h.command === 'string' && /node\s+["'].*["']/.test(h.command));
+        const usesRelativePaths = hookCmds.some(h => typeof h.command === 'string' && h.command.includes('./hooks/'));
+
+        if (hasMalformedQuotedPath) {
+          console.log(pc.yellow('  ⚠️  WARNING: Antigravity hooks contain quoted script paths that may cause path resolution errors on Windows.'));
+          console.log(pc.gray("     Recommendation: Run 'amiga-ia-setup' to refresh Antigravity hooks with clean relative paths."));
+          issueCount++;
+        } else if (usesRelativePaths) {
+          console.log(pc.green('  ✅ Clean relative hook paths configured for Antigravity.'));
+        }
+      } else {
+        console.log(pc.gray('  ℹ️  No Amiga IA hooks found in ~/.gemini/config/hooks.json (Optional feature).'));
+      }
+    } catch (e) {
+      console.log(pc.red('❌ ERROR: ~/.gemini/config/hooks.json contains invalid JSON syntax.'));
+      issueCount++;
+    }
+  } else {
+    console.log(pc.gray('  ℹ️  Antigravity hooks file not found (~/.gemini/config/hooks.json).'));
+  }
+
   // 5. Legacy Directory Check
   const sessionsDir = path.resolve('docs', 'coding-sessions');
   if (fs.existsSync(sessionsDir)) {
@@ -647,7 +690,7 @@ async function runInstall() {
         } else if (engine === 'p') {
           merged = installPwshHooks(claudeDir, claudeSettings);
         } else {
-          merged = installNodeHooks(claudeDir, claudeSettings);
+          merged = installNodeHooks(claudeDir, claudeSettings, { targetEnv: 'claude' });
         }
 
         if (merged) {
@@ -685,7 +728,7 @@ async function runInstall() {
       if (installHooks) {
         if (!fs.existsSync(geminiDir)) fs.mkdirSync(geminiDir, { recursive: true });
         const geminiSettings = path.join(geminiDir, 'hooks.json');
-        const merged = installNodeHooks(geminiDir, geminiSettings);
+        const merged = installNodeHooks(geminiDir, geminiSettings, { targetEnv: 'antigravity' });
         if (merged) {
           console.log(pc.green('✅ Universal Node.js Hooks successfully configured at ~/.gemini/config/hooks.json.'));
         } else {
