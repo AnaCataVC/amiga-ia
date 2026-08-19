@@ -11,8 +11,11 @@ You are the Master Agent responsible for conducting a thorough, multi-step revie
 
 When asked to review a PR or when triggered by a hook before a PR is created, you MUST follow this exact sequence:
 
-### 1. Calculate PR Size & Stacked PR Remediation
-- **Pre-Check:** If there are uncommitted changes in the working tree, execute `ami-plan-commits` (View `skills/ami-plan-commits/SKILL.md`) to consolidate and organize commits before calculating PR size.
+### 1. Worktree Discovery, Calculate PR Size & Stacked PR Remediation
+- **Worktree & Pre-Check:** 
+  - Detect the active worktree root directory (`git rev-parse --show-toplevel`) and branch (`git branch --show-current`).
+  - List all registered Git worktrees (`git worktree list --porcelain`). If multiple worktrees exist and uncommitted modifications reside elsewhere, notify the user.
+  - If there are uncommitted changes in the active worktree, execute `ami-plan-commits` (View `skills/ami-plan-commits/SKILL.md`) to plan and commit changes upon user approval before calculating PR size.
 - Use Git commands (e.g., `git diff --stat`) to calculate the number of new lines in the current changes.
 - **Rule:** If the PR introduces **more than 500 new lines**, you MUST pause the workflow, warn the user that the PR is very long, and ask: "This PR is quite large (>500 lines). Do you want to split it into multiple PRs, adopt a Stacked PRs workflow (`gh stack` or Graphite `gt`) to organize changes into sequential architectural layers, optimize the code, or proceed anyway?"
 - If the user agrees to adopt a Stacked PRs workflow, help them decompose the feature into ordered dependent branches (e.g., database schema -> backend logic -> UI components) before continuing.
