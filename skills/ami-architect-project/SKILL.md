@@ -19,10 +19,12 @@ You MUST maintain constant interaction with the user. Do not make multiple major
 - Make sure you understand the user's intent, and if not you can ask questions for clarification. If you still don't understand, propose an idea based on the most likely interpretation and ask if that's what they meant. **Never** assume you understand and proceed without confirmation.
 
 ### 2. Phase 2: Mandatory Research, Persistence & Architectural Alternatives
-- **Mandatory Live Technology Research:** When the user does not specify a complete and fixed technology stack, you MUST NOT guess, assume, or rely solely on pre-trained memory. Actively conduct live web searches and fetch up-to-date documentation to benchmark modern, actively maintained libraries, frameworks, and tools.
-- **Persist Research in Long-Term Memory:** Save the synthesized comparative analysis to `docs/external-references/<stack-slug>.md` following the standard format (including `Created:` and `Last Updated:` metadata headers, criteria evaluated, and direct source links).
-- **Offer Clear Alternatives (No Unilateral Decisions):** Never pick a single stack unilaterally. Present at least two distinct, viable architectural options (e.g., lightweight/minimalist vs. enterprise/scalable) with clear pros, cons, maintenance status, and trade-offs discovered during your research.
-- **Report & Validate with User:** Share the path to the saved research document in `docs/external-references/`, summarize the key findings in the chat, and explicitly ask the user to select or refine their preferred stack. Do NOT proceed to folder structure design until the user explicitly validates and approves a final stack.
+- **🚨 HARD RESEARCH & PERSISTENCE PRECONDITION:**
+  Live research and persistence are **MANDATORY** for every greenfield project. Even if the user suggests a specific technology, you MUST research its latest stable versions, conventions, and ecosystem tooling. You are strictly forbidden from relying purely on pre-trained memory.
+  1. **Execute Research:** Read and follow `skills/ami-research-context/SKILL.md`. Use live web search tools (`search_web`, `WebSearch`, `read_url_content`, `WebFetch`) to benchmark candidate libraries, verify current versions, and check maintenance status.
+  2. **Physical Persistence in Long-Term Memory:** You MUST physically create and write the synthesized analysis to `docs/external-references/<stack-slug>.md` using `write_to_file` before discussing folder structures or scaffolding. Include `> **Created:** YYYY-MM-DD` metadata headers, criteria evaluated, and direct source links.
+  3. **Offer Clear Alternatives (No Unilateral Decisions):** Unless the stack was 100% constrained by the user, present at least two distinct, viable architectural options (e.g., lightweight/minimalist vs. scalable/enterprise) with clear pros, cons, and trade-offs.
+  4. **Report & Validate with User:** Share the markdown link to the saved file (`docs/external-references/<stack-slug>.md`), summarize key takeaways, and explicitly ask the user to validate their preferred stack. **DO NOT proceed to Phase 3 (Folder Structure Design) until the research file is saved on disk and the user explicitly validates the stack.**
 
 ### 3. Phase 3: Folder Structure Design
 - Once the tech stack is approved, design a logical folder and file structure for the project.
