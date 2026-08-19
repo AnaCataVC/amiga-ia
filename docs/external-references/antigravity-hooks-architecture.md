@@ -23,13 +23,14 @@ Instead of relying on shell-specific piping (`cat` or Bash commands), Antigravit
 
 ```json
 {
-  "safety-gate": {
+  "hooks": {
     "PreToolUse": [
       {
         "matcher": "run_command|Edit|Write",
         "hooks": [
           {
-            "command": "node ./scripts/ami-pre-tool-use.js"
+            "type": "command",
+            "command": "node ./hooks/ami-pre-tool-use.js"
           }
         ]
       }
@@ -41,7 +42,8 @@ Instead of relying on shell-specific piping (`cat` or Bash commands), Antigravit
 ### Key Differences from Legacy Bash Hooks:
 1. **Runtime Agnostic:** By specifying an executable runtime like `node` or `python` in the `"command"` parameter, the hook executes robustly across Windows, macOS, and Linux without triggering Bash security blocks.
 2. **Lifecycle Events:** Supported trigger events include `PreInvocation`, `PostInvocation`, `PreToolUse`, `PostToolUse`, and `Stop`.
-3. **Structured Communication:** Just as in universal Node.js hooks for other platforms, the event payload is streamed as JSON via standard input (`stdin`), and execution proceeds or terminates based on standard exit codes and standard error (`stderr`) feedback to the agent model.
+3. **Structured Communication:** The event payload is streamed as JSON via standard input (`stdin`) using protojson/camelCase (`toolCall.args.CommandLine`, `toolCall.args.TargetFile`). The hook script must output valid JSON to standard output (`stdout`), such as `{"decision":"allow"}` or `{}`. Non-blocking advisories and warnings are sent to `stderr`.
+4. **Working Directory & Relative Paths:** Antigravity sets the hook execution working directory to the directory containing `hooks.json` (`~/.gemini/config/`). Hook commands MUST use clean relative paths without surrounding quotes (e.g. `node ./hooks/ami-pre-tool-use.js`). On Windows, wrapping absolute paths in quotes causes `path.isAbsolute` checks to fail, leading the runner to mistakenly treat the path as relative and prepend the cwd, resulting in `MODULE_NOT_FOUND`.
 
 ---
 
@@ -78,8 +80,8 @@ To prevent **Time-of-Check to Time-of-Use (TOCTOU)** security vulnerabilities, A
 
 ## 4. Architectural Takeaways for Amiga IA
 
-1. **Universal Node.js Hooks Work for Antigravity Plugins:** The cross-platform Node.js hook scripts (`ami-pre-tool-use.js` and `ami-post-tool-use.js`) developed for Claude Code can be leveraged for Antigravity by mapping them cleanly in a plugin's `hooks.json` using the `"command": "node ..."` syntax.
-2. **Setup Wizard Upgrade Path:** Currently, `bin/setup.js` skips installing hooks for Antigravity with the informational message that Bash hooks are ignored in secure mode. In future milestones, the installer can be enhanced to install universal Node.js hooks for Antigravity plugins as well.
+1. **Universal Node.js Hooks for Antigravity:** The cross-platform Node.js hook scripts (`ami-pre-tool-use.js` and `ami-post-tool-use.js`) are configured in `~/.gemini/config/hooks.json` using relative paths (`node ./hooks/...`).
+2. **Setup Wizard Integration:** `bin/setup.js` automatically installs and configures relative Node.js hooks for Antigravity and absolute Node.js hooks for Claude Code, and `setup --doctor` verifies hook integrity across both environments.
 3. **Declarative Rules Remain Primary Guardrails:** In addition to execution hooks, Antigravity heavily leverages persistent Markdown rules (in `.agents/rules/` and global configurations) to deterministically steer agent behaviors and workflow adherence.
 
 ---

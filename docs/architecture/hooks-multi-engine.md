@@ -38,16 +38,34 @@ Hooks in Amiga IA act as non-blocking guardrails that provide real-time advisory
 
 ---
 
-## 4. Parameter Normalization between Claude Code and Antigravity
+## 4. Parameter Normalization & Protocol Compliance
 
-Claude Code and Antigravity pass tool call payloads with different schema conventions (e.g., `command` vs `CommandLine`, `target_file` vs `TargetFile`).
+### 4.1 Input Payload Normalization
+Claude Code and Antigravity pass tool call payloads with different schema conventions:
+- **Claude Code:** Nested under `tool_input` (e.g., `tool_input.command`, `tool_input.file_path`).
+- **Antigravity:** Protojson camelCase nested under `toolCall.args` (e.g., `toolCall.args.CommandLine`, `toolCall.args.TargetFile`, `toolCall.args.AbsolutePath`).
 
 The universal scripts normalize arguments dynamically:
 
 ```javascript
-// Example parameter resolution in ami-pre-tool-use.js
-const commandLine = payload.command || payload.CommandLine || payload.command_line || "";
-const targetFile = payload.file_path || payload.TargetFile || payload.target_file || "";
+// Universal argument extraction across AI assistants
+const toolArgs = input.toolCall?.args || input.tool_input || input;
+const command = toolArgs.command || toolArgs.CommandLine || toolArgs.command_line || '';
+const filePath = toolArgs.file_path || toolArgs.TargetFile || toolArgs.AbsolutePath || toolArgs.target_file || toolArgs.path || '';
 ```
 
-This guarantees seamless compatibility regardless of which AI assistant triggers the hook.
+### 4.2 Standard Output Protocol (Stdout JSON)
+Antigravity's lifecycle runner parses standard output as structured JSON. To maintain non-blocking compliance across all assistants:
+1. **Advisory Reminders & Warnings:** Printed exclusively to standard error (`console.error(...)` / `stderr`).
+2. **Standard Output:** Always emits valid JSON (`{"decision":"allow"}`) in a `finally` block before exiting with code `0`:
+
+```javascript
+finally {
+  console.log(JSON.stringify({ decision: 'allow' }));
+  process.exit(0);
+}
+```
+
+### 4.3 Working Directory (CWD) & Relative Path Standards
+- **Antigravity (`~/.gemini/config/hooks.json`):** Antigravity sets the hook execution working directory directly to the folder containing `hooks.json` (`~/.gemini/config/`). Therefore, hooks are configured with clean relative paths (`node ./hooks/ami-pre-tool-use.js`). This avoids Windows drive letter quote escaping bugs and keeps the installation machine-portable.
+- **Claude Code (`~/.claude/settings.json`):** Claude Code executes hooks from the user's active project workspace directory, requiring resolved absolute paths.
