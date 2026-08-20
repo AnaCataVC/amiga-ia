@@ -34,3 +34,14 @@ Establish a strict **Single Source of Truth (DRY)** separation between Skills an
 
 ### Pre-Tag Commit Rule for Releases
 - All hardcoded version updates (in source code, UI config dialogs, app manifests, and documentation) MUST be committed (`chore: bump version to <tag> [skip ci]`) and pushed **BEFORE** creating the Git Tag or GitHub release. This ensures the release Tag points directly to the commit containing all updated version references across the codebase.
+
+---
+
+## 3. Negative Constraint Placement & LLM Prior Overrides
+
+### Problem
+When instruction templates involve strong LLM pre-training biases (such as automatically inserting country flags `🇬🇧`/`🇪🇸` for bilingual release notes), placing negative constraints as footnotes or duplicating them across orchestrator agents causes either rule omission or DRY architectural divergence.
+
+### Pattern
+- **Single Source of Truth:** Formatting constraints must reside exclusively within the Skill (`skills/*/SKILL.md`), keeping Orchestrator Agents (`agents/*.md`) thin.
+- **Prominent Negative Constraints:** To overcome strong LLM priors, place the constraint at the very top of the execution step using high-contrast positive (`✅`) and negative (`❌`) examples.
