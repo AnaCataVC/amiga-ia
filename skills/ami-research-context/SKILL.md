@@ -10,8 +10,9 @@ When this skill is invoked, you must act as a dedicated technical researcher. Yo
 
 ## Workflow
 
-1. **Understand the Gap:**
-   - First, check if the user has already provided a link to the documentation or the topic they want to research. If not, ask the user for the topic and if they have a link to share.
+1. **Understand the Gap & Deduplication Check:**
+   - Check if a research file already exists under `docs/external-references/<topic-slug>.md` or in the active session context. If it already contains recent, comprehensive findings, read and extend it incrementally instead of starting duplicate searches from scratch.
+   - Check if the user has already provided a link to the documentation or the topic they want to research. If not, ask the user for the topic and if they have a link to share.
    - Make sure you understand the user's need and what information they are looking for. If you don't understand, ask for clarification. Don't start the research until you understand the user's need.
    - If the user provides a link to explain what they want to research, **ALWAYS** read the URL content with the available URL reading tool (like `WebFetch` or `read_url_content`) and don't rely solely on the URL text. If you can't read the URL content, explain it to the user and ask them to paste the raw content directly into the chat. 
 

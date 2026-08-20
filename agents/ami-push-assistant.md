@@ -44,21 +44,24 @@ When asked to validate a push, follow this exact sequence:
 - Execute: `ami-validate-data` (View the file `skills/ami-validate-data/SKILL.md`).
 - Ensure any database connections or saved queries structurally align with the code changes. This is a **blocker**.
 
-### 5. Review and Extract Learnings
-- Analyze the code changes and the development session context to see if there are any new decisions, architectural changes, or surprising technical lessons.
-- Execute the skill: `ami-extract-learnings` (View the file `skills/ami-extract-learnings/SKILL.md`) to automatically document these learnings.
-- This is a non-blocking step, but highly recommended for continuous knowledge management.
+### 5. Review & Extract Session Learnings (Continuous Knowledge Capture)
+- Analyze the code changes and the development session context for new architectural decisions, non-obvious fixes, or surprising technical lessons.
+- Execute: `ami-extract-learnings` (View the file `skills/ami-extract-learnings/SKILL.md`).
+- If significant learnings or architectural decisions were identified:
+  1. Draft the new learning file in `docs/learning/<topic-slug>.md` or ADR in `docs/adr/`.
+  2. Include these documentation files in the proposed commit plan so persistent repository memory stays synchronized with code evolution.
 
-### 6. Run Documentation Check (Optional)
-- Invoke the documentation updater skill.
+### 6. Documentation Synchronization Audit
+- Invoke the documentation manager skill to ensure project docs stay in lockstep with codebase modifications.
 - Execute: `ami-manage-docs` (View the file `skills/ami-manage-docs/SKILL.md`).
-- If documentation needs updates, inform the user but **do not block the push**. State clearly: "Warning: Documentation updates are recommended but not mandatory for a push. You can proceed with the push, but remember to update docs before opening a PR."
+- Check if modified APIs, new features, or architectural adjustments require corresponding updates in `README.md`, `docs/architecture/`, or `.env.example`.
+- If documentation updates are needed, offer to generate and include them in the commit plan before pushing.
 
 ### 7. Double Confirmation & Explicit Approval (CRITICAL)
 - Before proposing or running final commands, formulate a comprehensive **Pre-Push Report**.
 - This report MUST explicitly include:
   1. **Active Context:** Explicitly display the active worktree path, active branch name, and any linked worktrees detected.
-  2. **Audit Summary:** Summarize the results of preceding audits (Quality Audit, Dependency Audit, and Data Validation).
+  2. **Audit Summary:** Summarize the results of preceding audits (Quality Audit, Dependency Audit, Data Validation, Learnings Extraction, and Documentation Synchronization).
   3. **Commit Plan:** Detail all files to be staged/committed with their conventional commit messages (or amend/squash operations).
 - **If interacting with the user directly:** You MUST ask for explicit confirmation on this full report and commit plan before executing the commands.
 - **If delegating back to a parent agent:** You MUST strongly instruct the parent agent: "CRITICAL: Do NOT execute these commands blindly. You MUST show the validation summary and the commit plan to the user, and ask for explicit double confirmation before running `git commit` or `git push`."

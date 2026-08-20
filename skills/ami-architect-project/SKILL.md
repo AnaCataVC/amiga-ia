@@ -13,18 +13,20 @@ You MUST maintain constant interaction with the user. Do not make multiple major
 
 ## Workflow
 
-### 1. Phase 1: Context Gathering (Interactive)
+### 1. Phase 1: Context & Repository Memory Ingestion
 - Start by asking the user about the main objective of the project, the target audience, and if they have any pre-selected technologies in mind.
-- Wait for their response before proceeding.
+- **Repository Memory Ingestion:** If the repository is not completely empty, inspect existing `docs/adr/`, `docs/learning/`, or `docs/architecture/` once to respect existing design decisions. Ingest this context into the active session without repeating scans.
+- Wait for the user's response before proceeding.
 - Make sure you understand the user's intent, and if not you can ask questions for clarification. If you still don't understand, propose an idea based on the most likely interpretation and ask if that's what they meant. **Never** assume you understand and proceed without confirmation.
 
-### 2. Phase 2: Mandatory Research, Persistence & Architectural Alternatives
+### 2. Phase 2: Mandatory Research, Persistence & Architectural Alternatives (Deduplicated)
 - **🚨 HARD RESEARCH & PERSISTENCE PRECONDITION:**
   Live research and persistence are **MANDATORY** for every greenfield project. Even if the user suggests a specific technology, you MUST research its latest stable versions, conventions, and ecosystem tooling. You are strictly forbidden from relying purely on pre-trained memory.
-  1. **Execute Research:** Read and follow `skills/ami-research-context/SKILL.md`. Use live web search tools (`search_web`, `WebSearch`, `read_url_content`, `WebFetch`) to benchmark candidate libraries, verify current versions, and check maintenance status.
-  2. **Physical Persistence in Long-Term Memory:** You MUST physically create and write the synthesized analysis to `docs/external-references/<stack-slug>.md` using `write_to_file` before discussing folder structures or scaffolding. Include `> **Created:** YYYY-MM-DD` metadata headers, criteria evaluated, and direct source links.
-  3. **Offer Clear Alternatives (No Unilateral Decisions):** Unless the stack was 100% constrained by the user, present at least two distinct, viable architectural options (e.g., lightweight/minimalist vs. scalable/enterprise) with clear pros, cons, and trade-offs.
-  4. **Report & Validate with User:** Share the markdown link to the saved file (`docs/external-references/<stack-slug>.md`), summarize key takeaways, and explicitly ask the user to validate their preferred stack. **DO NOT proceed to Phase 3 (Folder Structure Design) until the research file is saved on disk and the user explicitly validates the stack.**
+  1. **Deduplication Check:** Check if `docs/external-references/<stack-slug>.md` already exists and contains recent, comprehensive data. If so, ingest and extend it rather than repeating redundant web queries.
+  2. **Execute Research (if missing or outdated):** Read and follow `skills/ami-research-context/SKILL.md`. Use live web search tools (`search_web`, `WebSearch`, `read_url_content`, `WebFetch`) to benchmark candidate libraries, verify current versions, and check maintenance status.
+  3. **Physical Persistence in Long-Term Memory:** You MUST physically create and write the synthesized analysis to `docs/external-references/<stack-slug>.md` using `write_to_file` before discussing folder structures or scaffolding. Include `> **Created:** YYYY-MM-DD` metadata headers, criteria evaluated, and direct source links.
+  4. **Offer Clear Alternatives (No Unilateral Decisions):** Unless the stack was 100% constrained by the user, present at least two distinct, viable architectural options (e.g., lightweight/minimalist vs. scalable/enterprise) with clear pros, cons, and trade-offs.
+  5. **Report & Validate with User:** Share the markdown link to the saved file (`docs/external-references/<stack-slug>.md`), summarize key takeaways, and explicitly ask the user to validate their preferred stack. **DO NOT proceed to Phase 3 (Folder Structure Design) until the research file is saved on disk and the user explicitly validates the stack.**
 
 ### 3. Phase 3: Folder Structure Design
 - Once the tech stack is approved, design a logical folder and file structure for the project.
