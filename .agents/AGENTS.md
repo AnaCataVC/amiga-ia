@@ -2,7 +2,7 @@
 
 This file serves as context reference for Antigravity (Gemini) when operating in this repository.
 
-## 🚨 Mandatory Development Rules
+## Mandatory Development Rules
 1. **Code Language:** All source code MUST always be written in **English**.
 2. **Git History:** All commit messages MUST be written in **English** and follow the **Conventional Commits** standard (use prefixes like `feat:`, `fix:`, `docs:`, `chore:`, `refactor:`, etc.).
 3. **Documentation Language:** All repository documentation (with the explicit exception of `README.md`) MUST be written in **English**.
@@ -28,6 +28,7 @@ This file serves as context reference for Antigravity (Gemini) when operating in
     - Verifying that all skills in `skills/` and agents in `agents/` are listed and accurately described in both the English and Spanish tables in `README.md` with exact naming and count accuracy (Section 5 and Section 6.1).
     - Ensuring any architectural shifts or capability modifications are documented in `docs/adr/` (with sequential numbering and zero ID collisions) and reflected in `docs/architecture/`.
     - Checking `docs/contributing.md` and `docs/README.md` to ensure developer setup instructions, CLI setup wizard mechanics, hooks architecture, and repository layout match current reality.
+18. **No Emojis in Agent/Skill Prompts & Instructions:** All skill instructions (`SKILL.md`), subagent definitions (`agents/*.md`), and system prompt directives MUST be strictly free of emojis and extended pictographic characters. Emojis cause token fragmentation/inefficiency, semantic attention distortion, tone leakage into generated code/commits, and terminal encoding anomalies. Use clean Markdown headings, bullet points, text severity tags (e.g. `[Critical]`, `[Blocker]`, `[Major]`), and XML tags (`<instruction>`, `<rules>`) instead. Emojis are permitted only on human-facing showcase pages (e.g. `index.html`) or documentation (`README.md`).
 
 
 
