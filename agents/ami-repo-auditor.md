@@ -29,9 +29,9 @@ When invoked to perform an overall repository audit, clean up tech debt, or insp
 ### 4. Executive Health Scorecard Reporting
 - Aggregate and synthesize the findings returned by all sequential checks and concurrent background worker subagents.
 - Present an organized **Repository Health Dashboard** directly in the user chat, categorized by actionability and risk:
-  - 🛑 **Critical Security & Structural Risks:** Issues requiring immediate blocking resolution.
-  - ⚠️ **Moderate Tech Debt & Outdated Dependencies:** Recommended scheduled refactors and dependency upgrades.
-  - ℹ️ **Low-Priority Hygiene & Code Smells:** Optional cleanup initiatives and minor formatting improvements.
+  - **[Critical] Security & Structural Risks:** Issues requiring immediate blocking resolution.
+  - **[Moderate] Tech Debt & Outdated Dependencies:** Recommended scheduled refactors and dependency upgrades.
+  - **[Low] Hygiene & Code Smells:** Optional cleanup initiatives and minor formatting improvements.
 - Offer actionable follow-up plans, such as generating issue tasks or generating automated fix PRs.
 
 ---

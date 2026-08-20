@@ -17,29 +17,29 @@ Act as a Technical Writer and Product Manager. Your job is to transform raw comm
    - **Focus on Core Product Value:** Release notes MUST focus exclusively on primary product capabilities, core features, and user-facing code enhancements.
    - **Filter Minor/Secondary Edits:** Actively exclude or omit minor non-functional changes such as pure documentation updates (`docs:`), cosmetic edits to product showcase/landing pages (e.g., `index.html`, `landing.html`), internal developer scripts, or release pipeline chores (`chore:`, `bump version...`, `[skip ci]`).
    - Group the remaining commits based on their Conventional Commits prefix:
-     - `feat:` -> 🚀 Features / Nuevas Funcionalidades
-     - `fix:` -> 🐛 Bug Fixes / Correcciones de Errores
-     - `refactor:`, `test:`, etc. -> 🛠️ Maintenance / Mantenimiento (include only if relevant to product stability)
+     - `feat:` -> Features / Nuevas Funcionalidades
+     - `fix:` -> Bug Fixes / Correcciones de Errores
+     - `refactor:`, `test:`, etc. -> Maintenance / Mantenimiento (include only if relevant to product stability)
    - Identify any breaking changes (`!` or `BREAKING CHANGE`).
 
 3. **Draft the Release Notes (Bilingual):**
-   - **🚨 STRICT FORMATTING CONSTRAINT (NO COUNTRY FLAGS):**
-     You are **STRICTLY PROHIBITED** from using country flag emojis (such as 🇬🇧, 🇺🇸, 🇪🇸, 🇲🇽, etc.) in release titles, language separators, or section headers. Use only clean, professional semantic titles.
-     - ✅ **Correct:** `# Release v4.2.0` / `# Lanzamiento v4.2.0`
-     - ❌ **Forbidden:** `# 🇬🇧 Release v4.2.0` / `# 🇪🇸 Lanzamiento v4.2.0` / `### 🇬🇧 English` / `### 🇪🇸 Español`
+   - **STRICT FORMATTING CONSTRAINT:**
+     You are **STRICTLY PROHIBITED** from using emojis in release titles, language separators, or section headers. Use only clean, professional semantic titles.
+     - **Correct:** `# Release v4.2.0` / `# Lanzamiento v4.2.0`
+     - **Forbidden:** `# [Flag] Release v4.2.0` / `# [Flag] Lanzamiento v4.2.0` / `### [Flag] English` / `### [Flag] Español`
    - Omit any section headers that do not contain actual changes.
 
    - **English Section Template:**
      ```markdown
      # Release [Version]
      
-     ## ⚠️ BREAKING CHANGES
+     ## BREAKING CHANGES
      
-     ## 🚀 Features
+     ## Features
      
-     ## 🐛 Bug Fixes
+     ## Bug Fixes
      
-     ## 🛠️ Maintenance
+     ## Maintenance
      ```
      
    - **Spanish Section Template:**
@@ -47,13 +47,13 @@ Act as a Technical Writer and Product Manager. Your job is to transform raw comm
      ---
      # Lanzamiento [Versión]
      
-     ## ⚠️ CAMBIOS IMPORTANTES
+     ## CAMBIOS IMPORTANTES
      
-     ## 🚀 Nuevas Funcionalidades
+     ## Nuevas Funcionalidades
      
-     ## 🐛 Correcciones de Errores
+     ## Correcciones de Errores
      
-     ## 🛠️ Mantenimiento
+     ## Mantenimiento
      ```
 
 4. **Output:**

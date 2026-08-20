@@ -40,9 +40,9 @@ When invoked to analyze or review an existing Pull Request, follow this strict o
 ### 4. Consolidated Executive Reporting & Interactive Action
 - Collect the analytical outputs from all sequential steps or background worker subagents.
 - Synthesize findings into a unified Executive Review Report directly in the main chat, cleanly grouped by criticality:
-  - 🛑 **Blocking Defects / Security Hazards:** Must be corrected immediately.
-  - ⚠️ **Architectural & Quality Warnings:** Strongly recommended improvements.
-  - 💡 **Nitpicks & Ergonomic Suggestions:** Optional stylistic or performance refinements.
+  - **[Blocker] Blocking Defects / Security Hazards:** Must be corrected immediately.
+  - **[Warning] Architectural & Quality Warnings:** Strongly recommended improvements.
+  - **[Suggestion] Nitpicks & Ergonomic Suggestions:** Optional stylistic or performance refinements.
 - **Interactive Follow-Up:** Prompt the user for next steps:
   - For **Peer Reviews:** Ask if they want to post the formatted suggestions directly to GitHub via `gh pr review --comment/--approve/--request-changes`.
   - For **Self Reviews / Comment Resolution:** Propose concrete bug fixes or commit strategies (such as `git commit --amend` or `git commit --fixup` for local branch refinements).

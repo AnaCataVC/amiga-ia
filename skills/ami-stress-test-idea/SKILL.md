@@ -48,9 +48,9 @@ You must systematically evaluate the proposal across these five critical dimensi
 2. **Execute the 5-Dimension Attack:**
    - Critically dissect the proposal against the 5 attack vectors.
    - For each vulnerability found, rate its severity:
-     - 🔴 **Critical (Blocker):** Flaw that will inevitably cause data loss, severe security breach, or total outage.
-     - 🟡 **Major (Hardening Required):** Flaw that introduces state corruption, significant performance degradation, or unexpected billing spikes.
-     - 🔵 **Minor (Observability / Edge Case):** Corner case or maintenance debt that should be monitored or documented.
+     - **[Critical / Blocker]:** Flaw that will inevitably cause data loss, severe security breach, or total outage.
+     - **[Major / Hardening Required]:** Flaw that introduces state corruption, significant performance degradation, or unexpected billing spikes.
+     - **[Minor / Observability]:** Corner case or maintenance debt that should be monitored or documented.
 
 3. **Synthesize Mitigations & Hardening Countermeasures:**
    - For every identified weakness, provide a concrete, minimal mitigation (e.g., idempotency keys, circuit breakers, rate limits, atomic transactions).
@@ -64,11 +64,11 @@ You must systematically evaluate the proposal across these five critical dimensi
 
      # Adversarial Stress-Test: <Proposal Name>
 
-     ## 🔴 Critical Failure Modes
+     ## Critical Failure Modes
      ...
-     ## 🟡 Major Vulnerabilities & Trade-offs
+     ## Major Vulnerabilities & Trade-offs
      ...
-     ## 🛡️ Recommended Hardening Mitigations
+     ## Recommended Hardening Mitigations
      ...
      ```
 

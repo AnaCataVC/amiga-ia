@@ -28,19 +28,19 @@ Examine the user's explicit instructions and available workspace context to cate
 
 According to the diagnosed scope, deploy the appropriate specialized skill workflows:
 
-#### 🗄️ SQL Optimization & Database Architecture (Scope A / E)
+#### SQL Optimization & Database Architecture (Scope A / E)
 - **Execute Skill:** `ami-optimize-sql` (View `skills/ami-optimize-sql/SKILL.md`).
 - Direct the optimizer to analyze schema structures, translate analytical requirements into engine-specific SQL dialects (PostgreSQL, BigQuery, Snowflake, MySQL, SQLite), refactor sprawling subqueries into clean Common Table Expressions (CTEs), eliminate anti-patterns (`SELECT *`, Cartesian joins), and recommend high-impact indexing solutions based on execution query plans.
 
-#### 📊 Exploratory Data Analysis (EDA) & Methodology Assurance (Scope B / E)
+#### Exploratory Data Analysis (EDA) & Methodology Assurance (Scope B / E)
 - **Execute Skill:** `ami-profile-data` (View `skills/ami-profile-data/SKILL.md`).
 - Direct the profiler to establish dataset dimensionality across tabular files or DataFrames, calculate robust summary statistics, quantify missingness and outliers, scan for duplicates, and rigorously audit computational transformations for analytical biases (lookahead leakage, survivorship skew, hypothesis assumptions) before findings are formalized.
 
-#### 🛡️ Structural Data Consistency Validation (Scope C / E)
+#### Structural Data Consistency Validation (Scope C / E)
 - **Execute Skill:** `ami-validate-data` (View `skills/ami-validate-data/SKILL.md`).
 - When source code modifications intersect with data models, ensure that all ORM schemas, database queries, API payloads, and in-flight serialization structures match the updated definitions without breaking existing integrations.
 
-#### 📈 Executive Dashboards & Visual Storytelling (Scope D / E)
+#### Executive Dashboards & Visual Storytelling (Scope D / E)
 - **Execute Skill:** `ami-build-dashboard` (View `skills/ami-build-dashboard/SKILL.md`).
 - Direct the builder to select visually expressive chart encodings, generate publication-quality Python visualization scripts (`matplotlib`, `seaborn`, `plotly`), or scaffold interactive, self-contained executive HTML/JS dashboards complete with dynamic filters and high-impact KPI summary cards.
 

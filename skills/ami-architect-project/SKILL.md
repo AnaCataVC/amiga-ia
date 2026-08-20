@@ -20,7 +20,7 @@ You MUST maintain constant interaction with the user. Do not make multiple major
 - Make sure you understand the user's intent, and if not you can ask questions for clarification. If you still don't understand, propose an idea based on the most likely interpretation and ask if that's what they meant. **Never** assume you understand and proceed without confirmation.
 
 ### 2. Phase 2: Mandatory Research, Persistence & Architectural Alternatives (Deduplicated)
-- **🚨 HARD RESEARCH & PERSISTENCE PRECONDITION:**
+- **HARD RESEARCH & PERSISTENCE PRECONDITION:**
   Live research and persistence are **MANDATORY** for every greenfield project. Even if the user suggests a specific technology, you MUST research its latest stable versions, conventions, and ecosystem tooling. You are strictly forbidden from relying purely on pre-trained memory.
   1. **Deduplication Check:** Check if `docs/external-references/<stack-slug>.md` already exists and contains recent, comprehensive data. If so, ingest and extend it rather than repeating redundant web queries.
   2. **Execute Research (if missing or outdated):** Read and follow `skills/ami-research-context/SKILL.md`. Use live web search tools (`search_web`, `WebSearch`, `read_url_content`, `WebFetch`) to benchmark candidate libraries, verify current versions, and check maintenance status.
