@@ -31,15 +31,15 @@ You are the central orchestrator responsible for safely publishing new versions 
   3. Perform a semantic analysis of the commits since the last tag. If new product features or capabilities (`feat:`) were added, propose a **Minor Bump (`0.x.0`)**.
 - Display the recommended tag to the user with its semantic reasoning, and **explicitly wait for user confirmation** before proceeding.
 
-### 3. Update Hardcoded Version Files & Build Artifacts (Dual Search & Pre-Tag Commit)
-- **Check CI/CD Workflow Rules:** Check if an active CI/CD workflow (e.g., under `.github/workflows/`) automatically bumps package manager files (`package.json`, `cargo.toml`, `pyproject.toml`, etc.) upon release publication. If so, DO NOT modify automated package manager files locally; let the pipeline handle them.
+### 3. Update Version Files & Build Artifacts (Dual Search & Atomic Pre-Tag Commit)
+- **Atomic Version Management:** Update package manager files (`package.json`, `cargo.toml`, `pyproject.toml`, etc.) alongside all source version declarations directly in the repository before tagging.
 - **Perform Dual Search Across the Entire Codebase:**
   1. **Literal Version Search:** Search the repository using `grep_search` for the exact string of the previous/current version (e.g., `1.2.0`, `v1.2.0`, `1.2.0-rc.1`).
-  2. **Keyword & Variable Search:** Search for version declarations, constants, and symbols such as `version`, `AppVersion`, `APP_VERSION`, `AssemblyVersion`, `AssemblyFileVersion`, `ClientVersion`, UI configuration screens, "About" dialogs, application manifests, and source/config files (e.g., `.csproj`, `App.config`, `.rc`, `Config.cs`, `version.h`, `constants.ts`, `plugin.json`, `index.html`, `README.md`, etc.).
-- **Apply Version Bump:** Update all identified hardcoded version references to match the new `<Confirm_Tag>` (omitting the `v` prefix where appropriate).
+  2. **Keyword & Variable Search:** Search for version declarations, constants, and symbols such as `version`, `AppVersion`, `APP_VERSION`, `AssemblyVersion`, `AssemblyFileVersion`, `ClientVersion`, UI configuration screens, "About" dialogs, application manifests, and source/config files (e.g., `package.json`, `.csproj`, `App.config`, `.rc`, `Config.cs`, `version.h`, `constants.ts`, `plugin.json`, `index.html`, `README.md`, etc.).
+- **Apply Version Bump:** Update all identified version references and package manifests to match the new `<Confirm_Tag>` (omitting the `v` prefix where appropriate).
 - **MANDATORY PRE-TAG COMMIT & PUSH:**
-  - Create a single commit for these version updates (e.g., `chore: bump version to <Confirm_Tag> [skip ci]`) and push it to the remote repository.
-  - **CRITICAL:** This commit MUST be created and pushed **BEFORE** creating the Git Tag or running `gh release create`, ensuring that the release Tag points to the commit containing all updated version strings across the codebase.
+  - Create a single commit for these version updates (e.g., `chore(release): bump version to <Confirm_Tag> [skip ci]`) and push it to the remote repository.
+  - **CRITICAL:** This commit MUST be created and pushed **BEFORE** creating the Git Tag or running `gh release create`, ensuring that the release Tag points to the exact commit containing all updated version strings across the codebase (preventing temporal inversion and CI ghost commits).
 - **Re-building Compiled Artifacts:** If the application requires a build step or generates binary assets (e.g., `.exe`, `.apk`, installers, or web bundles via `build.bat`, `npm run build`, etc.), execute the compilation/build script **AFTER** the version bump is updated in source files.
 
 ### 4. Draft Release Notes
