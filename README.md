@@ -127,13 +127,13 @@ When running `amiga-ia-setup`, the CLI wizard populates your home directory with
 
 ```text
 ~/.claude/                          # Claude Code Global Configuration
-├── skills/ami-*/SKILL.md           # Declarative Skills (23 directories)
+├── skills/ami-*/SKILL.md           # Declarative Skills (24 directories)
 ├── agents/ami-*.md                 # Autonomous Subagents (9 profiles)
 ├── settings.json                   # Merged Hooks (PreToolUse, PostToolUse)
 └── settings.json.amiga-backup      # Safe original settings backup
 
 ~/.gemini/config/                   # Antigravity (Gemini) Global Configuration
-├── skills/ami-*/SKILL.md           # Declarative Skills (23 directories)
+├── skills/ami-*/SKILL.md           # Declarative Skills (24 directories)
 ├── agents/ami-*.md                 # Autonomous Subagents (9 profiles)
 └── rules/ami-rules.md              # Declarative Operational Rules
 ```
@@ -257,13 +257,13 @@ Al ejecutar `amiga-ia-setup`, el asistente estructura de forma segura las siguie
 
 ```text
 ~/.claude/                          # Configuración Global de Claude Code
-├── skills/ami-*/SKILL.md           # Skills Declarativas (23 directorios)
+├── skills/ami-*/SKILL.md           # Skills Declarativas (24 directorios)
 ├── agents/ami-*.md                 # Subagentes Autónomos (9 perfiles)
 ├── settings.json                   # Hooks Fusionados (PreToolUse, PostToolUse)
 └── settings.json.amiga-backup      # Respaldo intacto del archivo original de usuario
 
 ~/.gemini/config/                   # Configuración Global de Antigravity (Gemini)
-├── skills/ami-*/SKILL.md           # Skills Declarativas (23 directorios)
+├── skills/ami-*/SKILL.md           # Skills Declarativas (24 directorios)
 ├── agents/ami-*.md                 # Subagentes Autónomos (9 perfiles)
 └── rules/ami-rules.md              # Reglas Operativas Declarativas
 ```
