@@ -13,10 +13,12 @@ When asked to document a repository, create project wikis, or synchronize docume
 
 ### 1. Evaluate Scope & Documentation State
 - Determine the objective:
-  - **New Project Architecture:** Structuring initial documentation from scratch (README, ADRs, CONTRIBUTING guidelines, folders).
-  - **Synchronization & Refresh:** Aligning existing documentation with recent architectural updates or refactored code modules.
+  - **New Project Architecture:** Structuring initial documentation from scratch (README, ADRs, CONTRIBUTING guidelines, AI steering rules, folders).
+  - **Synchronization & Refresh:** Aligning existing documentation and AI guidance files with recent architectural updates or refactored code modules.
   - **Knowledge Extraction:** Documenting architectural decisions, technical surprises, and design trade-offs from recent development sessions.
-- Scan the existing documentation hierarchy (e.g., `README.md`, `docs/`, wikis) to identify missing files or outdated content.
+- Scan the complete documentation hierarchy across both human-facing and AI-facing documentation:
+  - **Human-Facing Documentation:** `README.md`, `docs/`, `wiki/`, `CONTRIBUTING.md`, API references.
+  - **AI Steering & Guidance Documents:** `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, `.agents/`, `.github/copilot-instructions.md`, or workspace assistant configurations. Identify missing rules, outdated tool catalogs, or obsolete architectural conventions.
 
 ### 2. Deep Context Research (Context Window Isolation)
 - Before modifying or writing documentation, perform historical and technical background checks without cluttering the main interactive user chat:
