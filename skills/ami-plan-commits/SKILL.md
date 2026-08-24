@@ -9,11 +9,16 @@ allowed-tools: Bash, Read
 When this skill is invoked (either by the user or by an agent), you must act as a Git Commit Strategist. Your goal is to group related changes into meaningful commits and propose a clear and concise commit plan to the user for approval. Clear commits makes it easier to find regressions and revert unwanted changes.
 
 ## Workflow
-1. **Analyze Worktree Context & Local History:** 
+1. **Analyze Worktree Context, Working Tree State & Local History:** 
    - Check the current active worktree path (`git rev-parse --show-toplevel`) and checked-out branch (`git branch --show-current`).
    - List all registered worktrees (`git worktree list --porcelain`). If multiple worktrees exist, inspect if pending uncommitted changes are present in other linked worktrees (`git -C "<path>" status --short`). If changes reside in a different worktree, clearly inform the user and request confirmation on which worktree to target.
-   - Use git commands (`git status`, `git diff`, `git diff --cached`, and `git log @{u}..HEAD` or `git log -n 5 --oneline`) in the target worktree to identify all uncommitted modified/new/deleted files and review recently created unpushed commits.
-2. **Security & Data Leak Audit:** Actively scan all diffs and uncommitted files to ensure no sensitive data (API keys, secrets, passwords, tokens, PII) is being committed. If any leak is detected, **ABORT** the process immediately, alert the user, and refuse to stage or commit the sensitive files.
+   - Run `git status --porcelain` to identify all uncommitted modified, added, untracked, and deleted files.
+   - **Binary & Asset Recognition Rule:** Never assume `0 insertions, 0 deletions` means "no changes". Inspect all status flags (`M`, `??`, `A`, `D`) for binary assets (`.ico`, `.png`, `.icns`, fonts, media, datasets) as well as text files.
+   - Use `git diff`, `git diff --cached`, and `git log @{u}..HEAD` (or `git log -n 5 --oneline`) to inspect textual diffs and unpushed local commits.
+2. **Security, Data Leak & Untracked File Vetting:**
+   - Scan all untracked files (`??`) against common exclusion patterns: build directories (`dist/`, `build/`, `out/`), package/virtual environments (`node_modules/`, `.venv/`), temporary caches, logs, and sensitive environment files (`.env`, `.env.local`).
+   - If any untracked build artifacts or private files are detected, **ABORT** commit staging, alert the user, and propose updating `.gitignore` first.
+   - Actively scan all diffs and uncommitted files to ensure no sensitive credentials (API keys, tokens, passwords, private certificates, PII) are staged. If any leak is detected, abort immediately and refuse to commit.
 3. **Structure & Group Changes:** Carefully analyze the modifications and group them into logical, distinct commits. Avoid lumping unrelated changes into a single monolithic commit. Consider the following grouping strategies:
    - **Amend Strategy:** If the current uncommitted work consists of minor fixes, typos, or additions to the most recent **unpushed** commit, propose amending it (`git commit --amend`) instead of adding a redundant commit.
    - **Squash / Consolidation Strategy:** If there are multiple unpushed local commits that represent iterative WIP or fragmented fixes for a single feature/component, propose squashing them into a single clean commit.

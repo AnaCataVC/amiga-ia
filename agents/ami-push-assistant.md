@@ -12,16 +12,29 @@ You are an assistant triggered before a `git push` operation. Your goal is to en
 When asked to validate a push, follow this exact sequence:
 > **Execution Strategy & Capability Discovery Note:** For complex or multi-module commits, check if the repository defines specialized local subagents (e.g., custom security or database checkers). If discovered, you may delegate Steps 2, 3, and 4 to parallel subagents using the **Skill-Injection pattern** (passing the respective `SKILL.md` content into the worker prompt) to combine local repository context with standard validation methodologies. For standard pushes, execute sequentially in the current context.
 
-### 1. Check Uncommitted Changes, Worktree Context & Local Commit Consolidation
+### 1. Working Tree Inspection & State Classification (Mandatory Phase 1)
 - **Worktree & Active Context Discovery:**
   - Determine the current active worktree root directory (`git rev-parse --show-toplevel`) and active branch (`git branch --show-current`).
   - List all registered Git worktrees using `git worktree list --porcelain` to check if isolated subagents (e.g. Antigravity branched workspaces or Claude Code worktrees) or parallel branches are active.
   - If multiple worktrees exist, inspect if pending uncommitted changes reside in a different worktree than the current working directory. If changes are in another linked worktree, explicitly alert the user and ask whether to switch context to that worktree or proceed with the current one.
-- Run `git fetch` to ensure the local tracking state matches the remote.
-- Run `git status` to see if there are any uncommitted changes in the active worktree.
-- Check if the local branch is behind the remote tracking branch. If it is behind, warn the user and advise them to run `git pull --rebase` first, then halt.
-- If there are modified, added, or deleted files that have not been committed in the active worktree (or if unpushed local commits need review/squashing), execute the commit planning skill:
-  - Execute: `ami-plan-commits` (View `skills/ami-plan-commits/SKILL.md`).
+- **Inspect Working Tree First (`git status --porcelain`):**
+  - Run `git status --porcelain` as the very first operation to detect all uncommitted changes (tracked `M`/`A`/`D`/`R` and untracked `??`).
+  - **Binary & Asset Detection Rule:** Never evaluate changes using line diffs (`git diff`, `git diff --stat`) or line counts alone. Binary files (e.g., `.png`, `.ico`, `.icns`, fonts, media, datasets) show `0 insertions, 0 deletions` in standard line diffs but represent critical repository modifications. Parse the porcelain status output directly.
+  - **Untracked Vetting & `.gitignore` Gate:** If untracked files (`??`) are detected, verify that they are not build artifacts, dependency directories (`node_modules/`, `.venv/`, `dist/`), cache folders, or sensitive secrets (`.env`). If untracked garbage or secrets are found, alert the user and propose adding them to `.gitignore` before structuring commits.
+- **State Classification & Action Gate:**
+  - **State A: Working Tree Dirty (`git status --porcelain` is non-empty):**
+    - You MUST halt any premature push evaluation. Do NOT evaluate remote sync or report repository synchronization while uncommitted changes exist.
+    - Initiate commit planning: invoke `ami-plan-commits` (View `skills/ami-plan-commits/SKILL.md`) to analyze diffs and structure a proposed commit plan. Note: Staging and committing will take place in Step 8 only after all quality audits and user confirmation are completed.
+  - **State B: Working Tree Clean (`git status --porcelain` is empty):**
+    - Run `git fetch` to synchronize remote tracking state.
+    - Check if an upstream tracking branch is configured (`git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>$null`):
+      - **If upstream is configured:** Compare local branch against upstream tracking branch (`git status -sb` or `git rev-list --left-right --count HEAD...@{u}`):
+        - If local is **Behind** remote: Warn the user and advise running `git pull --rebase` first, then halt.
+        - If local is **Ahead** of remote: Proceed to Step 2 (Quality & Consistency Audits) on the unpushed commits (`git log @{u}..HEAD`).
+        - If local is **Clean & In Sync** (0 ahead, 0 behind, 0 uncommitted): Report that the repository is completely up to date with remote and no commit or push is required. Halt gracefully.
+      - **If NO upstream is configured (new branch):** Compare local branch against the repository default base branch (`origin/main` or `origin/master` using `git log origin/main..HEAD`):
+        - If new unpushed commits exist relative to the base branch, proceed to Step 2 to audit them, and prepare `git push -u origin <branch>` for the final step.
+        - If no commits exist relative to base and working tree is clean, report that the branch is empty and in sync with base. Halt gracefully.
 
 ### 2. Run Quality Audit & Clean Remediation (Amend / Fixup)
 - Invoke the code quality skill by reading and following its instructions.
