@@ -9,7 +9,11 @@ module.exports = {
           },
           colors: {
               brand: {
-                  purple: '#8E24AA',
+                  pink: '#F43F86',
+                  fuchsia: '#D946EF',
+                  purple: '#A855F7',
+                  indigo: '#4F46E5',
+                  blue: '#3B82F6',
                   orange: '#D97757'
               }
           },

@@ -1,7 +1,7 @@
 # Amiga IA - Autonomous Agentic Suite & Declarative Skills
 
 <p align="center">
-  <img src="./favicon.png" alt="Amiga IA Logo" width="120" />
+  <img src="./icon.png" alt="Amiga IA Logo" width="120" />
 </p>
 
 > 🎶 Repo name inspo: [Amiga Mia - Los Prisioneros](https://www.youtube.com/watch?v=qPHaLk4-_Ew)

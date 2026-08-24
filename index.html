@@ -7,7 +7,7 @@
     <title>AmigaIA</title>
     <meta name="description"
         content="The ultimate guardrails and workflows for AI coding assistants. 100% cross-compatible with Claude Code and Antigravity.">
-    <link rel="icon" type="image/png" href="./favicon.png" />
+    <link rel="icon" type="image/png" href="./icon.png" />
     <link rel="stylesheet" href="./styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,15 +18,14 @@
 
     <!-- Decorative background elements -->
     <div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
-        <div class="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-brand-purple/20 blur-[100px] opacity-40 mix-blend-screen"></div>
-        <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-brand-orange/20 blur-[100px] opacity-40 mix-blend-screen"></div>
+        <div class="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-brand-pink/20 blur-[100px] opacity-40 mix-blend-screen"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-brand-indigo/20 blur-[100px] opacity-40 mix-blend-screen"></div>
     </div>
 
     <!-- Header -->
     <header class="w-full max-w-6xl mx-auto px-6 py-8 flex justify-between items-center z-10 animate-fade-in">
         <div class="flex items-center gap-3">
-            <img src="./favicon.png" alt="Ami Logo" class="w-10 h-10 opacity-90" />
-            <span class="font-semibold text-xl tracking-wide text-white">Amiga<span class="font-bold text-transparent bg-clip-text bg-gradient-to-r from-brand-purple to-brand-orange">IA</span></span>
+            <span class="font-semibold text-xl tracking-wide text-white">Amiga<span class="font-bold text-transparent bg-clip-text bg-gradient-to-r from-brand-pink via-brand-purple to-brand-indigo">IA</span></span>
         </div>
         
         <!-- Language Toggle Pill -->
@@ -50,14 +49,19 @@
     <main class="flex-grow flex flex-col items-center px-6 w-full max-w-6xl mx-auto py-12 sm:py-24">
 
         <!-- Hero Section -->
-        <div class="text-center max-w-4xl mb-24 animate-fade-in-up">
+        <div class="text-center max-w-4xl mb-24 animate-fade-in-up flex flex-col items-center">
+            <!-- Project Hero Logo -->
+            <div class="mb-6 flex justify-center">
+                <img src="./icon.png" alt="Amiga IA Logo" class="w-24 h-24 sm:w-28 sm:h-28 object-contain drop-shadow-[0_0_30px_rgba(244,63,134,0.4)] hover:scale-105 transition-transform duration-300" />
+            </div>
+
             <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-8">
                 <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
                 <span class="text-sm text-slate-300" data-i18n-en="v4.3.1 Available Now" data-i18n-es="v4.3.1 Disponible Ahora">v4.3.1 Available Now</span>
             </div>
             
             <h1 class="text-5xl sm:text-6xl md:text-7xl font-extrabold text-white tracking-tight mb-8 leading-[1.2]">
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-purple via-pink-500 to-brand-orange font-extrabold block mb-2 pb-1 sm:pb-3" data-i18n-en="Autonomous Agentic Intelligence" data-i18n-es="Inteligencia Agéntica Autónoma">Autonomous Agentic Intelligence</span>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-pink via-brand-fuchsia via-brand-purple to-brand-indigo font-extrabold block mb-2 pb-1 sm:pb-3" data-i18n-en="Autonomous Agentic Intelligence" data-i18n-es="Inteligencia Agéntica Autónoma">Autonomous Agentic Intelligence</span>
             </h1>
             
             <p class="text-lg sm:text-xl text-slate-400 leading-relaxed mb-10 max-w-3xl mx-auto">
@@ -72,7 +76,7 @@
                     </svg>
                     <span data-i18n-en="Explore Tools" data-i18n-es="Explorar Herramientas">Explore Tools</span>
                 </a>
-                <a href="#quick-start" class="px-8 py-3 rounded-xl bg-gradient-to-r from-brand-purple to-brand-orange text-white font-semibold hover:opacity-90 transition-opacity shadow-lg shadow-brand-purple/20 w-full sm:w-auto flex justify-center items-center gap-2">
+                <a href="#quick-start" class="px-8 py-3 rounded-xl bg-gradient-to-r from-brand-pink via-brand-purple to-brand-indigo text-white font-semibold hover:opacity-90 transition-opacity shadow-lg shadow-brand-purple/20 w-full sm:w-auto flex justify-center items-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                     </svg>
