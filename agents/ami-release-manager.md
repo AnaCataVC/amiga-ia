@@ -31,8 +31,8 @@ You are the central orchestrator responsible for safely publishing new versions 
   3. Perform a semantic analysis of the commits since the last tag. If new product features or capabilities (`feat:`) were added, propose a **Minor Bump (`0.x.0`)**.
 - Display the recommended tag to the user with its semantic reasoning, and **explicitly wait for user confirmation** before proceeding.
 
-### 3. Update Version Files & Build Artifacts (Dual Search & Atomic Pre-Tag Commit)
-- **Atomic Version Management:** Update package manager files (`package.json`, `cargo.toml`, `pyproject.toml`, etc.) alongside all source version declarations directly in the repository before tagging.
+### 3. Update Version Files & Build Artifacts (Dual Search, Atomic Pre-Tag Commit & Fresh Build Gate)
+- **Atomic Version Management:** Update package manager files (`package.json`, `cargo.toml`, `pyproject.toml`, `build.gradle.kts`, `pom.xml`, etc.) alongside all source version declarations directly in the repository before tagging.
 - **Perform Dual Search Across the Entire Codebase:**
   1. **Literal Version Search:** Search the repository using `grep_search` for the exact string of the previous/current version (e.g., `1.2.0`, `v1.2.0`, `1.2.0-rc.1`).
   2. **Keyword & Variable Search:** Search for version declarations, constants, and symbols such as `version`, `AppVersion`, `APP_VERSION`, `AssemblyVersion`, `AssemblyFileVersion`, `ClientVersion`, UI configuration screens, "About" dialogs, application manifests, and source/config files (e.g., `package.json`, `.csproj`, `App.config`, `.rc`, `Config.cs`, `version.h`, `constants.ts`, `plugin.json`, `index.html`, `README.md`, etc.).
@@ -40,7 +40,16 @@ You are the central orchestrator responsible for safely publishing new versions 
 - **MANDATORY PRE-TAG COMMIT & PUSH:**
   - Create a single commit for these version updates (e.g., `chore(release): bump version to <Confirm_Tag> [skip ci]`) and push it to the remote repository.
   - **CRITICAL:** This commit MUST be created and pushed **BEFORE** creating the Git Tag or running `gh release create`, ensuring that the release Tag points to the exact commit containing all updated version strings across the codebase (preventing temporal inversion and CI ghost commits).
-- **Re-building Compiled Artifacts:** If the application requires a build step or generates binary assets (e.g., `.exe`, `.apk`, installers, or web bundles via `build.bat`, `npm run build`, etc.), execute the compilation/build script **AFTER** the version bump is updated in source files.
+- **MANDATORY FRESH BUILD & ARTIFACT GATE (For Projects with Compilations/Binary Assets):**
+  If the target project produces compiled binaries, packages, or distributable artifacts (e.g., `.apk`, `.exe`, `.dmg`, `.zip`, `.jar`, `.tar.gz`, installers, desktop companions, web bundles):
+  1. **Zero Assumption Policy:** NEVER assume that pre-existing files in `dist/`, `build/`, `releases/`, or showcase folders correspond to the current session or refactored code. Pre-existing binaries MUST be treated as stale/invalid.
+  2. **Pre-Build Output Purge:** Clean or remove previous build outputs prior to starting compilation (e.g., `./gradlew clean`, `cargo clean`, `dotnet clean`, or deleting previous files from `dist/` and `releases/`).
+  3. **Record Compilation Epoch:** Record the build start timestamp immediately before initiating the build process.
+  4. **Execute Full Clean Compilation Pipeline:** Run the authoritative compilation and packaging commands for all target platforms declared by the project (e.g., `./gradlew assembleRelease`, `./gradlew distZip`, `cargo build --release`, `npm run build`, `dotnet publish -c Release`).
+  5. **Fail-Hard Verification:** Check command exit status. If any build command fails (non-zero exit code) or missing environment toolchains occur, **HALT THE RELEASE IMMEDIATELY**. Never fallback to stale disk binaries on compilation failure.
+  6. **Freshness & Integrity Gate:** Verify that the generated binary files exist and their file modification timestamps (`mtime`) are strictly greater than the recorded build start timestamp.
+  7. **Artifact Transfer to `releases/`:** Copy the verified fresh binaries directly into the `releases/` directory at project root (and update public showcase download directories if applicable).
+  8. **Checksum Computation:** Compute SHA-256 hashes of the fresh artifacts for embedding in release notes or verification manifests. Attach ONLY verified fresh binaries from `releases/` to the release.
 
 ### 4. Draft Release Notes
 - Once the version bump commit is pushed and artifacts are compiled, invoke the drafting skill.
