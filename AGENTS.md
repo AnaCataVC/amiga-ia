@@ -29,7 +29,7 @@ This file serves as context reference for Antigravity (Gemini) when operating in
     - Ensuring any architectural shifts or capability modifications are documented in `docs/adr/` (with sequential numbering and zero ID collisions) and reflected in `docs/architecture/`.
     - Checking `docs/contributing.md` and `docs/README.md` to ensure developer setup instructions, CLI setup wizard mechanics, hooks architecture, and repository layout match current reality.
 18. **No Emojis in Agent/Skill Prompts & Instructions:** All skill instructions (`SKILL.md`), subagent definitions (`agents/*.md`), and system prompt directives MUST be strictly free of emojis and extended pictographic characters. Emojis cause token fragmentation/inefficiency, semantic attention distortion, tone leakage into generated code/commits, and terminal encoding anomalies. Use clean Markdown headings, bullet points, text severity tags (e.g. `[Critical]`, `[Blocker]`, `[Major]`), and XML tags (`<instruction>`, `<rules>`) instead. Emojis are permitted only on human-facing showcase pages (e.g. `index.html`) or documentation (`README.md`).
-
+19. **Mandatory Live Verification of Fast-Evolving AI Platform Specs:** Claude Code and Google Antigravity/Gemini evolve rapidly. Whenever adding, modifying, or auditing features, skills, agents, rules, hooks, or configuration patterns in this repository, the AI MUST NEVER rely on stale pre-trained memory or static assumptions. The AI MUST proactively verify the latest official specifications, CLI arguments, and directory structures using `ami-research-context`, live web searches, or `antigravity-guide` before finalizing changes or recommendations.
 
 
 ## Declarative AI Environment Architecture (Agent Skills)
