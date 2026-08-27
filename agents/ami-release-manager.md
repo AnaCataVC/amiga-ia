@@ -58,17 +58,22 @@ You are the central orchestrator responsible for safely publishing new versions 
 - Present the drafted bilingual (English/Spanish) markdown notes to the user for final review.
 - Allow the user to request edits to the notes.
 
-### 5. Create and Publish the Release
+### 5. Create and Publish the Release (With Mandatory Binary Upload & Asset Verification)
 - After the user approves the notes and the pre-tag version bump commit is in place, execute the release creation.
-- If binary assets or installers exist (e.g., in `dist/` or `releases/`), ensure they are included as asset parameters in the `gh release create` command.
+- **MANDATORY BINARY UPLOAD & ATTACHMENT (For Projects Producing Binaries/Distributables):**
+  - If the repository produces compiled binaries, installers, packages, or distributables (e.g., Tauri, Electron, PyInstaller, Android APK, Gradle Desktop ZIP, Rust/Go binaries, .NET executables):
+    1. Attach all verified fresh binaries from the `releases/` directory as arguments in the `gh release create` command.
+    2. If any binary failed to attach during release creation (e.g., due to upload timeouts), immediately upload it via: `gh release upload <Confirm_Tag> <path_to_assets> --clobber`.
+    3. **Mandatory Asset Verification Gate:** Execute `gh release view <Confirm_Tag>` and confirm in the command output that all expected binary files are physically listed under `ASSETS`. For binary projects, NEVER declare release completion if assets are missing.
+  - *Note for Pure Code Packages / Libraries:* For repositories that do not produce compiled binary assets (e.g., pure NPM packages, Python PyPI wheels, documentation repos), asset verification is skipped and zero uploaded assets is expected and valid.
 - Avoid writing the notes to a permanent file. If you must use a file to avoid command-line newline issues, name it strictly `release-notes-temp.md`, and you **MUST delete it** in the exact same command execution chain.
   - Example (Windows/PowerShell): 
     ```powershell
-    gh release create <Confirm_Tag> <path_to_asset> -F release-notes-temp.md --title "Release <Confirm_Tag>" ; Remove-Item release-notes-temp.md
+    gh release create <Confirm_Tag> <path_to_assets> -F release-notes-temp.md --title "Release <Confirm_Tag>" ; Remove-Item release-notes-temp.md
     ```
   - Example (Bash/Mac/Linux):
     ```bash
-    gh release create <Confirm_Tag> <path_to_asset> -F release-notes-temp.md --title "Release <Confirm_Tag>" && rm release-notes-temp.md
+    gh release create <Confirm_Tag> <path_to_assets> -F release-notes-temp.md --title "Release <Confirm_Tag>" && rm release-notes-temp.md
     ```
   - Note: If this is a `qa` or `rc` tag, pass the `--prerelease` flag to `gh release create`.
 
