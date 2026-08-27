@@ -181,6 +181,69 @@ function removeAmigaHooks(targetPath) {
   }
 }
 
+function mergeMarkdownBlock(filePath, blockContent, blockId = 'AMIGA_IA_RULES') {
+  try {
+    const startTag = `<!-- ${blockId}_START:DO_NOT_EDIT -->`;
+    const endTag = `<!-- ${blockId}_END -->`;
+    const formattedBlock = `${startTag}\n${blockContent.trim()}\n${endTag}`;
+
+    let originalContent = '';
+    const exists = fs.existsSync(filePath);
+    if (exists) {
+      originalContent = fs.readFileSync(filePath, 'utf8');
+      const backupPath = `${filePath}.amiga-backup`;
+      if (!fs.existsSync(backupPath) && originalContent.trim().length > 0) {
+        fs.writeFileSync(backupPath, originalContent);
+      }
+    }
+
+    const normalizedContent = originalContent.replace(/\r\n/g, '\n');
+    const regex = new RegExp(`<!--\\s*${blockId}_START:DO_NOT_EDIT\\s*-->[\\s\\S]*?<!--\\s*${blockId}_END\\s*-->`, 'g');
+
+    let newContent = '';
+    if (regex.test(normalizedContent)) {
+      newContent = normalizedContent.replace(regex, formattedBlock);
+    } else {
+      newContent = normalizedContent.trim() ? `${normalizedContent.trim()}\n\n${formattedBlock}\n` : `${formattedBlock}\n`;
+    }
+
+    const targetDir = path.dirname(filePath);
+    if (!fs.existsSync(targetDir)) {
+      fs.mkdirSync(targetDir, { recursive: true });
+    }
+
+    const tmpPath = path.join(targetDir, `.${path.basename(filePath)}.amiga-tmp`);
+    fs.writeFileSync(tmpPath, newContent.replace(/\n/g, os.EOL));
+    fs.renameSync(tmpPath, filePath);
+    return true;
+  } catch (e) {
+    console.error(`⚠️ Error updating markdown block in ${filePath}:`, e.message);
+    return false;
+  }
+}
+
+function removeMarkdownBlock(filePath, blockId = 'AMIGA_IA_RULES') {
+  if (!fs.existsSync(filePath)) return false;
+  try {
+    const originalContent = fs.readFileSync(filePath, 'utf8');
+    const normalizedContent = originalContent.replace(/\r\n/g, '\n');
+    const regex = new RegExp(`\\n*<!--\\s*${blockId}_START:DO_NOT_EDIT\\s*-->[\\s\\S]*?<!--\\s*${blockId}_END\\s*-->\\n*`, 'g');
+
+    if (!regex.test(normalizedContent)) return false;
+
+    let newContent = normalizedContent.replace(regex, '\n').trim();
+    if (newContent.length > 0) {
+      newContent += '\n';
+      fs.writeFileSync(filePath, newContent.replace(/\n/g, os.EOL));
+    } else {
+      fs.unlinkSync(filePath);
+    }
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
 function installNodeHooks(targetDir, settingsPath, options = {}) {
   const hooksDir = path.join(targetDir, 'hooks');
   if (!fs.existsSync(hooksDir)) fs.mkdirSync(hooksDir, { recursive: true });
@@ -605,6 +668,26 @@ async function runDoctor() {
     console.log(pc.gray('  ℹ️  Antigravity hooks file not found (~/.gemini/config/hooks.json).'));
   }
 
+  console.log(pc.blue('\n🔍 Checking rules configuration...'));
+  const claudeMdPath = path.join(claudeDir, 'CLAUDE.md');
+  if (fs.existsSync(claudeMdPath)) {
+    const claudeContent = fs.readFileSync(claudeMdPath, 'utf8');
+    if (claudeContent.includes('AMIGA_IA_RULES_START')) {
+      console.log(pc.green('  ✅ Amiga IA behavioral rules block detected in ~/.claude/CLAUDE.md.'));
+    } else {
+      console.log(pc.gray('  ℹ️  No Amiga IA rules block found in ~/.claude/CLAUDE.md (Optional feature).'));
+    }
+  } else {
+    console.log(pc.gray('  ℹ️  ~/.claude/CLAUDE.md not found.'));
+  }
+
+  const geminiRulesDir = path.join(geminiDir, 'rules');
+  if (fs.existsSync(geminiRulesDir) && fs.readdirSync(geminiRulesDir).some(f => f.startsWith('ami-'))) {
+    console.log(pc.green('  ✅ Amiga IA declarative rules detected in ~/.gemini/config/rules/.'));
+  } else {
+    console.log(pc.gray('  ℹ️  No Amiga IA rules found in ~/.gemini/config/rules/ (Optional feature).'));
+  }
+
   // 5. Legacy Directory Check
   const sessionsDir = path.resolve('docs', 'coding-sessions');
   if (fs.existsSync(sessionsDir)) {
@@ -658,6 +741,26 @@ async function runInstall() {
     copyRecursiveSync(sourceAgentsDir, path.join(claudeDir, 'agents'), 'claude');
     saveVersionManifest(claudeDir, currentVersion);
     console.log(pc.green('✅ Skills and Agents directories successfully configured.'));
+
+    const claudeRuleContent = `## 🤖 Amiga IA Universal Directives
+- **Skills & Subagents:** Inspect and proactively invoke \`ami-*\` skills and specialized subagents for planning, coding sessions, git hygiene, documentation, PR reviews, and releases.
+- **Workflow Orchestration:** When handling complex tasks or release lifecycles, delegate strictly to orchestrators (\`ami-push-assistant\`, \`ami-release-manager\`, \`ami-tech-lead\`, \`ami-pr-publisher\`).
+- **Clean Commits:** Follow Conventional Commits in English (\`feat:\`, \`fix:\`, \`chore:\`, \`refactor:\`).`;
+
+    const installClaudeRules = await confirm({ message: 'Install recommended Amiga IA behavioral rules in ~/.claude/CLAUDE.md?', initialValue: true });
+    if (isCancel(installClaudeRules)) process.exit(0);
+    if (installClaudeRules) {
+      if (!fs.existsSync(claudeDir)) fs.mkdirSync(claudeDir, { recursive: true });
+      const claudeMdPath = path.join(claudeDir, 'CLAUDE.md');
+      const merged = mergeMarkdownBlock(claudeMdPath, claudeRuleContent, 'AMIGA_IA_RULES');
+      if (merged) {
+        console.log(pc.green('✅ Amiga IA behavioral rules successfully merged into ~/.claude/CLAUDE.md.'));
+      } else {
+        console.log(pc.yellow('⚠️ Could not update ~/.claude/CLAUDE.md.'));
+      }
+    } else {
+      console.log(pc.gray('⏭️ Rules installation skipped for Claude Code.'));
+    }
 
     if (fs.existsSync(sourceSettingsPath)) {
       console.log('\nClaude Code supports powerful background Hooks (Pre-commit checks, context restoring).');
@@ -714,12 +817,20 @@ async function runInstall() {
 
     cleanOrphanedFiles(sourceSkillsDir, path.join(geminiDir, 'skills'));
     cleanOrphanedFiles(sourceAgentsDir, path.join(geminiDir, 'agents'));
-    cleanOrphanedFiles(sourceRulesDir, path.join(geminiDir, 'rules'));
     copyRecursiveSync(sourceSkillsDir, path.join(geminiDir, 'skills'), 'antigravity');
     copyRecursiveSync(sourceAgentsDir, path.join(geminiDir, 'agents'), 'antigravity');
-    copyRecursiveSync(sourceRulesDir, path.join(geminiDir, 'rules'), 'antigravity');
     saveVersionManifest(geminiDir, currentVersion);
-    console.log(pc.green('✅ Skills, Agents, and Rules directories successfully configured at ~/.gemini/config/'));
+    console.log(pc.green('✅ Skills and Agents directories successfully configured at ~/.gemini/config/'));
+
+    const installAntigravityRules = await confirm({ message: 'Install recommended Amiga IA rules in ~/.gemini/config/rules/?', initialValue: true });
+    if (isCancel(installAntigravityRules)) process.exit(0);
+    if (installAntigravityRules) {
+      cleanOrphanedFiles(sourceRulesDir, path.join(geminiDir, 'rules'));
+      copyRecursiveSync(sourceRulesDir, path.join(geminiDir, 'rules'), 'antigravity');
+      console.log(pc.green('✅ Rules directory successfully configured at ~/.gemini/config/rules/'));
+    } else {
+      console.log(pc.gray('⏭️ Rules installation skipped for Antigravity.'));
+    }
 
     if (fs.existsSync(sourceSettingsPath)) {
       console.log('\nAntigravity supports background Hooks via universal Node.js scripts (Pre-commit reminders, Debug statement checks).');
@@ -759,6 +870,12 @@ async function runUninstall() {
       deleteMatchingFiles(sourceScriptsDir, path.join(claudeDir, 'hooks'));
     }
     console.log(pc.green('✅ Claude Code skills and hook scripts removed.'));
+
+    const claudeMd = path.join(claudeDir, 'CLAUDE.md');
+    const removedClaudeBlock = removeMarkdownBlock(claudeMd, 'AMIGA_IA_RULES');
+    if (removedClaudeBlock) {
+      console.log(pc.green('✅ Removed Amiga IA rules block from ~/.claude/CLAUDE.md.'));
+    }
     
     const removeHooks = await confirm({ message: 'Do you want to remove the Amiga IA Hooks from Claude Code settings?', initialValue: true });
     if (isCancel(removeHooks)) process.exit(0);
