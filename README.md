@@ -68,7 +68,7 @@ All built-in capabilities strictly utilize the **`ami-`** namespace prefix to pr
 | Type | Name | Description |
 |---|---|---|
 | Agent | **ami-data-scientist** | Master orchestrator agent for Data & SQL. Coordinates exploratory dataset profiling, database query optimizations, and executive dashboards. |
-| Agent | **ami-doc-architect** | Master documentation orchestrator that coordinates doc-manager, context research, and session learnings extraction in parallel. |
+| Agent | **ami-doc-architect** | Master documentation and knowledge orchestrator. Coordinates doc-manager, obsolescence audits, context research, and learnings extraction. |
 | Agent | **ami-expert-council** | Spawns a council of specialized subagents tailored to discuss, debate, and refine a user's architectural idea from multiple perspectives. |
 | Agent | **ami-pr-publisher** | Master orchestrator agent that performs a comprehensive review, summary drafting, and conflict audit on Pull Requests before publishing. |
 | Agent | **ami-pr-reviewer** | Master orchestrator agent that evaluates existing Pull Requests using parallel worker subagents and automated capability discovery. |
@@ -88,7 +88,7 @@ All built-in capabilities strictly utilize the **`ami-`** namespace prefix to pr
 | Skill | **ami-draft-release** | Auto-triggered prior to publishing releases. Parses commit histories to draft structured bilingual release notes grouped by semantic type. |
 | Skill | **ami-extract-learnings** | Inspects recent codebase edits to extract architectural decisions, lessons, antipatterns, and surprises into persistent memory. |
 | Skill | **ami-guide-next-step** | Scans multi-dimensional project health, prioritizing tests, tech debt, code quality, and recommending optimal next steps. |
-| Skill | **ami-manage-docs** | Comprehensive documentation manager. Detects whether to architect new docs from scratch or synchronize existing wikis with code diffs. |
+| Skill | **ami-manage-docs** | Comprehensive documentation and knowledge manager. Detects whether to architect new docs, synchronize wikis, or audit and prune obsolete learnings. |
 | Skill | **ami-optimize-sql** | Writes and refactors SQL across major database dialects, eliminates query anti-patterns, and recommends high-impact indexes. |
 | Skill | **ami-plan-commits** | Analyzes the working tree, performs security/leak audits, plans Conventional Commits/amend/squash, and executes staged git actions. |
 | Skill | **ami-plan-feature** | Formulates comprehensive feature implementation plans, investigating codebase context and coordinating execution. |
@@ -198,7 +198,7 @@ Todas las capacidades incluidas emplean de forma estricta el prefijo de espacio 
 | Tipo | Nombre | Descripción |
 |---|---|---|
 | Agente | **ami-data-scientist** | Agente maestro de la Suite de Datos y SQL. Orquesta análisis exploratorio, optimización de consultas en base de datos y dashboards ejecutivos. |
-| Agente | **ami-doc-architect** | Agente maestro de documentación que orquesta en paralelo la creación de wikis, investigación de contexto externo y extracción de lecciones. |
+| Agente | **ami-doc-architect** | Agente maestro de documentación y ciclo de vida del conocimiento. Orquesta en paralelo wikis, auditorías de obsolescencia, investigación y lecciones. |
 | Agente | **ami-expert-council** | Convoca una mesa redonda de subagentes especializados para debatir, analizar y refinar una idea o decisión arquitectónica desde múltiples perspectivas. |
 | Agente | **ami-pr-publisher** | Agente maestro que ejecuta revisiones integrales, redacción de resúmenes ejecutivos y verificación de conflictos antes de publicar un Pull Request. |
 | Agente | **ami-pr-reviewer** | Orquestador maestro que evalúa Pull Requests activos desplegando subagentes paralelos y descubrimiento automático de herramientas locales. |
@@ -218,7 +218,7 @@ Todas las capacidades incluidas emplean de forma estricta el prefijo de espacio 
 | Skill | **ami-draft-release** | Se ejecuta antes de generar lanzamientos. Inspecciona commits para redactar notas de release bilingües categorizadas por mejoras y correcciones. |
 | Skill | **ami-extract-learnings** | Analiza las modificaciones recientes en el código para documentar decisiones arquitectónicas, lecciones y antipatrones descubiertos en la sesión. |
 | Skill | **ami-guide-next-step** | Escanea la salud multidimensional del proyecto priorizando deuda técnica, calidad y pruebas, y recomienda el siguiente paso óptimo. |
-| Skill | **ami-manage-docs** | Gestor integral de documentación. Detecta automáticamente si debe crear documentos desde cero o sincronizar wikis existentes con el historial de Git. |
+| Skill | **ami-manage-docs** | Gestor integral de documentación y conocimiento. Detecta si debe crear documentos, sincronizar wikis con Git o auditar y depurar lecciones obsoletas. |
 | Skill | **ami-optimize-sql** | Redacta y optimiza SQL multinivel (PostgreSQL, BigQuery, Snowflake, etc.), elimina anti-patrones y recomienda índices eficaces. |
 | Skill | **ami-plan-commits** | Analiza el árbol de trabajo actual, audita seguridad/secretos, planifica Conventional Commits/amend/squash y ejecuta las transacciones en Git. |
 | Skill | **ami-plan-feature** | Formula planes integrales de implementación para nuevas características, investigando el contexto y coordinando la ejecución. |
