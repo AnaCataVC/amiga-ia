@@ -55,12 +55,16 @@ You must systematically evaluate the proposal across these five critical dimensi
 3. **Synthesize Mitigations & Hardening Countermeasures:**
    - For every identified weakness, provide a concrete, minimal mitigation (e.g., idempotency keys, circuit breakers, rate limits, atomic transactions).
 
-4. **Persist the Stress-Test Report:**
-   - Write the synthesized report to `docs/external-references/<topic-slug>-stress-test.md` (or output directly to the planning artifact if called within `ami-plan-feature`).
-   - Format:
+4. **Persist the Stress-Test Report (Persistence Gating):**
+   - **Evaluate Longevity & Impact:** Stress-testing is primarily a transient analysis during feature design.
+   - **Default Action (Ephemeral Output):** If the analysis is part of a standard feature plan or temporary exploration, output the report directly into the planning artifact (`implementation_plan.md`) or chat. Do NOT create a standalone documentation file in `docs/external-references/`.
+   - **Persistent File Gate:** ONLY create a persistent file at `docs/external-references/<topic-slug>-stress-test.md` if the review uncovers critical enduring architectural constraints, non-obvious security invariants, or operational tripwires that future maintainers must permanently reference.
+   - Format (when persistent file is warranted):
      ```markdown
      > **Created:** YYYY-MM-DD
      > **Last Updated:** YYYY-MM-DD
+     > **Status:** Active | Transient | Superseded
+     > **Scope:** <Module or Subsystem>
 
      # Adversarial Stress-Test: <Proposal Name>
 
@@ -74,6 +78,7 @@ You must systematically evaluate the proposal across these five critical dimensi
 
 5. **Report to User:**
    - Summarize the top 3-4 vulnerabilities and the concrete steps needed to harden the proposal.
+   - State whether the findings were preserved in a persistent document or delivered in the current planning context.
 
 ---
 **Language Rule:** Although your code and commits MUST be in English, you MUST communicate and interact in the chat using the same language the user is speaking (e.g., Spanish, French, etc.).
