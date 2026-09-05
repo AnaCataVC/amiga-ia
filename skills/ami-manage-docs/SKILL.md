@@ -41,6 +41,7 @@ Analyze the repository state and user request to determine the required operatio
    - Await explicit user approval before drafting or reorganizing files.
 3. **Iterative Generation & Review:**
    - Summarize exact content to be created.
+   - **Zero Flags Invariant (Mandatory):** Under no circumstances should country flag emojis (e.g., US, UK, ES, MX) or flag graphics be used in documentation, `README.md`, wikis, section headers, badges, or language switchers. Always use clean semantic text (`[English](#english) | [Español](#español)`) and unadorned headings (`## English`, `## Español`).
    - Write files upon approval using clean Markdown.
    - Ask user for feedback and iterate until satisfied.
 
@@ -56,7 +57,7 @@ Analyze the repository state and user request to determine the required operatio
    - **CRITICAL:** Do NOT modify files immediately. Present a clear summary or diff of proposed updates across both human docs and AI guidance files in chat.
    - Request explicit approval from the user.
 3. **Apply & Report:**
-   - Write changes only after approval.
+   - Write changes only after approval, ensuring strict adherence to the **Zero Flags Invariant**.
    - Report updated files, or state if no documentation changes were needed.
    - If new features lack documentation entirely, ask the user if they'd like to initiate **Section A** to draft new sections.
 

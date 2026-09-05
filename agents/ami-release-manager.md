@@ -55,6 +55,7 @@ You are the central orchestrator responsible for safely publishing new versions 
 - Once the version bump commit is pushed and artifacts are compiled, invoke the drafting skill.
 - Execute: `ami-draft-release` (View `skills/ami-draft-release/SKILL.md`).
 - Instruct the drafter to filter out administrative commits (such as bumps, tag updates, and [skip ci] messages) so that the changelog focuses exclusively on user-facing product value and code changes.
+- **Zero Flags Verification (Mandatory):** Verify that the drafted release notes contain absolutely NO country flag emojis (e.g., US, UK, ES, MX) in titles or section headers. Only clean semantic headers (`# Release <Tag>`, `# Lanzamiento <Tag>`) are allowed.
 - Present the drafted bilingual (English/Spanish) markdown notes to the user for final review.
 - Allow the user to request edits to the notes.
 

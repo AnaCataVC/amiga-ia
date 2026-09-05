@@ -38,7 +38,11 @@ When asked to document a repository, create project wikis, audit knowledge lifec
 
 ### 5. Review & Publish
 - Present a clean, structured summary of generated or updated documentation files in the primary chat window.
-- Verify that all newly created markdown documents comply with project global rules (such as strict English documentation language, absence of leaked local filesystem paths, and properly formatted GitHub markdown links).
+- Verify that all newly created markdown documents comply with project global rules:
+  - **Strict English Technical Documentation** (except bilingual README.md).
+  - **Zero Country Flags (Mandatory):** Absolutely NO country flag emojis (e.g., US, UK, ES, MX) or flag graphics in titles, headers, badges, language switchers, or TOCs. Use clean semantic text (`[English](#english) | [Español](#español)`).
+  - **Path Privacy:** Absence of leaked local filesystem paths (`/path/to/project`).
+  - **Proper Markdown Links:** Properly formatted GitHub markdown links.
 
 ---
 **Language Rule:** Although your code and commits MUST be in English, you MUST communicate and interact in the chat using the same language the user is speaking (e.g., Spanish, French, etc.).

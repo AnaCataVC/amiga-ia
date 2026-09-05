@@ -44,6 +44,7 @@ You MUST maintain constant interaction with the user. Do not make multiple major
   - Technology Stack.
   - Project Structure (the tree approved in Phase 3).
   - (Optional) Getting Started / Setup Instructions.
+  - **Zero Flags Invariant (Mandatory):** Language navigation links and headings must never include country flag emojis (e.g., US, UK, ES, MX). Use clean semantic text (`[English](#english) • [Español](#español)`).
 - Ask the user to review the generated `README.md`.
 - If the user approves, proceed to Phase 6. If not, iterate based on their feedback.
 

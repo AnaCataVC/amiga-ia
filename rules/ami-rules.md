@@ -19,3 +19,7 @@ This rule file provides declarative operational guardrails for Antigravity agent
 
 ## 4. Code Quality & Debug Leak Prevention
 - Remove temporary debug statements (`console.log`, `debugger`, print logs) and unresolved `TODO` / `FIXME` comments before finalizing changes.
+
+## 5. Documentation Standards & Zero Flags Policy
+- Under no circumstances should country flag emojis or flag graphics be used to indicate languages in repository documentation (`README.md`, `docs/`, `wiki/`), release notes, or user interface components.
+- Always use clean semantic text (`English`, `Español`) or ISO codes (`EN`, `ES`).
