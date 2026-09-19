@@ -23,3 +23,9 @@ This rule file provides declarative operational guardrails for Antigravity agent
 ## 5. Documentation Standards & Zero Flags Policy
 - Under no circumstances should country flag emojis or flag graphics be used to indicate languages in repository documentation (`README.md`, `docs/`, `wiki/`), release notes, or user interface components.
 - Always use clean semantic text (`English`, `Español`) or ISO codes (`EN`, `ES`).
+
+## 6. GitHub Actions CI/CD Run Verification
+- Whenever an operation triggers a remote automated workflow (e.g. `git push`, `gh pr create`, `gh release create`):
+- Inspect active workflow runs (`gh run list --limit 3`) and monitor execution until completion (`gh run watch <run-id>`).
+- Verify that the workflow completed with `conclusion: success`.
+- If a workflow run fails, inspect the failure logs (`gh run view <run-id> --log-failed`), diagnose the root cause, and report it to the user. Never declare an operation complete if its downstream CI/CD workflow failed.

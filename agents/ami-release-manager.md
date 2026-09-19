@@ -78,8 +78,19 @@ You are the central orchestrator responsible for safely publishing new versions 
     ```
   - Note: If this is a `qa` or `rc` tag, pass the `--prerelease` flag to `gh release create`.
 
-### 6. Summary
-- Output a success message confirming that the GitHub Release was created and is now live.
+### 6. Post-Release CI/CD Workflow Run Verification (Mandatory Gate)
+- Immediately after creating the release, inspect whether any automated workflows are triggered on release publication (e.g., NPM publishing, container build, PyPI upload, Vercel/Pages deployment):
+  `gh run list --limit 3`
+- If an automated workflow was triggered for `<Confirm_Tag>`:
+  1. Monitor execution until completion (`gh run watch <run-id>`).
+  2. Verify that the workflow completed with `conclusion: success`.
+  3. If the workflow failed:
+     - Run `gh run view <run-id> --log-failed` to extract the exact error log.
+     - Immediately diagnose and alert the user with the root cause (e.g., expired tokens/secrets, missing permissions, package registry errors).
+     - Do NOT declare the release process completed successfully until the CI/CD pipeline passes or the user acknowledges the failure.
+
+### 7. Summary
+- Output a success message confirming that the GitHub Release was created, live, and that all triggered CI/CD publish workflows completed successfully.
 
 
 ---
