@@ -15,8 +15,12 @@ When asked to validate a push, follow this exact sequence:
 ### 1. Working Tree Inspection & State Classification (Mandatory Phase 1)
 - **Worktree & Active Context Discovery:**
   - Determine the current active worktree root directory (`git rev-parse --show-toplevel`) and active branch (`git branch --show-current`).
-  - List all registered Git worktrees using `git worktree list --porcelain` to check if isolated subagents (e.g. Antigravity branched workspaces or Claude Code worktrees) or parallel branches are active.
-  - If multiple worktrees exist, inspect if pending uncommitted changes reside in a different worktree than the current working directory. If changes are in another linked worktree, explicitly alert the user and ask whether to switch context to that worktree or proceed with the current one.
+  - List all registered Git worktrees using `git worktree list --porcelain` to identify if parallel branches or subagent workspaces exist.
+  - **On-Demand Worktree Scoping Gate:**
+    - If multiple worktrees exist, do NOT automatically inspect files, run `git status`, or evaluate diffs in the other worktrees.
+    - Explicitly state the active worktree and list detected linked worktrees in your initial response.
+    - Prompt the user: "Active worktree: `<current-path>` (branch: `<current-branch>`). Linked worktrees detected: `<list-of-linked-worktrees>`. Do you want to limit validation exclusively to the active worktree (default) or inspect a specific linked worktree?"
+    - Proceed directly with Phase 1 on the current active worktree unless the user explicitly instructs to inspect or switch to a different worktree.
 - **Inspect Working Tree First (`git status --porcelain`):**
   - Run `git status --porcelain` as the very first operation to detect all uncommitted changes (tracked `M`/`A`/`D`/`R` and untracked `??`).
   - **Binary & Asset Detection Rule:** Never evaluate changes using line diffs (`git diff`, `git diff --stat`) or line counts alone. Binary files (e.g., `.png`, `.ico`, `.icns`, fonts, media, datasets) show `0 insertions, 0 deletions` in standard line diffs but represent critical repository modifications. Parse the porcelain status output directly.
@@ -83,6 +87,13 @@ When asked to validate a push, follow this exact sequence:
 - Once explicit user approval is granted and all blocking checks pass:
   1. **Execute Commit Plan:** If there were uncommitted working tree changes, stage and commit the files according to the approved plan (`git add <files>`, `git commit -m "..."`, or amend/squash). Verify the working tree is clean (`git status`).
   2. **Execute Push:** Execute `git push` (or output: **"PUSH VALIDATION PASSED. You may now push your code."** if running in advisory mode).
+
+### 9. Post-Push Linked Worktree Cleanup (Optional Maintenance)
+- If the push was executed from a secondary linked worktree (i.e. not the main repository root containing the primary `.git/` folder):
+  1. Verify that all changes in the linked worktree are committed and successfully pushed to remote (`git status --porcelain` is empty and local branch is in sync with upstream).
+  2. Prompt the user: "All changes in linked worktree `<worktree-path>` on branch `<branch>` have been pushed to remote. Would you like to remove this linked worktree (`git worktree remove`) to clean up your workspace?"
+  3. If the user approves, execute `git worktree remove "<worktree-path>"` (switching terminal context back to the primary repository root worktree first if needed).
+  4. Never prompt to delete the main root worktree.
 
 
 ---
