@@ -86,15 +86,16 @@ To eliminate confusion in Antigravity and Claude Code:
    - **Registered Worktrees:** 2 worktrees found (`main`, `feat/auth`)
    ```
 
-2. **Cross-Worktree Warning & Remediation:**
-   If `git status` in the current worktree is clean, but another worktree has dirty changes or unpushed commits:
-   - The agent MUST NOT simply say "Working tree clean, nothing to commit".
-   - The agent MUST explicitly alert the user:
-     > ⚠️ **Notice:** Current worktree (`<current-path>`) is clean. However, uncommitted changes were detected in linked worktree: `<other-path>` (branch: `<other-branch>`).
-   - The agent must ask the user whether they want to switch to the linked worktree or proceed with the current one.
+2. **On-Demand Cross-Worktree Scoping:**
+   - Listing registered worktrees (`git worktree list --porcelain`) provides environmental awareness.
+   - The agent MUST NOT proactively run status audits or inspect files in other linked worktrees without user instruction.
+   - Instead, the agent declares detected worktrees and asks if the user wants to limit validation to the active worktree (default) or inspect a specific linked worktree.
 
 3. **Guaranteed Execution of Approved Commits:**
    Once uncommitted changes in the target worktree are planned and approved by the user, the agent MUST explicitly execute the commit commands (`git add`, `git commit`) before attempting to push or publish.
+
+4. **Post-Push Linked Worktree Pruning (Optional Cleanup):**
+   When pushing from an isolated or ephemeral linked worktree and reaching 100% clean and pushed state, the agent offers to clean up the linked worktree via `git worktree remove "<path>"` (never targeting the main repository root).
 
 ---
 
