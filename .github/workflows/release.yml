@@ -27,5 +27,8 @@ jobs:
       - name: Install dependencies
         run: npm ci || npm install
 
+      - name: Upgrade npm CLI
+        run: npm install -g npm@latest
+
       - name: Publish to NPM
         run: npm publish --provenance --access public
