@@ -82,7 +82,7 @@ describe('Universal Hook Scripts Compatibility Tests', () => {
     assert.strictEqual(result.status, 0);
     assert.strictEqual(result.stderr.includes('Warning: Detected debug statements or TODOs in modified lines of'), true);
     const stdoutJson = JSON.parse(result.stdout.trim());
-    assert.deepStrictEqual(stdoutJson, { decision: 'allow' });
+    assert.deepStrictEqual(stdoutJson, {});
 
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
@@ -109,7 +109,7 @@ describe('Universal Hook Scripts Compatibility Tests', () => {
     assert.strictEqual(result.status, 0);
     assert.strictEqual(result.stderr.includes('Warning: Detected debug statements or TODOs in modified lines of'), true);
     const stdoutJson = JSON.parse(result.stdout.trim());
-    assert.deepStrictEqual(stdoutJson, { decision: 'allow' });
+    assert.deepStrictEqual(stdoutJson, {});
 
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
@@ -122,7 +122,7 @@ describe('Universal Hook Scripts Compatibility Tests', () => {
 
     assert.strictEqual(result.status, 0);
     const stdoutJson = JSON.parse(result.stdout.trim());
-    assert.deepStrictEqual(stdoutJson, { decision: 'allow' });
+    assert.deepStrictEqual(stdoutJson, {});
   });
 
 });

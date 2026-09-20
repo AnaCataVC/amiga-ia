@@ -7,6 +7,7 @@ This rule file provides declarative operational guardrails for Antigravity agent
 ## 1. Commit Hygiene & Formatting
 - Always follow Conventional Commits format (`feat:`, `fix:`, `docs:`, `style:`, `refactor:`, `test:`, `chore:`).
 - Keep commit messages concise, descriptive, and exhaustive if grouping multiple logical changes.
+- NEVER reference internal planning phases, stages, steps, or design options (e.g., 'Phase 1', 'Stage 2', 'Etapa 3', 'Option A', 'Opción B') in commit messages. Describe the functional capability or architectural change from an external domain perspective.
 - Never commit broken code or untested JSX/TSX syntax.
 
 ## 2. Pre-Push Verification
@@ -17,8 +18,9 @@ This rule file provides declarative operational guardrails for Antigravity agent
 - Run `ami-detect-pr-conflicts` before proposing or creating any Pull Request.
 - Ensure branch is rebased cleanly with the primary target branch.
 
-## 4. Code Quality & Debug Leak Prevention
+## 4. Code Quality & Scaffolding Leak Prevention
 - Remove temporary debug statements (`console.log`, `debugger`, print logs) and unresolved `TODO` / `FIXME` comments before finalizing changes.
+- Ensure all docstrings and code comments describe permanent system behavior, contracts, and domain rationale. NEVER include references to internal planning phases, execution stages, or decision options ('Phase 1', 'Stage 2', 'Etapa 3', 'Option A', 'Opción B') in code comments or docstrings. Internal planning details do not need to be exposed in the repository, only not referenced.
 
 ## 5. Documentation Standards & Zero Flags Policy
 - Under no circumstances should country flag emojis or flag graphics be used to indicate languages in repository documentation (`README.md`, `docs/`, `wiki/`), release notes, or user interface components.

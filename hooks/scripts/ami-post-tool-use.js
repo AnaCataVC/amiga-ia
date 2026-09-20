@@ -24,7 +24,7 @@ process.stdin.on('end', () => {
     }
   } catch { /* Don't block on parse errors */ }
   finally {
-    console.log(JSON.stringify({ decision: 'allow' }));
+    console.log(JSON.stringify({}));
     process.exit(0);
   }
 });

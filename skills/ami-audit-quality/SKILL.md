@@ -29,6 +29,7 @@ When invoked, act as a strict Code Reviewer focused on code quality, structural 
 
 3. **Linguistic & Comment Consistency:**
    - **Comments & Docstrings:** Ensure comments explain *why* something is done, not *what*. They must not be excessive (i.e., avoid commenting obvious code). Actively audit docstrings for "bloat" and unnecessary verbosity; they must be concise and token-efficient.
+   - **No Internal Planning Leakage in Comments & Docstrings:** Comments and docstrings MUST NEVER reference internal phases, stages, or plan options (e.g., 'Phase 1', 'Phase 2', 'Stage 3', 'Etapa 1', 'Option A', 'Opción B', 'Step 2 of plan'). Code documentation belongs to the permanent codebase and must document technical rationale, domain invariants, and contracts, without leaking ephemeral planning artifacts that are not part of the repository (and it is not necessary to expose them, only not reference them). Reject and request rephrasing any comment or docstring violating this standard.
    - **Language:** Ensure the comments strictly use consistent language (English).
    - **Variables:** Ensure variables and function names follow a consistent language and naming convention.
 
