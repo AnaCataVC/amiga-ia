@@ -253,9 +253,19 @@ All commit messages **must** be written in **English** and follow the [Conventio
 | `style:` | Formatting, whitespace, etc. |
 | `test:` | Adding or updating tests |
 
-### Code Language
+Commit messages must focus on domain intent and describe *what* and *why* changed from an external system perspective. **Do not reference internal planning phases, stages, steps, or design options** (such as 'Phase 1', 'Stage 2', 'Etapa 3', 'Option A', 'Opción B'):
+- Negative example: `feat(auth): complete phase 1 login`
+- Positive example: `feat(auth): implement session validation and jwt verification`
+- Negative example: `refactor: switch to option b for cache storage`
+- Positive example: `refactor(cache): implement redis distributed store`
+
+### Code Language and Comment Standards
 
 All source code, variable names, function names, comments, and docstrings **must** be written in **English**. No exceptions.
+
+Comments and docstrings must remain timeless and explain technical rationale, contracts, or non-obvious logic:
+- Avoid ephemeral task checklists or development sequencing (e.g., `// Phase 2: Add telemetry metrics`). Document the capability directly (e.g., `// Collect telemetry metrics on cache eviction`).
+- Internal planning details belong to ephemeral scratchpads or conversational plans, not in the permanent codebase.
 
 ### The `ami-` Prefix
 
@@ -272,6 +282,7 @@ Before opening a PR, make sure you have:
 - [ ] Verified `node bin/setup.js doctor` returns 0 errors.
 - [ ] Written commit messages in English using Conventional Commits.
 - [ ] Ensured all code and comments are in English.
+- [ ] Ensured commit messages, docstrings, and code comments are free of internal planning references ('Phase X', 'Stage Y', 'Option Z').
 
 ---
 
