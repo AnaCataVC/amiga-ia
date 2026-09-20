@@ -7,9 +7,10 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    environment: Production
     permissions:
       contents: write
-      packages: write
+      id-token: write
     
     steps:
       - name: Checkout repository
@@ -28,6 +29,4 @@ jobs:
         run: npm ci || npm install
 
       - name: Publish to NPM
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --provenance --access public
