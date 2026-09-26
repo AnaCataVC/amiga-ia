@@ -8,8 +8,7 @@
   },
   "scripts": {
     "build": "node scripts/build-manifests.js",
-    "test": "node --test",
-    "build:css": "tailwindcss -i ./input.css -o ./styles.css --minify"
+    "test": "node --test"
   },
   "repository": {
     "type": "git",
