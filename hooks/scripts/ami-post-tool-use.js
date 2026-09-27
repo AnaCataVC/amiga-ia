@@ -1,4 +1,4 @@
-const { execSync } = require('child_process');
+const { execFileSync } = require('child_process');
 const fs = require('fs');
 
 const chunks = [];
@@ -12,8 +12,11 @@ process.stdin.on('end', () => {
     if (filePath && fs.existsSync(filePath)) {
       let added = '';
       try {
-        execSync(`git ls-files --error-unmatch "${filePath}"`, { stdio: 'pipe' });
-        added = execSync(`git diff -U0 "${filePath}"`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] });
+        // execFileSync passes the path as an argv entry, so a crafted file name cannot reach a shell.
+        execFileSync('git', ['ls-files', '--error-unmatch', '--', filePath], { stdio: 'pipe' });
+        const diff = execFileSync('git', ['diff', '-U0', '--', filePath], { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] });
+        // Only added lines count; removed lines and the "+++" header must not trigger the warning.
+        added = diff.split(/\r?\n/).filter(line => line.startsWith('+') && !line.startsWith('+++')).join('\n');
       } catch {
         added = fs.readFileSync(filePath, 'utf8');
       }

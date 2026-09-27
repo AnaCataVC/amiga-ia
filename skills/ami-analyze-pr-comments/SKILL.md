@@ -2,12 +2,11 @@
 name: ami-analyze-pr-comments
 description: Analyzes code review comments left by other developers on an active Pull Request, extracting pending tasks, suggestions, and offering to reply.
 allowed-tools: Bash, Read, Grep, Edit, Write
-params:
-  pr_number: (Optional) The PR number to review. 
-  pr_link: (Optional) The PR link to review.
 ---
 
 # Skill: PR Comment Analyzer
+
+Optional input: a PR number or PR link. Without one, target the PR of the current branch.
 
 When invoked, act as a **PR Comment Analyst**.
 

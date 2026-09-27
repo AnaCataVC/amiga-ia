@@ -69,7 +69,8 @@ try {
             $null = git ls-files --error-unmatch $file 2>$null
             $added = ""
             if ($LASTEXITCODE -eq 0) {
-                $added = git diff -U0 $file 2>$null | Out-String
+                # Only added lines count; removed lines and the "+++" header must not trigger the warning.
+                $added = git diff -U0 -- $file 2>$null | Where-Object { $_ -match '^\+' -and $_ -notmatch '^\+\+\+' } | Out-String
             } else {
                 $added = Get-Content -Path $file -Raw -ErrorAction SilentlyContinue
             }
