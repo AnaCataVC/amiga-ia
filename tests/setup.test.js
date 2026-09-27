@@ -7,19 +7,19 @@ const os = require('os');
 // Extract mergeSettings logic from setup.js for unit testing
 const setupCode = fs.readFileSync(path.join(__dirname, '../bin/setup.js'), 'utf8');
 const mergeSettingsFunc = new Function('fs', 'path', 'targetPath', 'sourcePath', 'options', `
-  ${setupCode.slice(setupCode.indexOf('function mergeSettings'), setupCode.indexOf('async function main'))}
+  ${setupCode.slice(setupCode.indexOf('const AMIGA_HOOK_SIGNATURES'), setupCode.indexOf('async function main'))}
   return mergeSettings(targetPath, sourcePath, options);
 `);
 const installNodeHooksFunc = new Function('fs', 'path', '__dirname', 'targetDir', 'settingsPath', 'options', `
-  ${setupCode.slice(setupCode.indexOf('function mergeSettings'), setupCode.indexOf('function isNewerVersion'))}
+  ${setupCode.slice(setupCode.indexOf('const AMIGA_HOOK_SIGNATURES'), setupCode.indexOf('function isNewerVersion'))}
   return installNodeHooks(targetDir, settingsPath, options);
 `);
 const installPwshHooksFunc = new Function('fs', 'path', '__dirname', 'targetDir', 'settingsPath', 'options', `
-  ${setupCode.slice(setupCode.indexOf('function mergeSettings'), setupCode.indexOf('function isNewerVersion'))}
+  ${setupCode.slice(setupCode.indexOf('const AMIGA_HOOK_SIGNATURES'), setupCode.indexOf('function isNewerVersion'))}
   return installPwshHooks(targetDir, settingsPath, options);
 `);
 const installBashHooksFunc = new Function('fs', 'path', '__dirname', 'targetDir', 'settingsPath', 'options', `
-  ${setupCode.slice(setupCode.indexOf('function mergeSettings'), setupCode.indexOf('function isNewerVersion'))}
+  ${setupCode.slice(setupCode.indexOf('const AMIGA_HOOK_SIGNATURES'), setupCode.indexOf('function isNewerVersion'))}
   return installBashHooks(targetDir, settingsPath, options);
 `);
 const isNewerVersionFunc = new Function('current', 'latest', `
@@ -35,6 +35,7 @@ const getInstalledEnvironmentStatusFunc = new Function('fs', 'path', 'targetDir'
   return getInstalledEnvironmentStatus(targetDir);
 `);
 const removeAmigaHooksFunc = new Function('fs', 'path', 'targetPath', `
+  ${setupCode.slice(setupCode.indexOf('const AMIGA_HOOK_SIGNATURES'), setupCode.indexOf('function mergeSettings'))}
   ${setupCode.slice(setupCode.indexOf('function removeAmigaHooks'), setupCode.indexOf('function installNodeHooks'))}
   return removeAmigaHooks(targetPath);
 `);

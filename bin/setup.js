@@ -74,6 +74,22 @@ function deleteMatchingFiles(src, dest, isRoot = true) {
   }
 }
 
+// Substrings that identify hook entries written by any Amiga IA version (current and legacy).
+const AMIGA_HOOK_SIGNATURES = [
+  '$CLAUDE_TOOL_ARGS',
+  'commit-assistant',
+  'push-assistant',
+  'ami-pr-publisher',
+  'ami-pr-reviewer',
+  'ami-detect-pr-conflicts',
+  'docs/coding-sessions',
+  'debugger|TODO|FIXME',
+  'ami-session-start',
+  'ami-pre-tool-use',
+  'ami-post-tool-use',
+  'ami-hooks'
+];
+
 function mergeSettings(targetPath, sourcePath, options = {}) {
   let targetData = {};
   if (fs.existsSync(targetPath)) {
@@ -90,28 +106,13 @@ function mergeSettings(targetPath, sourcePath, options = {}) {
 
   if (!targetData.hooks) targetData.hooks = {};
 
-  const amigaSignatures = [
-    '$CLAUDE_TOOL_ARGS',
-    'commit-assistant',
-    'push-assistant',
-    'ami-pr-publisher',
-    'ami-pr-reviewer',
-    'ami-detect-pr-conflicts',
-    'docs/coding-sessions',
-    'debugger|TODO|FIXME',
-    'ami-session-start',
-    'ami-pre-tool-use',
-    'ami-post-tool-use',
-    'ami-hooks'
-  ];
-
   let cleanedCount = 0;
 
   for (const event of Object.keys(targetData.hooks || {})) {
     const initialLen = targetData.hooks[event].length;
     targetData.hooks[event] = targetData.hooks[event].filter(existingHook => {
       const cmdString = JSON.stringify(existingHook);
-      const isAmigaHook = amigaSignatures.some(sig => cmdString.includes(sig));
+      const isAmigaHook = AMIGA_HOOK_SIGNATURES.some(sig => cmdString.includes(sig));
       return !isAmigaHook;
     });
     cleanedCount += (initialLen - targetData.hooks[event].length);
@@ -142,28 +143,13 @@ function removeAmigaHooks(targetPath) {
     const targetData = JSON.parse(fs.readFileSync(targetPath, 'utf8'));
     if (!targetData.hooks) return false;
 
-    const amigaSignatures = [
-      '$CLAUDE_TOOL_ARGS',
-      'commit-assistant',
-      'push-assistant',
-      'ami-pr-publisher',
-      'ami-pr-reviewer',
-      'ami-detect-pr-conflicts',
-      'docs/coding-sessions',
-      'debugger|TODO|FIXME',
-      'ami-session-start',
-      'ami-pre-tool-use',
-      'ami-post-tool-use',
-      'ami-hooks'
-    ];
-
     let cleanedCount = 0;
     for (const event of Object.keys(targetData.hooks)) {
       if (!Array.isArray(targetData.hooks[event])) continue;
       const initialLen = targetData.hooks[event].length;
       targetData.hooks[event] = targetData.hooks[event].filter(existingHook => {
         const cmdString = JSON.stringify(existingHook);
-        const isAmigaHook = amigaSignatures.some(sig => cmdString.includes(sig));
+        const isAmigaHook = AMIGA_HOOK_SIGNATURES.some(sig => cmdString.includes(sig));
         return !isAmigaHook;
       });
       cleanedCount += (initialLen - targetData.hooks[event].length);
@@ -177,6 +163,7 @@ function removeAmigaHooks(targetPath) {
     fs.writeFileSync(targetPath, JSON.stringify(targetData, null, 2));
     return cleanedCount > 0;
   } catch (e) {
+    console.error(`Could not remove Amiga IA hooks from ${targetPath}: ${e.message}`);
     return false;
   }
 }
@@ -405,7 +392,9 @@ function saveVersionManifest(targetDir, version) {
       installedAt: new Date().toISOString()
     }, null, 2);
     fs.writeFileSync(manifestPath, data);
-  } catch (e) {}
+  } catch (e) {
+    console.error(`Could not write version manifest in ${targetDir}: ${e.message}`);
+  }
 }
 
 function hasAmigaItems(targetDir) {
@@ -437,7 +426,9 @@ function getInstalledEnvironmentStatus(targetDir) {
       if (data && data.version) {
         return { installed: true, version: data.version, status: `v${data.version}`, installedAt: data.installedAt };
       }
-    } catch (e) {}
+    } catch (e) {
+      console.error(`Unreadable version manifest at ${manifestPath}: ${e.message}`);
+    }
   }
   return { installed: true, version: 'untracked', status: 'Legacy / Untracked (installed without version manifest)' };
 }
@@ -596,8 +587,7 @@ async function runDoctor() {
           }
         });
 
-        const amigaSigs = ['commit-assistant', 'push-assistant', 'ami-pr-publisher', 'ami-pr-reviewer', 'ami-detect-pr-conflicts', 'docs/coding-sessions', 'debugger|TODO|FIXME', 'ami-session-start', 'ami-pre-tool-use', 'ami-post-tool-use', 'ami-hooks'];
-        const isAmigaHook = (cmd) => cmd && typeof cmd === 'string' && amigaSigs.some(sig => cmd.includes(sig));
+        const isAmigaHook = (cmd) => cmd && typeof cmd === 'string' && AMIGA_HOOK_SIGNATURES.some(sig => cmd.includes(sig));
 
         const hasNodeHooks = hookCmds.some(h => isAmigaHook(h.command) && h.command.includes('node '));
         const hasBashHooks = hookCmds.some(h => isAmigaHook(h.command) && !h.command.includes('node ') && (h.shell === 'bash' || !h.shell));

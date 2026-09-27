@@ -2,13 +2,11 @@ const { test, describe } = require('node:test');
 const assert = require('node:assert');
 const fs = require('fs');
 const path = require('path');
-const { buildManifests } = require('../scripts/build-manifests.js');
 
 describe('Configuration & Build Synchronization Tests', () => {
 
-  test('buildManifests should validate package.json and sync hooks.json to hooks/hooks.json', () => {
-    buildManifests();
-
+  // Reads the committed files without rebuilding them, so a forgotten `npm run build` fails here.
+  test('package.json is valid and hooks/hooks.json matches hooks.json', () => {
     const rootDir = path.resolve(__dirname, '..');
     const pkg = JSON.parse(fs.readFileSync(path.join(rootDir, 'package.json'), 'utf8'));
 

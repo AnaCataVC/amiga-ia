@@ -6,9 +6,21 @@
   "bin": {
     "amiga-ia-setup": "bin/setup.js"
   },
+  "files": [
+    "bin/",
+    "adapters/",
+    "agent/",
+    "agents/",
+    "skills/",
+    "hooks/",
+    "rules/",
+    "hooks.json",
+    "hooks-pwsh.json"
+  ],
   "scripts": {
     "build": "node scripts/build-manifests.js",
-    "test": "node --test"
+    "test": "node --test",
+    "prepublishOnly": "npm run build && npm test"
   },
   "repository": {
     "type": "git",
