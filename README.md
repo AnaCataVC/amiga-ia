@@ -55,7 +55,7 @@ amiga-ia/
 │   └── learning/            # Captured session learnings and iterative patterns
 ├── skills/                  # Declarative Markdown skills (ami-*/SKILL.md)
 ├── hooks/                   # Claude Code native and cross-platform guardrail hooks
-│   ├── hooks.json           # Plugin auto-discovery configuration
+│   ├── hooks.json           # Build copy of hooks.json (npm run build)
 │   └── scripts/             # External runtime hooks (.js wrappers, ami-hooks.ps1, & ami-hooks.sh)
 ├── hooks.json               # Claude Code native hooks configuration (Bash engine)
 └── hooks-pwsh.json          # Claude Code native hooks configuration (PowerShell engine)
@@ -185,7 +185,7 @@ amiga-ia/
 │   └── learning/            # Lecciones de sesión capturadas y patrones iterativos
 ├── skills/                  # Skills declarativas en Markdown (ami-*/SKILL.md)
 ├── hooks/                   # Hooks de seguridad nativos y scripts multiplataforma
-│   ├── hooks.json           # Configuración para auto-descubrimiento en plugins
+│   ├── hooks.json           # Copia generada de hooks.json (npm run build)
 │   └── scripts/             # Scripts externos universales (.js, ami-hooks.ps1 y ami-hooks.sh)
 ├── hooks.json               # Configuración nativa de hooks de Claude Code (Motor Bash)
 └── hooks-pwsh.json          # Configuración nativa de hooks de Claude Code (Motor PowerShell)

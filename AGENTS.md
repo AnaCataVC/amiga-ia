@@ -1,6 +1,6 @@
-# Instructions for Antigravity (Gemini)
+# Instructions for AI Agents (Antigravity and Claude Code)
 
-This file serves as context reference for Antigravity (Gemini) when operating in this repository.
+This file is the single source of repository instructions for Antigravity (Gemini) and Claude Code. Claude Code loads it through the root `CLAUDE.md` import (`@AGENTS.md`); do not add rules to `CLAUDE.md` or a `GEMINI.md`.
 
 ## Mandatory Development Rules
 1. **Code Language:** All source code MUST always be written in **English**.
@@ -20,7 +20,7 @@ This file serves as context reference for Antigravity (Gemini) when operating in
 15. **Mandatory Pre-Release Diagnostic Audit (`doctor` in this repo):** Before cutting or preparing any Release in this repository (`amiga-ia`), the AI MUST run the repository's diagnostic tool (`node bin/setup.js --doctor` or `amiga-ia-setup --doctor`). This verifies frontmatter integrity across all skills and agents, checks for legacy plugin conflicts, and validates hooks configuration. If any diagnostic issues or gaps are discovered, the AI and user must resolve them (determining whether the doctor or the product definitions need adjustment) before authorizing the release.
 16. **Repository Layering & Commit Separation:** When preparing commits, the AI MUST strictly respect the 4 architectural layers of this repository:
     - **Layer 1 (Core Distributed Product - NPM Package):** `skills/`, `agents/`, `adapters/`, `hooks/scripts/`, `agent/`.
-    - **Layer 2 (Distribution & Setup Engine):** `bin/setup.js`, `package.json`, plugin manifests (`plugin.json`, `.claude-plugin/`).
+    - **Layer 2 (Distribution & Setup Engine):** `bin/setup.js`, `package.json`, `scripts/`, hooks configs (`hooks.json`, `hooks-pwsh.json`, `hooks/hooks.json`), `.github/workflows/`.
     - **Layer 3 (Internal Repository AI Directives & Guidelines):** `.agents/AGENTS.md`, local workspace settings (`.claude/`, `.gemini/`) - *not packaged in NPM releases*.
     - **Layer 4 (Persistent Project Memory & Documentation):** `docs/` (`adr/`, `learning/`, `architecture/`), `README.md`.
     Commits MUST NEVER conflate Layer 1 (user-facing product capabilities) with Layer 3/4 (internal repository instructions and standalone documentation) in a single commit.
@@ -60,15 +60,16 @@ The repository is distributed as an NPM package:
 ```text
 /
 ├── package.json                 ← Package registry and global command (amiga-ia-setup)
-├── plugin.json                  ← Antigravity plugin manifest
-├── .claude-plugin/              ← Claude Code plugin manifest
 ├── bin/setup.js                 ← Interactive installer (CLI wizard copy-paste)
+├── scripts/build-manifests.js   ← Syncs hooks.json into hooks/hooks.json (`npm run build`)
+├── rules/                       ← Behavioral rules installed into ~/.claude/CLAUDE.md and ~/.gemini/config/rules/
+├── tests/                       ← node:test suite (`npm test`, run in CI)
 ├── adapters/                    ← Universal Adapter to compile the XML catalog
 ├── agent/                       ← Main entrypoint exporting libraries
 ├── skills/*/SKILL.md            ← Skill directories with YAML and detailed Markdown
 ├── agents/*.md                  ← Subagent profiles in Markdown
 ├── hooks/scripts/*.js           ← Universal cross-platform Node.js hook scripts
-├── hooks.json                   ← Hooks config (Bash engine, used by NPM wizard for merging)
-├── hooks-pwsh.json              ← Hooks config (PowerShell engine, used by NPM wizard for merging)
-└── hooks/hooks.json             ← Hooks config (used by Claude Code plugin discovery)
+├── hooks.json                   ← Reference hooks config (Bash engine); setup.js generates the installed hooks itself
+├── hooks-pwsh.json              ← Reference hooks config (PowerShell engine)
+└── hooks/hooks.json             ← Build copy of hooks.json
 ```

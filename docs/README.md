@@ -6,7 +6,7 @@ Agents should read from this folder to understand project constraints, and write
 
 ---
 
-## 📂 Directory Structure & Table of Contents
+## Directory Structure & Table of Contents
 
 | Directory / File | Purpose & Contents |
 |---|---|
@@ -18,7 +18,7 @@ Agents should read from this folder to understand project constraints, and write
 
 ---
 
-## 🛠️ Guidelines for Agents & Contributors
+## Guidelines for Agents & Contributors
 
 1. **New Architecture Decisions:** Whenever making major system modifications or protocol updates, create a new sequential ADR inside `adr/` following standard MADR format (e.g., `002-feature-name.md`).
 2. **Technical Specs:** Place in-depth subsystem design documents in `architecture/`.
