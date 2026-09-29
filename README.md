@@ -67,6 +67,8 @@ All built-in capabilities strictly utilize the **`ami-`** namespace prefix to pr
 
 | Type | Name | Description |
 |---|---|---|
+| Agent | **ami-cleanroom-builder** | Feature implementer for Cleanroom TDD. Writes production code strictly from formal interface contracts without overfitting to tests. |
+| Agent | **ami-cleanroom-tester** | Independent black-box QA and test architect for Cleanroom TDD. Generates comprehensive tests solely from contracts, isolated from production code. |
 | Agent | **ami-data-scientist** | Master orchestrator agent for Data & SQL. Coordinates exploratory dataset profiling, database query optimizations, and executive dashboards. |
 | Agent | **ami-doc-architect** | Master documentation and knowledge orchestrator. Coordinates doc-manager, obsolescence audits, context research, and learnings extraction. |
 | Agent | **ami-expert-council** | Spawns a council of specialized subagents tailored to discuss, debate, and refine a user's architectural idea from multiple perspectives. |
@@ -90,6 +92,7 @@ All built-in capabilities strictly utilize the **`ami-`** namespace prefix to pr
 | Skill | **ami-guide-next-step** | Scans multi-dimensional project health, prioritizing tests, tech debt, code quality, and recommending optimal next steps. |
 | Skill | **ami-manage-docs** | Comprehensive documentation and knowledge manager. Detects whether to architect new docs, synchronize wikis, or audit and prune obsolete learnings. |
 | Skill | **ami-optimize-sql** | Writes and refactors SQL across major database dialects, eliminates query anti-patterns, and recommends high-impact indexes. |
+| Skill | **ami-orchestrate-cleanroom** | Master Cleanroom (Double-Blind) TDD orchestrator. Freezes interface contracts, dispatches isolated implementer and test generator subagents, executes test harnesses, and adjudicates failures. |
 | Skill | **ami-plan-commits** | Analyzes the working tree, performs security/leak audits, plans Conventional Commits/amend/squash, and executes staged git actions. |
 | Skill | **ami-plan-feature** | Formulates comprehensive feature implementation plans, investigating codebase context and coordinating execution. |
 | Skill | **ami-profile-data** | Performs exploratory data analysis (EDA), quantifies null distributions, detects outliers, and audits methodological validity. |
@@ -127,14 +130,14 @@ When running `amiga-ia-setup`, the CLI wizard populates your home directory with
 
 ```text
 ~/.claude/                          # Claude Code Global Configuration
-├── skills/ami-*/SKILL.md           # Declarative Skills (24 directories)
-├── agents/ami-*.md                 # Autonomous Subagents (9 profiles)
+├── skills/ami-*/SKILL.md           # Declarative Skills (25 directories)
+├── agents/ami-*.md                 # Autonomous Subagents (11 profiles)
 ├── settings.json                   # Merged Hooks (PreToolUse, PostToolUse)
 └── settings.json.amiga-backup      # Safe original settings backup
 
 ~/.gemini/config/                   # Antigravity (Gemini) Global Configuration
-├── skills/ami-*/SKILL.md           # Declarative Skills (24 directories)
-├── agents/ami-*.md                 # Autonomous Subagents (9 profiles)
+├── skills/ami-*/SKILL.md           # Declarative Skills (25 directories)
+├── agents/ami-*.md                 # Autonomous Subagents (11 profiles)
 └── rules/ami-rules.md              # Declarative Operational Rules
 ```
 
@@ -197,6 +200,8 @@ Todas las capacidades incluidas emplean de forma estricta el prefijo de espacio 
 
 | Tipo | Nombre | Descripción |
 |---|---|---|
+| Agente | **ami-cleanroom-builder** | Implementador de código de producción para flujos Cleanroom TDD. Programa respetando estrictamente los contratos de interfaz sin sobreajustarse a los tests. |
+| Agente | **ami-cleanroom-tester** | Arquitecto de pruebas de caja negra independiente para Cleanroom TDD. Genera suites exhaustivas a partir de contratos y criterios de aceptación, aislado del código fuente. |
 | Agente | **ami-data-scientist** | Agente maestro de la Suite de Datos y SQL. Orquesta análisis exploratorio, optimización de consultas en base de datos y dashboards ejecutivos. |
 | Agente | **ami-doc-architect** | Agente maestro de documentación y ciclo de vida del conocimiento. Orquesta en paralelo wikis, auditorías de obsolescencia, investigación y lecciones. |
 | Agente | **ami-expert-council** | Convoca una mesa redonda de subagentes especializados para debatir, analizar y refinar una idea o decisión arquitectónica desde múltiples perspectivas. |
@@ -220,6 +225,7 @@ Todas las capacidades incluidas emplean de forma estricta el prefijo de espacio 
 | Skill | **ami-guide-next-step** | Escanea la salud multidimensional del proyecto priorizando deuda técnica, calidad y pruebas, y recomienda el siguiente paso óptimo. |
 | Skill | **ami-manage-docs** | Gestor integral de documentación y conocimiento. Detecta si debe crear documentos, sincronizar wikis con Git o auditar y depurar lecciones obsoletas. |
 | Skill | **ami-optimize-sql** | Redacta y optimiza SQL multinivel (PostgreSQL, BigQuery, Snowflake, etc.), elimina anti-patrones y recomienda índices eficaces. |
+| Skill | **ami-orchestrate-cleanroom** | Orquestador maestro de TDD Cleanroom (Doble Ciego). Congela contratos de interfaz, despacha subagentes aislados de código y testing, ejecuta pruebas y arbitra discrepancias. |
 | Skill | **ami-plan-commits** | Analiza el árbol de trabajo actual, audita seguridad/secretos, planifica Conventional Commits/amend/squash y ejecuta las transacciones en Git. |
 | Skill | **ami-plan-feature** | Formula planes integrales de implementación para nuevas características, investigando el contexto y coordinando la ejecución. |
 | Skill | **ami-profile-data** | Realiza análisis exploratorio de datos (EDA), cuantifica distribuciones nulas, detecta anomalías y audita validez metodológica. |
@@ -257,14 +263,14 @@ Al ejecutar `amiga-ia-setup`, el asistente estructura de forma segura las siguie
 
 ```text
 ~/.claude/                          # Configuración Global de Claude Code
-├── skills/ami-*/SKILL.md           # Skills Declarativas (24 directorios)
-├── agents/ami-*.md                 # Subagentes Autónomos (9 perfiles)
+├── skills/ami-*/SKILL.md           # Skills Declarativas (25 directorios)
+├── agents/ami-*.md                 # Subagentes Autónomos (11 perfiles)
 ├── settings.json                   # Hooks Fusionados (PreToolUse, PostToolUse)
 └── settings.json.amiga-backup      # Respaldo intacto del archivo original de usuario
 
 ~/.gemini/config/                   # Configuración Global de Antigravity (Gemini)
-├── skills/ami-*/SKILL.md           # Skills Declarativas (24 directorios)
-├── agents/ami-*.md                 # Subagentes Autónomos (9 perfiles)
+├── skills/ami-*/SKILL.md           # Skills Declarativas (25 directorios)
+├── agents/ami-*.md                 # Subagentes Autónomos (11 perfiles)
 └── rules/ami-rules.md              # Reglas Operativas Declarativas
 ```
 
