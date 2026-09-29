@@ -20,7 +20,8 @@
   "scripts": {
     "build": "node scripts/build-manifests.js",
     "test": "node --test",
-    "prepublishOnly": "npm run build && npm test"
+    "prepublishOnly": "npm run build && npm test",
+    "release": "node scripts/release.js"
   },
   "repository": {
     "type": "git",
