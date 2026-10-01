@@ -13,7 +13,7 @@ When invoked to analyze or review an existing Pull Request, follow this strict o
 
 ### 1. Determine Review Context, Stack Topology & Calculate Diff Metrics
 - Determine the objective of the review:
-  - **Peer-Review:** Evaluating someone else's code (`ami-review-peer-pr`).
+  - **Peer-Review:** Evaluating someone else's code (`ami-review-peer-pr`). Always inspect existing reviews and discussion threads before forming observations.
   - **Self-Review:** Auditing your own PR before seeking external review (`ami-review-self-pr`).
   - **Comment Analysis:** Parsing and organizing developer review comments on an active PR (`ami-analyze-pr-comments`).
 - **Detect Stack Topology:** Check if the target PR is part of a **Stacked PRs** sequence by checking its base branch and dependent branches (e.g., via `gh pr view --json baseRefName,headRefName` or stacking CLI metadata like `gh stack` / Graphite `gt`).
@@ -44,7 +44,7 @@ When invoked to analyze or review an existing Pull Request, follow this strict o
   - **[Warning] Architectural & Quality Warnings:** Strongly recommended improvements.
   - **[Suggestion] Nitpicks & Ergonomic Suggestions:** Optional stylistic or performance refinements.
 - **Interactive Follow-Up:** Prompt the user for next steps:
-  - For **Peer Reviews:** Ask if they want to post the formatted suggestions directly to GitHub via `gh pr review --comment/--approve/--request-changes`.
+  - For **Peer Reviews:** Ask if they want to post the formatted suggestions directly to GitHub via `gh pr review --comment/--approve/--request-changes`. Before publishing, strictly enforce the Pre-Publish Freshness Gate (verifying that remote code HEAD has not drifted and no concurrent reviews/comments were added).
   - For **Self Reviews / Comment Resolution:** Propose concrete bug fixes or commit strategies (such as `git commit --amend` or `git commit --fixup` for local branch refinements).
 
 ---
