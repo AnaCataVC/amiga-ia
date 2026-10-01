@@ -97,7 +97,7 @@ All built-in capabilities strictly utilize the **`ami-`** namespace prefix to pr
 | Skill | **ami-plan-feature** | Formulates comprehensive feature implementation plans, investigating codebase context and coordinating execution. |
 | Skill | **ami-profile-data** | Performs exploratory data analysis (EDA), quantifies null distributions, detects outliers, and audits methodological validity. |
 | Skill | **ami-research-context** | Actively researches up-to-date external documentation and persists findings in references to prevent context degradation. |
-| Skill | **ami-review-peer-pr** | Assists in conducting code reviews on teammates' Pull Requests, producing categorized architectural and logic observations. |
+| Skill | **ami-review-peer-pr** | Assists in conducting code reviews on teammates' Pull Requests, inspecting existing peer discussions, and enforcing a pre-publish freshness gate before posting categorized observations. |
 | Skill | **ami-review-self-pr** | Operates as a stringent Senior Engineer reviewing your own work-in-progress code, identifying bugs and proactively applying local code fixes. |
 | Skill | **ami-scan-tech-debt** | Scans repositories for technical debt, obsolete imports, duplicated logic, dead code, and pending comments (TODOs/FIXMEs). |
 | Skill | **ami-stress-test-idea** | Conducts adversarial stress-testing and premortem analysis on proposals, exposing SPOFs, concurrency bugs, and cost explosions. |
@@ -230,7 +230,7 @@ Todas las capacidades incluidas emplean de forma estricta el prefijo de espacio 
 | Skill | **ami-plan-feature** | Formula planes integrales de implementación para nuevas características, investigando el contexto y coordinando la ejecución. |
 | Skill | **ami-profile-data** | Realiza análisis exploratorio de datos (EDA), cuantifica distribuciones nulas, detecta anomalías y audita validez metodológica. |
 | Skill | **ami-research-context** | Investiga documentación externa actualizada en tiempo real y guarda hallazgos en referencias para evitar la obsolescencia de contexto. |
-| Skill | **ami-review-peer-pr** | Asiste en la revisión voluntaria de Pull Requests de otros desarrolladores, estructurando observaciones arquitectónicas y de lógica por nivel de criticidad. |
+| Skill | **ami-review-peer-pr** | Asiste en la revisión de Pull Requests de otros desarrolladores, analizando revisiones y comentarios previos, y aplicando una compuerta de frescura antes de publicar observaciones. |
 | Skill | **ami-review-self-pr** | Actúa como un exigente Ingeniero Senior revisando tu propio código antes de publicarlo, proponiendo y aplicando proactivamente correcciones locales. |
 | Skill | **ami-scan-tech-debt** | Escanea el repositorio buscando deuda técnica, módulos obsoletos, lógica duplicada, código muerto y marcadores pendientes (TODOs/FIXMEs). |
 | Skill | **ami-stress-test-idea** | Ejecuta pruebas de estrés adversariales y análisis premortem en propuestas técnicas, detectando SPOFs, fallos de concurrencia y costos ocultos. |
