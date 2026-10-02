@@ -16,6 +16,18 @@ When invoked to analyze or review an existing Pull Request, follow this strict o
   - **Peer-Review:** Evaluating someone else's code (`ami-review-peer-pr`). Always inspect existing reviews and discussion threads before forming observations.
   - **Self-Review:** Auditing your own PR before seeking external review (`ami-review-self-pr`).
   - **Comment Analysis:** Parsing and organizing developer review comments on an active PR (`ami-analyze-pr-comments`).
+- **Ingest PR Metadata & Acceptance Criteria:**
+  - Query and read the PR title, body description, labels, and linked issues:
+    ```bash
+    gh pr view <number> --json title,body,baseRefName,headRefName,labels
+    ```
+  - Extract the documented requirements, acceptance criteria checkboxes (`- [ ]`), and author's motivation.
+  - Ingest repository architecture documents (`README.md`, `docs/`, ADRs) to establish contextual invariants and conventions.
+- **Select Review Mode:**
+  - Support two operational review modes:
+    - **Code Review Mode (Default):** Static analysis focusing on code logic, security, contracts, edge cases, error paths, and acceptance criteria fulfillment. Zero execution overhead and safe for all environments.
+    - **Full Review Mode (Dynamic):** Comprehensive static analysis PLUS dynamic test runner discovery, test suite execution, and optional build/typecheck verification.
+  - **Mode Selection UX:** By default, operate in `Code Review Mode`. If the user has not explicitly requested a full dynamic evaluation upfront, state that you are proceeding with static Code Review and explicitly offer the option to switch to `Full Review Mode` if dynamic test suite execution is desired.
 - **Detect Stack Topology:** Check if the target PR is part of a **Stacked PRs** sequence by checking its base branch and dependent branches (e.g., via `gh pr view --json baseRefName,headRefName` or stacking CLI metadata like `gh stack` / Graphite `gt`).
   - If reviewing an entire stacked feature sequence, enforce a **Bottom-Up Review Strategy**: evaluate foundational base layers first before assessing upper dependent layers to preserve architectural coherence.
 - Use Git or GitHub CLI commands (e.g., `gh pr diff --stat` or `git diff --stat`) against the PR's direct base reference (`baseRefName`) to calculate the exact lines changed, file counts, and architectural domains affected.
@@ -35,13 +47,26 @@ When invoked to analyze or review an existing Pull Request, follow this strict o
       - For general code quality, security defects, or dead code: inject `skills/ami-audit-quality/SKILL.md`.
       - For third-party library additions or updates: inject `skills/ami-analyze-dependencies/SKILL.md`.
       - For database queries, schemas, or models: inject `skills/ami-validate-data/SKILL.md`.
+      - For dynamic verification in Full Review mode: instruct the worker to discover and execute repository tests using stack-agnostic manifest detection.
       - For specialized code chunk evaluation: inject the core heuristics from `skills/ami-review-peer-pr/SKILL.md` or `skills/ami-review-self-pr/SKILL.md`.
+      - For peer-review workers: inject mandatory [Falsification Check] instructions for any preliminary [BLOCKER], [CRITICAL], or [MAJOR] observations.
+      - For self-review workers: inject mandatory [Blind-Spot Probe] instructions if preliminary scans return clean or only [MINOR]/[NITPICK] observations.
 
-### 4. Consolidated Executive Reporting & Interactive Action
+### 4. Adversarial Verification Stage
+- Before synthesizing the final report, execute an adversarial verification audit across all collected worker outputs:
+  - **Peer Review Audit (Falsification Verification):** Audit every candidate `[BLOCKER]`, `[CRITICAL]`, and `[MAJOR]` finding. Verify that the reporting subagent actively attempted to falsify the defect against upstream guards, type invariants, framework protections, and database constraints. Reject or downgrade findings that crumble under architectural verification.
+  - **Self Review Audit (Blind-Spot Verification):** If a self-review worker reports zero defects or only trivial nitpicks, verify that an adversarial blind-spot probe was performed against concurrency, boundary extremes, silent failures, resource lifecycles, and injection surfaces.
+
+### 5. Consolidated Executive Reporting & Interactive Action
 - Collect the analytical outputs from all sequential steps or background worker subagents.
 - Synthesize findings into a unified Executive Review Report directly in the main chat, cleanly grouped by criticality:
   - **[Blocker] Blocking Defects / Security Hazards:** Must be corrected immediately.
+  - **[Requirement Gap] Acceptance Criteria Mismatches:** Discrepancies between PR description claims and actual diff implementation.
+  - **[Test Failure] Dynamic Execution Breakages:** (In Full Review mode) Test suite failures with attached error logs and failing assertions.
   - **[Warning] Architectural & Quality Warnings:** Strongly recommended improvements.
+  - **[Adversarial Audit Trail]:**
+    - **[Falsification Verified]:** High-severity issues that survived active falsification, accompanied by notes on discarded/downgraded false positives.
+    - **[Blind-Spot Probe Status]:** Summary of subtle edge-case/concurrency defects uncovered during the blind-spot probe, or explicit certification that all 5 probe vectors passed.
   - **[Suggestion] Nitpicks & Ergonomic Suggestions:** Optional stylistic or performance refinements.
 - **Interactive Follow-Up:** Prompt the user for next steps:
   - For **Peer Reviews:** Ask if they want to post the formatted suggestions directly to GitHub via `gh pr review --comment/--approve/--request-changes`. Before publishing, strictly enforce the Pre-Publish Freshness Gate (verifying that remote code HEAD has not drifted and no concurrent reviews/comments were added).
