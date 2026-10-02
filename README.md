@@ -73,7 +73,7 @@ All built-in capabilities strictly utilize the **`ami-`** namespace prefix to pr
 | Agent | **ami-doc-architect** | Master documentation and knowledge orchestrator. Coordinates doc-manager, obsolescence audits, context research, and learnings extraction. |
 | Agent | **ami-expert-council** | Spawns a council of specialized subagents tailored to discuss, debate, and refine a user's architectural idea from multiple perspectives. |
 | Agent | **ami-pr-publisher** | Master orchestrator agent that performs a comprehensive review, summary drafting, and conflict audit on Pull Requests before publishing. |
-| Agent | **ami-pr-reviewer** | Master orchestrator agent that evaluates existing Pull Requests using parallel worker subagents and automated capability discovery. |
+| Agent | **ami-pr-reviewer** | Master orchestrator agent that evaluates existing Pull Requests via dual review modes (static Code Review vs dynamic Full Review with test execution), repository context ingestion, and adversarial verification trails. |
 | Agent | **ami-push-assistant** | Pre-push orchestrator that conducts baseline quality, security leak scans, and data consistency checks before pushing code. |
 | Agent | **ami-release-manager** | Central orchestrator agent that automates version tag calculation, bilingual semantic changelog drafting, and GitHub release publication. |
 | Agent | **ami-repo-auditor** | Master audit orchestrator that evaluates codebase technical debt, dependency hygiene, and security across modules concurrently. |
@@ -97,8 +97,8 @@ All built-in capabilities strictly utilize the **`ami-`** namespace prefix to pr
 | Skill | **ami-plan-feature** | Formulates comprehensive feature implementation plans, investigating codebase context and coordinating execution. |
 | Skill | **ami-profile-data** | Performs exploratory data analysis (EDA), quantifies null distributions, detects outliers, and audits methodological validity. |
 | Skill | **ami-research-context** | Actively researches up-to-date external documentation and persists findings in references to prevent context degradation. |
-| Skill | **ami-review-peer-pr** | Assists in conducting code reviews on teammates' Pull Requests, inspecting existing peer discussions, and enforcing a pre-publish freshness gate before posting categorized observations. |
-| Skill | **ami-review-self-pr** | Operates as a stringent Senior Engineer reviewing your own work-in-progress code, identifying bugs and proactively applying local code fixes. |
+| Skill | **ami-review-peer-pr** | Conducts code reviews on teammates' Pull Requests with PR body acceptance criteria traceability, dual review modes, and adversarial falsification audits ([Falsification Check]) to eliminate false positives. |
+| Skill | **ami-review-self-pr** | Operates as a stringent Senior Engineer reviewing your own code with dual review modes, adversarial 5-dimension blind-spot probes ([Blind-Spot Probe]), and automated local test remediation loops. |
 | Skill | **ami-scan-tech-debt** | Scans repositories for technical debt, obsolete imports, duplicated logic, dead code, and pending comments (TODOs/FIXMEs). |
 | Skill | **ami-stress-test-idea** | Conducts adversarial stress-testing and premortem analysis on proposals, exposing SPOFs, concurrency bugs, and cost explosions. |
 | Skill | **ami-tag-release** | Auto-triggered before release bumps. Evaluates git histories against semantic versioning laws to compute precise stable or QA tags. |
@@ -206,7 +206,7 @@ Todas las capacidades incluidas emplean de forma estricta el prefijo de espacio 
 | Agente | **ami-doc-architect** | Agente maestro de documentación y ciclo de vida del conocimiento. Orquesta en paralelo wikis, auditorías de obsolescencia, investigación y lecciones. |
 | Agente | **ami-expert-council** | Convoca una mesa redonda de subagentes especializados para debatir, analizar y refinar una idea o decisión arquitectónica desde múltiples perspectivas. |
 | Agente | **ami-pr-publisher** | Agente maestro que ejecuta revisiones integrales, redacción de resúmenes ejecutivos y verificación de conflictos antes de publicar un Pull Request. |
-| Agente | **ami-pr-reviewer** | Orquestador maestro que evalúa Pull Requests activos desplegando subagentes paralelos y descubrimiento automático de herramientas locales. |
+| Agente | **ami-pr-reviewer** | Orquestador maestro que evalúa Pull Requests mediante modos duales (Revisión Estática vs Revisión Completa con ejecución de tests), ingesta de contexto y pistas de auditoría adversarial. |
 | Agente | **ami-push-assistant** | Orquestador pre-push que ejecuta auditorías de calidad, escaneo de fugas de secretos y coherencia estructural antes de enviar código al remoto. |
 | Agente | **ami-release-manager** | Orquestador central del ciclo de lanzamientos que calcula versiones semánticas, redacta changelogs bilingües y publica el release oficial en GitHub. |
 | Agente | **ami-repo-auditor** | Agente maestro de auditoría que evalúa concurrentemente deuda técnica, higiene de librerías y vulnerabilidades en todo el código base. |
@@ -230,8 +230,8 @@ Todas las capacidades incluidas emplean de forma estricta el prefijo de espacio 
 | Skill | **ami-plan-feature** | Formula planes integrales de implementación para nuevas características, investigando el contexto y coordinando la ejecución. |
 | Skill | **ami-profile-data** | Realiza análisis exploratorio de datos (EDA), cuantifica distribuciones nulas, detecta anomalías y audita validez metodológica. |
 | Skill | **ami-research-context** | Investiga documentación externa actualizada en tiempo real y guarda hallazgos en referencias para evitar la obsolescencia de contexto. |
-| Skill | **ami-review-peer-pr** | Asiste en la revisión de Pull Requests de otros desarrolladores, analizando revisiones y comentarios previos, y aplicando una compuerta de frescura antes de publicar observaciones. |
-| Skill | **ami-review-self-pr** | Actúa como un exigente Ingeniero Senior revisando tu propio código antes de publicarlo, proponiendo y aplicando proactivamente correcciones locales. |
+| Skill | **ami-review-peer-pr** | Conduce revisiones en PRs de terceros con trazabilidad de criterios de aceptación, modos duales y auditoría de falsificación adversarial ([Falsification Check]) para eliminar falsos positivos. |
+| Skill | **ami-review-self-pr** | Actúa como un exigente Ingeniero Senior revisando tu propio código mediante modos duales, sondeos adversariales de 5 dimensiones ([Blind-Spot Probe]) y bucles de remediación local de tests. |
 | Skill | **ami-scan-tech-debt** | Escanea el repositorio buscando deuda técnica, módulos obsoletos, lógica duplicada, código muerto y marcadores pendientes (TODOs/FIXMEs). |
 | Skill | **ami-stress-test-idea** | Ejecuta pruebas de estrés adversariales y análisis premortem en propuestas técnicas, detectando SPOFs, fallos de concurrencia y costos ocultos. |
 | Skill | **ami-tag-release** | Se ejecuta antes de subir versiones. Analiza el historial de Git para calcular con precisión matemática la siguiente etiqueta semántica o Release Candidate. |
