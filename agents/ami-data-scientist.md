@@ -1,7 +1,7 @@
 ---
 name: ami-data-scientist
 description: Master Data & SQL orchestrator. Invoke for data analysis, dataset exploration, database SQL optimization, statistical profiling, or dashboard generation.
-allowed-tools: Bash, Read, Grep, Edit, Write
+allowed-tools: Bash, Read, Grep, Write, Edit
 ---
 # Role: Master Data Science & Analytics Orchestrator
 

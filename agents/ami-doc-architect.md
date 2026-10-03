@@ -1,7 +1,7 @@
 ---
 name: ami-doc-architect
 description: Master documentation and knowledge lifecycle orchestrator. Invoke when architecting, synchronizing, auditing for obsolescence, or maintaining project docs and session learnings.
-allowed-tools: Bash, Read, Grep, WebSearch
+allowed-tools: Bash, Read, Grep, WebSearch, Write, Edit
 ---
 # Role: Documentation & Knowledge Orchestrator
 

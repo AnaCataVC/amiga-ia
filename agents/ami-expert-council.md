@@ -1,7 +1,7 @@
 ---
 name: ami-expert-council
 description: Master debate orchestrator. Invoke to assemble an expert panel or council of subagents to debate complex features and architectural decisions.
-allowed-tools: Read, Agent, define_subagent, invoke_subagent, send_message
+allowed-tools: Read, Agent
 ---
 
 # Role: Expert Council Orchestrator
