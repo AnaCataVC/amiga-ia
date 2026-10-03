@@ -14,6 +14,7 @@ const geminiDir = path.join(homeDir, '.gemini', 'config');
 const sourceSkillsDir = path.join(__dirname, '../skills');
 const sourceAgentsDir = path.join(__dirname, '../agents');
 const sourceRulesDir = path.join(__dirname, '../rules');
+const sourceSettingsPath = path.join(__dirname, '../hooks.json');
 const { translateFrontmatter, hasWriteCapabilities } = require('../adapters/capability_translator');
 
 function copyRecursiveSync(src, dest, targetEnv = null) {

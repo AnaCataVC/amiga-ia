@@ -446,3 +446,16 @@ describe('Amiga IA setup.js copyRecursiveSync tests', () => {
   });
 
 });
+
+describe('Amiga IA setup.js structural integrity tests', () => {
+  test('should define all required global path constants and target files must exist', () => {
+    const setupContent = fs.readFileSync(path.join(__dirname, '../bin/setup.js'), 'utf8');
+    assert.match(setupContent, /const\s+sourceSettingsPath\s*=\s*path\.join\(__dirname,\s*['"]\.\.\/hooks\.json['"]\);/);
+    assert.match(setupContent, /const\s+sourceSkillsDir\s*=\s*path\.join\(__dirname,\s*['"]\.\.\/skills['"]\);/);
+    assert.match(setupContent, /const\s+sourceAgentsDir\s*=\s*path\.join\(__dirname,\s*['"]\.\.\/agents['"]\);/);
+    assert.match(setupContent, /const\s+sourceRulesDir\s*=\s*path\.join\(__dirname,\s*['"]\.\.\/rules['"]\);/);
+
+    const hooksJsonPath = path.resolve(__dirname, '../hooks.json');
+    assert.ok(fs.existsSync(hooksJsonPath), 'hooks.json must exist');
+  });
+});
