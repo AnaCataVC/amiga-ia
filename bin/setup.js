@@ -14,7 +14,7 @@ const geminiDir = path.join(homeDir, '.gemini', 'config');
 const sourceSkillsDir = path.join(__dirname, '../skills');
 const sourceAgentsDir = path.join(__dirname, '../agents');
 const sourceRulesDir = path.join(__dirname, '../rules');
-const sourceSettingsPath = path.join(__dirname, '../hooks.json');
+const { translateFrontmatter, hasWriteCapabilities } = require('../adapters/capability_translator');
 
 function copyRecursiveSync(src, dest, targetEnv = null) {
   if (!fs.existsSync(src)) return;
@@ -27,9 +27,14 @@ function copyRecursiveSync(src, dest, targetEnv = null) {
       copyRecursiveSync(path.join(src, childItemName), path.join(dest, childItemName), targetEnv);
     });
   } else {
-    if (targetEnv === 'claude' && dest.endsWith('.md')) {
+    if (dest.endsWith('.md')) {
       let content = fs.readFileSync(src, 'utf8');
-      content = content.replace(/\.gemini\/agents\//g, '.claude/agents/');
+      if (targetEnv === 'claude') {
+        content = content.replace(/\.gemini\/agents\//g, '.claude/agents/');
+        content = translateFrontmatter(content, 'claude');
+      } else if (targetEnv === 'antigravity' || targetEnv === 'gemini') {
+        content = translateFrontmatter(content, 'antigravity');
+      }
       fs.writeFileSync(dest, content);
     } else {
       fs.copyFileSync(src, dest);
@@ -508,6 +513,15 @@ async function runDoctor() {
   console.log(pc.blue('\n🔍 Validating YAML frontmatter for skills and agents...'));
   let invalidDefinitions = 0;
 
+  const WRITE_MANDATORY_AGENTS = new Set([
+    'ami-cleanroom-builder.md',
+    'ami-cleanroom-tester.md',
+    'ami-data-scientist.md',
+    'ami-doc-architect.md',
+    'ami-release-manager.md',
+    'ami-tech-lead.md'
+  ]);
+
   const validateDefinitionFrontmatter = (filepath, baseDir, typeLabel) => {
     const content = fs.readFileSync(filepath, 'utf8').replace(/^\uFEFF/, '');
     const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
@@ -523,6 +537,15 @@ async function runDoctor() {
       console.log(pc.yellow(`⚠️  WARNING: Incomplete YAML frontmatter in ${typeLabel} ${relPath} (Missing: ${[!hasName && 'name', !hasDesc && 'description', !hasTools && 'allowed-tools'].filter(Boolean).join(', ')})`));
       return false;
     }
+
+    if (typeLabel === 'agent') {
+      const fileName = path.basename(filepath);
+      if (WRITE_MANDATORY_AGENTS.has(fileName) && !hasWriteCapabilities(match[1])) {
+        console.log(pc.red(`❌ ERROR: Agent ${fileName} is required to possess write/edit capabilities, but none were declared.`));
+        return false;
+      }
+    }
+
     return true;
   };
 

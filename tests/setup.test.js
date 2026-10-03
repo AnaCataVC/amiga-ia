@@ -40,10 +40,15 @@ const removeAmigaHooksFunc = new Function('fs', 'path', 'targetPath', `
   return removeAmigaHooks(targetPath);
 `);
 
-const copyRecursiveSyncFunc = new Function('fs', 'path', 'src', 'dest', 'targetEnv', `
-  ${setupCode.slice(setupCode.indexOf('function copyRecursiveSync'), setupCode.indexOf('function cleanOrphanedFiles'))}
-  return copyRecursiveSync(src, dest, targetEnv);
-`);
+const { translateFrontmatter } = require('../adapters/capability_translator');
+
+const copyRecursiveSyncFunc = (fs, path, src, dest, targetEnv) => {
+  const fn = new Function('fs', 'path', 'src', 'dest', 'targetEnv', 'translateFrontmatter', `
+    ${setupCode.slice(setupCode.indexOf('function copyRecursiveSync'), setupCode.indexOf('function cleanOrphanedFiles'))}
+    return copyRecursiveSync(src, dest, targetEnv);
+  `);
+  return fn(fs, path, src, dest, targetEnv, translateFrontmatter);
+};
 
 describe('Amiga IA setup.js mergeSettings tests', () => {
 
@@ -403,6 +408,40 @@ describe('Amiga IA setup.js copyRecursiveSync tests', () => {
     const copiedContent = fs.readFileSync(path.join(destDir, 'test-agent.md'), 'utf8');
     assert.strictEqual(copiedContent, 'Local workspace agents can be found in .gemini/agents/ folder.');
     
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  test('should translate allowed-tools to Claude Code format when targetEnv is claude', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'amiga-copy-test-claude-'));
+    const srcDir = path.join(tmpDir, 'src');
+    const destDir = path.join(tmpDir, 'dest');
+    fs.mkdirSync(srcDir, { recursive: true });
+
+    const testMdPath = path.join(srcDir, 'ami-doc-architect.md');
+    fs.writeFileSync(testMdPath, '---\nname: ami-doc-architect\ndescription: Docs orchestrator.\nallowed-tools: write_to_file, replace_file_content, run_command, view_file\n---\n# Doc Architect');
+
+    copyRecursiveSyncFunc(fs, path, srcDir, destDir, 'claude');
+
+    const copiedContent = fs.readFileSync(path.join(destDir, 'ami-doc-architect.md'), 'utf8');
+    assert.ok(copiedContent.includes('allowed-tools: Write, Edit, Bash, Read'));
+
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  test('should translate allowed-tools to Antigravity format when targetEnv is antigravity', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'amiga-copy-test-antigravity-'));
+    const srcDir = path.join(tmpDir, 'src');
+    const destDir = path.join(tmpDir, 'dest');
+    fs.mkdirSync(srcDir, { recursive: true });
+
+    const testMdPath = path.join(srcDir, 'ami-doc-architect.md');
+    fs.writeFileSync(testMdPath, '---\nname: ami-doc-architect\ndescription: Docs orchestrator.\nallowed-tools: Write, Edit, Bash, Read\n---\n# Doc Architect');
+
+    copyRecursiveSyncFunc(fs, path, srcDir, destDir, 'antigravity');
+
+    const copiedContent = fs.readFileSync(path.join(destDir, 'ami-doc-architect.md'), 'utf8');
+    assert.ok(copiedContent.includes('allowed-tools: write_to_file, replace_file_content, multi_replace_file_content, run_command, manage_task, view_file'));
+
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
