@@ -71,3 +71,16 @@ Per **ADR-004**, the Universal Adapter utilizes a root-relative, attribute-drive
 | `generateSkillsXml(skillsDir, repoRoot)` | `string` | Scans `skillsDir`, parses `SKILL.md` frontmatter, and formats `<skill>` entries. |
 | `generateAgentsXml(agentsDir, repoRoot)` | `string` | Scans `agentsDir`, parses `.md` frontmatter, and formats `<agent>` entries. |
 | `compileSystemPrompt(options)` | `string` | Merges base rules, operational guidelines, skills XML, and agent XML into a unified prompt block. |
+
+---
+
+## 5. Cross-Platform Capability Translation (`adapters/capability_translator.js`)
+
+Per **ADR-014**, subagents declare canonical capabilities in `allowed-tools:`. The capability translation module normalizes and expands tools during distribution (`bin/setup.js`) to match platform requirements:
+
+| Function | Returns | Description |
+|---|---|---|
+| `translateTools(tools, platform)` | `string[]` | Translates canonical tokens into target platform native tool names (`claude` vs `antigravity`). |
+| `translateFrontmatter(markdown, platform)` | `string` | Parses YAML frontmatter, replaces tool declarations with translated equivalents, and preserves line endings. |
+| `hasWriteCapabilities(tools)` | `boolean` | Checks whether tool declaration permits file write/edit actions across both platform vocabularies. |
+
