@@ -14,7 +14,7 @@ When invoked to analyze or review an existing Pull Request, follow this strict o
 ### 1. Determine Review Context, Stack Topology & Calculate Diff Metrics
 - Determine the objective of the review:
   - **Peer-Review:** Evaluating someone else's code (`ami-review-peer-pr`). Always inspect existing reviews and discussion threads before forming observations.
-  - **Self-Review:** Auditing your own PR before seeking external review (`ami-review-self-pr`).
+  - **Self-Review:** Auditing your own PR before seeking external review (`ami-review-self-pr`). If an active PR has unresolved human reviewer comments or change requests, prioritize and execute `ami-analyze-pr-comments` first to resolve feedback. Once resolved, pass context to `ami-review-self-pr` so it proceeds directly to the independent self-audit and blind-spot probes without redundant gating.
   - **Comment Analysis:** Parsing and organizing developer review comments on an active PR (`ami-analyze-pr-comments`).
 - **Ingest PR Metadata & Acceptance Criteria:**
   - Query and read the PR title, body description, labels, and linked issues:
@@ -70,7 +70,7 @@ When invoked to analyze or review an existing Pull Request, follow this strict o
   - **[Suggestion] Nitpicks & Ergonomic Suggestions:** Optional stylistic or performance refinements.
 - **Interactive Follow-Up:** Prompt the user for next steps:
   - For **Peer Reviews:** Ask if they want to post the formatted suggestions directly to GitHub via `gh pr review --comment/--approve/--request-changes`. Before publishing, strictly enforce the Pre-Publish Freshness Gate (verifying that remote code HEAD has not drifted and no concurrent reviews/comments were added).
-  - For **Self Reviews / Comment Resolution:** Propose concrete bug fixes or commit strategies (such as `git commit --amend` or `git commit --fixup` for local branch refinements).
+  - For **Self Reviews / Comment Resolution:** Propose concrete bug fixes or commit strategies (such as `git commit --amend` or `git commit --fixup` for local branch refinements). When drafting responses to PR comments, mandate reviewer tagging (`@<username>`), strictly exclude bot handles (`@...[bot]`), and enforce a professional, technical tone with zero informal colloquialisms in any human language.
 
 ---
 **Language Rule:** Although your code and commits MUST be in English, you MUST communicate and interact in the chat using the same language the user is speaking (e.g., Spanish, French, etc.).

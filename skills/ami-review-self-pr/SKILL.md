@@ -21,6 +21,17 @@ When this skill is invoked, you act as a stringent Senior Engineer reviewing the
      - If inspecting an active PR, read its body description, title, and milestone via `gh pr view --json title,body,milestone`.
      - Map the proposed diff against the author's own checklist and acceptance criteria (e.g. `- [ ]` / `- [x]`) to ensure no promised item was left half-implemented.
      - Ingest repository architecture documents (`README.md`, `docs/adr/`, `docs/architecture/`) to ensure alignment with repository invariants.
+   - **Pre-Review Existing Comments Gate (Comment Analysis Prerequisite):**
+     - **Local Branch Bypass:** If reviewing a local branch or uncommitted code with no active remote PR (or if `gh pr view` returns non-zero / no pull request found), immediately bypass this gate and proceed directly to local diff analysis against base branch.
+     - **Active PR Inspection:** When inspecting an active PR:
+       ```bash
+       gh pr view <target> --json comments,reviews
+       ```
+     - **Resolved & Outdated Comments Bypass:** If all existing comments are already marked resolved in GitHub, belong to outdated diff hunks from earlier commits, or were already processed and resolved in the current session/task, do not block the self-audit.
+     - **Unresolved Feedback Gate:** If active, unresolved review comments or change requests from human reviewers remain unaddressed:
+       - Inform the user and prioritize resolving external reviewer feedback first.
+       - **Mandatory Delegation / Chaining:** Execute or guide through **`ami-analyze-pr-comments`** to extract and categorize observations (Blocking, Suggestions, Questions), apply local fixes, and draft professional responses tagging each reviewer with `@<username>` (strictly avoiding informal colloquialisms).
+       - Once existing feedback is processed or acknowledged by the user, resume this skill to conduct the independent self-audit and blind-spot probes on the updated diff.
    - **Review Mode Selection:**
      - Support two operational review modes:
        - **Code Review Mode (Default):** Static analysis of logic, contracts, edge cases, error paths, and clean code standards. Fast and zero-execution overhead.
