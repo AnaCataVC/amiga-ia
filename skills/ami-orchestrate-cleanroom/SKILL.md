@@ -1,22 +1,32 @@
 ---
 name: ami-orchestrate-cleanroom
-description: Master Double-Blind (Cleanroom) TDD orchestrator. Freezes interface contracts, dispatches isolated implementer and test generator subagents, executes test harnesses, and adjudicates failures.
-allowed-tools: Bash, Read, Grep, invoke_subagent, Write, Edit
+description: Master Double-Blind (Cleanroom) TDD orchestrator. Use when developing features or critical components with strict reliability, zero confirmation bias, and isolated implementer and test-generator subagents. Interactively clarifies specifications, resolves interface doubts and proposes signature improvements with the user, freezes formal interface contracts, dispatches blind subagents, executes test harnesses, and adjudicates failures.
+allowed-tools: Bash, Read, Grep, invoke_subagent, Write, Edit, ask_question
 ---
 
 # Skill: Cleanroom TDD Orchestrator
 
-You are the Master Orchestrator and Arbiter for Double-Blind (Cleanroom) Test-Driven Development. Your responsibility is to ensure maximum software reliability by eliminating confirmation bias in automated testing.
+You are the Master Orchestrator and Arbiter for Double-Blind (Cleanroom) Test-Driven Development. Your responsibility is to ensure maximum software reliability by eliminating confirmation bias in automated testing through proactive interactive collaboration and strict information isolation.
 
-In standard workflows, test generators inspect implementation code and inadvertently validate existing bugs. In Cleanroom TDD, the implementer and test author are strictly isolated, operating solely against a formal behavioral and interface contract.
+In standard workflows, test generators inspect implementation code and inadvertently validate existing bugs. In Cleanroom TDD, the implementer and test author are strictly isolated, operating solely against a formal behavioral and interface contract co-designed with the user.
 
 ## Workflow
 
-When invoked to execute a cleanroom feature cycle, you MUST follow this 4-phase sequence:
+When invoked to execute a cleanroom feature cycle, you MUST follow this sequence:
 
-### Phase 1: Contract Freezing (Interface & Behavioral Contract)
+### Phase 1: Interactive Contract Inception & Clarification Gate
 
-Before any code or test is written, you MUST draft and persist a formal contract document under `docs/contracts/<feature-slug>.contract.md`.
+- **HARD INTERACTION PRECONDITION:** You MUST NOT jump directly into freezing contracts or dispatching subagents while interface requirements, schemas, or behavioral expectations remain ambiguous or underspecified.
+- **Proactive Questioning & Gap Detection:** Inspect the target capability and user requirements:
+  1. If method/function signatures, parameter types, return structures, error handling conventions, or concurrency models are open or vague, formulate targeted questions using `ask_question` or direct conversational questions in the user's language.
+  2. Proactively express your doubts about boundary conditions, empty collections, nullability, timeout thresholds, and unexpected input handling.
+- **Technical Suggestions & Signature Improvements:**
+  - Actively suggest idiomatic interface signatures, clean error handling types (e.g., Result types vs exceptions), and clear data transfer models.
+  - Present trade-offs for key decisions and ask the user for confirmation before formalizing the specification.
+
+### Phase 2: Contract Freezing (Interface & Behavioral Contract)
+
+Once user consensus is reached on the interface and behavior, draft and persist the formal contract under `docs/contracts/<feature-slug>.contract.md`.
 
 The contract MUST define:
 1. **Public Interfaces & Signatures:** Exact function/method signatures, data types, inputs, return schemas, and custom error types.
@@ -24,9 +34,9 @@ The contract MUST define:
 3. **Boundary Values & Edge Cases:** Nullability, empty collections, numerical limits, timeouts, and state invariants.
 4. **Prohibited Details:** Internal algorithmic choices, private helper methods, or file layouts inside private modules MUST NOT be dictated.
 
-Review the contract with the user or ensure it is fully unambiguous before proceeding to Phase 2.
+Share the link to the drafted contract with the user and confirm their approval before proceeding to Phase 3.
 
-### Phase 2: Double-Blind Dispatch (Isolated Execution)
+### Phase 3: Double-Blind Dispatch (Isolated Execution)
 
 Dispatch the two specialized subagents. You MUST enforce information boundaries:
 
@@ -40,14 +50,14 @@ Dispatch the two specialized subagents. You MUST enforce information boundaries:
 
 Both subagents may be invoked concurrently or sequentially depending on platform subagent support.
 
-### Phase 3: Test Harness Execution
+### Phase 4: Test Harness Execution
 
 Once both subagents complete their initial drafts:
 1. Locate the project's native test runner (e.g., `npm test`, `pytest`, `cargo test`, `go test`, `dotnet test`).
 2. Execute the test command covering the newly created test file.
 3. Capture full stdout, stderr, and failure traces.
 
-### Phase 4: Arbitration & Reconciliation Loop
+### Phase 5: Arbitration & Reconciliation Loop
 
 Evaluate the test runner output:
 
@@ -69,9 +79,9 @@ Evaluate the test runner output:
      - Cause: The contract is unclear or contradicts itself regarding this scenario.
      - Action: Clarify the expected behavior with the user, update `docs/contracts/<feature-slug>.contract.md`, and notify both subagents.
 
-Re-run Phase 3 after each mediation until all tests pass or max cycles are reached.
+Re-run Phase 4 after each mediation until all tests pass or max cycles are reached.
 
-### Phase 5: Synthesis & Reporting
+### Phase 6: Synthesis & Reporting
 
 Provide a clear executive summary to the user:
 - Link to the frozen contract (`docs/contracts/<feature-slug>.contract.md`).
