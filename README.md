@@ -11,7 +11,8 @@
 [![Claude Code](https://img.shields.io/badge/Claude_Code-Anthropic-D97757?style=flat&logo=anthropic&logoColor=white)](https://anthropic.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat)](LICENSE)
 
-> Product website: [amiga-ia.ana-catalina.com](https://amiga-ia.ana-catalina.com/)
+> 🎶 Repo name inspo: [Amiga Mia - Los Prisioneros](https://www.youtube.com/watch?v=qPHaLk4-_Ew)  
+> 🌐 Product website: [amiga-ia.ana-catalina.com](https://amiga-ia.ana-catalina.com/)
 
 ---
 
