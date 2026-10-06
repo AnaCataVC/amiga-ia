@@ -1,11 +1,15 @@
 > **Created:** 2026-10-03
-> **Last Updated:** 2026-10-03
+> **Last Updated:** 2026-10-06
 
-# Cross-Platform Agent Tool Capabilities Matrix: Claude Code vs. Antigravity / Gemini
+# Cross-Platform Agent Tool Capabilities Matrix: Codex, Claude Code, and Antigravity / Gemini
 
 ## 1. Overview & Context
 
 Multi-agent workflows in Amiga IA rely on specialized subagents invoked either in Claude Code (via terminal/agent CLI) or in Google Antigravity / Gemini CLI. While both platforms discover subagents through Markdown files with YAML frontmatter (`agents/*.md`), they use fundamentally different tool ecosystems, identifiers, and permission models.
+
+Codex uses Agent Skills-compatible `SKILL.md` folders discovered under `.agents/skills/` or `~/.agents/skills/`. Its custom subagents use standalone TOML files under `.codex/agents/` or `~/.codex/agents/`, each requiring `name`, `description`, and `developer_instructions`. The setup build step copies canonical skill directories and converts canonical Markdown agent profiles into these TOML files in a package-owned staging directory, then installs them to Codex's user-level paths. Codex custom agents inherit the parent runtime configuration; Amiga IA does not translate the source `allowed-tools` list into a Codex permission boundary.
+
+Current references: [Codex skills](https://developers.openai.com/codex/skills/), [Codex subagents](https://developers.openai.com/codex/subagents/), and [Codex hooks](https://developers.openai.com/codex/hooks/).
 
 If an agent requires write access (creating, editing, or replacing files), relying on platform-specific tool identifiers causes silent failures or permission denials when running on the opposite platform.
 
@@ -13,15 +17,17 @@ If an agent requires write access (creating, editing, or replacing files), relyi
 
 ## 2. Tool Vocabulary Comparison
 
-| Abstract Capability | Claude Code (`~/.claude/agents/`) | Google Antigravity / Gemini (`~/.gemini/config/agents/`) |
-| :--- | :--- | :--- |
-| **Read / Inspect** | `Read`, `Grep`, `Glob` | `view_file`, `grep_search`, `find_by_name`, `list_dir` |
-| **Write / Create** | `Write` | `write_to_file` |
-| **Edit / Modify** | `Edit` | `replace_file_content`, `multi_replace_file_content` |
-| **Shell / Commands** | `Bash` | `run_command`, `manage_task` |
-| **Web Search** | `WebSearch` | `search_web` |
-| **Web Fetch** | `WebFetch` | `read_url_content` |
-| **Subagents / Orchestration** | `Agent` | `invoke_subagent`, `send_message`, `define_subagent` |
+| Abstract Capability | Claude Code (`~/.claude/agents/`) | Google Antigravity / Gemini (`~/.gemini/config/agents/`) | Codex (`~/.codex/agents/*.toml`) |
+| :--- | :--- | :--- | :--- |
+| **Read / Inspect** | `Read`, `Grep`, `Glob` | `view_file`, `grep_search`, `find_by_name`, `list_dir` | Inherited from parent runtime |
+| **Write / Create** | `Write` | `write_to_file` | Inherited from parent runtime |
+| **Edit / Modify** | `Edit` | `replace_file_content`, `multi_replace_file_content` | Inherited from parent runtime |
+| **Shell / Commands** | `Bash` | `run_command`, `manage_task` | Inherited from parent runtime |
+| **Web Search** | `WebSearch` | `search_web` | Inherited from parent runtime |
+| **Web Fetch** | `WebFetch` | `read_url_content` | Inherited from parent runtime |
+| **Subagents / Orchestration** | `Agent` | `invoke_subagent`, `send_message`, `define_subagent` | Codex multi-agent runtime |
+
+Codex subagents are invoked through the Codex multi-agent runtime using the configured custom agent `name`; the TOML profile sets its instructions and optional runtime settings. It does not use the Markdown `allowed-tools` field as a standalone tool allowlist.
 
 ---
 
@@ -58,7 +64,7 @@ If an agent requires write access (creating, editing, or replacing files), relyi
 | `ami-cleanroom-builder` | `Bash, Read, Grep, Write, Edit` | Write source code | Antigravity names missing |
 | `ami-cleanroom-tester` | `Bash, Read, Grep, Write, Edit` | Write test code | Antigravity names missing |
 | `ami-data-scientist` | `Bash, Read, Grep, Edit, Write` | Write notebooks/scripts | Antigravity names missing |
-| `ami-doc-architect` | `Bash, Read, Grep, WebSearch` | Write docs, sync learnings | **Missing all Write tools in both platforms** |
+| `ami-doc-architect` | `Bash, Read, Grep, WebSearch` | Write docs, sync learnings | **Antigravity write tools missing; Codex inherits parent runtime** |
 | `ami-pr-publisher` | `Bash, Read, Grep` | Write PR templates, temp logs | Missing write tools |
 | `ami-release-manager` | `Bash, Read, Edit, Write` | Bump versions, changelogs | Antigravity names missing |
 | `ami-tech-lead` | `Bash, Read, Grep, WebSearch, search_web, WebFetch, read_url_content, invoke_subagent, Write, Edit` | Architecture specs, plans | Antigravity write tools missing |

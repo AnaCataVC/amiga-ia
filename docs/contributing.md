@@ -2,7 +2,7 @@
 
 Thank you for your interest in contributing to **Amiga IA**! This guide will walk you through the project structure, explain how things work under the hood, and help you get up and running quickly.
 
-Amiga IA is an NPM package that distributes declarative AI skills and agents for **Antigravity (Gemini)** and **Claude Code**. Contributions — whether new skills, bug fixes, or documentation improvements — are all welcome.
+Amiga IA is an NPM package that distributes declarative AI skills and agents for **Codex**, **Antigravity (Gemini)**, and **Claude Code**. Contributions — whether new skills, bug fixes, or documentation improvements — are all welcome.
 
 ---
 
@@ -27,6 +27,8 @@ npm install
 amiga-ia/
 ├── skills/*/SKILL.md              # Declarative skill definitions (one per directory)
 ├── agents/*.md                    # Subagent profiles (Markdown with YAML frontmatter)
+├── codex/skills/                  # Generated Codex skill files installed by the wizard
+├── codex/agents/*.toml            # Generated Codex custom subagents installed by the wizard
 ├── adapters/universal_adapter.js  # Generates XML catalog for AI lazy loading
 ├── bin/setup.js                   # Interactive CLI wizard & diagnostic tool (`doctor`)
 ├── rules/ami-rules.md             # Declarative operational rules for Antigravity
@@ -40,6 +42,7 @@ amiga-ia/
 
 - **`skills/`** — Each subdirectory contains a `SKILL.md` file that defines a single skill using YAML frontmatter and imperative Markdown instructions.
 - **`agents/`** — Each `.md` file defines a subagent's persona, rules, and workflow.
+- **`codex/`** — Generated Codex-native distribution files. Edit the canonical `skills/` and `agents/` sources, then run `npm run build` to regenerate these files.
 - **`adapters/universal_adapter.js`** — Scans skills/agents and builds an XML index injected into the AI's system prompt.
 - **`bin/setup.js`** — The `amiga-ia-setup` CLI command that physically copies files to local AI configuration folders and runs diagnostic checks (`doctor`).
 - **`rules/ami-rules.md`** — Declarative operational guardrails for Antigravity.
@@ -189,10 +192,16 @@ The `bin/setup.js` script (exposed as the `amiga-ia-setup` command) is an intera
 - **Agents** → `~/.gemini/config/agents/`
 - **Rules** → `~/.gemini/config/rules/`
 
+#### Codex
+
+- **Skills** → `~/.agents/skills/`
+- **Custom agents** → `~/.codex/agents/*.toml`
+- **Hooks** → Optionally merges Codex-native hooks into `~/.codex/hooks.json`; Codex requires users to review and trust them before execution.
+
 ### How It Works
 
-1. The wizard prompts the user to select their target platform (Claude, Antigravity, or both).
-2. It physically copies all skill directories and agent files to the appropriate local paths.
+1. The wizard prompts the user to select Claude Code, Antigravity, and/or Codex.
+2. It copies skill directories and agent files to platform-specific paths; for Codex, it installs generated Agent Skills and custom agent TOML files.
 3. It cleans up orphaned files from previous installations (only `ami-`-prefixed files are removed — personal files are preserved).
 
 ### Uninstall

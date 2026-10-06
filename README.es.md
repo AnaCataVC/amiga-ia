@@ -9,6 +9,7 @@
 [![NPM](https://img.shields.io/badge/NPM-Package-CB3837?style=flat&logo=npm&logoColor=white)](https://www.npmjs.com/package/@anacatavc/amiga-ia)
 [![Antigravity](https://img.shields.io/badge/Antigravity-Gemini-8E24AA?style=flat&logo=googlegemini&logoColor=white)](https://deepmind.google/technologies/gemini/)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-Anthropic-D97757?style=flat&logo=anthropic&logoColor=white)](https://anthropic.com/)
+[![Codex](https://img.shields.io/badge/Codex-OpenAI-000000?style=flat&logo=openai&logoColor=white)](https://openai.com/codex/)
 [![Licencia: MIT](https://img.shields.io/badge/Licencia-MIT-blue.svg?style=flat)](LICENSE)
 
 > 🎶 Inspiración del nombre: [Amiga Mía - Los Prisioneros](https://www.youtube.com/watch?v=qPHaLk4-_Ew)  
@@ -18,7 +19,7 @@
 
 
 ### 1. Descripción del Proyecto
-**Amiga IA** es un ecosistema integral de *subagentes autónomos*, *hooks de seguridad sin estado* y *skills declarativas portátiles* diseñado para transformar a los asistentes de código por inteligencia artificial de simples ejecutores pasivos a colaboradores proactivos. Desarrollado nativamente para **Antigravity (Gemini)** y **Claude Code**, Amiga IA ofrece una única fuente de verdad para la gestión escalable de capacidades bajo el estándar de **Agent Skills (Markdown + Carga Diferida / Lazy Loading)**.
+**Amiga IA** es un ecosistema integral de *subagentes autónomos*, *hooks de seguridad sin estado* y *skills declarativas portátiles* diseñado para transformar a los asistentes de código por inteligencia artificial de simples ejecutores pasivos a colaboradores proactivos. Es compatible con **Codex**, **Antigravity (Gemini)** y **Claude Code**; para Codex, genera skills y perfiles de subagentes en sus formatos nativos desde las definiciones Markdown canónicas.
 
 Con la versión **v3.0.0 ("The Agentic Evolution")**, Amiga IA introduce la orquestación multi-habilidad descentralizada, permitiendo que subagentes especializados descubran herramientas locales y ejecuten revisiones en paralelo de código, auditorías de salud y autodiagnósticos arquitectónicos sin depender de supervisión humana constante ni instrucciones paso a paso.
 
@@ -47,7 +48,8 @@ amiga-ia/
 │   ├── adr/                 # Registros de Decisiones Arquitectónicas (ADRs)
 │   ├── architecture/        # Guías técnicas de ingeniería (ej. universal adapter)
 │   └── learning/            # Lecciones de sesión capturadas y patrones iterativos
-├── skills/                  # Skills declarativas en Markdown (ami-*/SKILL.md)
+├── skills/                  # Skills canónicas en Markdown (ami-*/SKILL.md)
+├── codex/                   # Archivos nativos de Codex generados para el instalador
 ├── hooks/                   # Hooks de seguridad nativos y scripts multiplataforma
 │   ├── hooks.json           # Copia generada de hooks.json (npm run build)
 │   └── scripts/             # Scripts externos universales (.js, ami-hooks.ps1 y ami-hooks.sh)
@@ -106,7 +108,7 @@ npm install -g @anacatavc/amiga-ia
 ```
 
 **Asistente Interactivo de Configuración (CLI):**
-Ejecuta el asistente CLI para elegir tus entornos de IA activos (Claude Code, Antigravity o Ambos) y seleccionar tu motor de shell favorito (Bash, PowerShell nativo o scripts universales en Node.js):
+Ejecuta el asistente CLI para elegir Codex, Claude Code y/o Antigravity, y seleccionar un motor de hooks compatible para las plataformas que los usan:
 ```bash
 amiga-ia-setup
 ```
@@ -133,6 +135,10 @@ Al ejecutar `amiga-ia-setup`, el asistente estructura de forma segura las siguie
 ├── skills/ami-*/SKILL.md           # Skills Declarativas (25 directorios)
 ├── agents/ami-*.md                 # Subagentes Autónomos (11 perfiles)
 └── rules/ami-rules.md              # Reglas Operativas Declarativas
+
+~/.agents/skills/                   # Skills globales de Codex
+~/.codex/agents/ami-*.toml          # Subagentes Codex convertidos desde Markdown
+~/.codex/hooks.json                # Hooks opcionales de Codex (requieren revisión y confianza)
 ```
 
 ### 7. Desinstalación

@@ -7,9 +7,9 @@ This document details the architecture and operational mechanics of the Amiga IA
 ## 1. Architecture & Responsibilities
 
 The CLI Setup Wizard is an interactive, zero-dependency Node.js tool responsible for:
-1. **Target Environment Auto-Detection:** Detecting whether Claude Code (`~/.claude/`), Antigravity (`~/.gemini/config/`), or both are installed.
-2. **Physical Capability Deployment:** Copying declarative skills (`skills/`), subagents (`agents/`), and rules (`rules/`) into standard local AI configuration directories.
-3. **Settings Merging & Rollback Safety:** Merging hook configurations into `~/.claude/settings.json` while generating an automated rollback backup (`settings.json.amiga-backup`).
+1. **Target Environment Selection:** Selecting Claude Code (`~/.claude/`), Antigravity (`~/.gemini/config/`), and/or Codex (`~/.agents/` and `~/.codex/`).
+2. **Physical Capability Deployment:** Copying declarative skills (`skills/`), subagents (`agents/`), and rules (`rules/`) into standard local AI configuration directories. Codex skills are installed to `~/.agents/skills/`; Markdown agent sources are converted during build to native custom agent TOML files installed to `~/.codex/agents/`.
+3. **Settings Merging & Rollback Safety:** Merging Claude Code hooks into `~/.claude/settings.json` with a rollback backup, and Codex hooks into `~/.codex/hooks.json` while preserving unrelated user hooks.
 4. **Version Manifest Tracking:** Writing `.amiga-version.json` in installed directories to accurately track installed versions and prevent drift.
 5. **System Diagnostic Engine (`doctor`):** Auditing installed packages, checking NPM registry for updates, verifying YAML frontmatter validity, and detecting legacy plugin conflicts.
 6. **Namespace-Protected Safe Uninstallation:** Selectively removing only `ami-`-prefixed skills and agents during uninstallation without touching personal user files.

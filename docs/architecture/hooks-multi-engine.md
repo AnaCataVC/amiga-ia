@@ -19,6 +19,7 @@ Hooks in Amiga IA act as non-blocking guardrails that provide real-time advisory
 
 | Engine | Primary Entrypoint | Invocation Pattern | Best Suited For |
 |---|---|---|---|
+| **Codex Node.js** | `hooks/scripts/ami-codex-pre-tool-use.js`<br>`hooks/scripts/ami-codex-post-tool-use.js` | Registered in `~/.codex/hooks.json` | Codex-native lifecycle schema and `hookSpecificOutput` advisory context. |
 | **Universal Node.js** | `hooks/scripts/ami-pre-tool-use.js`<br>`hooks/scripts/ami-post-tool-use.js` | `node /path/to/ami-pre-tool-use.js` | Cross-platform setups, default for modern environments. Supports Antigravity and Claude Code. |
 | **PowerShell (Windows)** | `hooks/scripts/ami-hooks.ps1` | `pwsh -File /path/to/ami-hooks.ps1 -Event PreToolUse` | Windows environments without Node.js global binaries in path. |
 | **Bash (POSIX)** | `hooks/scripts/ami-hooks.sh` | `bash /path/to/ami-hooks.sh -e PreToolUse` | Linux/macOS environments using native POSIX shell. |
