@@ -10,9 +10,13 @@ const pc = require('picocolors');
 const homeDir = os.homedir();
 const claudeDir = path.join(homeDir, '.claude');
 const geminiDir = path.join(homeDir, '.gemini', 'config');
+const codexDir = path.join(homeDir, '.codex');
+const codexUserSkillsDir = path.join(homeDir, '.agents', 'skills');
 
 const sourceSkillsDir = path.join(__dirname, '../skills');
 const sourceAgentsDir = path.join(__dirname, '../agents');
+const sourceCodexSkillsDir = path.join(__dirname, '../codex/skills');
+const sourceCodexAgentsDir = path.join(__dirname, '../codex/agents');
 const sourceRulesDir = path.join(__dirname, '../rules');
 const sourceSettingsPath = path.join(__dirname, '../hooks.json');
 const { translateFrontmatter, hasWriteCapabilities } = require('../adapters/capability_translator');
@@ -91,6 +95,8 @@ const AMIGA_HOOK_SIGNATURES = [
   'docs/coding-sessions',
   'debugger|TODO|FIXME',
   'ami-session-start',
+  'ami-codex-pre-tool-use',
+  'ami-codex-post-tool-use',
   'ami-pre-tool-use',
   'ami-post-tool-use',
   'ami-hooks'
@@ -276,6 +282,30 @@ function installNodeHooks(targetDir, settingsPath, options = {}) {
   return result;
 }
 
+function installCodexHooks() {
+  const hooksDir = path.join(codexDir, 'hooks');
+  fs.mkdirSync(hooksDir, { recursive: true });
+  const sourceScripts = path.join(__dirname, '../hooks/scripts');
+  const scriptNames = ['ami-codex-pre-tool-use.js', 'ami-codex-post-tool-use.js'];
+  for (const name of scriptNames) {
+    fs.copyFileSync(path.join(sourceScripts, name), path.join(hooksDir, name));
+  }
+
+  const scriptCommand = (name) => `node "${path.join(hooksDir, name).replace(/\\/g, '/')}"`;
+  const hooksConfig = {
+    hooks: {
+      PreToolUse: [{ matcher: '^Bash$', hooks: [{ type: 'command', command: scriptCommand('ami-codex-pre-tool-use.js') }] }],
+      PostToolUse: [{ matcher: 'Edit|Write', hooks: [{ type: 'command', command: scriptCommand('ami-codex-post-tool-use.js') }] }]
+    }
+  };
+  const tempPath = path.join(codexDir, '.amiga-codex-hooks-tmp.json');
+  const hooksPath = path.join(codexDir, 'hooks.json');
+  fs.writeFileSync(tempPath, JSON.stringify(hooksConfig, null, 2));
+  const merged = mergeSettings(hooksPath, tempPath);
+  fs.unlinkSync(tempPath);
+  return merged;
+}
+
 function installPwshHooks(targetDir, settingsPath, options = {}) {
   const hooksDir = path.join(targetDir, 'hooks');
   if (!fs.existsSync(hooksDir)) fs.mkdirSync(hooksDir, { recursive: true });
@@ -452,6 +482,7 @@ async function runDoctor() {
   
   const claudeStatus = getInstalledEnvironmentStatus(claudeDir);
   const geminiStatus = getInstalledEnvironmentStatus(geminiDir);
+  const codexStatus = getInstalledEnvironmentStatus(codexDir);
   
   const formatStatus = (status) => {
     if (!status.installed) return pc.gray(`ℹ️  ${status.status}`);
@@ -461,8 +492,9 @@ async function runDoctor() {
   };
   console.log(`  🤖 Claude Code installed environment: ${formatStatus(claudeStatus)}`);
   console.log(`  🤖 Antigravity installed environment: ${formatStatus(geminiStatus)}`);
+  console.log(`  🤖 Codex installed environment: ${formatStatus(codexStatus)}`);
 
-  const anyInstalled = claudeStatus.installed || geminiStatus.installed;
+  const anyInstalled = claudeStatus.installed || geminiStatus.installed || codexStatus.installed;
   let hasOutdatedOrUntrackedEnv = false;
 
   if (claudeStatus.installed) {
@@ -477,6 +509,11 @@ async function runDoctor() {
       hasOutdatedOrUntrackedEnv = true;
       console.log(pc.yellow(`  ⚠️  WARNING: Antigravity skills/agents are outdated relative to executing package v${currentVersion} (or lacking version tracking).`));
     }
+  }
+
+  if (codexStatus.installed && (codexStatus.version === 'untracked' || isNewerVersion(codexStatus.version, currentVersion))) {
+    hasOutdatedOrUntrackedEnv = true;
+    console.log(pc.yellow(`  ⚠️  WARNING: Codex skills/agents are outdated relative to executing package v${currentVersion} (or lacking version tracking).`));
   }
 
   if (hasOutdatedOrUntrackedEnv) {
@@ -740,7 +777,8 @@ async function runInstall() {
     message: 'Which assistants do you want to configure?',
     options: [
       { label: 'Claude Code', value: 'claude' },
-      { label: 'Antigravity (Gemini)', value: 'antigravity' }
+      { label: 'Antigravity (Gemini)', value: 'antigravity' },
+      { label: 'Codex', value: 'codex' }
     ],
     initialValues: ['claude', 'antigravity'],
     required: true
@@ -865,12 +903,46 @@ async function runInstall() {
     }
   }
 
+  if (choices.includes('codex')) {
+    console.log(pc.blue('\nInstalling for Codex...'));
+    cleanOrphanedFiles(sourceCodexSkillsDir, codexUserSkillsDir);
+    cleanOrphanedFiles(sourceCodexAgentsDir, path.join(codexDir, 'agents'));
+    copyRecursiveSync(sourceCodexSkillsDir, codexUserSkillsDir, 'codex');
+    copyRecursiveSync(sourceCodexAgentsDir, path.join(codexDir, 'agents'), 'codex');
+    saveVersionManifest(codexDir, currentVersion);
+    console.log(pc.green('✅ Codex skills installed in ~/.agents/skills/ and custom subagents in ~/.codex/agents/.'));
+    const installHooks = await confirm({ message: 'Install Amiga IA advisory hooks for Codex? Codex will ask you to review and trust them before their first run.', initialValue: true });
+    if (isCancel(installHooks)) process.exit(0);
+    if (installHooks) {
+      const merged = installCodexHooks();
+      if (merged) console.log(pc.green('✅ Codex lifecycle hooks configured in ~/.codex/hooks.json.'));
+    }
+  }
+
   checkLegacyDirs();
 }
 
 async function runUninstall() {
   console.log(pc.blue('\nUninstalling package files from AI assistants...'));
   let uninstalledSomething = false;
+
+  if (fs.existsSync(codexDir) || fs.existsSync(codexUserSkillsDir)) {
+    deleteMatchingFiles(sourceCodexSkillsDir, codexUserSkillsDir);
+    deleteMatchingFiles(sourceCodexAgentsDir, path.join(codexDir, 'agents'));
+    const codexHooksDir = path.join(codexDir, 'hooks');
+    for (const script of ['ami-codex-pre-tool-use.js', 'ami-codex-post-tool-use.js']) {
+      const scriptPath = path.join(codexHooksDir, script);
+      if (fs.existsSync(scriptPath)) fs.unlinkSync(scriptPath);
+    }
+    const codexHooksPath = path.join(codexDir, 'hooks.json');
+    removeAmigaHooks(codexHooksPath);
+    const codexManifest = path.join(codexDir, '.amiga-version.json');
+    if (fs.existsSync(codexManifest)) {
+      try { fs.unlinkSync(codexManifest); } catch (e) {}
+    }
+    console.log(pc.green('✅ Codex skills and custom subagents removed.'));
+    uninstalledSomething = true;
+  }
 
   if (fs.existsSync(claudeDir)) {
     deleteMatchingFiles(sourceSkillsDir, path.join(claudeDir, 'skills'));

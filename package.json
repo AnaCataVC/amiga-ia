@@ -8,6 +8,7 @@
   },
   "files": [
     "bin/",
+    "codex/",
     "adapters/",
     "agent/",
     "agents/",
@@ -19,6 +20,7 @@
   ],
   "scripts": {
     "build": "node scripts/build-manifests.js",
+    "prepack": "npm run build",
     "test": "node --test",
     "prepublishOnly": "npm run build && npm test",
     "release": "node scripts/release.js"
