@@ -464,4 +464,14 @@ describe('Amiga IA setup.js structural integrity tests', () => {
     assert.ok(fs.existsSync(path.resolve(__dirname, '../codex/skills')), 'codex/skills must exist');
     assert.ok(fs.existsSync(path.resolve(__dirname, '../codex/agents')), 'codex/agents must exist');
   });
+
+  test('should inspect Claude, Antigravity, and Codex hooks in doctor without false positives on user hooks', () => {
+    const setupContent = fs.readFileSync(path.join(__dirname, '../bin/setup.js'), 'utf8');
+    assert.match(setupContent, /Checking Claude Code hooks configuration/);
+    assert.match(setupContent, /Checking Antigravity hooks configuration/);
+    assert.match(setupContent, /Checking Codex hooks configuration/);
+
+    // Verify doctor checks for Amiga hook signatures before claiming Amiga hooks detected
+    assert.match(setupContent, /const\s+hasAmigaHooks\s*=\s*hookCmds\.some/);
+  });
 });

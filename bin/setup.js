@@ -638,8 +638,6 @@ async function runDoctor() {
     try {
       const settings = JSON.parse(fs.readFileSync(claudeSettingsPath, 'utf8'));
       if (settings.hooks && (settings.hooks.PreToolUse || settings.hooks.PostToolUse)) {
-        console.log(pc.green('  ✅ Amiga IA hooks detected and settings.json is valid JSON.'));
-
         const isWindows = os.platform() === 'win32';
         const hookEvents = Object.values(settings.hooks).flat();
         const hookCmds = [];
@@ -652,25 +650,32 @@ async function runDoctor() {
         });
 
         const isAmigaHook = (cmd) => cmd && typeof cmd === 'string' && AMIGA_HOOK_SIGNATURES.some(sig => cmd.includes(sig));
+        const hasAmigaHooks = hookCmds.some(h => isAmigaHook(h.command));
 
-        const hasNodeHooks = hookCmds.some(h => isAmigaHook(h.command) && h.command.includes('node '));
-        const hasBashHooks = hookCmds.some(h => isAmigaHook(h.command) && !h.command.includes('node ') && (h.shell === 'bash' || !h.shell));
-        const hasPwshHooks = hookCmds.some(h => isAmigaHook(h.command) && !h.command.includes('node ') && (h.shell === 'pwsh' || h.shell === 'powershell'));
+        if (hasAmigaHooks) {
+          console.log(pc.green('  ✅ Amiga IA hooks detected and settings.json is valid JSON.'));
 
-        if (hasNodeHooks) {
-          console.log(pc.green('  ✅ Node.js hooks detected — universal cross-platform support.'));
-        } else if (hasPwshHooks && isWindows) {
-          console.log(pc.green('  ✅ PowerShell hooks detected — compatible with Windows.'));
-        } else if (hasBashHooks && !isWindows) {
-          console.log(pc.green('  ✅ Bash hooks detected — compatible with Unix/macOS.'));
-        } else if (hasBashHooks && isWindows) {
-          console.log(pc.yellow('  ⚠️  WARNING: Bash hooks detected on Windows. They may fail without Git Bash setup.'));
-          console.log(pc.gray("     Recommendation: Run 'amiga-ia-setup' and select Node.js (universal) or PowerShell hooks."));
-          issueCount++;
-        } else if (hasPwshHooks && !isWindows) {
-          console.log(pc.yellow('  ⚠️  WARNING: PowerShell hooks detected on a non-Windows OS.'));
-          console.log(pc.gray("     Recommendation: Run 'amiga-ia-setup' and select Node.js (universal) or Bash hooks."));
-          issueCount++;
+          const hasNodeHooks = hookCmds.some(h => isAmigaHook(h.command) && h.command.includes('node '));
+          const hasBashHooks = hookCmds.some(h => isAmigaHook(h.command) && !h.command.includes('node ') && (h.shell === 'bash' || !h.shell));
+          const hasPwshHooks = hookCmds.some(h => isAmigaHook(h.command) && !h.command.includes('node ') && (h.shell === 'pwsh' || h.shell === 'powershell'));
+
+          if (hasNodeHooks) {
+            console.log(pc.green('  ✅ Node.js hooks detected — universal cross-platform support.'));
+          } else if (hasPwshHooks && isWindows) {
+            console.log(pc.green('  ✅ PowerShell hooks detected — compatible with Windows.'));
+          } else if (hasBashHooks && !isWindows) {
+            console.log(pc.green('  ✅ Bash hooks detected — compatible with Unix/macOS.'));
+          } else if (hasBashHooks && isWindows) {
+            console.log(pc.yellow('  ⚠️  WARNING: Bash hooks detected on Windows. They may fail without Git Bash setup.'));
+            console.log(pc.gray("     Recommendation: Run 'amiga-ia-setup' and select Node.js (universal) or PowerShell hooks."));
+            issueCount++;
+          } else if (hasPwshHooks && !isWindows) {
+            console.log(pc.yellow('  ⚠️  WARNING: PowerShell hooks detected on a non-Windows OS.'));
+            console.log(pc.gray("     Recommendation: Run 'amiga-ia-setup' and select Node.js (universal) or Bash hooks."));
+            issueCount++;
+          }
+        } else {
+          console.log(pc.gray('  ℹ️  No Amiga IA hooks found in ~/.claude/settings.json (Optional feature).'));
         }
       } else {
         console.log(pc.gray('  ℹ️  No Amiga IA hooks found in ~/.claude/settings.json (Optional feature).'));
@@ -689,8 +694,6 @@ async function runDoctor() {
     try {
       const geminiHooks = JSON.parse(fs.readFileSync(geminiHooksPath, 'utf8'));
       if (geminiHooks.hooks && (geminiHooks.hooks.PreToolUse || geminiHooks.hooks.PostToolUse)) {
-        console.log(pc.green('  ✅ Amiga IA hooks detected and ~/.gemini/config/hooks.json is valid JSON.'));
-
         const hookEvents = Object.values(geminiHooks.hooks).flat();
         const hookCmds = [];
         hookEvents.forEach(h => {
@@ -701,15 +704,24 @@ async function runDoctor() {
           }
         });
 
-        const hasMalformedQuotedPath = hookCmds.some(h => typeof h.command === 'string' && /node\s+["'].*["']/.test(h.command));
-        const usesRelativePaths = hookCmds.some(h => typeof h.command === 'string' && h.command.includes('./hooks/'));
+        const isAmigaHook = (cmd) => cmd && typeof cmd === 'string' && AMIGA_HOOK_SIGNATURES.some(sig => cmd.includes(sig));
+        const hasAmigaHooks = hookCmds.some(h => isAmigaHook(h.command));
 
-        if (hasMalformedQuotedPath) {
-          console.log(pc.yellow('  ⚠️  WARNING: Antigravity hooks contain quoted script paths that may cause path resolution errors on Windows.'));
-          console.log(pc.gray("     Recommendation: Run 'amiga-ia-setup' to refresh Antigravity hooks with clean relative paths."));
-          issueCount++;
-        } else if (usesRelativePaths) {
-          console.log(pc.green('  ✅ Clean relative hook paths configured for Antigravity.'));
+        if (hasAmigaHooks) {
+          console.log(pc.green('  ✅ Amiga IA hooks detected and ~/.gemini/config/hooks.json is valid JSON.'));
+
+          const hasMalformedQuotedPath = hookCmds.some(h => typeof h.command === 'string' && /node\s+["'].*["']/.test(h.command));
+          const usesRelativePaths = hookCmds.some(h => typeof h.command === 'string' && h.command.includes('./hooks/'));
+
+          if (hasMalformedQuotedPath) {
+            console.log(pc.yellow('  ⚠️  WARNING: Antigravity hooks contain quoted script paths that may cause path resolution errors on Windows.'));
+            console.log(pc.gray("     Recommendation: Run 'amiga-ia-setup' to refresh Antigravity hooks with clean relative paths."));
+            issueCount++;
+          } else if (usesRelativePaths) {
+            console.log(pc.green('  ✅ Clean relative hook paths configured for Antigravity.'));
+          }
+        } else {
+          console.log(pc.gray('  ℹ️  No Amiga IA hooks found in ~/.gemini/config/hooks.json (Optional feature).'));
         }
       } else {
         console.log(pc.gray('  ℹ️  No Amiga IA hooks found in ~/.gemini/config/hooks.json (Optional feature).'));
@@ -720,6 +732,45 @@ async function runDoctor() {
     }
   } else {
     console.log(pc.gray('  ℹ️  Antigravity hooks file not found (~/.gemini/config/hooks.json).'));
+  }
+
+  console.log(pc.blue('\n🔍 Checking Codex hooks configuration...'));
+  const codexHooksPath = path.join(codexDir, 'hooks.json');
+  if (fs.existsSync(codexHooksPath)) {
+    try {
+      const codexHooks = JSON.parse(fs.readFileSync(codexHooksPath, 'utf8'));
+      if (codexHooks.hooks && (codexHooks.hooks.PreToolUse || codexHooks.hooks.PostToolUse)) {
+        const hookEvents = Object.values(codexHooks.hooks).flat();
+        const hookCmds = [];
+        hookEvents.forEach(h => {
+          if (h && h.hooks && Array.isArray(h.hooks)) {
+            h.hooks.forEach(subHook => {
+              if (subHook && subHook.command) hookCmds.push(subHook);
+            });
+          }
+        });
+
+        const isAmigaHook = (cmd) => cmd && typeof cmd === 'string' && AMIGA_HOOK_SIGNATURES.some(sig => cmd.includes(sig));
+        const hasAmigaHooks = hookCmds.some(h => isAmigaHook(h.command));
+
+        if (hasAmigaHooks) {
+          console.log(pc.green('  ✅ Amiga IA hooks detected and ~/.codex/hooks.json is valid JSON.'));
+          const hasNodeHooks = hookCmds.some(h => isAmigaHook(h.command) && h.command.includes('node '));
+          if (hasNodeHooks) {
+            console.log(pc.green('  ✅ Node.js hooks detected — universal cross-platform support.'));
+          }
+        } else {
+          console.log(pc.gray('  ℹ️  No Amiga IA hooks found in ~/.codex/hooks.json (Optional feature).'));
+        }
+      } else {
+        console.log(pc.gray('  ℹ️  No Amiga IA hooks found in ~/.codex/hooks.json (Optional feature).'));
+      }
+    } catch (e) {
+      console.log(pc.red('❌ ERROR: ~/.codex/hooks.json contains invalid JSON syntax.'));
+      issueCount++;
+    }
+  } else {
+    console.log(pc.gray('  ℹ️  Codex hooks file not found (~/.codex/hooks.json).'));
   }
 
   console.log(pc.blue('\n🔍 Checking rules configuration...'));
