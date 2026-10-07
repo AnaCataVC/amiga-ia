@@ -1,6 +1,18 @@
 const fs = require('fs');
 const path = require('path');
 
+function resolveCodexSkillReferences(instructions, skillNames, agentFile) {
+  return instructions
+    .replace(/\r\n/g, '\n')
+    .replace(/(?:~\/\.agents\/skills\/|skills\/)(ami-[a-z0-9-]+)\/SKILL\.md/g, (reference, skillName) => {
+      if (!skillNames.has(skillName)) {
+        throw new Error(`Agent ${agentFile} references missing skill ${skillName}`);
+      }
+      return `__AMIGA_CODEX_SKILLS_DIR__/${skillName}/SKILL.md`;
+    })
+    .trim();
+}
+
 function buildManifests() {
   console.log('📦 Validating Amiga IA configuration from Single Source of Truth (package.json)...');
 
@@ -53,6 +65,9 @@ function buildManifests() {
   const codexSkillsDir = path.join(rootDir, 'codex', 'skills');
   syncAmigaDirectory(sourceSkillsDir, codexSkillsDir);
 
+  const skillNames = new Set(fs.readdirSync(sourceSkillsDir)
+    .filter(entry => entry.startsWith('ami-') && fs.statSync(path.join(sourceSkillsDir, entry)).isDirectory()));
+
   const sourceAgentsDir = path.join(rootDir, 'agents');
   const codexAgentsDir = path.join(rootDir, 'codex', 'agents');
   fs.mkdirSync(codexAgentsDir, { recursive: true });
@@ -71,7 +86,7 @@ function buildManifests() {
       if (field) metadata[field[1]] = field[2].trim();
     }
     if (!metadata.name || !metadata.description) throw new Error(`Agent needs name and description: ${file}`);
-    const instructions = content.slice(match[0].length).replace(/\r\n/g, '\n').trim();
+    const instructions = resolveCodexSkillReferences(content.slice(match[0].length), skillNames, file);
     const toml = `name = ${JSON.stringify(metadata.name)}\ndescription = ${JSON.stringify(metadata.description)}\ndeveloper_instructions = ${JSON.stringify(instructions)}\n`;
     fs.writeFileSync(path.join(codexAgentsDir, `${path.basename(file, '.md')}.toml`), toml);
   }
@@ -84,4 +99,4 @@ if (require.main === module) {
   buildManifests();
 }
 
-module.exports = { buildManifests };
+module.exports = { buildManifests, resolveCodexSkillReferences };

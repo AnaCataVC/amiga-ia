@@ -21,7 +21,7 @@ const sourceRulesDir = path.join(__dirname, '../rules');
 const sourceSettingsPath = path.join(__dirname, '../hooks.json');
 const { translateFrontmatter, hasWriteCapabilities } = require('../adapters/capability_translator');
 
-function copyRecursiveSync(src, dest, targetEnv = null) {
+function copyRecursiveSync(src, dest, targetEnv = null, options = {}) {
   if (!fs.existsSync(src)) return;
   const isDirectory = fs.statSync(src).isDirectory();
   if (isDirectory) {
@@ -29,7 +29,7 @@ function copyRecursiveSync(src, dest, targetEnv = null) {
       fs.mkdirSync(dest, { recursive: true });
     }
     fs.readdirSync(src).forEach(function(childItemName) {
-      copyRecursiveSync(path.join(src, childItemName), path.join(dest, childItemName), targetEnv);
+      copyRecursiveSync(path.join(src, childItemName), path.join(dest, childItemName), targetEnv, options);
     });
   } else {
     if (dest.endsWith('.md')) {
@@ -40,6 +40,13 @@ function copyRecursiveSync(src, dest, targetEnv = null) {
       } else if (targetEnv === 'antigravity' || targetEnv === 'gemini') {
         content = translateFrontmatter(content, 'antigravity');
       }
+      fs.writeFileSync(dest, content);
+    } else if (targetEnv === 'codex' && dest.endsWith('.toml')) {
+      if (!options.codexUserSkillsDir) {
+        throw new Error('Codex skills directory is required to install agent profiles.');
+      }
+      const escapedSkillsDir = JSON.stringify(options.codexUserSkillsDir).slice(1, -1);
+      const content = fs.readFileSync(src, 'utf8').replace(/__AMIGA_CODEX_SKILLS_DIR__/g, escapedSkillsDir);
       fs.writeFileSync(dest, content);
     } else {
       fs.copyFileSync(src, dest);
@@ -962,7 +969,7 @@ async function runInstall() {
     cleanOrphanedFiles(sourceCodexSkillsDir, codexUserSkillsDir);
     cleanOrphanedFiles(sourceCodexAgentsDir, path.join(codexDir, 'agents'));
     copyRecursiveSync(sourceCodexSkillsDir, codexUserSkillsDir, 'codex');
-    copyRecursiveSync(sourceCodexAgentsDir, path.join(codexDir, 'agents'), 'codex');
+    copyRecursiveSync(sourceCodexAgentsDir, path.join(codexDir, 'agents'), 'codex', { codexUserSkillsDir });
     saveVersionManifest(codexDir, currentVersion);
     console.log(pc.green('✅ Codex skills installed in ~/.agents/skills/ and custom subagents in ~/.codex/agents/.'));
     const installHooks = await confirm({ message: 'Install Amiga IA advisory hooks for Codex? Codex will ask you to review and trust them before their first run.', initialValue: true });

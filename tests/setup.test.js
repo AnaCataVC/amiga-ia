@@ -42,12 +42,12 @@ const removeAmigaHooksFunc = new Function('fs', 'path', 'targetPath', `
 
 const { translateFrontmatter } = require('../adapters/capability_translator');
 
-const copyRecursiveSyncFunc = (fs, path, src, dest, targetEnv) => {
-  const fn = new Function('fs', 'path', 'src', 'dest', 'targetEnv', 'translateFrontmatter', `
+const copyRecursiveSyncFunc = (fs, path, src, dest, targetEnv, options = {}) => {
+  const fn = new Function('fs', 'path', 'src', 'dest', 'targetEnv', 'options', 'translateFrontmatter', `
     ${setupCode.slice(setupCode.indexOf('function copyRecursiveSync'), setupCode.indexOf('function cleanOrphanedFiles'))}
-    return copyRecursiveSync(src, dest, targetEnv);
+    return copyRecursiveSync(src, dest, targetEnv, options);
   `);
-  return fn(fs, path, src, dest, targetEnv, translateFrontmatter);
+  return fn(fs, path, src, dest, targetEnv, options, translateFrontmatter);
 };
 
 describe('Amiga IA setup.js mergeSettings tests', () => {
@@ -377,6 +377,25 @@ describe('Amiga IA setup.js version manifest and environment tracking tests', ()
 
 describe('Amiga IA setup.js copyRecursiveSync tests', () => {
 
+  test('should resolve Codex skill path placeholders to the installed absolute directory without changing other files', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'amiga-copy-test-codex-'));
+    const srcDir = path.join(tmpDir, 'src');
+    const destDir = path.join(tmpDir, 'dest');
+    const codexSkillsDir = path.join(tmpDir, 'user', '.agents', 'skills');
+    fs.mkdirSync(srcDir, { recursive: true });
+    const toml = 'developer_instructions = "Read __AMIGA_CODEX_SKILLS_DIR__/ami-review/SKILL.md"\n';
+    fs.writeFileSync(path.join(srcDir, 'ami-review.toml'), toml);
+    fs.writeFileSync(path.join(srcDir, 'ami-reference.md'), 'skills/ami-review/SKILL.md');
+
+    copyRecursiveSyncFunc(fs, path, srcDir, destDir, 'codex', { codexUserSkillsDir: codexSkillsDir });
+
+    const installedToml = fs.readFileSync(path.join(destDir, 'ami-review.toml'), 'utf8');
+    assert.ok(installedToml.includes(JSON.stringify(codexSkillsDir).slice(1, -1)));
+    assert.ok(!installedToml.includes('__AMIGA_CODEX_SKILLS_DIR__'));
+    assert.strictEqual(fs.readFileSync(path.join(destDir, 'ami-reference.md'), 'utf8'), 'skills/ami-review/SKILL.md');
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
   test('should replace .gemini/agents/ with .claude/agents/ in markdown files when targetEnv is claude', () => {
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'amiga-copy-test-'));
     const srcDir = path.join(tmpDir, 'src');
@@ -473,5 +492,18 @@ describe('Amiga IA setup.js structural integrity tests', () => {
 
     // Verify doctor checks for Amiga hook signatures before claiming Amiga hooks detected
     assert.match(setupContent, /const\s+hasAmigaHooks\s*=\s*hookCmds\.some/);
+  });
+});
+
+describe('Codex agent manifest generation', () => {
+  test('should convert skill references to Codex global paths and reject missing skills', () => {
+    const { resolveCodexSkillReferences } = require('../scripts/build-manifests');
+    const skills = new Set(['ami-audit-quality']);
+    const resolved = resolveCodexSkillReferences('View the file `skills/ami-audit-quality/SKILL.md`.', skills, 'ami-test-agent.md');
+    assert.strictEqual(resolved, 'View the file `__AMIGA_CODEX_SKILLS_DIR__/ami-audit-quality/SKILL.md`.');
+    assert.throws(
+      () => resolveCodexSkillReferences('Read `skills/ami-missing/SKILL.md`.', skills, 'ami-test-agent.md'),
+      /references missing skill ami-missing/
+    );
   });
 });
