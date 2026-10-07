@@ -31,6 +31,7 @@ We have established a unified build-time compilation and CLI deployment pipeline
 - The setup wizard (`amiga-ia-setup`) installs Codex capabilities to their native discovery paths:
   - Skills are installed into `~/.agents/skills/`.
   - Subagents are installed into `~/.codex/agents/`.
+- The Codex manifest generator validates skill references and writes an installation placeholder into generated TOML. During Codex installation, the setup wizard replaces it with the absolute user skills directory. This avoids relying on shell-specific `~` expansion in agent file reads.
 - The diagnostic engine (`doctor`) and `hasAmigaItems` inspect both `~/.codex/agents/` and `~/.agents/skills/` to provide accurate health and version drift detection without false negatives.
 
 ### 3. Dedicated Codex Lifecycle Hooks (`hooks/scripts/ami-codex-*.js`)
