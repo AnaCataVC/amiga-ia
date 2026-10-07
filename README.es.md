@@ -19,7 +19,7 @@
 
 
 ### 1. Descripción del Proyecto
-**Amiga IA** es un ecosistema integral de *subagentes autónomos*, *hooks de seguridad sin estado* y *skills declarativas portátiles* diseñado para transformar a los asistentes de código por inteligencia artificial de simples ejecutores pasivos a colaboradores proactivos. Es compatible con **Codex**, **Antigravity (Gemini)** y **Claude Code**; para Codex, genera skills y perfiles de subagentes en sus formatos nativos desde las definiciones Markdown canónicas.
+**Amiga IA** es un ecosistema integral de *subagentes autónomos*, *hooks de seguridad sin estado* y *skills declarativas portátiles* diseñado para transformar a los asistentes de código por inteligencia artificial de simples ejecutores pasivos a colaboradores proactivos. Desarrollado para **Antigravity (Gemini)**, **Claude Code** y **OpenAI Codex**, Amiga IA ofrece una única fuente de verdad para la gestión escalable de capacidades bajo el estándar de **Agent Skills (Markdown + Carga Diferida / Lazy Loading)**.
 
 Con la versión **v3.0.0 ("The Agentic Evolution")**, Amiga IA introduce la orquestación multi-habilidad descentralizada, permitiendo que subagentes especializados descubran herramientas locales y ejecuten revisiones en paralelo de código, auditorías de salud y autodiagnósticos arquitectónicos sin depender de supervisión humana constante ni instrucciones paso a paso.
 
@@ -35,7 +35,7 @@ El desarrollo y evolución iterativa de Amiga IA hacia un ecosistema plenamente 
 * **IA Agéntica vs. Prompts Pasivos:** Las instrucciones imperativas paso a paso tienden a romperse a medida que las bases de código crecen. Migrar hacia subagentes autónomos que razunan sobre objetivos globales, exploran el repositorio y coordinan revisiones en paralelo demostró ser exponencialmente más resistente, preciso y escalable que la ingeniería de prompts tradicional.
 * **Economía de Tokens y Arquitectura Sin Estado:** Las primeras versiones del proyecto dependían de cachés obligatorias para persistir resúmenes locales de sesión. El análisis continuo demostró que arrastrar este contexto acumulado en cada inicio degradaba la velocidad de respuesta del modelo y elevaba innecesariamente el consumo de tokens. La retirada radical del estado de sesión en favor de inspecciones reactivas en tiempo real (ADR-003) devolvió al sistema su agilidad e inmediatez.
 * **Mitigación de la Sobrecarga Silenciosa de Tokens:** Los catálogos dinámicos inyectados en el Prompt del Sistema generan un costo acumulativo severo durante sesiones largas. El reemplazo de etiquetas XML anidadas y extensas por índices relativos basados en atributos compactos erradicó el desperdicio redundante en memoria (ADR-004). Además, sustituir comandos en línea complejos por llamados a scripts externos estandarizados evitó fallos en la deduplicación de cadenas entre diferentes sistemas operativos.
-* **Universalidad Multi-Ecosistema:** Lograr 100% de compatibilidad operativa entre motores con arquitecturas distintas (Claude Code de Anthropic y Antigravity de Google) en múltiples sistemas operativos requirió encapsular la lógica de interdicción en wrappers transversales de Node.js y normalizar el catálogo de herramientas mediante un índice XML dinámico y estricto.
+* **Universalidad Multi-Ecosistema:** Lograr 100% de compatibilidad operativa entre motores con arquitecturas distintas (Antigravity de Google, Claude Code de Anthropic y OpenAI Codex) en múltiples sistemas operativos requirió encapsular la lógica de interdicción en wrappers transversales y normalizar la traducción de capacidades hacia sus formatos nativos.
 
 ### 4. Estructura del Repositorio
 ```text
@@ -108,18 +108,18 @@ npm install -g @anacatavc/amiga-ia
 ```
 
 **Asistente Interactivo de Configuración (CLI):**
-Ejecuta el asistente CLI para elegir Codex, Claude Code y/o Antigravity, y seleccionar un motor de hooks compatible para las plataformas que los usan:
+Ejecuta el asistente CLI para elegir tus entornos de IA activos (Antigravity, Claude Code y/o OpenAI Codex) y configurar los motores de hooks compatibles:
 ```bash
 amiga-ia-setup
 ```
 
 **Herramienta de Diagnóstico del Sistema (`doctor`):**
-Para verificar la salud y permisos del sistema, consultar incompatibilities del sistema operativo y validar que la sintaxis YAML frontmatter sea 100% correcta:
+Para verificar la salud y permisos del sistema, consultar incompatibilidades del sistema operativo y validar que la sintaxis YAML frontmatter sea 100% correcta:
 ```bash
 amiga-ia-setup doctor
 ```
 
-> 💡 **Hooks de Seguridad y Selección de Motor:** Claude Code es compatible con recordatorios de pre-commit y bloqueos de seguridad. El asistente CLI fusiona limpiamente estas reglas ligeras en `~/.claude/settings.json`, generando un respaldo de seguridad en `~/.claude/settings.json.amiga-backup`. Google Antigravity ejecuta estas directrices nativamente mediante su pipeline atómico y el archivo de reglas `rules/ami-rules.md`.
+> 💡 **Hooks de Seguridad y Selección de Motor:** Claude Code es compatible con recordatorios de pre-commit y bloqueos de seguridad. El asistente CLI fusiona limpiamente estas reglas ligeras en `~/.claude/settings.json`, generando un respaldo de seguridad en `~/.claude/settings.json.amiga-backup`. Google Antigravity ejecuta estas directrices nativamente mediante su pipeline atómico y el archivo de reglas `rules/ami-rules.md`. OpenAI Codex soporta hooks no bloqueantes en `~/.codex/hooks.json`.
 
 #### 6.1 Directorios Globales Instalados
 Al ejecutar `amiga-ia-setup`, el asistente estructura de forma segura las siguientes carpetas en el usuario raíz del sistema:
@@ -136,9 +136,10 @@ Al ejecutar `amiga-ia-setup`, el asistente estructura de forma segura las siguie
 ├── agents/ami-*.md                 # Subagentes Autónomos (11 perfiles)
 └── rules/ami-rules.md              # Reglas Operativas Declarativas
 
-~/.agents/skills/                   # Skills globales de Codex
-~/.codex/agents/ami-*.toml          # Subagentes Codex convertidos desde Markdown
-~/.codex/hooks.json                # Hooks opcionales de Codex (requieren revisión y confianza)
+~/.agents/skills/                   # Skills Globales de Codex (25 directorios)
+~/.codex/                           # Configuración Global de Codex
+├── agents/ami-*.toml               # Subagentes en formato TOML (11 perfiles)
+└── hooks.json                      # Hooks opcionales de ciclo de vida
 ```
 
 ### 7. Desinstalación

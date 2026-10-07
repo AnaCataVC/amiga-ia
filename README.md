@@ -18,7 +18,7 @@
 ---
 
 ### 1. Project Description
-**Amiga IA** is a comprehensive ecosystem of *autonomous subagents*, *stateless guardrail hooks*, and *portable declarative skills* designed to elevate AI coding assistants from passive command executors into proactive team collaborators. It supports **Codex**, **Antigravity (Gemini)**, and **Claude Code**, with Codex-native skills and custom agent configuration generated from the canonical Markdown definitions.
+**Amiga IA** is a comprehensive ecosystem of *autonomous subagents*, *stateless guardrail hooks*, and *portable declarative skills* designed to elevate AI coding assistants from passive command executors into proactive team collaborators. Engineered for **Antigravity (Gemini)**, **Claude Code**, and **OpenAI Codex**, Amiga IA provides a single source of truth for scalable AI capability management built on the **Agent Skills (Markdown + Lazy Loading)** standard.
 
 With **v3.0.0 ("The Agentic Evolution")**, Amiga IA introduces decentralized multi-skill orchestration, enabling specialized subagents to autonomously discover repository tools and conduct parallel code reviews, repository health audits, and automated documentation without requiring step-by-step human guidance.
 
@@ -34,7 +34,7 @@ Building and scaling Amiga IA through its evolution into a fully agentic ecosyst
 * **Agentic vs. Passive Prompting:** Traditional step-by-step imperative scripts break down as codebases scale. Transitioning to autonomous subagent profiles that reason about project goals, discover local tools, and delegate worker threads in parallel proved dramatically more robust and scalable than monolithic prompt engineering.
 * **Token Economy & Statelessness:** Early iterations utilized persistent background caching to store local session summaries. Iterative analysis revealed that retaining stale context across session restarts degraded LLM inference speed and inflated token consumption. Depreciating session state caching in favor of stateless, on-demand reactive inspections (ADR-003) drastically boosted system responsiveness and precision.
 * **Mitigating the Silent Recurring Token Tax:** Dynamic tool catalogs injected into AI System Prompts impose a severe compounding cost over extended conversational sessions. Utilizing attribute-driven root-relative indexing instead of verbose XML wrapper hierarchies eradicated massive static redundancy (ADR-004). Furthermore, transitioning from complex inline shell expressions to standardized external runtime invocations prevented OS shell escaping gotchas and eliminated string-matching deduplication failures across platforms.
-* **Cross-Platform & Multi-Engine Unification:** Achieving 100% cross-compatibility between disparate AI runtimes (Anthropic's Claude Code and Google's Antigravity) and distinct operating systems (Linux/macOS Bash vs. Windows PowerShell) required abstracting hook logic into universal runtime scripts and enforcing strict XML capability indexing.
+* **Cross-Platform & Multi-Engine Unification:** Achieving 100% cross-compatibility between disparate AI runtimes (Antigravity, Claude Code, and OpenAI Codex) and distinct operating systems (Linux/macOS Bash vs. Windows PowerShell) required abstracting hook logic into universal runtime scripts and enforcing strict capability translation across native formats.
 
 ### 4. Repository Structure
 ```text
@@ -107,7 +107,7 @@ npm install -g @anacatavc/amiga-ia
 ```
 
 **Interactive Setup Wizard (CLI):**
-Launch the setup wizard to configure Codex, Claude Code, and/or Antigravity, then select a supported hook runtime for platforms that use Amiga IA hooks:
+Launch the setup wizard to choose your active AI coding environments (Antigravity, Claude Code, and/or OpenAI Codex) and configure supported hook runtimes:
 ```bash
 amiga-ia-setup
 ```
@@ -118,7 +118,7 @@ To verify global installation integrity, check for OS shell incompatibilities, v
 amiga-ia-setup doctor
 ```
 
-> 💡 **Background Hooks & Engine Selection:** Claude Code supports automated pre-commit advisory reminders and security interdictions. The interactive setup wizard cleanly merges these non-blocking guardrails into `~/.claude/settings.json` while generating an automated rollback backup at `~/.claude/settings.json.amiga-backup`. Google Antigravity natively executes its atomic planning pipeline and enforces declarative guardrails via `rules/ami-rules.md`.
+> 💡 **Background Hooks & Engine Selection:** Claude Code supports automated pre-commit advisory reminders and security interdictions. The interactive setup wizard cleanly merges these non-blocking guardrails into `~/.claude/settings.json` while generating an automated rollback backup at `~/.claude/settings.json.amiga-backup`. Google Antigravity natively executes its atomic planning pipeline and enforces declarative guardrails via `rules/ami-rules.md`. OpenAI Codex supports non-blocking lifecycle hooks in `~/.codex/hooks.json`.
 
 #### 6.1 Global Directories Configured
 When running `amiga-ia-setup`, the CLI wizard populates your home directory with clean, isolated capability configurations:
@@ -135,8 +135,10 @@ When running `amiga-ia-setup`, the CLI wizard populates your home directory with
 ├── agents/ami-*.md                 # Autonomous Subagents (11 profiles)
 └── rules/ami-rules.md              # Declarative Operational Rules
 
-~/.agents/skills/                   # Codex user-level skills
-~/.codex/agents/ami-*.toml          # Codex custom subagents generated from Markdown sources
+~/.agents/skills/                   # Codex Global Skills (25 directories)
+~/.codex/                           # Codex Global Configuration
+├── agents/ami-*.toml               # Custom Subagents in TOML format (11 profiles)
+└── hooks.json                      # Optional Lifecycle Hooks
 ```
 
 ### 7. Uninstallation
