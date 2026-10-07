@@ -4,7 +4,8 @@ process.stdin.on('end', () => {
   let output = {};
   try {
     const input = JSON.parse(Buffer.concat(chunks).toString());
-    const changedContent = JSON.stringify(input.tool_input || {});
+    const toolInput = input.tool_input || input.toolCall?.args || input.args || {};
+    const changedContent = JSON.stringify(toolInput);
     if (/console\.log|debugger|TODO|FIXME/.test(changedContent)) {
       output = {
         hookSpecificOutput: {

@@ -454,8 +454,14 @@ describe('Amiga IA setup.js structural integrity tests', () => {
     assert.match(setupContent, /const\s+sourceSkillsDir\s*=\s*path\.join\(__dirname,\s*['"]\.\.\/skills['"]\);/);
     assert.match(setupContent, /const\s+sourceAgentsDir\s*=\s*path\.join\(__dirname,\s*['"]\.\.\/agents['"]\);/);
     assert.match(setupContent, /const\s+sourceRulesDir\s*=\s*path\.join\(__dirname,\s*['"]\.\.\/rules['"]\);/);
+    assert.match(setupContent, /const\s+sourceCodexSkillsDir\s*=\s*path\.join\(__dirname,\s*['"]\.\.\/codex\/skills['"]\);/);
+    assert.match(setupContent, /const\s+sourceCodexAgentsDir\s*=\s*path\.join\(__dirname,\s*['"]\.\.\/codex\/agents['"]\);/);
+    assert.match(setupContent, /const\s+codexDir\s*=\s*path\.join\(homeDir,\s*['"]\.codex['"]\);/);
+    assert.match(setupContent, /const\s+codexUserSkillsDir\s*=\s*path\.join\(homeDir,\s*['"]\.agents['"],\s*['"]skills['"]\);/);
 
     const hooksJsonPath = path.resolve(__dirname, '../hooks.json');
     assert.ok(fs.existsSync(hooksJsonPath), 'hooks.json must exist');
+    assert.ok(fs.existsSync(path.resolve(__dirname, '../codex/skills')), 'codex/skills must exist');
+    assert.ok(fs.existsSync(path.resolve(__dirname, '../codex/agents')), 'codex/agents must exist');
   });
 });

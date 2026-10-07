@@ -448,6 +448,9 @@ function hasAmigaItems(targetDir) {
   };
   checkDir(skillsDir);
   checkDir(agentsDir);
+  if (!found && typeof codexDir !== 'undefined' && targetDir === codexDir && typeof codexUserSkillsDir !== 'undefined') {
+    checkDir(codexUserSkillsDir);
+  }
   return found;
 }
 

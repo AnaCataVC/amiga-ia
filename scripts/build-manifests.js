@@ -71,7 +71,7 @@ function buildManifests() {
       if (field) metadata[field[1]] = field[2].trim();
     }
     if (!metadata.name || !metadata.description) throw new Error(`Agent needs name and description: ${file}`);
-    const instructions = content.slice(match[0].length).trim();
+    const instructions = content.slice(match[0].length).replace(/\r\n/g, '\n').trim();
     const toml = `name = ${JSON.stringify(metadata.name)}\ndescription = ${JSON.stringify(metadata.description)}\ndeveloper_instructions = ${JSON.stringify(instructions)}\n`;
     fs.writeFileSync(path.join(codexAgentsDir, `${path.basename(file, '.md')}.toml`), toml);
   }
