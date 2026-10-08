@@ -46,7 +46,7 @@ function copyRecursiveSync(src, dest, targetEnv = null, options = {}) {
         throw new Error('Codex skills directory is required to install agent profiles.');
       }
       const escapedSkillsDir = JSON.stringify(options.codexUserSkillsDir).slice(1, -1);
-      const content = fs.readFileSync(src, 'utf8').replace(/__AMIGA_CODEX_SKILLS_DIR__/g, escapedSkillsDir);
+      const content = fs.readFileSync(src, 'utf8').replace(/__AMIGA_CODEX_SKILLS_DIR__/g, () => escapedSkillsDir);
       fs.writeFileSync(dest, content);
     } else {
       fs.copyFileSync(src, dest);

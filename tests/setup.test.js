@@ -396,6 +396,23 @@ describe('Amiga IA setup.js copyRecursiveSync tests', () => {
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
+  test('should safely resolve Codex skill paths containing regex replacement characters like dollar signs', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'amiga-copy-test-codex-dollar-'));
+    const srcDir = path.join(tmpDir, 'src');
+    const destDir = path.join(tmpDir, 'dest');
+    const codexSkillsDir = path.join(tmpDir, '$special_user', '.agents', 'skills');
+    fs.mkdirSync(srcDir, { recursive: true });
+    const toml = 'developer_instructions = "Read __AMIGA_CODEX_SKILLS_DIR__/ami-review/SKILL.md"\n';
+    fs.writeFileSync(path.join(srcDir, 'ami-review.toml'), toml);
+
+    copyRecursiveSyncFunc(fs, path, srcDir, destDir, 'codex', { codexUserSkillsDir: codexSkillsDir });
+
+    const installedToml = fs.readFileSync(path.join(destDir, 'ami-review.toml'), 'utf8');
+    assert.ok(installedToml.includes(JSON.stringify(codexSkillsDir).slice(1, -1)));
+    assert.ok(!installedToml.includes('__AMIGA_CODEX_SKILLS_DIR__'));
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
   test('should replace .gemini/agents/ with .claude/agents/ in markdown files when targetEnv is claude', () => {
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'amiga-copy-test-'));
     const srcDir = path.join(tmpDir, 'src');
