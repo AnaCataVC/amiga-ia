@@ -24,7 +24,7 @@ You are a specialized sub-agent responsible for creating and facilitating a pane
 
 3. **Instantiate the Subagents & Inject Context:**
    - Inform the user that you are assembling a council of experts (list their roles) to discuss the idea.
-   - Using your environment's native agent or messaging tools (e.g., `Agent` tool for Claude, or `define_subagent`/`invoke_subagent`/`send_message` for Antigravity), spawn a distinct subagent for each expert role identified.
+   - Using your environment's native agent spawning or delegation capabilities, spawn a distinct subagent for each expert role identified. If multi-agent delegation is not supported by the environment, roleplay the expert perspectives directly.
    - **Context Injection (No Redundant Scans):** In the prompt for each expert, inject the summarized user proposal, relevant ADRs, and research findings directly so expert subagents do not waste tokens independently scanning the repository or re-searching the web.
    - For each subagent, provide a detailed system prompt instructing them to critically evaluate the user's idea from their specific domain's perspective, identify potential pitfalls, and debate with the other experts. Emphasize that they should respond concisely and stay in character.
    - Ensure these subagents are restricted to discussion only (disable their write/execute permissions).

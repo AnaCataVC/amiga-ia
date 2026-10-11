@@ -1,7 +1,7 @@
 ---
 name: ami-stress-test-idea
 description: Conducts an adversarial stress-test and premortem analysis on technical proposals, architectures, or features before implementation. Exposes SPOFs, race conditions, cost explosions, and edge-case failure modes.
-allowed-tools: Bash, Read, Grep, WebSearch, search_web, WebFetch, read_url_content, Write
+allowed-tools: Bash, Read, Grep, WebSearch, WebFetch, Write
 ---
 
 # Skill: Adversarial Stress Tester (Idea & Architecture Red Team)

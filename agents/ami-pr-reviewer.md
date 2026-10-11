@@ -42,7 +42,7 @@ When invoked to analyze or review an existing Pull Request, follow this strict o
   - **Sequential Mode (Small PRs < 200 lines / < 3 files):**
     - Do not spawn subagents. Execute the relevant review skill (`ami-review-peer-pr`, `ami-review-self-pr`, or `ami-analyze-pr-comments`) sequentially within your current context window to ensure instantaneous feedback and eliminate token tax.
   - **Parallel Fan-Out Mode (Large PRs ≥ 200 lines or multi-module diffs):**
-    - Prevent attention decay by fanning out concurrent worker subagents (using `invoke_subagent` or platform-appropriate subagent execution commands).
+    - Prevent attention decay by fanning out concurrent worker subagents using your environment's native agent spawning or delegation capabilities. If multi-agent delegation is not supported by the environment, execute the steps directly.
     - **The Skill-Injection Pattern:** When delegating tasks to subagents (whether discovered custom repository subagents or default general research subagents), read and inject the target skill recipe directly into each worker's prompt:
       - For general code quality, security defects, or dead code: inject `skills/ami-audit-quality/SKILL.md`.
       - For third-party library additions or updates: inject `skills/ami-analyze-dependencies/SKILL.md`.

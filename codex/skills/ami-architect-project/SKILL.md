@@ -1,7 +1,7 @@
 ---
 name: ami-architect-project
 description: Interactively sets up the initial architecture of a new project. It gathers requirements, researches technologies, proposes a stack and folder structure with constant user interaction, and finally scaffolds the initial files and a comprehensive README.md.
-allowed-tools: Bash, Read, Grep, WebSearch, search_web, WebFetch, read_url_content, Write
+allowed-tools: Bash, Read, Grep, WebSearch, WebFetch, Write
 ---
 
 # Skill: Project Architect
@@ -23,8 +23,8 @@ You MUST maintain constant interaction with the user. Do not make multiple major
 - **HARD RESEARCH & PERSISTENCE PRECONDITION:**
   Live research and persistence are **MANDATORY** for every greenfield project. Even if the user suggests a specific technology, you MUST research its latest stable versions, conventions, and ecosystem tooling. You are strictly forbidden from relying purely on pre-trained memory.
   1. **Deduplication Check:** Check if `docs/external-references/<stack-slug>.md` already exists and contains recent, comprehensive data. If so, ingest and extend it rather than repeating redundant web queries.
-  2. **Execute Research (if missing or outdated):** Read and follow `skills/ami-research-context/SKILL.md`. Use live web search tools (`search_web`, `WebSearch`, `read_url_content`, `WebFetch`) to benchmark candidate libraries, verify current versions, and check maintenance status.
-  3. **Physical Persistence in Long-Term Memory:** You MUST physically create and write the synthesized analysis to `docs/external-references/<stack-slug>.md` using `write_to_file` before discussing folder structures or scaffolding. Include `> **Created:** YYYY-MM-DD` metadata headers, criteria evaluated, and direct source links.
+  2. **Execute Research (if missing or outdated):** Read and follow `__AMIGA_CODEX_SKILLS_DIR__/ami-research-context/SKILL.md`. Use live web search tools to benchmark candidate libraries, verify current versions, and check maintenance status.
+  3. **Physical Persistence in Long-Term Memory:** You MUST physically create and persist the synthesized analysis to `docs/external-references/<stack-slug>.md` before discussing folder structures or scaffolding. Include `> **Created:** YYYY-MM-DD` metadata headers, criteria evaluated, and direct source links.
   4. **Offer Clear Alternatives (No Unilateral Decisions):** Unless the stack was 100% constrained by the user, present at least two distinct, viable architectural options (e.g., lightweight/minimalist vs. scalable/enterprise) with clear pros, cons, and trade-offs.
   5. **Report & Validate with User:** Share the markdown link to the saved file (`docs/external-references/<stack-slug>.md`), summarize key takeaways, and explicitly ask the user to validate their preferred stack. **DO NOT proceed to Phase 3 (Folder Structure Design) until the research file is saved on disk and the user explicitly validates the stack.**
 

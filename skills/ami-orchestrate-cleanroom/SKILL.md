@@ -1,7 +1,7 @@
 ---
 name: ami-orchestrate-cleanroom
 description: Master Double-Blind (Cleanroom) TDD orchestrator. Use when developing features or critical components with strict reliability, zero confirmation bias, and isolated implementer and test-generator subagents. Interactively clarifies specifications, resolves interface doubts and proposes signature improvements with the user, freezes formal interface contracts, dispatches blind subagents, executes test harnesses, and adjudicates failures.
-allowed-tools: Bash, Read, Grep, invoke_subagent, Write, Edit, ask_question
+allowed-tools: Bash, Read, Grep, Agent, Write, Edit
 ---
 
 # Skill: Cleanroom TDD Orchestrator
@@ -18,7 +18,7 @@ When invoked to execute a cleanroom feature cycle, you MUST follow this sequence
 
 - **HARD INTERACTION PRECONDITION:** You MUST NOT jump directly into freezing contracts or dispatching subagents while interface requirements, schemas, or behavioral expectations remain ambiguous or underspecified.
 - **Proactive Questioning & Gap Detection:** Inspect the target capability and user requirements:
-  1. If method/function signatures, parameter types, return structures, error handling conventions, or concurrency models are open or vague, formulate targeted questions using `ask_question` or direct conversational questions in the user's language.
+  1. If method/function signatures, parameter types, return structures, error handling conventions, or concurrency models are open or vague, formulate targeted clarifying questions in the user's language.
   2. Proactively express your doubts about boundary conditions, empty collections, nullability, timeout thresholds, and unexpected input handling.
 - **Technical Suggestions & Signature Improvements:**
   - Actively suggest idiomatic interface signatures, clean error handling types (e.g., Result types vs exceptions), and clear data transfer models.

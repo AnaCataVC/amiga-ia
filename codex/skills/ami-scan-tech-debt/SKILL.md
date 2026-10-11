@@ -15,7 +15,7 @@ When invoked, act as a **Tech Debt Analyst**.
 - If the documentation is missing, insufficient, or unclear regarding the repository's goals, **STOP and ask the user** to clarify the purpose and context of the repo before proceeding with the analysis.
 
 ### 2. Dependency Analysis (Delegated)
-- Invoke the `ami-analyze-dependencies` skill (View the file `skills/ami-analyze-dependencies/SKILL.md`) to perform a comprehensive dependency audit.
+- Invoke the `ami-analyze-dependencies` skill (View the file `__AMIGA_CODEX_SKILLS_DIR__/ami-analyze-dependencies/SKILL.md`) to perform a comprehensive dependency audit.
 - Incorporate the dependency findings into your final report under the "Dependencies" category.
 - Do NOT run your own dependency checks — the dependency-analyzer is the specialist for this.
 

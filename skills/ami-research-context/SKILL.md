@@ -1,7 +1,7 @@
 ---
 name: ami-research-context
 description: Investigates external context, forces the AI to search for up-to-date documentation, and saves findings to external-references to prevent context loss.
-allowed-tools: Bash, Read, Grep, WebSearch, search_web, WebFetch, read_url_content, Write
+allowed-tools: Bash, Read, Grep, WebSearch, WebFetch, Write
 ---
 
 # Skill: Context Researcher
@@ -14,10 +14,10 @@ When this skill is invoked, you must act as a dedicated technical researcher. Yo
    - Check if a research file already exists under `docs/external-references/<topic-slug>.md` or in the active session context. If it already contains recent, comprehensive findings, read and extend it incrementally instead of starting duplicate searches from scratch.
    - Check if the user has already provided a link to the documentation or the topic they want to research. If not, ask the user for the topic and if they have a link to share.
    - Make sure you understand the user's need and what information they are looking for. If you don't understand, ask for clarification. Don't start the research until you understand the user's need.
-   - If the user provides a link to explain what they want to research, **ALWAYS** read the URL content with the available URL reading tool (like `WebFetch` or `read_url_content`) and don't rely solely on the URL text. If you can't read the URL content, explain it to the user and ask them to paste the raw content directly into the chat. 
+   - If the user provides a link to explain what they want to research, **ALWAYS** inspect the URL content with the available URL reading tool and don't rely solely on the URL text. If you can't read the URL content, explain it to the user and ask them to paste the raw content directly into the chat. 
 
 2. **Research via Tools:**
-   - Actively use your web search or URL reading tools (like `WebFetch` or `read_url_content`) to fetch live documentation.
+   - Actively use your web search or URL reading tools to fetch live documentation.
    - **CRITICAL FALLBACK:** If you encounter permission errors, CAPTCHAs, or cannot access a specific URL, you MUST notify the user immediately. Ask them to take screenshots of the page or paste the raw content directly into the chat. Do NOT guess or hallucinate the content if the URL fails.
    - Check if the documentation is outdated. If yes, you MUST search for the newer documentation and repeat the reading process. Do not stop until you find the correct and up-to-date documentation.
    - Check if the documentation is too generic or high-level. If yes, you MUST ask the user for more specific details or keywords to refine the search.

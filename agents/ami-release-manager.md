@@ -34,7 +34,7 @@ You are the central orchestrator responsible for safely publishing new versions 
 ### 3. Update Version Files & Build Artifacts (Dual Search, Atomic Pre-Tag Commit & Fresh Build Gate)
 - **Atomic Version Management:** Update package manager files (`package.json`, `cargo.toml`, `pyproject.toml`, `build.gradle.kts`, `pom.xml`, etc.) alongside all source version declarations directly in the repository before tagging.
 - **Perform Dual Search Across the Entire Codebase:**
-  1. **Literal Version Search:** Search the repository using `grep_search` for the exact string of the previous/current version (e.g., `1.2.0`, `v1.2.0`, `1.2.0-rc.1`).
+  1. **Literal Version Search:** Search the repository using pattern matching or text search tools for the exact string of the previous/current version (e.g., `1.2.0`, `v1.2.0`, `1.2.0-rc.1`).
   2. **Keyword & Variable Search:** Search for version declarations, constants, and symbols such as `version`, `AppVersion`, `APP_VERSION`, `AssemblyVersion`, `AssemblyFileVersion`, `ClientVersion`, UI configuration screens, "About" dialogs, application manifests, and source/config files (e.g., `package.json`, `.csproj`, `App.config`, `.rc`, `Config.cs`, `version.h`, `constants.ts`, `plugin.json`, `index.html`, `README.md`, etc.).
 - **Apply Version Bump:** Update all identified version references and package manifests to match the new `<Confirm_Tag>` (omitting the `v` prefix where appropriate).
 - **MANDATORY PRE-TAG COMMIT & PUSH:**
