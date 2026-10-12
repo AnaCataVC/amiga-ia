@@ -39,6 +39,11 @@ function copyRecursiveSync(src, dest, targetEnv = null, options = {}) {
         content = translateFrontmatter(content, 'claude');
       } else if (targetEnv === 'antigravity' || targetEnv === 'gemini') {
         content = translateFrontmatter(content, 'antigravity');
+      } else if (targetEnv === 'codex') {
+        if (!options.codexUserSkillsDir) {
+          throw new Error('Codex skills directory is required to install skills.');
+        }
+        content = content.replace(/__AMIGA_CODEX_SKILLS_DIR__/g, () => options.codexUserSkillsDir);
       }
       fs.writeFileSync(dest, content);
     } else if (targetEnv === 'codex' && dest.endsWith('.toml')) {
@@ -289,8 +294,8 @@ function installNodeHooks(targetDir, settingsPath, options = {}) {
   return result;
 }
 
-function installCodexHooks() {
-  const hooksDir = path.join(codexDir, 'hooks');
+function installCodexHooks(targetCodexDir = codexDir) {
+  const hooksDir = path.join(targetCodexDir, 'hooks');
   fs.mkdirSync(hooksDir, { recursive: true });
   const sourceScripts = path.join(__dirname, '../hooks/scripts');
   const scriptNames = ['ami-codex-pre-tool-use.js', 'ami-codex-post-tool-use.js'];
@@ -305,8 +310,8 @@ function installCodexHooks() {
       PostToolUse: [{ matcher: 'Edit|Write', hooks: [{ type: 'command', command: scriptCommand('ami-codex-post-tool-use.js') }] }]
     }
   };
-  const tempPath = path.join(codexDir, '.amiga-codex-hooks-tmp.json');
-  const hooksPath = path.join(codexDir, 'hooks.json');
+  const tempPath = path.join(targetCodexDir, '.amiga-codex-hooks-tmp.json');
+  const hooksPath = path.join(targetCodexDir, 'hooks.json');
   fs.writeFileSync(tempPath, JSON.stringify(hooksConfig, null, 2));
   const merged = mergeSettings(hooksPath, tempPath);
   fs.unlinkSync(tempPath);
@@ -968,7 +973,7 @@ async function runInstall() {
     console.log(pc.blue('\nInstalling for Codex...'));
     cleanOrphanedFiles(sourceCodexSkillsDir, codexUserSkillsDir);
     cleanOrphanedFiles(sourceCodexAgentsDir, path.join(codexDir, 'agents'));
-    copyRecursiveSync(sourceCodexSkillsDir, codexUserSkillsDir, 'codex');
+    copyRecursiveSync(sourceCodexSkillsDir, codexUserSkillsDir, 'codex', { codexUserSkillsDir });
     copyRecursiveSync(sourceCodexAgentsDir, path.join(codexDir, 'agents'), 'codex', { codexUserSkillsDir });
     saveVersionManifest(codexDir, currentVersion);
     console.log(pc.green('✅ Codex skills installed in ~/.agents/skills/ and custom subagents in ~/.codex/agents/.'));
