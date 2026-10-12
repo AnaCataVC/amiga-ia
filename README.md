@@ -63,6 +63,7 @@ All built-in capabilities strictly utilize the **`ami-`** namespace prefix to pr
 | Type | Name | Description |
 |---|---|---|
 | Agent | **ami-adversarial-verifier** | Fresh-context adversarial verifier that audits code diffs and contracts for unhandled edge cases, security holes, and broken callers with zero author bias. |
+| Agent | **ami-cleanroom-arbiter** | Master Double-Blind (Cleanroom) TDD Arbiter & Orchestrator. Freezes formal interface contracts, dispatches isolated builder and tester subagents, executes test harnesses, and adjudicates failures. |
 | Agent | **ami-cleanroom-builder** | Feature implementer for Cleanroom TDD. Writes production code strictly from formal interface contracts without overfitting to tests. |
 | Agent | **ami-cleanroom-tester** | Independent black-box QA and test architect for Cleanroom TDD. Generates comprehensive tests solely from contracts, isolated from production code. |
 | Agent | **ami-data-scientist** | Master orchestrator agent for Data & SQL. Coordinates exploratory dataset profiling, database query optimizations, and executive dashboards. |
@@ -83,7 +84,6 @@ All built-in capabilities strictly utilize the **`ami-`** namespace prefix to pr
 | Skill | **ami-debug-issue** | Performs an evidence-based debugging procedure, isolating root causes without guesswork and writing regression tests. |
 | Skill | **ami-design-test-strategy** | Designed to run before writing tests. Formulates QA test strategies, pyramid distributions, mocking boundaries, and CI quality gates. |
 | Skill | **ami-detect-pr-conflicts** | Auto-triggered prior to PR publishing or review. Detects overlapping commit histories and potential merge conflicts across active branches. |
-| Skill | **ami-draft-release** | Auto-triggered prior to publishing releases. Parses commit histories to draft structured bilingual release notes grouped by semantic type. |
 | Skill | **ami-extract-learnings** | Inspects recent codebase edits to extract architectural decisions, lessons, antipatterns, and surprises into persistent memory. |
 | Skill | **ami-guide-next-step** | Scans multi-dimensional project health, prioritizing tests, tech debt, code quality, and recommending optimal next steps. |
 | Skill | **ami-manage-docs** | Comprehensive documentation and knowledge manager. Detects whether to architect new docs, synchronize wikis, or audit and prune obsolete learnings. |
@@ -91,13 +91,13 @@ All built-in capabilities strictly utilize the **`ami-`** namespace prefix to pr
 | Skill | **ami-orchestrate-cleanroom** | Master Cleanroom (Double-Blind) TDD orchestrator. Interactively resolves interface doubts, freezes contracts, dispatches isolated implementer and test generator subagents, executes test harnesses, and adjudicates failures. |
 | Skill | **ami-plan-commits** | Analyzes the working tree, performs security/leak audits, plans Conventional Commits/amend/squash, and executes staged git actions. |
 | Skill | **ami-plan-feature** | Interactive feature planning and orchestration workflow. Clarifies ambiguities and proposes architectural alternatives with the user before investigating context and drafting plans. |
+| Skill | **ami-prepare-release** | Prepares GitHub releases by calculating the next semantic version tag and generating bilingual release notes (English and Spanish) in a single unified workflow. |
 | Skill | **ami-profile-data** | Performs exploratory data analysis (EDA), quantifies null distributions, detects outliers, and audits methodological validity. |
 | Skill | **ami-research-context** | Actively researches up-to-date external documentation and persists findings in references to prevent context degradation. |
 | Skill | **ami-review-peer-pr** | Conducts code reviews on teammates' Pull Requests with PR body acceptance criteria traceability, dual review modes, and adversarial falsification audits ([Falsification Check]) to eliminate false positives. |
 | Skill | **ami-review-self-pr** | Operates as a stringent Senior Engineer reviewing your own code with dual review modes, adversarial 5-dimension blind-spot probes ([Blind-Spot Probe]), and automated local test remediation loops. |
 | Skill | **ami-scan-tech-debt** | Scans repositories for technical debt, obsolete imports, duplicated logic, dead code, and pending comments (TODOs/FIXMEs). |
 | Skill | **ami-stress-test-idea** | Conducts adversarial stress-testing and premortem analysis on proposals, exposing SPOFs, concurrency bugs, and cost explosions. |
-| Skill | **ami-tag-release** | Auto-triggered before release bumps. Evaluates git histories against semantic versioning laws to compute precise stable or QA tags. |
 | Skill | **ami-validate-data** | Validates structural consistency between source code changes and data layer definitions (schemas, queries). |
 
 ### 6. Installation & Usage
@@ -126,19 +126,19 @@ When running `amiga-ia-setup`, the CLI wizard populates your home directory with
 
 ```text
 ~/.claude/                          # Claude Code Global Configuration
-├── skills/ami-*/SKILL.md           # Declarative Skills (25 directories)
-├── agents/ami-*.md                 # Autonomous Subagents (12 profiles)
+├── skills/ami-*/SKILL.md           # Declarative Skills (24 directories)
+├── agents/ami-*.md                 # Autonomous Subagents (13 profiles)
 ├── settings.json                   # Merged Hooks (PreToolUse, PostToolUse)
 └── settings.json.amiga-backup      # Safe original settings backup
 
 ~/.gemini/config/                   # Antigravity (Gemini) Global Configuration
-├── skills/ami-*/SKILL.md           # Declarative Skills (25 directories)
-├── agents/ami-*.md                 # Autonomous Subagents (12 profiles)
+├── skills/ami-*/SKILL.md           # Declarative Skills (24 directories)
+├── agents/ami-*.md                 # Autonomous Subagents (13 profiles)
 └── rules/ami-rules.md              # Declarative Operational Rules
 
-~/.agents/skills/                   # Codex Global Skills (25 directories)
+~/.agents/skills/                   # Codex Global Skills (24 directories)
 ~/.codex/                           # Codex Global Configuration
-├── agents/ami-*.toml               # Custom Subagents in TOML format (12 profiles)
+├── agents/ami-*.toml               # Custom Subagents in TOML format (13 profiles)
 └── hooks.json                      # Optional Lifecycle Hooks
 ```
 
