@@ -10,7 +10,7 @@ Amiga IA is an NPM package that distributes declarative AI skills and agents for
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (v18 or higher recommended)
+- [Node.js](https://nodejs.org/) (v20.12 or higher recommended, v22 LTS preferred)
 - [Git](https://git-scm.com/)
 
 ### Setup

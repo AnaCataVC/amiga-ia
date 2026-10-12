@@ -29,9 +29,10 @@ Hooks in Amiga IA act as non-blocking guardrails that provide real-time advisory
 ## 3. Event Interceptions & Behaviors
 
 ### 3.1 `PreToolUse` (Pre-Execution Interception)
-- **Git Push Protection:** When a `git push` command is detected, the hook outputs an advisory to ensure the user runs pre-push checks or delegates to `ami-push-assistant`.
-- **Release Verification:** Detects `gh release create` and reminds the user to invoke `ami-release-manager` to calculate tags and draft changelogs.
-- **Dependency Modification:** Detects `npm install` or `pip install` commands and advises verifying dependency integrity.
+- **Git Commit Formatting:** When a `git commit` command is detected, the hook outputs an advisory to ensure the user uses `ami-plan-commits` for proper Conventional Commit formatting.
+- **Git Push Protection:** When a `git push` command is detected, the hook outputs an advisory to run `ami-push-assistant` before pushing code.
+- **Pull Request Creation:** When a `gh pr create` command is detected, the hook advises running `ami-detect-pr-conflicts` or `ami-pr-publisher` before publishing the PR.
+
 
 ### 3.2 `PostToolUse` (Post-Execution Validation)
 - **Debug Artifact Inspection:** Inspects modified code files for leftover `console.log`, `debugger;`, `print()`, or breakpoint statements.
