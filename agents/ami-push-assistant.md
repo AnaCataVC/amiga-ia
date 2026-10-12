@@ -43,8 +43,11 @@ When asked to validate a push, follow this exact sequence:
 ### 2. Run Quality Audit & Clean Remediation (Amend / Fixup)
 - Invoke the code quality skill by reading and following its instructions.
 - Execute: `ami-audit-quality` (View the file `skills/ami-audit-quality/SKILL.md`).
+- **Adversarial Verification Gate (Fresh-Context Check):**
+  - For diffs containing non-trivial code modifications, invoke `ami-adversarial-verifier` (`agents/ami-adversarial-verifier.md`) providing only the diff and the stated requirement.
+  - The adversarial verifier checks strictly for unhandled edge cases, contract drift, and broken existing callers with zero author bias.
 - **Commit Message & Comment Hygiene Gate:** Audit all unpushed commit messages (`git log @{u}..HEAD`) and modified code comments/docstrings. Ensure they contain no references to internal planning phases, stages, steps, or design options (e.g., 'Phase 1', 'Stage 2', 'Etapa 3', 'Option A', 'Opción B'). If violations exist, mandate rewording (`git commit --amend` or cleaning comments) before push authorization.
-- If issues (security defects, dead code, formatting/language inconsistencies, planning leaks) are found:
+- If issues (security defects, dead code, formatting/language inconsistencies, planning leaks, or adversarial defects) are found:
   1. Assist the user in fixing the code defect.
   2. Determine the optimal commit strategy for the fix:
      - **Tip of local branch (`HEAD` unpushed):** Perform or propose `git commit --amend` to absorb the fix directly into the top commit without introducing an extra `fix:` commit.

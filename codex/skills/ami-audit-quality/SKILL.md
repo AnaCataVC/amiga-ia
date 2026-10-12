@@ -1,42 +1,90 @@
 ---
 name: ami-audit-quality
-description: Performs a deep code quality, security, and structure audit on modified files.
+description: Performs a deep code quality, security, and structure audit on modified files using both test execution and code inspection.
 allowed-tools: Bash, Read, Grep, Edit, Write
 ---
 
 # Skill: Push Quality Auditor
 
-When invoked, act as a strict Code Reviewer focused on code quality, structural integrity, and linguistic consistency.
+When invoked, act as a strict Code Reviewer focused on code verification by execution, security, structural integrity, and linguistic consistency.
+
+Everything else reviews by reading; this skill begins by reviewing through execution.
 
 ## Workflow
 
-1. **Analyze Changes:**
-   Identify all modified files using Git. Read the diffs carefully.
+### 1. Scope and Execution Verification (Run What the Repo Declares)
 
-2. **Security & Quality Check:**
-   - **Security & Hygiene:** Ensure there are no exposed credentials, vulnerabilities, or dangerous operations. Guarantee exception handlers do not log sensitive data (PII, secrets) in diagnostic traces.
-   - **Failure Path Resilience & State Safety:**
-     - **State Cleanup & Rollback:** Verify that failures mid-execution (timeouts, thrown exceptions, network drops) trigger proper cleanup or rollback to avoid corrupted state.
-     - **Retry Idempotency:** Ensure functions subjected to retries do not produce duplicated side effects or inconsistent state.
-   - **Duplication & Dead Code:** Check if the new code introduces duplicates of existing logic. Identify any dead (unreachable) code. If duplicate logic is found, enforce centralizing the repeated functions.
-   - **Agentic AI & Declarative Code Integrity (.md / .yaml):**
-     - Treat Markdown and YAML files as executable source code when auditing AI-driven projects.
-     - **Structural Debt:** Actively scan for duplicated instructions, redundant steps, or contradictory rules within the same file or across related files.
-     - **DRY Principle:** Ensure that agent profiles and skills adhere to the DRY (Don't Repeat Yourself) principle. Procedural steps should be centralized in skills, while agent profiles should only contain high-level mindsets or constraints.
-     - **Token Efficiency & Bloat:** Check if prompt instructions are overly verbose. Enforce conciseness to save tokens and improve LLM adherence without losing meaning.
-   - **Efficiency:** Ensure that there are no inefficiencies or unnecessary operations in the code. Flag any code that could be simplified without sacrificing efficiency or readability.
-   - **Maintainability:** Ensure that the code is easy to understand and maintain. For any non-obvious code, there should be comments explaining the logic.
+Before reading code heuristically, verify whether the repository's own tooling passes on the modified changes:
 
-3. **Linguistic & Comment Consistency:**
-   - **Comments & Docstrings:** Ensure comments explain *why* something is done, not *what*. They must not be excessive (i.e., avoid commenting obvious code). Actively audit docstrings for "bloat" and unnecessary verbosity; they must be concise and token-efficient.
-   - **No Internal Planning Leakage in Comments & Docstrings:** Comments and docstrings MUST NEVER reference internal phases, stages, or plan options (e.g., 'Phase 1', 'Phase 2', 'Stage 3', 'Etapa 1', 'Option A', 'Opción B', 'Step 2 of plan'). Code documentation belongs to the permanent codebase and must document technical rationale, domain invariants, and contracts, without leaking ephemeral planning artifacts that are not part of the repository (and it is not necessary to expose them, only not reference them). Reject and request rephrasing any comment or docstring violating this standard.
-   - **Language:** Ensure the comments strictly use consistent language (English).
-   - **Variables:** Ensure variables and function names follow a consistent language and naming convention.
+1. **Discover Declared Tooling:**
+   Inspect the repository's configuration manifests for declared verification commands:
+   - `package.json` (`scripts`: `typecheck`, `lint`, `format:check`, `test`)
+   - `pyproject.toml` or `setup.cfg` (`[tool.mypy]`, `[tool.ruff]`, `[tool.pytest]`)
+   - `Makefile` (`check`, `lint`, `test`)
+   - `Cargo.toml` (`cargo check`, `cargo test`, `cargo clippy`)
+   - `.pre-commit-config.yaml`
+   *Rule:* Run only what the repository declares. Do not invent or globally install unconfigured linters. Prefer local project binaries (`node_modules/.bin/`, `.venv/Scripts/`).
 
-4. **Reporting:**
-   - If any issues are found, reject the check and list the specific issues and files that need to be addressed. Offer to fix them and explain how. Wait for the user's approval before fixing them. After the fixes are applied, re-run the quality audit process until no inconsistencies are found.
-   - If everything meets the standard, let the user know that the quality audit passed and terminate the skill.
+2. **Run in Increasing Order of Cost:**
+   - **Type-Check / Compile:** The cheapest non-gameable signal.
+   - **Lint / Format Check:** Run in check mode only (do not auto-format mid-verification).
+   - **Test Suite:** Run the tests covering modified components. Note whether failures pre-existed on the base commit before reporting them.
+   - **Mechanical Dead Code / Duplication:** Run available static analyzers (`ts-prune`, `vulture`, `jscpd`) if declared.
 
+3. **Execution Signal Requirements:**
+   - Every detected failure MUST provide the exact one-line command to reproduce it.
+   - **Mandatory `gaps:` line:** Any check that could not run (tool missing, test suite skipped) MUST be explicitly listed as a gap. A check that did not run is never a silent pass.
+
+### 2. Static Security & Structural Quality Check
+
+Inspect the code diffs (`git diff` or changed files) across core dimensions:
+
+1. **Security & Hygiene:**
+   - Ensure there are no exposed credentials, API keys, private tokens, or dangerous raw shell executions.
+   - Guarantee exception handlers and diagnostic loggers do not log sensitive data (PII, authorization tokens).
+   - Ensure no local machine absolute paths (e.g., user home directory paths) leak into committed files.
+
+2. **Failure Path Resilience & State Safety:**
+   - **State Cleanup & Rollback:** Verify that failures mid-execution (timeouts, thrown exceptions, network drops) trigger proper cleanup to avoid corrupted state.
+   - **Retry Idempotency:** Ensure operations subjected to retries do not produce duplicated side effects or inconsistent state.
+
+3. **Duplication & Dead Code:**
+   - Verify that new code does not duplicate existing utilities or domain helpers. Enforce centralizing reusable logic.
+
+4. **Agentic AI & Declarative Code Integrity (.md / .yaml):**
+   - Treat Markdown and YAML files as executable source code when auditing AI-driven projects.
+   - **Structural Debt:** Scan for duplicated instructions or contradictory rules across related files.
+   - **DRY Principle:** Procedural steps belong in skills, while agent profiles contain high-level roles and constraints.
+   - **Token Efficiency & Bloat:** Ensure prompt instructions are concise and skimmable.
+
+### 3. Adversarial Verification Gate (Fresh-Context Review)
+
+For changes touching critical domain logic, algorithms, or API boundaries, conduct or invoke an adversarial check (`ami-adversarial-verifier`):
+- Evaluate the change strictly against the stated requirement and its existing callers, ignoring self-justifications.
+- Verify boundary conditions: empty inputs, null values, concurrent executions, and caller compatibility.
+- Ensure the change does not introduce behavioral regressions in existing interfaces.
+
+### 4. Linguistic & Comment Consistency
+
+1. **Comments & Docstrings:**
+   - Ensure comments explain *why* something is done, not *what*. Avoid commenting obvious lines.
+   - Actively audit docstrings for conciseness; avoid narrative bloat.
+2. **Zero Internal Planning References:**
+   - Comments and docstrings MUST NEVER reference internal phases, stages, steps, or design options (e.g., 'Phase 1', 'Stage 2', 'Etapa 3', 'Option A', 'Opción B').
+   - All code documentation must describe technical rationale, domain invariants, and contracts from a permanent domain perspective.
+3. **Language Consistency:**
+   - Source code, docstrings, and inline comments must strictly be in English.
+
+### 5. Reporting
+
+Emit a structured verdict:
+
+- **If failures or defects are found:** Reject the check. Provide:
+  - Exact command to reproduce execution failures.
+  - Line numbers and triggers for code or security defects.
+  - Concrete remediations required.
+  - Await explicit user approval before applying any fixes.
+- **If all checks pass:** Emit the clean verdict including executed checks and reported `gaps:`, then terminate the skill.
 
 ---
 **Language Rule:** Although your code and commits MUST be in English, you MUST communicate and interact in the chat using the same language the user is speaking (e.g., Spanish, French, etc.).
