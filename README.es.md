@@ -63,6 +63,7 @@ Todas las capacidades incluidas emplean de forma estricta el prefijo de espacio 
 
 | Tipo | Nombre | Descripción |
 |---|---|---|
+| Agente | **ami-adversarial-verifier** | Verificador adversarial en contexto fresco que audita diffs de código y contratos para detectar casos borde, vulnerabilidades y llamadas rotas sin sesgo del autor. |
 | Agente | **ami-cleanroom-builder** | Implementador de código de producción para flujos Cleanroom TDD. Programa respetando estrictamente los contratos de interfaz sin sobreajustarse a los tests. |
 | Agente | **ami-cleanroom-tester** | Arquitecto de pruebas de caja negra independiente para Cleanroom TDD. Genera suites exhaustivas a partir de contratos y criterios de aceptación, aislado del código fuente. |
 | Agente | **ami-data-scientist** | Agente maestro de la Suite de Datos y SQL. Orquesta análisis exploratorio, optimización de consultas en base de datos y dashboards ejecutivos. |
@@ -127,18 +128,18 @@ Al ejecutar `amiga-ia-setup`, el asistente estructura de forma segura las siguie
 ```text
 ~/.claude/                          # Configuración Global de Claude Code
 ├── skills/ami-*/SKILL.md           # Skills Declarativas (25 directorios)
-├── agents/ami-*.md                 # Subagentes Autónomos (11 perfiles)
+├── agents/ami-*.md                 # Subagentes Autónomos (12 perfiles)
 ├── settings.json                   # Hooks Fusionados (PreToolUse, PostToolUse)
 └── settings.json.amiga-backup      # Respaldo intacto del archivo original de usuario
 
 ~/.gemini/config/                   # Configuración Global de Antigravity (Gemini)
 ├── skills/ami-*/SKILL.md           # Skills Declarativas (25 directorios)
-├── agents/ami-*.md                 # Subagentes Autónomos (11 perfiles)
+├── agents/ami-*.md                 # Subagentes Autónomos (12 perfiles)
 └── rules/ami-rules.md              # Reglas Operativas Declarativas
 
 ~/.agents/skills/                   # Skills Globales de Codex (25 directorios)
 ~/.codex/                           # Configuración Global de Codex
-├── agents/ami-*.toml               # Subagentes en formato TOML (11 perfiles)
+├── agents/ami-*.toml               # Subagentes en formato TOML (12 perfiles)
 └── hooks.json                      # Hooks opcionales de ciclo de vida
 ```
 

@@ -62,6 +62,7 @@ All built-in capabilities strictly utilize the **`ami-`** namespace prefix to pr
 
 | Type | Name | Description |
 |---|---|---|
+| Agent | **ami-adversarial-verifier** | Fresh-context adversarial verifier that audits code diffs and contracts for unhandled edge cases, security holes, and broken callers with zero author bias. |
 | Agent | **ami-cleanroom-builder** | Feature implementer for Cleanroom TDD. Writes production code strictly from formal interface contracts without overfitting to tests. |
 | Agent | **ami-cleanroom-tester** | Independent black-box QA and test architect for Cleanroom TDD. Generates comprehensive tests solely from contracts, isolated from production code. |
 | Agent | **ami-data-scientist** | Master orchestrator agent for Data & SQL. Coordinates exploratory dataset profiling, database query optimizations, and executive dashboards. |
@@ -126,18 +127,18 @@ When running `amiga-ia-setup`, the CLI wizard populates your home directory with
 ```text
 ~/.claude/                          # Claude Code Global Configuration
 ├── skills/ami-*/SKILL.md           # Declarative Skills (25 directories)
-├── agents/ami-*.md                 # Autonomous Subagents (11 profiles)
+├── agents/ami-*.md                 # Autonomous Subagents (12 profiles)
 ├── settings.json                   # Merged Hooks (PreToolUse, PostToolUse)
 └── settings.json.amiga-backup      # Safe original settings backup
 
 ~/.gemini/config/                   # Antigravity (Gemini) Global Configuration
 ├── skills/ami-*/SKILL.md           # Declarative Skills (25 directories)
-├── agents/ami-*.md                 # Autonomous Subagents (11 profiles)
+├── agents/ami-*.md                 # Autonomous Subagents (12 profiles)
 └── rules/ami-rules.md              # Declarative Operational Rules
 
 ~/.agents/skills/                   # Codex Global Skills (25 directories)
 ~/.codex/                           # Codex Global Configuration
-├── agents/ami-*.toml               # Custom Subagents in TOML format (11 profiles)
+├── agents/ami-*.toml               # Custom Subagents in TOML format (12 profiles)
 └── hooks.json                      # Optional Lifecycle Hooks
 ```
 
