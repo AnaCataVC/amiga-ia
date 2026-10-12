@@ -20,6 +20,9 @@ When invoked to plan a feature, you MUST follow this sequence:
 - **Technical Suggestions & Alternatives Formulation:**
   - Do not merely ask passive questions; actively provide informed technical suggestions, recommend best practices, and outline at least two viable architectural approaches (e.g., native lightweight implementation vs. third-party library, client-side vs. server-side processing, synchronous vs. event-driven) with clear pros, cons, and trade-offs.
   - Request the user's explicit preference or feedback on your suggestions before committing to an approach.
+- **High-Reliability & Critical Domain Detection:**
+  - Proactively identify whether the feature touches mission-critical domains: financial calculations, authentication/authorization tokens, cryptographic routines, strict state machines, or data parsers with high failure severity.
+  - If detected, proactively suggest executing the core domain logic via Double-Blind Cleanroom TDD (`__AMIGA_CODEX_SKILLS_DIR__/ami-orchestrate-cleanroom/SKILL.md`) to guarantee formal contract enforcement and eliminate test confirmation bias, contrasting it with standard sequential development.
 - **Triviality Exception:** If the feature is truly trivial (e.g., a simple one-line fix, minor CSS tweak, or self-contained configuration change with zero architectural choices), briefly outline your planned approach to confirm consensus and minimize friction.
 
 ### 2. External Context & Mandatory Technology Investigation (Deduplicated)
@@ -51,6 +54,7 @@ When invoked to plan a feature, you MUST follow this sequence:
 - The plan MUST include:
   - **Goal Description**: What the feature does.
   - **User Clarifications & Decisions**: Summary of questions resolved and suggestions adopted during the interactive consultation.
+  - **Execution Methodology Partition**: Explicitly partition modules into standard implementation vs. Double-Blind Cleanroom TDD (`__AMIGA_CODEX_SKILLS_DIR__/ami-orchestrate-cleanroom/SKILL.md`) for high-reliability, security, or pure domain contracts. For cleanroom components, designate target contract path (`docs/contracts/<feature-slug>.contract.md`).
   - **Open Questions**: Any remaining edge-case ambiguity to resolve with the user.
   - **Proposed Changes**: Files to create, modify, or delete, grouped logically (e.g., Database, Backend, Frontend).
   - **Verification**: How to test the feature once built.
@@ -59,11 +63,16 @@ When invoked to plan a feature, you MUST follow this sequence:
 ### 7. Orchestration & Context Injection (Post-Approval)
 - Once the user approves the plan, break it down into a `task.md` checklist.
 - Either execute the steps yourself sequentially, or spawn specialized subagents (e.g., to write tests, create UI components). If multi-agent delegation is not supported by the environment, execute the steps directly.
-- When delegating to subagents, **inject the specific task requirements, relevant ADR constraints, and target file paths directly into their prompt** so worker agents do not waste tokens re-discovering repository context.
+- **Double-Blind Cleanroom Delegation Protocol:**
+  - For modules designated for Cleanroom TDD in the approved plan, invoke `ami-orchestrate-cleanroom` (View `__AMIGA_CODEX_SKILLS_DIR__/ami-orchestrate-cleanroom/SKILL.md`).
+  - Directly inject pre-ingested ADR invariants, external research context (`docs/external-references/`), and target interface requirements into the prompt so the cleanroom inception phase builds upon established decisions without redundant inquiries.
+  - Await the cleanroom completion report (contract frozen, isolated builder and black-box tester converged, arbitration resolved) before continuing subsequent integration steps in `task.md`.
+- **Worker Context Injection:** When delegating other tasks to subagents, **inject the specific task requirements, relevant ADR constraints, and target file paths directly into their prompt** so worker agents do not waste tokens re-discovering repository context.
 
 ### 8. Quality Assurance & Final Sign-off
 - You MUST NOT verify the quality of your own work or your delegates' work manually, as this introduces bias and bottlenecks.
-- Once execution is complete, you MUST invoke an independent QA subagent (using `ami-audit-quality` or `ami-repo-auditor`) to verify that the feature meets the original constraints and quality standards.
+- Once execution is complete, you MUST invoke an independent QA auditor or verifier (using `__AMIGA_CODEX_SKILLS_DIR__/ami-audit-quality/SKILL.md`, `agents/ami-adversarial-verifier.md`, or `agents/ami-repo-auditor.md`) to verify that the feature meets the original constraints and quality standards.
+- If novel architectural patterns, surprises, or non-obvious fixes occurred during the feature lifecycle, invoke `__AMIGA_CODEX_SKILLS_DIR__/ami-extract-learnings/SKILL.md` to persist the learnings into `docs/learning/` or draft an ADR under `docs/adr/`.
 - Review the QA agent's final report. You retain accountability by making the final "go/no-go" sign-off, but you must only consider the feature 'done' after independent QA approval.
 
 ---

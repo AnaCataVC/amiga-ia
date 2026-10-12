@@ -18,6 +18,10 @@ When invoked, act as a Principal QA & Test Strategy Architect. Your purpose is t
 - **Formulate Layer Ratios:** Define the ideal balance between unit tests, component tests, integration tests, and End-to-End (E2E) UI/API workflows tailored specifically to the analyzed architecture.
 - **Define Granular Boundaries:**
   - **Unit Testing Strategy:** Pinpoint domain pure logic and modular utilities requiring isolated testing without IO overhead.
+  - **Cleanroom TDD vs. Standard TDD Stratification:**
+    - Explicitly categorize which domain boundaries demand Double-Blind Cleanroom TDD (`__AMIGA_CODEX_SKILLS_DIR__/ami-orchestrate-cleanroom/SKILL.md`) versus standard post-implementation test generation (`__AMIGA_CODEX_SKILLS_DIR__/ami-create-tests/SKILL.md`).
+    - Recommend Double-Blind Cleanroom TDD for mission-critical core domain logic, financial calculators, authentication/authorization handlers, cryptography, strict state machines, or public API contracts where confirmation bias poses severe reliability risks.
+    - Recommend standard test scaffolding (`ami-create-tests`) for application glue, UI components, and routine service integration.
   - **Integration & Contract Testing:** Specify how internal service interfaces, database repositories, and messaging queues will be verified in harness environments.
   - **E2E & Critical User Journeys:** Outline primary user paths and core business workflows to be covered by high-level automated testing.
 
@@ -32,7 +36,9 @@ When invoked, act as a Principal QA & Test Strategy Architect. Your purpose is t
 
 ### 5. Reporting & Action Plan
 - Synthesize the finalized strategy into a structured markdown artifact or comprehensive report for user validation.
-- Provide practical implementation guidance and recommend subsequent execution via `ami-create-tests` to scaffold specific automated test suites based on the confirmed blueprint.
+- Provide practical implementation guidance and recommend subsequent execution paths based on the confirmed blueprint:
+  - **For High-Reliability Contracts:** Direct the user or Tech Lead to execute `__AMIGA_CODEX_SKILLS_DIR__/ami-orchestrate-cleanroom/SKILL.md` to freeze formal interface contracts and dispatch isolated double-blind builder/tester pairs.
+  - **For Standard Feature Scaffolding:** Recommend invoking `__AMIGA_CODEX_SKILLS_DIR__/ami-create-tests/SKILL.md` to generate targeted automated test suites covering modified code.
 - **NEVER** overwrite existing testing frameworks or configuration setups without explicit user approval.
 
 ---
