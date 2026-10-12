@@ -1,6 +1,6 @@
 ---
 name: ami-scan-tech-debt
-description: Analyzes the repository for technical debt, including outdated dependencies, dead code, duplication, and architectural inconsistencies. Provides a classified report based on criticality, effort, and risk.
+description: Analyzes repository code for technical debt, including dead code, duplication, constants centralization, and architectural inconsistencies. Provides a classified report based on criticality, effort, and risk.
 allowed-tools: Bash, Read, Grep, Write
 ---
 
@@ -14,10 +14,11 @@ When invoked, act as a **Tech Debt Analyst**.
 - Begin by reading the `README.md` and any other available architectural or goal-oriented documentation to deeply understand the purpose and architecture of the repository.
 - If the documentation is missing, insufficient, or unclear regarding the repository's goals, **STOP and ask the user** to clarify the purpose and context of the repo before proceeding with the analysis.
 
-### 2. Dependency Analysis (Delegated)
-- Invoke the `ami-analyze-dependencies` skill (View the file `__AMIGA_CODEX_SKILLS_DIR__/ami-analyze-dependencies/SKILL.md`) to perform a comprehensive dependency audit.
-- Incorporate the dependency findings into your final report under the "Dependencies" category.
-- Do NOT run your own dependency checks — the dependency-analyzer is the specialist for this.
+### 2. Scope Demarcation & Dependency Boundary
+- **Code Debt Specialization:** This skill specializes strictly in source code technical debt: dead code, duplicated logic, centralization opportunities, pending intention markers (TODOs/FIXMEs), type erosion, and latent architectural contract drift.
+- **Avoid Redundant Scans (Teamwork Principle):**
+  - If invoked by an orchestrator agent (such as `ami-repo-auditor`), bypass dependency analysis completely, as dependency hygiene is evaluated by its dedicated parallel worker (`ami-analyze-dependencies`).
+  - Only if invoked standalone by the user without prior dependency checks, you may optionally consult `__AMIGA_CODEX_SKILLS_DIR__/ami-analyze-dependencies/SKILL.md` to incorporate library findings into a unified report.
 
 ### 3. Code Quality and Architecture Audit
 - Scan the codebase to identify:

@@ -4,7 +4,7 @@ description: Validates structural consistency between code changes and data defi
 allowed-tools: Bash, Read, Grep, Edit, Write
 ---
 
-# Skill: Push Data Validator
+# Skill: Data & Schema Consistency Validator
 
 When invoked, act as a Data Architect to ensure any structural changes in code don't break existing data definitions.
 

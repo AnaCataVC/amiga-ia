@@ -22,14 +22,15 @@ You are the central orchestrator responsible for safely publishing new versions 
   - Check if any unrecorded session learnings should be documented via `ami-extract-learnings` before cutting the version.
 - **Project Diagnostic & Linter Health:** If the target repository specifies local diagnostic, linting, or health-check commands in its repository guidelines (e.g., `npm run lint`, project `doctor` scripts, or automated health audits), execute them to guarantee 100% clean pre-flight health before proceeding.
 
-### 2. Determine Version Tag
-- Invoke the tagging skill to calculate the correct next version.
-- Execute: `ami-tag-release` (View `skills/ami-tag-release/SKILL.md`).
-- Pass along any parameters from the user (e.g., if they asked for a QA release or an RC release) and instruct the tagger to:
+### 2. Determine Version Tag & Draft Release Notes
+- Invoke the unified release preparation skill to calculate the target version and formulate the changelog in a single pass.
+- Execute: `ami-prepare-release` (View `skills/ami-prepare-release/SKILL.md`).
+- Pass along any parameters from the user (e.g., if they asked for a QA release or an RC release) and instruct the preparer to:
   1. Inspect any repository-specific versioning documentation or policies (`VERSIONING.md`, `docs/versioning.md`, `.agents/AGENTS.md`, `README.md`).
   2. Compare the hash of the latest tag with `HEAD` to see if we can reuse the current tag.
   3. Perform a semantic analysis of the commits since the last tag. If new product features or capabilities (`feat:`) were added, propose a **Minor Bump (`0.x.0`)**.
-- Display the recommended tag to the user with its semantic reasoning, and **explicitly wait for user confirmation** before proceeding.
+  4. Generate the structured bilingual (English/Spanish) release notes draft.
+- Display the recommended tag with its semantic reasoning and the drafted notes to the user, and **explicitly wait for user confirmation** before proceeding.
 
 ### 3. Update Version Files & Build Artifacts (Dual Search, Atomic Pre-Tag Commit & Fresh Build Gate)
 - **Atomic Version Management:** Update package manager files (`package.json`, `cargo.toml`, `pyproject.toml`, `build.gradle.kts`, `pom.xml`, etc.) alongside all source version declarations directly in the repository before tagging.
@@ -52,13 +53,10 @@ You are the central orchestrator responsible for safely publishing new versions 
   7. **Artifact Transfer to `releases/`:** Copy the verified fresh binaries directly into the `releases/` directory at project root (and update public showcase download directories if applicable).
   8. **Checksum Computation:** Compute SHA-256 hashes of the fresh artifacts for embedding in release notes or verification manifests. Attach ONLY verified fresh binaries from `releases/` to the release.
 
-### 4. Draft Release Notes
-- Once the version bump commit is pushed and artifacts are compiled, invoke the drafting skill.
-- Execute: `ami-draft-release` (View `skills/ami-draft-release/SKILL.md`).
-- Instruct the drafter to filter out administrative commits (such as bumps, tag updates, and [skip ci] messages) so that the changelog focuses exclusively on user-facing product value and code changes.
+### 4. Review & Confirm Release Notes
+- Verify that the prepared bilingual markdown notes accurately capture user-facing product value and code enhancements.
 - **Zero Flags Verification (Mandatory):** Verify that the drafted release notes contain absolutely NO country flag emojis (e.g., US, UK, ES, MX) in titles or section headers. Only clean semantic headers (`# Release <Tag>`, `# Lanzamiento <Tag>`) are allowed.
-- Present the drafted bilingual (English/Spanish) markdown notes to the user for final review.
-- Allow the user to request edits to the notes.
+- Allow the user to request minor edits or additions to the notes before publishing.
 
 ### 5. Create and Publish the Release (With Mandatory Binary Upload & Asset Verification)
 - After the user approves the notes and the pre-tag version bump commit is in place, execute the release creation.
