@@ -6,7 +6,8 @@ const READ_ONLY_AGENTS = new Set([
   'ami-repo-auditor',
   'ami-pr-reviewer',
   'ami-push-assistant',
-  'ami-expert-council'
+  'ami-expert-council',
+  'ami-adversarial-verifier'
 ]);
 
 function resolveCodexSkillReferences(instructions, skillNames, sourceFile) {

@@ -162,7 +162,7 @@ describe('Tri-Ecosystem End-to-End Installation Test Suite', () => {
       const installedSkills = collectFilesRecursively(targetSkillsDir);
       const installedAgents = collectFilesRecursively(targetAgentsDir);
       assert.ok(installedSkills.length >= 25, `Expected >= 25 installed skill files, got ${installedSkills.length}`);
-      assert.strictEqual(installedAgents.length, 11, `Expected 11 installed agent files, got ${installedAgents.length}`);
+      assert.strictEqual(installedAgents.length, 12, `Expected 12 installed agent files, got ${installedAgents.length}`);
 
       const allMarkdownFiles = [...installedSkills, ...installedAgents];
       for (const file of allMarkdownFiles) {
@@ -230,7 +230,7 @@ describe('Tri-Ecosystem End-to-End Installation Test Suite', () => {
       const installedRules = collectFilesRecursively(targetRulesDir);
 
       assert.ok(installedSkills.length >= 25, `Expected >= 25 installed skill files, got ${installedSkills.length}`);
-      assert.strictEqual(installedAgents.length, 11, `Expected 11 installed agent files, got ${installedAgents.length}`);
+      assert.strictEqual(installedAgents.length, 12, `Expected 12 installed agent files, got ${installedAgents.length}`);
       assert.ok(installedRules.length >= 1, `Expected installed rules, got ${installedRules.length}`);
 
       const allMarkdownFiles = [...installedSkills, ...installedAgents];
@@ -283,7 +283,7 @@ describe('Tri-Ecosystem End-to-End Installation Test Suite', () => {
       const installedAgents = collectFilesRecursively(targetAgentsDir);
 
       assert.ok(installedSkills.length >= 25, `Expected >= 25 installed skill files, got ${installedSkills.length}`);
-      assert.strictEqual(installedAgents.length, 11, `Expected exactly 11 agent TOML files, got ${installedAgents.length}`);
+      assert.strictEqual(installedAgents.length, 12, `Expected exactly 12 agent TOML files, got ${installedAgents.length}`);
 
       const allCodexFiles = [...installedSkills, ...installedAgents];
       const skillRefRegex = /(?:[A-Za-z]:[\\/]|(?:\/[^/\s]+)+[\\/])(ami-[a-z0-9-]+)[\\/]SKILL\.md/g;

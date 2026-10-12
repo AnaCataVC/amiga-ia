@@ -38,7 +38,8 @@ const READ_ONLY_AGENTS = [
   'ami-repo-auditor.toml',
   'ami-pr-reviewer.toml',
   'ami-push-assistant.toml',
-  'ami-expert-council.toml'
+  'ami-expert-council.toml',
+  'ami-adversarial-verifier.toml'
 ];
 
 const WRITE_ENABLED_AGENTS = [
@@ -486,7 +487,7 @@ describe('Contract: Codex Semantic Compiler & Runtime Neutralization', () => {
 
   describe('Scenario 7: TOML Syntax Validity & Non-Functional Quality Constraints', () => {
 
-    it('verifies all 11 expected agent TOML files exist in codex/agents/', () => {
+    it('verifies all 12 expected agent TOML files exist in codex/agents/', () => {
       const existingFiles = fs.existsSync(CODEX_AGENTS_DIR)
         ? fs.readdirSync(CODEX_AGENTS_DIR).filter((f) => f.endsWith('.toml')).sort()
         : [];
@@ -494,11 +495,11 @@ describe('Contract: Codex Semantic Compiler & Runtime Neutralization', () => {
       assert.deepStrictEqual(
         existingFiles,
         ALL_EXPECTED_AGENTS,
-        `Expected exactly 11 agent TOML files: ${ALL_EXPECTED_AGENTS.join(', ')}`
+        `Expected exactly 12 agent TOML files: ${ALL_EXPECTED_AGENTS.join(', ')}`
       );
     });
 
-    it('validates all 11 codex agent TOML files parse with valid keys and escape syntax', () => {
+    it('validates all 12 codex agent TOML files parse with valid keys and escape syntax', () => {
       for (const agentFileName of ALL_EXPECTED_AGENTS) {
         const filePath = path.join(CODEX_AGENTS_DIR, agentFileName);
         const content = fs.readFileSync(filePath, 'utf8');
