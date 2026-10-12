@@ -28,7 +28,7 @@ describe('Universal Hook Scripts Compatibility Tests', () => {
     });
 
     assert.strictEqual(result.status, 0);
-    assert.strictEqual(result.stderr.includes('Reminder: Run push-assistant agent before pushing code.'), true);
+    assert.strictEqual(result.stderr.includes('Reminder: Run ami-push-assistant agent before pushing code.'), true);
     const stdoutJson = JSON.parse(result.stdout.trim());
     assert.deepStrictEqual(stdoutJson, { decision: 'allow' });
   });
@@ -46,7 +46,7 @@ describe('Universal Hook Scripts Compatibility Tests', () => {
     });
 
     assert.strictEqual(result.status, 0);
-    assert.strictEqual(result.stderr.includes('Reminder: Use commit-assistant for proper commit formatting.'), true);
+    assert.strictEqual(result.stderr.includes('Reminder: Use ami-plan-commits for proper commit formatting.'), true);
     const stdoutJson = JSON.parse(result.stdout.trim());
     assert.deepStrictEqual(stdoutJson, { decision: 'allow' });
   });

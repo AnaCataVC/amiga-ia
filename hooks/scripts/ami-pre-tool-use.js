@@ -7,10 +7,10 @@ process.stdin.on('end', () => {
     const command = toolArgs.command || toolArgs.CommandLine || toolArgs.command_line || '';
 
     if (command.includes('git commit')) {
-      console.error('Reminder: Use commit-assistant for proper commit formatting.');
+      console.error('Reminder: Use ami-plan-commits for proper commit formatting.');
     }
     if (command.includes('git push')) {
-      console.error('Reminder: Run push-assistant agent before pushing code.');
+      console.error('Reminder: Run ami-push-assistant agent before pushing code.');
     }
     if (command.includes('gh pr create')) {
       console.error('Reminder: Consider running ami-detect-pr-conflicts or ami-pr-publisher before creating PR.');

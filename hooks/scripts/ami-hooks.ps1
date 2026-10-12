@@ -38,10 +38,10 @@ try {
         }
 
         if ($cmd -match 'git commit') {
-            [Console]::Error.WriteLine('Reminder: Use commit-assistant for proper commit formatting.')
+            [Console]::Error.WriteLine('Reminder: Use ami-plan-commits for proper commit formatting.')
         }
         if ($cmd -match 'git push') {
-            [Console]::Error.WriteLine('Reminder: Run push-assistant agent before pushing code.')
+            [Console]::Error.WriteLine('Reminder: Run ami-push-assistant agent before pushing code.')
         }
         if ($cmd -match 'gh pr create') {
             [Console]::Error.WriteLine('Reminder: Consider running ami-detect-pr-conflicts or ami-pr-publisher before creating PR.')

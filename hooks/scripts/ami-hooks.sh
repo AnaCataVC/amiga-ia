@@ -32,11 +32,11 @@ fi
 if [ "$event" = "PreToolUse" ]; then
   # Check for Git commit commands
   if echo "$input" | grep -E -q "(git commit|git-commit)"; then
-    echo "Reminder: Use commit-assistant for proper commit formatting." >&2
+    echo "Reminder: Use ami-plan-commits for proper commit formatting." >&2
   fi
   # Check for Git push commands
   if echo "$input" | grep -E -q "(git push|git-push)"; then
-    echo "Reminder: Run push-assistant agent before pushing code." >&2
+    echo "Reminder: Run ami-push-assistant agent before pushing code." >&2
   fi
   # Check for GitHub PR creation
   if echo "$input" | grep -E -q "gh pr create"; then
