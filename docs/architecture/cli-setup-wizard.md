@@ -8,7 +8,7 @@ This document details the architecture and operational mechanics of the Amiga IA
 
 The CLI Setup Wizard is an interactive, zero-dependency Node.js tool responsible for:
 1. **Target Environment Selection:** Selecting Claude Code (`~/.claude/`), Antigravity (`~/.gemini/config/`), and/or Codex (`~/.agents/` and `~/.codex/`).
-2. **Physical Capability Deployment:** Copying declarative skills (`skills/`), subagents (`agents/`), and rules (`rules/`) into standard local AI configuration directories. Codex skills are installed to `~/.agents/skills/`; Markdown agent sources are converted during build to native custom agent TOML files installed to `~/.codex/agents/`.
+2. **Physical Capability Deployment & Translation:** Copying declarative skills (`skills/`), subagents (`agents/`), and rules (`rules/`) into standard local AI configuration directories. Codex skills are installed to `~/.agents/skills/` with dynamic placeholder interpolation; Markdown agent sources are converted during build to native custom agent TOML files installed to `~/.codex/agents/`. Claude and Antigravity frontmatters undergo platform-specific capability translation.
 3. **Settings Merging & Rollback Safety:** Merging Claude Code hooks into `~/.claude/settings.json` with a rollback backup, and Codex hooks into `~/.codex/hooks.json` while preserving unrelated user hooks.
 4. **Version Manifest Tracking:** Writing `.amiga-version.json` in installed directories to accurately track installed versions and prevent drift.
 5. **System Diagnostic Engine (`doctor`):** Auditing installed packages, checking NPM registry for updates, verifying YAML frontmatter validity, and detecting legacy plugin conflicts.
@@ -36,6 +36,12 @@ To prevent accidental deletion of user-authored skills or agents during updates 
 - Only directories in `skills/` starting with `ami-` are cleaned up or overwritten.
 - Only `.md` files in `agents/` starting with `ami-` are cleaned up or overwritten.
 - Custom non-prefixed skills (e.g., `skills/my-custom-skill/`) remain completely untouched.
+
+### 3.3 Tri-Ecosystem Runtime Translation & Path Interpolation
+During deployment, `copyRecursiveSync` performs targeted environment adaptations:
+- **Claude Code:** Translates YAML frontmatter `allowed-tools` to PascalCase tool names and normalizes agent directory references.
+- **Antigravity:** Translates YAML frontmatter `allowed-tools` to snake_case functions.
+- **OpenAI Codex:** Expands `__AMIGA_CODEX_SKILLS_DIR__` across all markdown skill files and JSON-escaped TOML agent manifests, ensuring that cross-skill references point directly to physical `~/.agents/skills/` locations even on paths containing spaces or shell symbols.
 
 ---
 
