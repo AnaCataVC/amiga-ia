@@ -271,8 +271,12 @@ function translateFrontmatter(markdownContent, platform) {
       }
 
       const translated = translateTools(rawTools, platform);
-      updatedLines.push(`${key}: ${translated.join(', ')}`);
+      const outputKey = (platform === 'antigravity' || platform === 'gemini')
+        ? 'tools'
+        : (platform === 'claude' ? 'allowed-tools' : key);
+      updatedLines.push(`${outputKey}: ${translated.join(', ')}`);
       hasReplaced = true;
+
     } else {
       updatedLines.push(line);
     }
