@@ -47,7 +47,7 @@ When invoked to plan a feature, you MUST follow this sequence:
 
 ### 6. Draft Implementation Plan
 - Synthesize the external research, internal codebase map, repository memory (ADRs/learnings), user's selected alternative, and expert council findings.
-- Create a detailed implementation plan using the standard Antigravity artifact format (`implementation_plan.md`).
+- Create a detailed implementation plan using the standard implementation plan format (`implementation_plan.md`).
 - The plan MUST include:
   - **Goal Description**: What the feature does.
   - **User Clarifications & Decisions**: Summary of questions resolved and suggestions adopted during the interactive consultation.
