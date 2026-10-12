@@ -476,7 +476,7 @@ describe('Amiga IA setup.js copyRecursiveSync tests', () => {
     copyRecursiveSyncFunc(fs, path, srcDir, destDir, 'antigravity');
 
     const copiedContent = fs.readFileSync(path.join(destDir, 'ami-doc-architect.md'), 'utf8');
-    assert.ok(copiedContent.includes('allowed-tools: write_to_file, replace_file_content, multi_replace_file_content, run_command, manage_task, view_file'));
+    assert.ok(copiedContent.includes('tools: write_to_file, replace_file_content, multi_replace_file_content, run_command, manage_task, view_file'));
 
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });

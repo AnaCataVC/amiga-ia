@@ -124,7 +124,7 @@ function collectFilesRecursively(dir) {
 function extractAllowedTools(content) {
   const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
   if (!match) return '';
-  const allowedToolsMatch = match[1].match(/^allowed-tools:\s*(.*)$/m);
+  const allowedToolsMatch = match[1].match(/^(?:allowed-tools|tools):\s*(.*)$/m);
   return allowedToolsMatch ? allowedToolsMatch[1] : '';
 }
 

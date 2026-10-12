@@ -567,6 +567,7 @@ async function runDoctor() {
   let invalidDefinitions = 0;
 
   const WRITE_MANDATORY_AGENTS = new Set([
+    'ami-cleanroom-arbiter.md',
     'ami-cleanroom-builder.md',
     'ami-cleanroom-tester.md',
     'ami-data-scientist.md',
@@ -574,6 +575,7 @@ async function runDoctor() {
     'ami-release-manager.md',
     'ami-tech-lead.md'
   ]);
+
 
   const validateDefinitionFrontmatter = (filepath, baseDir, typeLabel) => {
     const content = fs.readFileSync(filepath, 'utf8').replace(/^\uFEFF/, '');
