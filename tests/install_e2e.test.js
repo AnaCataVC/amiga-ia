@@ -292,6 +292,12 @@ describe('Tri-Ecosystem End-to-End Installation Test Suite', () => {
       const hooksMerged = installCodexHooks(codexDir);
       assert.strictEqual(hooksMerged, true, 'Codex hooks merge must return true');
 
+      // 3. Install Codex AGENTS.md rules
+      const codexRuleContent = `## 🤖 Amiga IA Universal Directives\n- Workflow Orchestration.`;
+      const codexAgentsMdPath = path.join(codexDir, 'AGENTS.md');
+      const rulesMerged = mergeMarkdownBlock(codexAgentsMdPath, codexRuleContent, 'AMIGA_IA_RULES');
+      assert.strictEqual(rulesMerged, true, 'Codex rules merge must return true');
+
       // Assertions
       const installedSkills = collectFilesRecursively(codexUserSkillsDir);
       const installedAgents = collectFilesRecursively(targetAgentsDir);
@@ -353,6 +359,11 @@ describe('Tri-Ecosystem End-to-End Installation Test Suite', () => {
       assert.ok(fs.existsSync(hooksJsonPath), 'Codex hooks.json must exist');
       const hooksJson = JSON.parse(fs.readFileSync(hooksJsonPath, 'utf8'));
       assert.ok(hooksJson.hooks && hooksJson.hooks.PreToolUse && hooksJson.hooks.PostToolUse);
+
+      // Assert AGENTS.md rules block exists
+      const codexAgentsMdContent = fs.readFileSync(codexAgentsMdPath, 'utf8');
+      assert.ok(codexAgentsMdContent.includes('AMIGA_IA_RULES_START:DO_NOT_EDIT'));
+      assert.ok(codexAgentsMdContent.includes('Amiga IA Universal Directives'));
 
       fs.rmSync(tmpHome, { recursive: true, force: true });
     });

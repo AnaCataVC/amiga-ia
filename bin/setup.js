@@ -835,6 +835,18 @@ async function runDoctor() {
     console.log(pc.gray('  ℹ️  No Amiga IA rules found in ~/.gemini/config/rules/ (Optional feature).'));
   }
 
+  const codexAgentsMdPath = path.join(codexDir, 'AGENTS.md');
+  if (fs.existsSync(codexAgentsMdPath)) {
+    const codexContent = fs.readFileSync(codexAgentsMdPath, 'utf8');
+    if (codexContent.includes('AMIGA_IA_RULES_START')) {
+      console.log(pc.green('  ✅ Amiga IA behavioral rules block detected in ~/.codex/AGENTS.md.'));
+    } else {
+      console.log(pc.gray('  ℹ️  No Amiga IA rules block found in ~/.codex/AGENTS.md (Optional feature).'));
+    }
+  } else {
+    console.log(pc.gray('  ℹ️  ~/.codex/AGENTS.md not found (Optional feature).'));
+  }
+
   // 5. Legacy Directory Check
   const sessionsDir = path.resolve('docs', 'coding-sessions');
   if (fs.existsSync(sessionsDir)) {
@@ -1018,6 +1030,27 @@ async function runInstall() {
     copyRecursiveSync(sourceCodexAgentsDir, path.join(codexDir, 'agents'), 'codex', { codexUserSkillsDir });
     saveVersionManifest(codexDir, currentVersion);
     console.log(pc.green('✅ Codex skills installed in ~/.agents/skills/ and custom subagents in ~/.codex/agents/.'));
+
+    const codexRuleContent = `## 🤖 Amiga IA Universal Directives
+- **Skills & Subagents:** Inspect and proactively invoke \`ami-*\` skills and custom subagents for planning, coding sessions, git hygiene, documentation, PR reviews, and releases.
+- **Workflow Orchestration:** When handling complex tasks or release lifecycles, delegate strictly to orchestrators (\`ami-push-assistant\`, \`ami-release-manager\`, \`ami-tech-lead\`, \`ami-pr-publisher\`).
+- **Clean Commits:** Follow Conventional Commits in English (\`feat:\`, \`fix:\`, \`chore:\`, \`refactor:\`).`;
+
+    const installCodexRules = await confirm({ message: 'Install recommended Amiga IA behavioral rules in ~/.codex/AGENTS.md?', initialValue: true });
+    if (isCancel(installCodexRules)) process.exit(0);
+    if (installCodexRules) {
+      if (!fs.existsSync(codexDir)) fs.mkdirSync(codexDir, { recursive: true });
+      const codexAgentsMdPath = path.join(codexDir, 'AGENTS.md');
+      const merged = mergeMarkdownBlock(codexAgentsMdPath, codexRuleContent, 'AMIGA_IA_RULES');
+      if (merged) {
+        console.log(pc.green('✅ Amiga IA behavioral rules successfully merged into ~/.codex/AGENTS.md.'));
+      } else {
+        console.log(pc.yellow('⚠️ Could not update ~/.codex/AGENTS.md.'));
+      }
+    } else {
+      console.log(pc.gray('⏭️ Rules installation skipped for Codex.'));
+    }
+
     const installHooks = await confirm({ message: 'Install Amiga IA advisory hooks for Codex? Codex will ask you to review and trust them before their first run.', initialValue: true });
     if (isCancel(installHooks)) process.exit(0);
     if (installHooks) {
@@ -1046,6 +1079,11 @@ async function runUninstall() {
     const codexManifest = path.join(codexDir, '.amiga-version.json');
     if (fs.existsSync(codexManifest)) {
       try { fs.unlinkSync(codexManifest); } catch (e) {}
+    }
+    const codexAgentsMd = path.join(codexDir, 'AGENTS.md');
+    const removedCodexBlock = removeMarkdownBlock(codexAgentsMd, 'AMIGA_IA_RULES');
+    if (removedCodexBlock) {
+      console.log(pc.green('✅ Removed Amiga IA rules block from ~/.codex/AGENTS.md.'));
     }
     console.log(pc.green('✅ Codex skills and custom subagents removed.'));
     uninstalledSomething = true;
