@@ -224,13 +224,27 @@ describe('Tri-Ecosystem End-to-End Installation Test Suite', () => {
       const hooksMerged = installNodeHooks(geminiDir, geminiSettings, { targetEnv: 'antigravity' });
       assert.strictEqual(hooksMerged, true, 'Antigravity hooks merge must return true');
 
+      // 1b. Install plugin agents and manifest
+      const targetPluginDir = path.join(geminiDir, 'plugins', 'amiga-ia');
+      const targetPluginAgentsDir = path.join(targetPluginDir, 'agents');
+      copyRecursiveSync(sourceAgentsDir, targetPluginAgentsDir, 'antigravity');
+      fs.writeFileSync(path.join(targetPluginDir, 'plugin.json'), JSON.stringify({
+        name: 'amiga-ia',
+        displayName: 'Amiga IA',
+        version: '5.4.0',
+        description: 'Amiga IA Universal Agent Skills & Subagents'
+      }));
+
       // Assertions
       const installedSkills = collectFilesRecursively(targetSkillsDir);
       const installedAgents = collectFilesRecursively(targetAgentsDir);
+      const installedPluginAgents = collectFilesRecursively(targetPluginAgentsDir);
       const installedRules = collectFilesRecursively(targetRulesDir);
 
       assert.ok(installedSkills.length >= 20, `Expected >= 20 installed skill files, got ${installedSkills.length}`);
       assert.strictEqual(installedAgents.length, 13, `Expected 13 installed agent files, got ${installedAgents.length}`);
+      assert.strictEqual(installedPluginAgents.length, 13, `Expected 13 installed plugin agent files, got ${installedPluginAgents.length}`);
+      assert.ok(fs.existsSync(path.join(targetPluginDir, 'plugin.json')), 'Expected plugin.json manifest in plugins/amiga-ia');
       assert.ok(installedRules.length >= 1, `Expected installed rules, got ${installedRules.length}`);
 
       const allMarkdownFiles = [...installedSkills, ...installedAgents];

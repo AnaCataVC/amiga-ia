@@ -448,6 +448,7 @@ function saveVersionManifest(targetDir, version) {
 function hasAmigaItems(targetDir) {
   const skillsDir = path.join(targetDir, 'skills');
   const agentsDir = path.join(targetDir, 'agents');
+  const pluginAgentsDir = path.join(targetDir, 'plugins', 'amiga-ia', 'agents');
   let found = false;
   const checkDir = (dir) => {
     if (!fs.existsSync(dir)) return;
@@ -460,6 +461,7 @@ function hasAmigaItems(targetDir) {
   };
   checkDir(skillsDir);
   checkDir(agentsDir);
+  checkDir(pluginAgentsDir);
   if (!found && typeof codexDir !== 'undefined' && targetDir === codexDir && typeof codexUserSkillsDir !== 'undefined') {
     checkDir(codexUserSkillsDir);
   }
@@ -552,14 +554,25 @@ async function runDoctor() {
   }
 
   // 2. Installation Health Check
-  console.log(pc.blue('\n🔍 Checking for legacy plugin conflicts...'));
+  console.log(pc.blue('\n🔍 Checking Antigravity plugin configuration...'));
   const geminiPluginDir = path.join(geminiDir, 'plugins', 'amiga-ia');
+  const geminiPluginAgentsDir = path.join(geminiPluginDir, 'agents');
   if (fs.existsSync(geminiPluginDir)) {
-    console.log(pc.yellow(`⚠️  WARNING: Legacy plugin directory found (~/.gemini/config/plugins/amiga-ia).`));
-    console.log(pc.gray(`    Recommended action: Run 'amiga-ia-setup' to clean legacy plugin directory and migrate to NPM package installation.`));
+    const hasAgents = fs.existsSync(geminiPluginAgentsDir) && fs.readdirSync(geminiPluginAgentsDir).some(f => f.startsWith('ami-'));
+    const hasPluginJson = fs.existsSync(path.join(geminiPluginDir, 'plugin.json'));
+    if (hasAgents && hasPluginJson) {
+      console.log(pc.green('  ✅ Antigravity plugin manifest and custom agents properly configured in ~/.gemini/config/plugins/amiga-ia.'));
+    } else {
+      console.log(pc.yellow('  ⚠️  WARNING: ~/.gemini/config/plugins/amiga-ia is missing agents or plugin.json.'));
+      console.log(pc.gray("     Recommendation: Run 'amiga-ia-setup' to reconfigure Antigravity custom agents."));
+      issueCount++;
+    }
+  } else if (geminiStatus.installed) {
+    console.log(pc.yellow('  ⚠️  WARNING: Antigravity is installed but ~/.gemini/config/plugins/amiga-ia is missing.'));
+    console.log(pc.gray("     Recommendation: Run 'amiga-ia-setup' to ensure Custom Agents appear in Antigravity."));
     issueCount++;
   } else {
-    console.log(pc.green('  ✅ No legacy plugin conflicts detected.'));
+    console.log(pc.gray('  ℹ️  Antigravity plugin not configured (Optional feature).'));
   }
 
   // 3. YAML Frontmatter Validator
@@ -945,17 +958,28 @@ async function runInstall() {
   if (choices.includes('antigravity')) {
     console.log(pc.blue('\nInstalling for Antigravity...'));
     const geminiPluginDir = path.join(geminiDir, 'plugins', 'amiga-ia');
-    if (fs.existsSync(geminiPluginDir)) {
-      fs.rmSync(geminiPluginDir, { recursive: true, force: true });
-      console.log(pc.gray('🧹 Cleaned legacy plugin directory at ~/.gemini/config/plugins/amiga-ia'));
+    const geminiPluginAgentsDir = path.join(geminiPluginDir, 'agents');
+    if (!fs.existsSync(geminiPluginAgentsDir)) {
+      fs.mkdirSync(geminiPluginAgentsDir, { recursive: true });
     }
 
+    const pluginManifest = {
+      name: 'amiga-ia',
+      displayName: 'Amiga IA',
+      version: currentVersion,
+      description: 'Amiga IA Universal Agent Skills & Subagents'
+    };
+    fs.writeFileSync(path.join(geminiPluginDir, 'plugin.json'), JSON.stringify(pluginManifest, null, 2));
+
     cleanOrphanedFiles(sourceSkillsDir, path.join(geminiDir, 'skills'));
+    cleanOrphanedFiles(sourceAgentsDir, geminiPluginAgentsDir);
     cleanOrphanedFiles(sourceAgentsDir, path.join(geminiDir, 'agents'));
+
     copyRecursiveSync(sourceSkillsDir, path.join(geminiDir, 'skills'), 'antigravity');
+    copyRecursiveSync(sourceAgentsDir, geminiPluginAgentsDir, 'antigravity');
     copyRecursiveSync(sourceAgentsDir, path.join(geminiDir, 'agents'), 'antigravity');
     saveVersionManifest(geminiDir, currentVersion);
-    console.log(pc.green('✅ Skills and Agents directories successfully configured at ~/.gemini/config/'));
+    console.log(pc.green('✅ Skills and Custom Agents successfully configured for Antigravity at ~/.gemini/config/'));
 
     const installAntigravityRules = await confirm({ message: 'Install recommended Amiga IA rules in ~/.gemini/config/rules/?', initialValue: true });
     if (isCancel(installAntigravityRules)) process.exit(0);
