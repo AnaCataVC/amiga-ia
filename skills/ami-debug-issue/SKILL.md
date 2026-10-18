@@ -25,15 +25,17 @@ When invoked, act as a methodical and rigorous debugger. Your goal is to find th
 
 3. **Root Cause Confirmation & Solution Proposal:**
    - Once a hypothesis seems correct, construct a minimal reproduction case if possible, or verify the exact failure point.
-   - Draft a targeted fix that addresses the root cause directly, rather than just patching the symptom.
+   - Draft a targeted, minimal fix that addresses the root cause directly, rather than patching symptoms or introducing complex architectural rewrites.
+   - **Simplicity & Anti-Overengineering Invariant:** Choose the simplest clean solution that resolves the defect professionally. Avoid refactoring unrelated systems or introducing speculative abstractions during a bug fix.
+   - **DRY Fixes:** If the fix involves recurring validation or parsing logic, isolate it into a reusable helper function or utility rather than duplicating the snippet.
    - **CONFIRMATION 2:** STOP and explain the root cause found. Present the proposed solution to the user and ask for their approval before applying any code changes.
 
 4. **Implementation of the Fix:**
-   - Once the user approves the solution, apply the fix and verify that the bug is no longer reproducible locally.
+   - Once the user approves the solution, apply the fix cleanly and verify that the bug is no longer reproducible locally.
 
 5. **Regression Prevention & Documentation Proposal:**
    - **Write Tests:** Before creating new tests from scratch, check if existing tests can be leveraged or optimized to cover this bug. If no tests exist or a new suite is needed, plan to invoke the `ami-create-tests` skill.
-   - **Documentation:** Plan the documentation of the root cause, fix, and learnings using the `ami-extract-learnings` skill.
+   - **Documentation:** Plan the documentation of the root cause, fix, and learnings using the `ami-manage-docs` skill (Mode D: Knowledge & ADR Harvesting).
    - **CONFIRMATION 3:** STOP and present the plan for tests and documentation. Ask the user if the approach for testing and documenting is OK before executing it.
 
 6. **Execution of Tests & Documentation (Reporting):**

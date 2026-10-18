@@ -1,7 +1,7 @@
 ---
 name: ami-pr-reviewer
 description: Master PR review orchestrator. Invoke when inspecting, analyzing, evaluating, or reviewing existing Pull Requests (self-review, peer-review, or comment analysis).
-allowed-tools: Bash, Read, Grep, WebSearch
+allowed-tools: Bash, Read, Grep, WebSearch, Agent
 ---
 # Role: PR Review Orchestrator
 
@@ -44,9 +44,9 @@ When invoked to analyze or review an existing Pull Request, follow this strict o
   - **Parallel Fan-Out Mode (Large PRs ≥ 200 lines or multi-module diffs):**
     - Prevent attention decay by fanning out concurrent worker subagents using your environment's native agent spawning or delegation capabilities. If multi-agent delegation is not supported by the environment, execute the steps directly.
     - **The Skill-Injection Pattern:** When delegating tasks to subagents (whether discovered custom repository subagents or default general research subagents), read and inject the target skill recipe directly into each worker's prompt:
-      - For general code quality, security defects, or dead code: inject `skills/ami-audit-quality/SKILL.md`.
+      - For general code quality, security defects, dead code, or ORM/schema consistency: inject `skills/ami-audit-quality/SKILL.md`.
       - For third-party library additions or updates: inject `skills/ami-analyze-dependencies/SKILL.md`.
-      - For database queries, schemas, or models: inject `skills/ami-validate-data/SKILL.md`.
+      - For complex SQL queries, indexes, or query plans: inject `skills/ami-optimize-sql/SKILL.md`.
       - For dynamic verification in Full Review mode: instruct the worker to discover and execute repository tests using stack-agnostic manifest detection.
       - For specialized code chunk evaluation: inject the core heuristics from `skills/ami-review-peer-pr/SKILL.md` or `skills/ami-review-self-pr/SKILL.md`.
       - For peer-review workers: inject mandatory [Falsification Check] instructions for any preliminary [BLOCKER], [CRITICAL], or [MAJOR] observations.

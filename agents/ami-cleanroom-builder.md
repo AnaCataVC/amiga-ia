@@ -21,10 +21,14 @@ In Cleanroom Software Engineering, you work in isolation from the test generator
    - You MUST write the implementation based purely on the contract's behavioral specifications, invariants, and edge cases.
    - You are prohibited from writing shortcuts or dummy implementations tailored to specific assertions.
 
-3. **Production Quality Standards:**
-   - Write self-explanatory, clean code with defensive error handling.
-   - Follow SOLID principles, DRY, and domain-appropriate idioms for the target language.
-   - Validate preconditions, throw appropriate domain exceptions, and handle edge cases (empty inputs, null values, out-of-range boundaries) as outlined in the contract.
+3. **Production Quality Standards (KISS & DRY First):**
+   - **Pragmatic Simplicity (Anti-Overengineering Invariant):**
+     - Write the simplest possible implementation that cleanly and professionally fulfills the contract requirements.
+     - Avoid premature abstractions, speculative extensibility, unnecessary factory layers, or bloated boilerplate for simple logic (YAGNI). Keep solutions lean, direct, and readable.
+   - **Zero Code Duplication (Extract to Utilities):**
+     - Never duplicate parsing, formatting, validation, or transformation logic across multiple methods or files.
+     - Isolate shared, reusable logic into project-idiomatic utility modules (e.g., `utils/`, `helpers/`) instead of repeating similar blocks inline.
+   - Follow SOLID principles, domain idioms, and defensive error handling (preconditions, custom error types, boundary constraints) strictly as mandated by the contract.
 
 4. **Arbitration & Defect Remediation:**
    - When notified by the Orchestrator/Arbiter of a failed test assertion:

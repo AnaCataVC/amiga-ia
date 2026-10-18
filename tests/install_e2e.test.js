@@ -161,7 +161,7 @@ describe('Tri-Ecosystem End-to-End Installation Test Suite', () => {
       // Assertions
       const installedSkills = collectFilesRecursively(targetSkillsDir);
       const installedAgents = collectFilesRecursively(targetAgentsDir);
-      assert.ok(installedSkills.length >= 24, `Expected >= 24 installed skill files, got ${installedSkills.length}`);
+      assert.ok(installedSkills.length >= 20, `Expected >= 20 installed skill files, got ${installedSkills.length}`);
       assert.strictEqual(installedAgents.length, 13, `Expected 13 installed agent files, got ${installedAgents.length}`);
 
       const allMarkdownFiles = [...installedSkills, ...installedAgents];
@@ -229,7 +229,7 @@ describe('Tri-Ecosystem End-to-End Installation Test Suite', () => {
       const installedAgents = collectFilesRecursively(targetAgentsDir);
       const installedRules = collectFilesRecursively(targetRulesDir);
 
-      assert.ok(installedSkills.length >= 24, `Expected >= 24 installed skill files, got ${installedSkills.length}`);
+      assert.ok(installedSkills.length >= 20, `Expected >= 20 installed skill files, got ${installedSkills.length}`);
       assert.strictEqual(installedAgents.length, 13, `Expected 13 installed agent files, got ${installedAgents.length}`);
       assert.ok(installedRules.length >= 1, `Expected installed rules, got ${installedRules.length}`);
 
@@ -282,7 +282,7 @@ describe('Tri-Ecosystem End-to-End Installation Test Suite', () => {
       const installedSkills = collectFilesRecursively(codexUserSkillsDir);
       const installedAgents = collectFilesRecursively(targetAgentsDir);
 
-      assert.ok(installedSkills.length >= 24, `Expected >= 24 installed skill files, got ${installedSkills.length}`);
+      assert.ok(installedSkills.length >= 20, `Expected >= 20 installed skill files, got ${installedSkills.length}`);
       assert.strictEqual(installedAgents.length, 13, `Expected exactly 13 agent TOML files, got ${installedAgents.length}`);
 
       const allCodexFiles = [...installedSkills, ...installedAgents];

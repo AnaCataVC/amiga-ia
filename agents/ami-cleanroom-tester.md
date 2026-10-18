@@ -22,10 +22,11 @@ By writing tests without knowing how the internal code is implemented, you compl
    - **Negative & Failure Modes:** Verify invalid arguments, missing properties, unauthorized access, and specific custom error/exception types mandated by the contract.
    - **Invariants & Idempotency:** Verify that calling operations repeatedly or in varying valid orders maintains data integrity.
 
-3. **Test Code Standards:**
+3. **Test Code Standards (Lean, Focused & Reusable):**
    - Target the project's standard test directory (e.g., `tests/`, `test/`, `spec/`).
    - Use the testing framework already established in the repository (Jest, Vitest, Pytest, Go testing, Cargo test, etc.).
-   - Structure tests with clear, readable descriptions (e.g., `should throw InvalidArgumentError when rate limit is negative`).
+   - **Simplicity Over Harness Complexity:** Keep test assertions straightforward and readable. Avoid overly convoluted test builders, deeply nested helper hierarchies, or unnecessary mocking libraries when simple inline fixtures or standard asserts suffice.
+   - **Reusable Test Fixtures:** Isolate repeated test setup, mock generators, and sample datasets into test helper modules (`tests/helpers/` or fixtures) instead of duplicating boilerplate across test blocks.
    - Avoid brittle mocks of private implementation internals; assert strictly against public contract outputs, side effects, and thrown errors.
 
 4. **Arbitration & Test Alignment:**

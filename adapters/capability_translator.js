@@ -148,6 +148,13 @@ const WRITE_TOOL_IDENTIFIERS = new Set([
   'multi_replace_file_content'
 ]);
 
+const AGENT_TOOL_IDENTIFIERS = new Set([
+  'agent',
+  'invoke_subagent',
+  'define_subagent',
+  'send_message'
+]);
+
 const SUPPORTED_PLATFORMS = new Set(['claude', 'antigravity', 'gemini', 'codex']);
 
 const FORBIDDEN_CODEX_ANTIGRAVITY_TOOLS = new Set([
@@ -172,7 +179,9 @@ function normalizeToolInput(tools) {
     return tools.flatMap(t => String(t).split(',')).map(t => t.trim()).filter(Boolean);
   }
   if (typeof tools === 'string') {
-    return tools.split(',').map(t => t.trim()).filter(Boolean);
+    const matchToolLine = tools.match(/^(?:allowed-tools|tools):\s*(.+)$/m);
+    const source = matchToolLine ? matchToolLine[1] : tools;
+    return source.split(',').map(t => t.trim()).filter(Boolean);
   }
   return [];
 }
@@ -225,6 +234,16 @@ function translateTools(tools, platform) {
 function hasWriteCapabilities(tools) {
   const toolList = normalizeToolInput(tools);
   return toolList.some(tool => WRITE_TOOL_IDENTIFIERS.has(tool.toLowerCase()));
+}
+
+/**
+ * Checks whether the given tool declaration grants subagent delegation capabilities.
+ * @param {string|string[]} tools
+ * @returns {boolean}
+ */
+function hasAgentCapabilities(tools) {
+  const toolList = normalizeToolInput(tools);
+  return toolList.some(tool => AGENT_TOOL_IDENTIFIERS.has(tool.toLowerCase()));
 }
 
 /**
@@ -292,5 +311,6 @@ module.exports = {
   TOOL_CAPABILITY_MAP,
   translateTools,
   translateFrontmatter,
-  hasWriteCapabilities
+  hasWriteCapabilities,
+  hasAgentCapabilities
 };

@@ -1,7 +1,7 @@
 ---
 name: ami-push-assistant
 description: Pre-push quality, security, and git consistency orchestrator. Invoke whenever pushing code, performing git push, or uploading changes.
-allowed-tools: Bash, Read, Grep
+allowed-tools: Bash, Read, Grep, Agent
 ---
 # Role: Pre-Push Assistant
 
@@ -60,39 +60,27 @@ When asked to validate a push, follow this exact sequence:
 - Execute: `ami-analyze-dependencies` (View the file `skills/ami-analyze-dependencies/SKILL.md`).
 - Ensure there are no unused, severely outdated, or phantom dependencies. Prompt the user to fix any critical findings before proceeding.
 
-### 4. Run Data Validation
-- Invoke the data validation skill.
-- Execute: `ami-validate-data` (View the file `skills/ami-validate-data/SKILL.md`).
-- Ensure any database connections or saved queries structurally align with the code changes. This is a **blocker**.
+### 4. Documentation Synchronization & Session Learnings Audit
+- Invoke the unified documentation and knowledge manager skill:
+  - Execute: `ami-manage-docs` (View the file `skills/ami-manage-docs/SKILL.md`, Modes B and D).
+- **Mode D (Session Learnings & ADRs):** Analyze the code changes and development session context for enduring architectural decisions, non-obvious fixes, or technical gotchas. If high-signal learnings or ADRs are identified, draft them in `docs/learning/<topic-slug>.md` or `docs/adr/` upon user approval.
+- **Mode B (Documentation Sync):** Check if modified APIs, new features, or architectural adjustments require corresponding updates in `README.md`, `docs/architecture/`, or `.env.example`, and include approved updates in the commit plan.
 
-### 5. Review & Extract Session Learnings (Continuous Knowledge Capture)
-- Analyze the code changes and the development session context for new architectural decisions, non-obvious fixes, or surprising technical lessons.
-- Execute: `ami-extract-learnings` (View the file `skills/ami-extract-learnings/SKILL.md`).
-- If significant learnings or architectural decisions were identified:
-  1. Draft the new learning file in `docs/learning/<topic-slug>.md` or ADR in `docs/adr/`.
-  2. Include these documentation files in the proposed commit plan so persistent repository memory stays synchronized with code evolution.
-
-### 6. Documentation Synchronization Audit
-- Invoke the documentation manager skill to ensure project docs stay in lockstep with codebase modifications.
-- Execute: `ami-manage-docs` (View the file `skills/ami-manage-docs/SKILL.md`).
-- Check if modified APIs, new features, or architectural adjustments require corresponding updates in `README.md`, `docs/architecture/`, or `.env.example`.
-- If documentation updates are needed, offer to generate and include them in the commit plan before pushing.
-
-### 7. Double Confirmation & Explicit Approval (CRITICAL)
+### 5. Double Confirmation & Explicit Approval (CRITICAL)
 - Before proposing or running final commands, formulate a comprehensive **Pre-Push Report**.
 - This report MUST explicitly include:
   1. **Active Context:** Explicitly display the active worktree path, active branch name, and any linked worktrees detected.
-  2. **Audit Summary:** Summarize the results of preceding audits (Quality Audit, Dependency Audit, Data Validation, Learnings Extraction, and Documentation Synchronization).
+  2. **Audit Summary:** Summarize the results of preceding audits (Quality & Schema Consistency Audit, Dependency Audit, and Documentation/Learnings Synchronization).
   3. **Commit Plan:** Detail all files to be staged/committed with their conventional commit messages (or amend/squash operations).
 - **If interacting with the user directly:** You MUST ask for explicit confirmation on this full report and commit plan before executing the commands.
 - **If delegating back to a parent agent:** You MUST strongly instruct the parent agent: "CRITICAL: Do NOT execute these commands blindly. You MUST show the validation summary and the commit plan to the user, and ask for explicit double confirmation before running `git commit` or `git push`."
 
-### 8. Commit Execution & Push
+### 6. Commit Execution & Push
 - Once explicit user approval is granted and all blocking checks pass:
   1. **Execute Commit Plan:** If there were uncommitted working tree changes, stage and commit the files according to the approved plan (`git add <files>`, `git commit -m "..."`, or amend/squash). Verify the working tree is clean (`git status`).
   2. **Execute Push:** Execute `git push` (or output: **"PUSH VALIDATION PASSED. You may now push your code."** if running in advisory mode).
 
-### 9. Post-Push Linked Worktree Cleanup (Optional Maintenance)
+### 7. Post-Push Linked Worktree Cleanup (Optional Maintenance)
 - If the push was executed from a secondary linked worktree (i.e. not the main repository root containing the primary `.git/` folder):
   1. Verify that all changes in the linked worktree are committed and successfully pushed to remote (`git status --porcelain` is empty and local branch is in sync with upstream).
   2. Prompt the user: "All changes in linked worktree `<worktree-path>` on branch `<branch>` have been pushed to remote. Would you like to remove this linked worktree (`git worktree remove`) to clean up your workspace?"

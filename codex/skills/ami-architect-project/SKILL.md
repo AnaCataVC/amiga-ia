@@ -36,6 +36,9 @@ You MUST maintain constant interaction with the user. Do not make multiple major
 ### 4. Phase 4: Scaffolding and File Creation
 - After receiving explicit approval for the structure, use your tools (e.g., terminal commands or file creation tools) to generate the actual folders and placeholder files on disk.
 - Create the minimum boilerplate code necessary for the chosen stack.
+- **Anti-Overengineering & Clean Scaffolding Invariant:**
+  - Scaffold the simplest functional architecture that works (KISS). Avoid premature design patterns, nested wrapper layers, or speculative abstractions.
+  - Set up clean, idiomatic utility directories (`utils/` or `helpers/`) from the beginning so common logic (parsers, formatters, HTTP wrappers) is never duplicated across modules.
 - Inform the user as files are being created.
 
 ### 5. Phase 5: Documentation (README.md)

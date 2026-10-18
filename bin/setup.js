@@ -19,7 +19,7 @@ const sourceCodexSkillsDir = path.join(__dirname, '../codex/skills');
 const sourceCodexAgentsDir = path.join(__dirname, '../codex/agents');
 const sourceRulesDir = path.join(__dirname, '../rules');
 const sourceSettingsPath = path.join(__dirname, '../hooks.json');
-const { translateFrontmatter, hasWriteCapabilities } = require('../adapters/capability_translator');
+const { translateFrontmatter, hasWriteCapabilities, hasAgentCapabilities } = require('../adapters/capability_translator');
 
 function copyRecursiveSync(src, dest, targetEnv = null, options = {}) {
   if (!fs.existsSync(src)) return;
@@ -572,10 +572,21 @@ async function runDoctor() {
     'ami-cleanroom-tester.md',
     'ami-data-scientist.md',
     'ami-doc-architect.md',
+    'ami-pr-publisher.md',
     'ami-release-manager.md',
     'ami-tech-lead.md'
   ]);
 
+  const AGENT_DELEGATION_MANDATORY_AGENTS = new Set([
+    'ami-cleanroom-arbiter.md',
+    'ami-data-scientist.md',
+    'ami-doc-architect.md',
+    'ami-pr-publisher.md',
+    'ami-pr-reviewer.md',
+    'ami-push-assistant.md',
+    'ami-repo-auditor.md',
+    'ami-tech-lead.md'
+  ]);
 
   const validateDefinitionFrontmatter = (filepath, baseDir, typeLabel) => {
     const content = fs.readFileSync(filepath, 'utf8').replace(/^\uFEFF/, '');
@@ -597,6 +608,10 @@ async function runDoctor() {
       const fileName = path.basename(filepath);
       if (WRITE_MANDATORY_AGENTS.has(fileName) && !hasWriteCapabilities(match[1])) {
         console.log(pc.red(`❌ ERROR: Agent ${fileName} is required to possess write/edit capabilities, but none were declared.`));
+        return false;
+      }
+      if (AGENT_DELEGATION_MANDATORY_AGENTS.has(fileName) && !hasAgentCapabilities(match[1])) {
+        console.log(pc.red(`❌ ERROR: Orchestrator agent ${fileName} is required to possess subagent delegation capabilities (Agent), but none were declared.`));
         return false;
       }
     }
@@ -812,7 +827,7 @@ async function runDoctor() {
   if (fs.existsSync(sessionsDir)) {
     console.log(pc.blue('\n🔍 Checking project workspace for legacy structures...'));
     console.log(pc.cyan('  💡 ADVISORY: Found legacy docs/coding-sessions/ directory.'));
-    console.log(pc.gray('     Recommendation: Extract any valuable architectural insights or pending tasks using ami-extract-learnings and ami-manage-docs skills, and then delete docs/coding-sessions/ to save tokens and keep your repository clean.'));
+    console.log(pc.gray('     Recommendation: Extract any valuable architectural insights or pending tasks using the ami-manage-docs skill, and then delete docs/coding-sessions/ to save tokens and keep your repository clean.'));
   }
 
   console.log(pc.cyan('\n======================================================'));
@@ -828,7 +843,7 @@ function checkLegacyDirs() {
   const sessionsDir = path.resolve('docs', 'coding-sessions');
   if (fs.existsSync(sessionsDir)) {
     console.log(pc.cyan('\n💡 ADVISORY: Found legacy docs/coding-sessions/ directory.'));
-    console.log(pc.gray('   Recommendation: Extract any valuable architectural insights or pending tasks using ami-extract-learnings and ami-manage-docs skills, and then delete docs/coding-sessions/ to save tokens and keep your repository clean.'));
+    console.log(pc.gray('   Recommendation: Extract any valuable architectural insights or pending tasks using the ami-manage-docs skill, and then delete docs/coding-sessions/ to save tokens and keep your repository clean.'));
   }
   console.log(pc.magenta('\n✨ Setup complete! Restart your AI assistant for changes to take effect.\n'));
 }

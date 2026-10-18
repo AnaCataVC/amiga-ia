@@ -32,9 +32,14 @@ You act as a **Dispatcher**. Depending on the user's request, you must dynamical
    - **Condition**: The user asks to start a new project from scratch, or the repository is entirely empty.
    - **Action**: You MUST read and follow the instructions in `skills/ami-architect-project/SKILL.md`.
 
-3. **Project Guidance & Health**
-   - **Condition**: The user asks "what should we do next?" or wants you to audit the health of the project (tests, tech debt, docs).
-   - **Action**: You MUST read and follow the instructions in `skills/ami-guide-next-step/SKILL.md`.
+3. **Project Guidance & Health ("What Should We Do Next?")**
+   - **Condition**: The user asks "what should we do next?" or wants you to audit the health of the project and prioritize next steps.
+   - **Action**: Evaluate the repository in strict priority order, stopping at the first tier that requires attention to present it as the recommended Next Step:
+     1. **Tier 1 (Code Quality & Security):** Run `skills/ami-audit-quality/SKILL.md`. Halt if critical defects or security issues exist.
+     2. **Tier 2 (Technical Debt):** Check `docs/tech-debt.md` or run `skills/ami-scan-tech-debt/SKILL.md` (and `skills/ami-analyze-dependencies/SKILL.md`). Halt if high-risk debt or vulnerable/outdated packages exist.
+     3. **Tier 3 (Tests & Coverage):** Run the native test suite; if tests fail or core coverage is missing, recommend `skills/ami-create-tests/SKILL.md`.
+     4. **Tier 4 (Documentation & Knowledge Sync):** Run `skills/ami-manage-docs/SKILL.md` if docs or ADRs are out of sync with the codebase.
+     5. **Tier 5 (Greenfield Ideation):** If Tiers 1-4 are healthy, analyze `README.md` and existing modules, ask the user about their goals, and propose 3-5 high-value feature or architectural enhancements.
 
 4. **Interactive Feature Planning & Architecture Orchestration**
    - **Condition**: The user gives you a raw idea or requirement for a new feature (e.g., "let's integrate Stripe", "build a dashboard", or design a new capability).

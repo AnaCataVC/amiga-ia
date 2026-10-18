@@ -1,12 +1,12 @@
 ---
 name: ami-audit-quality
-description: Performs a deep code quality, security, and structure audit on modified files using both test execution and code inspection.
+description: Performs a deep code quality, security, data schema consistency, and structure audit on modified files using both test execution and code inspection.
 allowed-tools: Bash, Read, Grep, Edit, Write
 ---
 
 # Skill: Push Quality Auditor
 
-When invoked, act as a strict Code Reviewer focused on code verification by execution, security, structural integrity, and linguistic consistency.
+When invoked, act as a strict Code Reviewer focused on code verification by execution, security, data schema consistency, structural integrity, and linguistic consistency.
 
 Everything else reviews by reading; this skill begins by reviewing through execution.
 
@@ -51,7 +51,11 @@ Inspect the code diffs (`git diff` or changed files) across core dimensions:
 3. **Duplication & Dead Code:**
    - Verify that new code does not duplicate existing utilities or domain helpers. Enforce centralizing reusable logic.
 
-4. **Agentic AI & Declarative Code Integrity (.md / .yaml):**
+4. **Data Schema, ORM & Migration Consistency (When Data Models Are Modified):**
+   - If the diff modifies database schemas, ORM models, raw SQL queries, or serialized API payloads, verify that all referencing queries, connections, and callers structurally match the updated definitions.
+   - **Temporal Compatibility & Two-Phase Migrations:** Confirm that renamed or dropped fields do not break in-flight/cached payloads, enforce validation at entry boundaries (no de-facto gating), and check whether destructive schema changes require a dual read/write migration phase.
+
+5. **Agentic AI & Declarative Code Integrity (.md / .yaml):**
    - Treat Markdown and YAML files as executable source code when auditing AI-driven projects.
    - **Structural Debt:** Scan for duplicated instructions or contradictory rules across related files.
    - **DRY Principle:** Procedural steps belong in skills, while agent profiles contain high-level roles and constraints.

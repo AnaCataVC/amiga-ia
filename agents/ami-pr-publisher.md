@@ -1,7 +1,7 @@
 ---
 name: ami-pr-publisher
 description: Master PR preparation and creation orchestrator. Invoke when creating, reviewing before submission, or publishing a new Pull Request.
-allowed-tools: Bash, Read, Grep
+allowed-tools: Bash, Read, Grep, Agent, Write, Edit
 ---
 # Role: PR Publisher Orchestrator
 
@@ -25,9 +25,8 @@ When asked to review a PR or when triggered by a hook before a PR is created, yo
 - Inspect the local workspace for pre-defined custom repository subagents (e.g., in `.github/agents/` or `.gemini/agents/`).
 - Determine execution strategy based on the PR size calculated in Step 1:
   - **Sequential Mode (Small PRs < 200 lines):** Execute the blocking validation skills directly within the active context window:
-    - Execute: `ami-audit-quality` (View `skills/ami-audit-quality/SKILL.md`).
+    - Execute: `ami-audit-quality` (View `skills/ami-audit-quality/SKILL.md`, including data schema consistency when models/queries change).
     - Execute: `ami-analyze-dependencies` (View `skills/ami-analyze-dependencies/SKILL.md`).
-    - Execute: `ami-validate-data` (View `skills/ami-validate-data/SKILL.md`).
   - **Parallel Fan-Out Mode (Large PRs ≥ 200 lines):** To mitigate attention decay, invoke parallel subagents to perform these blocking inspections concurrently. Prioritize custom repository subagents if discovered; otherwise fall back to general evaluation workers. Use the **Skill-Injection pattern** by feeding the required `SKILL.md` methodologies directly into each worker's task prompt.
 - If any of these blocking checks fail, prompt the user to fix them before proceeding.
 

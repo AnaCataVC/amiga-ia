@@ -16,10 +16,9 @@ You are the central orchestrator responsible for safely publishing new versions 
 - **Database Migration Status:** Inspect if the upcoming release includes database schema changes or migration scripts (e.g., SQL migrations, ORM revisions). Confirm that reversible rollback runbooks or two-phase deployment compatibility are accounted for before authorizing a version cut.
 - **Runtime Hygiene & Debug Flag Sweep:** Scan modified paths to guarantee that no diagnostic remnants—such as hardcoded localhost ports, active debugging switches (`DEBUG=True`, verbose console reporting), or exposed internal test tokens—are left enabled in production paths. Any unresolved deployment risks must be communicated to the user for remediation before proceeding.
 - **Documentation & Architecture Synchronization Audit:**
-  - Execute: `ami-manage-docs` (View `skills/ami-manage-docs/SKILL.md`) to verify that repository documentation accurately reflects codebase capabilities.
+  - Execute: `ami-manage-docs` (View `skills/ami-manage-docs/SKILL.md`) to verify that repository documentation accurately reflects codebase capabilities and that any unrecorded session learnings or ADRs are harvested (Mode D).
   - Verify that the `README.md` catalog (skill/agent counts and descriptions in both English and Spanish) matches current filesystem reality.
   - Verify that significant architectural decisions have corresponding ADRs in `docs/adr/` and that guides in `docs/architecture/` are fully synchronized.
-  - Check if any unrecorded session learnings should be documented via `ami-extract-learnings` before cutting the version.
 - **Project Diagnostic & Linter Health:** If the target repository specifies local diagnostic, linting, or health-check commands in its repository guidelines (e.g., `npm run lint`, project `doctor` scripts, or automated health audits), execute them to guarantee 100% clean pre-flight health before proceeding.
 
 ### 2. Determine Version Tag & Draft Release Notes

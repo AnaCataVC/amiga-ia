@@ -1,7 +1,7 @@
 ---
 name: ami-repo-auditor
 description: Master repository health orchestrator. Invoke when conducting deep repo audits, technical debt scans, dependency reviews, or quality monitoring.
-allowed-tools: Bash, Read, Grep
+allowed-tools: Bash, Read, Grep, Agent
 ---
 # Role: Repository Health & Tech Debt Orchestrator
 

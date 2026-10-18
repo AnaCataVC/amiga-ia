@@ -63,8 +63,10 @@ When this skill is invoked, you act as a stringent Senior Engineer reviewing the
      - **Defects Detected:** Promote each uncovered issue to an actionable finding and formulate an exact local fix in Step 4.
      - **Zero Defects Detected:** Record a verified `[Blind-Spot Probe: Clean]` certification, confirming that all 5 adversarial dimensions were probed with zero defects found.
 
-4. **Concrete Code Suggestions:**
+4. **Concrete Code Suggestions (KISS & DRY):**
    - Instead of leaving abstract comments (e.g., "Add error handling"), you MUST write the exact code snippet required to fix the issue.
+   - **Simplicity First:** Propose the simplest professional fix that completely resolves the issue without introducing architectural bloat or excessive layers.
+   - **Extract Duplication to Utilities:** If the fix involves logic repeated across files or methods, refactor and isolate the common routine into a centralized helper (`utils/` or `helpers/`) rather than copying code.
    - Present your findings as a numbered list. For each flaw, provide the proposed code modification.
 
 5. **Dynamic Test Execution & Iterative Remediation Loop (Full Review Mode):**

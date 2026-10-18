@@ -3,7 +3,8 @@ const assert = require('node:assert');
 const {
   translateTools,
   translateFrontmatter,
-  hasWriteCapabilities
+  hasWriteCapabilities,
+  hasAgentCapabilities
 } = require('../adapters/capability_translator.js');
 
 test('Cross-Platform Capability Translator Unit Tests', async (t) => {
@@ -72,13 +73,23 @@ test('Cross-Platform Capability Translator Unit Tests', async (t) => {
     assert.deepStrictEqual(forAntigravity, ['write_to_file', 'replace_file_content', 'multi_replace_file_content']);
   });
 
-  await t.test('hasWriteCapabilities accurately detects write abilities across platforms', () => {
+  await t.test('hasWriteCapabilities accurately detects write abilities across platforms and YAML blocks', () => {
     assert.strictEqual(hasWriteCapabilities('Bash, Read, Grep'), false);
     assert.strictEqual(hasWriteCapabilities('Bash, Read, Grep, WebSearch'), false);
     assert.strictEqual(hasWriteCapabilities('Bash, Read, Grep, Write'), true);
     assert.strictEqual(hasWriteCapabilities('Bash, Read, Grep, Edit'), true);
     assert.strictEqual(hasWriteCapabilities('view_file, grep_search, write_to_file'), true);
     assert.strictEqual(hasWriteCapabilities(['view_file', 'replace_file_content']), true);
+    assert.strictEqual(hasWriteCapabilities('name: test\ndescription: desc\nallowed-tools: Write, Read'), true);
+  });
+
+  await t.test('hasAgentCapabilities accurately detects subagent delegation abilities across platforms and YAML blocks', () => {
+    assert.strictEqual(hasAgentCapabilities('Bash, Read, Grep'), false);
+    assert.strictEqual(hasAgentCapabilities('Read, Grep, WebSearch'), false);
+    assert.strictEqual(hasAgentCapabilities('Bash, Read, Grep, Agent'), true);
+    assert.strictEqual(hasAgentCapabilities('view_file, invoke_subagent'), true);
+    assert.strictEqual(hasAgentCapabilities(['view_file', 'define_subagent']), true);
+    assert.strictEqual(hasAgentCapabilities('name: test\ndescription: desc\nallowed-tools: Agent, Read'), true);
   });
 
   await t.test('translateFrontmatter transforms inline allowed-tools for Claude Code', () => {

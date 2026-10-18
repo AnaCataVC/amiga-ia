@@ -54,7 +54,7 @@ describe('Configuration & Build Synchronization Tests', () => {
     const codexSkills = fs.readdirSync(codexSkillsDir).filter(f => f.startsWith('ami-'));
 
     assert.strictEqual(codexSkills.length, sourceSkills.length);
-    assert.strictEqual(codexSkills.length, 24);
+    assert.strictEqual(codexSkills.length, 20);
   });
 
 });

@@ -18,7 +18,13 @@ This rule file provides declarative operational guardrails for Antigravity agent
 - Run `ami-detect-pr-conflicts` before proposing or creating any Pull Request.
 - Ensure branch is rebased cleanly with the primary target branch.
 
-## 4. Code Quality & Scaffolding Leak Prevention
+## 4. Code Quality, Anti-Overengineering & Clean Architecture
+- **KISS & Pragmatic Simplicity (Anti-Overengineering Invariant):**
+  - Always implement the simplest possible solution that solves the problem cleanly and professionally.
+  - Strictly avoid premature abstractions, speculative extensibility, unnecessary factory layers, or bloated boilerplate for simple logic (YAGNI). Keep solutions lean, direct, and readable.
+- **DRY & Utility Centralization:**
+  - Never duplicate business logic, parsing, validation, or transformation routines across multiple files or methods.
+  - Consistently extract shared functionality into project-idiomatic utility modules (e.g., `utils/`, `helpers/`) to keep the codebase maintainable and modular.
 - Remove temporary debug statements (`console.log`, `debugger`, print logs) and unresolved `TODO` / `FIXME` comments before finalizing changes.
 - Ensure all docstrings and code comments describe permanent system behavior, contracts, and domain rationale. NEVER include references to internal planning phases, execution stages, or decision options ('Phase 1', 'Stage 2', 'Etapa 3', 'Option A', 'Opción B') in code comments or docstrings. Internal planning details do not need to be exposed in the repository, only not referenced.
 

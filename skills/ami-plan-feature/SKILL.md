@@ -50,6 +50,10 @@ When invoked to plan a feature, you MUST follow this sequence:
 
 ### 6. Draft Implementation Plan
 - Synthesize the external research, internal codebase map, repository memory (ADRs/learnings), user's selected alternative, and expert council findings.
+- **Pragmatic Simplicity & Anti-Overengineering Rule:**
+  - Design the simplest professional architecture that completely meets requirements.
+  - Ban speculative generic abstractions, redundant design patterns (e.g. factory-of-factories), and heavy dependencies where a lightweight standard implementation suffices (YAGNI).
+  - Explicitly plan shared utility boundaries (`utils/`, `helpers/`) to prevent code duplication before implementation begins.
 - Create a detailed implementation plan using the standard implementation plan format (`implementation_plan.md`).
 - The plan MUST include:
   - **Goal Description**: What the feature does.
@@ -72,7 +76,7 @@ When invoked to plan a feature, you MUST follow this sequence:
 ### 8. Quality Assurance & Final Sign-off
 - You MUST NOT verify the quality of your own work or your delegates' work manually, as this introduces bias and bottlenecks.
 - Once execution is complete, you MUST invoke an independent QA auditor or verifier (using `skills/ami-audit-quality/SKILL.md`, `agents/ami-adversarial-verifier.md`, or `agents/ami-repo-auditor.md`) to verify that the feature meets the original constraints and quality standards.
-- If novel architectural patterns, surprises, or non-obvious fixes occurred during the feature lifecycle, invoke `skills/ami-extract-learnings/SKILL.md` to persist the learnings into `docs/learning/` or draft an ADR under `docs/adr/`.
+- If novel architectural patterns, surprises, or non-obvious fixes occurred during the feature lifecycle, invoke `skills/ami-manage-docs/SKILL.md` (Mode D) to persist the learnings into `docs/learning/` or draft an ADR under `docs/adr/`.
 - Review the QA agent's final report. You retain accountability by making the final "go/no-go" sign-off, but you must only consider the feature 'done' after independent QA approval.
 
 ---
