@@ -1,6 +1,6 @@
 # Declarative Security and Operational Rules for Antigravity (AGY)
 
-This rule file provides declarative operational guardrails for Antigravity agents, establishing platform parity with Claude Code bash hooks.
+This rule file provides declarative operational guardrails for Antigravity agents.
 
 ---
 
@@ -41,7 +41,7 @@ This rule file provides declarative operational guardrails for Antigravity agent
 - If a workflow run fails, inspect the failure logs (`gh run view <run-id> --log-failed`), diagnose the root cause, and report it to the user. Never declare an operation complete if its downstream CI/CD workflow failed.
  
 ## 7. Proactive Parallelization & Anti-Bottleneck Invariant
-- **Main Thread Monopoly Prohibition:** NEVER execute intensive low-level explorations (such as binary inspection, massive log tracing, or heuristic trial-and-error probes) sequentially and blocking in the primary interaction session when collateral verifications are pending (e.g., test suites like `npm test`, validation across sibling environments like Claude Code or Codex, or staging alternative fix hypotheses).
+- **Main Thread Monopoly Prohibition:** NEVER execute intensive low-level explorations (such as binary inspection, massive log tracing, or heuristic trial-and-error probes) sequentially and blocking in the primary interaction session when collateral verifications are pending (e.g., test suites like `npm test`, linters, or staging alternative fix hypotheses).
 - **Immediate Diagnostic Bifurcation:** The exact moment a problem requires deep technical investigation or reverse engineering:
   1. The agent MUST immediately dispatch a background investigation/diagnostic subagent (`self` or `research`) to perform low-level probes asynchronously.
   2. The agent MUST simultaneously dispatch required subagents for decoupled tasks (compatibility audits, linters, or regression tests).
