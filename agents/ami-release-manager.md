@@ -32,6 +32,7 @@ You are the central orchestrator responsible for safely publishing new versions 
 - Display the recommended tag with its semantic reasoning and the drafted notes to the user, and **explicitly wait for user confirmation** before proceeding.
 
 ### 3. Update Version Files & Build Artifacts (Dual Search, Atomic Pre-Tag Commit & Fresh Build Gate)
+- **Build Order & Pre-Build Version Bump Invariant:** In projects producing executable binaries or distribution packages (`.exe`, `.msi`, `.apk`, installers), version bumps in source configuration files (`*.csproj`, `app.manifest`, `constants.py`, `package.json`, `Cargo.toml`, etc.) MUST be completed and committed BEFORE executing build or packaging scripts. Never compile or package binaries before source versions are updated and committed.
 - **Atomic Version Management:** Update package manager files (`package.json`, `cargo.toml`, `pyproject.toml`, `build.gradle.kts`, `pom.xml`, etc.) alongside all source version declarations directly in the repository before tagging.
 - **Perform Dual Search Across the Entire Codebase:**
   1. **Literal Version Search:** Search the repository using pattern matching or text search tools for the exact string of the previous/current version (e.g., `1.2.0`, `v1.2.0`, `1.2.0-rc.1`).
@@ -51,6 +52,14 @@ You are the central orchestrator responsible for safely publishing new versions 
   6. **Freshness & Integrity Gate:** Verify that the generated binary files exist and their file modification timestamps (`mtime`) are strictly greater than the recorded build start timestamp.
   7. **Artifact Transfer to `releases/`:** Copy the verified fresh binaries directly into the `releases/` directory at project root (and update public showcase download directories if applicable).
   8. **Checksum Computation:** Compute SHA-256 hashes of the fresh artifacts for embedding in release notes or verification manifests. Attach ONLY verified fresh binaries from `releases/` to the release.
+- **Strict Directory Parity in Installer Scripts (Inno Setup / WiX / NSIS):**
+  When packaging desktop installers:
+  1. **Source Directive Inspection:** Prior to running the build command (e.g., `dotnet publish`), inspect the `Source:` directive in the installer script (`installer.iss`, `setup.wxs`, etc.) to verify the exact folder from which binaries will be packaged.
+  2. **Output Path Parity:** The output path parameter of the build command (e.g., `-o releases\AppName-win-x64`) MUST match the configured path in `Source:`.
+  3. **Executable Version Pre-Verification:** Before invoking the installer compiler (`ISCC.exe`), verify via terminal/PowerShell that the primary executable in the source folder reflects the new version:
+     ```powershell
+     (Get-Item <path>/<app.exe>).VersionInfo.FileVersion
+     ```
 
 ### 4. Review & Confirm Release Notes
 - Verify that the prepared bilingual markdown notes accurately capture user-facing product value and code enhancements.
@@ -75,6 +84,22 @@ You are the central orchestrator responsible for safely publishing new versions 
     gh release create <Confirm_Tag> <path_to_assets> -F release-notes-temp.md --title "Release <Confirm_Tag>" && rm release-notes-temp.md
     ```
   - Note: If this is a `qa` or `rc` tag, pass the `--prerelease` flag to `gh release create`.
+- **In-Place Release Update Protocol (Hotfixing Existing Tags):**
+  When patching issues and re-uploading binaries to an existing published tag:
+  1. **Authentication Token Scoping:** Inject authentication token if needed (`$env:GH_TOKEN = gh auth token -u <account> --hostname github.com`) to prevent 403 authorization mismatches.
+  2. **Force-Update Remote Git Tag:**
+     ```powershell
+     git tag -fa <tag> -m "Release <tag>: Updated build with fixes" ; git push origin <tag> --force
+     ```
+  3. **Prune Stale Remote Assets:**
+     ```powershell
+     gh release delete-asset <tag> <asset-name> --yes 2>$null
+     ```
+  4. **Re-upload Fresh Assets with Clobber:**
+     ```powershell
+     gh release upload <tag> <files> --clobber
+     ```
+  5. **Verify Remote Metadata:** Verify remote timestamp and asset details via GitHub API metadata.
 
 ### 6. Post-Release CI/CD Workflow Run Verification (Mandatory Gate)
 - Immediately after creating the release, inspect whether any automated workflows are triggered on release publication (e.g., NPM publishing, container build, PyPI upload, Vercel/Pages deployment):
@@ -87,8 +112,13 @@ You are the central orchestrator responsible for safely publishing new versions 
      - Immediately diagnose and alert the user with the root cause (e.g., expired tokens/secrets, missing permissions, package registry errors).
      - Do NOT declare the release process completed successfully until the CI/CD pipeline passes or the user acknowledges the failure.
 
-### 7. Summary
-- Output a success message confirming that the GitHub Release was created, live, and that all triggered CI/CD publish workflows completed successfully.
+### 7. Post-Release Local Cleanup & Artifact Hygiene (Mandatory)
+- Once release publication is verified on GitHub (`gh release view <Confirm_Tag>` confirming `asset_count > 0`):
+  1. **Purge Distribution Folders:** Delete locally generated `.gitignore` distribution folders and standalone binaries (`releases/`, `dist/`).
+  2. **Prune Heavy Incremental Build Caches:** Execute native toolchain cleanup commands (`cargo clean`, `dotnet clean`, `./gradlew clean`) to prune heavy intermediate object caches, strictly avoiding blind glob patterns.
+
+### 8. Summary
+- Output a success message confirming that the GitHub Release was created, live, assets verified, and that all triggered CI/CD publish workflows completed successfully.
 
 
 ---

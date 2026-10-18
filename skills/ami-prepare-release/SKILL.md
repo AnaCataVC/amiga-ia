@@ -36,6 +36,8 @@ Analyze commit messages against Conventional Commits:
 - **QA / RC:** Append `-qa.YYYYMMDD.n` or `-rc.YYYYMMDD.n` based on the current date and daily increment.
 - **Stable:** Standard base version (e.g., `v1.3.0`).
 
+- **Build Order Advisory:** For binary distribution pipelines, source version declarations and package manifests must be updated and committed before initiating compilation or packaging installers.
+
 ### 4. Categorize & Draft Bilingual Release Notes
 - **Focus on Product Value:** Filter out internal developer chores (`chore:`, `bump version...`, `[skip ci]`), internal rule citations, and minor landing page edits. Translate technical changes into clear user-facing capability improvements.
 - **Group Commits:**
@@ -79,6 +81,10 @@ Present the prepared release bundle clearly:
 1. **Target Version Tag:** e.g., `v5.2.0`
 2. **Bilingual Release Notes Draft:** English followed by Spanish.
 3. Confirm with the user before publishing the release or updating package manager manifests.
+
+> [!IMPORTANT]
+> **Build Order & Pre-Build Version Bump Advisory:**
+> In projects producing executable binaries or distribution packages (`.exe`, `.msi`, `.apk`, installers), version bumps in source configuration files (`*.csproj`, `app.manifest`, `constants.py`, `package.json`, `Cargo.toml`, etc.) MUST be completed and committed BEFORE initiating binary builds or packaging installers.
 
 ---
 **Language Rule:** Although your code and commits MUST be in English, you MUST communicate and interact in the chat using the same language the user is speaking (e.g., Spanish, French, etc.).
