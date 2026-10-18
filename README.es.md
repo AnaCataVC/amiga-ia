@@ -1,4 +1,4 @@
-﻿<p align="center">
+<p align="center">
   <img src="icon.png" alt="amiga-ia Logo" width="120" />
 </p>
 
@@ -136,6 +136,7 @@ Al ejecutar `amiga-ia-setup`, el asistente estructura de forma segura las siguie
 ~/.agents/skills/                   # Skills Globales de Codex (20 directorios)
 ~/.codex/                           # Configuración Global de Codex
 ├── agents/ami-*.toml               # Subagentes en formato TOML (13 perfiles)
+├── AGENTS.md                       # Reglas de Comportamiento Fusionadas (Opcional)
 └── hooks.json                      # Hooks opcionales de ciclo de vida
 ```
 

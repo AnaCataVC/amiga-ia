@@ -1,4 +1,4 @@
-﻿<p align="center">
+<p align="center">
   <img src="icon.png" alt="amiga-ia Logo" width="120" />
 </p>
 
@@ -135,6 +135,7 @@ When running `amiga-ia-setup`, the CLI wizard populates your home directory with
 ~/.agents/skills/                   # Codex Global Skills (20 directories)
 ~/.codex/                           # Codex Global Configuration
 ├── agents/ami-*.toml               # Custom Subagents in TOML format (13 profiles)
+├── AGENTS.md                       # Merged Behavioral Rules (Optional)
 └── hooks.json                      # Optional Lifecycle Hooks
 ```
 
