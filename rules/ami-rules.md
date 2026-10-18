@@ -37,3 +37,8 @@ This rule file provides declarative operational guardrails for Antigravity agent
 - Inspect active workflow runs (`gh run list --limit 3`) and monitor execution until completion (`gh run watch <run-id>`).
 - Verify that the workflow completed with `conclusion: success`.
 - If a workflow run fails, inspect the failure logs (`gh run view <run-id> --log-failed`), diagnose the root cause, and report it to the user. Never declare an operation complete if its downstream CI/CD workflow failed.
+ 
+## 7. Proactive Parallelization & Anti-Bottleneck Rule
+- Never execute decoupled tasks, disparate file scopes, or multi-scope investigations sequentially in the primary interaction thread.
+- If an investigation requires low-level deep exploration (such as binary inspection, reverse engineering, or heuristic trial-and-error probes), immediately delegate that exploration to a background subagent (`invoke_subagent`).
+- Concurrently dispatch independent verification gates (such as full test suites, sibling ecosystem checks, or candidate patch testing) across parallel subagents to keep the primary interaction responsive and focused on overarching coordination.
