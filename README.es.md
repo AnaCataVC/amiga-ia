@@ -1,4 +1,4 @@
-<p align="center">
+﻿<p align="center">
   <img src="icon.png" alt="amiga-ia Logo" width="120" />
 </p>
 
@@ -67,7 +67,7 @@ Todas las capacidades incluidas emplean de forma estricta el prefijo de espacio 
 | Agente | **ami-cleanroom-arbiter** | Árbitro y orquestador maestro de Cleanroom TDD (Doble Ciego). Congela contratos formales de interfaz, despacha subagentes aislados de construcción y testing, ejecuta suites de prueba y arbitra fallos. |
 | Agente | **ami-cleanroom-builder** | Implementador de código de producción para flujos Cleanroom TDD. Programa respetando estrictamente los contratos de interfaz sin sobreajustarse a los tests. |
 | Agente | **ami-cleanroom-tester** | Arquitecto de pruebas de caja negra independiente para Cleanroom TDD. Genera suites exhaustivas a partir de contratos y criterios de aceptación, aislado del código fuente. |
-| Agente | **ami-data-scientist** | Agente maestro de la Suite de Datos y SQL. Orquesta análisis exploratorio, optimización de consultas en base de datos y dashboards ejecutivos. |
+| Agente | **ami-data-scientist** | Agente maestro de la Suite de Datos y SQL. Orquesta análisis exploratorio y auditoría de sesgos integrados, optimización de consultas en base de datos y dashboards ejecutivos. |
 | Agente | **ami-doc-architect** | Agente maestro de documentación y ciclo de vida del conocimiento. Orquesta en paralelo wikis, auditorías de obsolescencia, investigación y lecciones. |
 | Agente | **ami-expert-council** | Convoca una mesa redonda de subagentes especializados para debatir, analizar y refinar una idea o decisión arquitectónica desde múltiples perspectivas. |
 | Agente | **ami-pr-publisher** | Agente maestro que ejecuta revisiones integrales, redacción de resúmenes ejecutivos y verificación de conflictos antes de publicar un Pull Request. |
@@ -79,27 +79,23 @@ Todas las capacidades incluidas emplean de forma estricta el prefijo de espacio 
 | Skill | **ami-analyze-dependencies** | Audita las librerías del proyecto para identificar paquetes sin uso, versiones obsoletas, vulnerabilidades o dependencias fantasma. |
 | Skill | **ami-analyze-pr-comments** | Procesa observaciones de revisión de código dejadas por compañeros de equipo en PRs activos, estructurando tareas pendientes y borradores de respuesta. |
 | Skill | **ami-architect-project** | Construye de forma interactiva la arquitectura base de un nuevo proyecto, stack tecnológico, árbol de directorios y un README inicial bilingüe. |
-| Skill | **ami-audit-quality** | Audita los archivos modificados verificando legibilidad, diseño modular, principios DRY, seguridad y buenas prácticas del framework. |
+| Skill | **ami-audit-quality** | Audita los archivos modificados verificando legibilidad, diseño modular, principios DRY, seguridad, consistencia de esquemas de datos y buenas prácticas del framework. |
 | Skill | **ami-build-dashboard** | Construye dashboards web interactivos y visualizaciones profesionales en Python a partir de conjuntos de datos y KPIs. |
 | Skill | **ami-create-tests** | Se ejecuta automáticamente cuando se incorpora código nuevo sin pruebas unitarias. Crea tests enfocados en proteger las nuevas funciones. |
 | Skill | **ami-debug-issue** | Ejecuta un protocolo de depuración científica basado en evidencias, aislando causas raíz sin conjeturas y escribiendo pruebas automáticas. |
 | Skill | **ami-design-test-strategy** | Se ejecuta antes de programar tests. Diseña estrategias generales de QA, piramidación de pruebas, políticas de mocking y puertas de calidad en CI. |
 | Skill | **ami-detect-pr-conflicts** | Se ejecuta antes de revisar o abrir un PR. Identifica colisiones en historiales de Git y posibles conflictos de merge entre ramas paralelas. |
-| Skill | **ami-extract-learnings** | Analiza las modificaciones recientes en el código para documentar decisiones arquitectónicas, lecciones y antipatrones descubiertos en la sesión. |
-| Skill | **ami-guide-next-step** | Escanea la salud multidimensional del proyecto priorizando deuda técnica, calidad y pruebas, y recomienda el siguiente paso óptimo. |
-| Skill | **ami-manage-docs** | Gestor integral de documentación y conocimiento. Detecta si debe crear documentos, sincronizar wikis con Git o auditar y depurar lecciones obsoletas. |
+| Skill | **ami-manage-docs** | Gestor integral de documentación y conocimiento. Detecta si debe crear documentos, sincronizar wikis con Git, depurar notas obsoletas o extraer lecciones de sesión y ADRs. |
 | Skill | **ami-optimize-sql** | Redacta y optimiza SQL multinivel (PostgreSQL, BigQuery, Snowflake, etc.), elimina anti-patrones y recomienda índices eficaces. |
 | Skill | **ami-orchestrate-cleanroom** | Orquestador maestro de TDD Cleanroom (Doble Ciego). Aclara interactivamente dudas de interfaz y sugerencias, congela contratos, despacha subagentes aislados de código y testing, ejecuta pruebas y arbitra discrepancias. |
 | Skill | **ami-plan-commits** | Analiza el árbol de trabajo actual, audita seguridad/secretos, planifica Conventional Commits/amend/squash y ejecuta las transacciones en Git. |
 | Skill | **ami-plan-feature** | Flujo interactivo de planificación de características y orquestación de arquitectura. Aclara dudas y propone alternativas técnicas con el usuario antes de investigar y redactar planes. |
 | Skill | **ami-prepare-release** | Prepara lanzamientos en GitHub calculando la siguiente etiqueta semántica y redactando notas de versión bilingües (inglés y español) en un flujo unificado. |
-| Skill | **ami-profile-data** | Realiza análisis exploratorio de datos (EDA), cuantifica distribuciones nulas, detecta anomalías y audita validez metodológica. |
 | Skill | **ami-research-context** | Investiga documentación externa actualizada en tiempo real y guarda hallazgos en referencias para evitar la obsolescencia de contexto. |
 | Skill | **ami-review-peer-pr** | Conduce revisiones en PRs de terceros con trazabilidad de criterios de aceptación, modos duales y auditoría de falsificación adversarial ([Falsification Check]) para eliminar falsos positivos. |
 | Skill | **ami-review-self-pr** | Actúa como un exigente Ingeniero Senior revisando tu propio código mediante modos duales, sondeos adversariales de 5 dimensiones ([Blind-Spot Probe]) y bucles de remediación local de tests. |
 | Skill | **ami-scan-tech-debt** | Escanea el repositorio buscando deuda técnica, módulos obsoletos, lógica duplicada, código muerto y marcadores pendientes (TODOs/FIXMEs). |
 | Skill | **ami-stress-test-idea** | Ejecuta pruebas de estrés adversariales y análisis premortem en propuestas técnicas, detectando SPOFs, fallos de concurrencia y costos ocultos. |
-| Skill | **ami-validate-data** | Valida la consistencia estructural entre los cambios aplicados en el código y las definiciones del backend (esquemas y consultas BD). |
 
 ### 6. Instalación y Uso
 El método oficial y recomendado para integrar **Amiga IA** es mediante la instalación del paquete global de NPM:
@@ -127,17 +123,17 @@ Al ejecutar `amiga-ia-setup`, el asistente estructura de forma segura las siguie
 
 ```text
 ~/.claude/                          # Configuración Global de Claude Code
-├── skills/ami-*/SKILL.md           # Skills Declarativas (24 directorios)
+├── skills/ami-*/SKILL.md           # Skills Declarativas (20 directorios)
 ├── agents/ami-*.md                 # Subagentes Autónomos (13 perfiles)
 ├── settings.json                   # Hooks Fusionados (PreToolUse, PostToolUse)
 └── settings.json.amiga-backup      # Respaldo intacto del archivo original de usuario
 
 ~/.gemini/config/                   # Configuración Global de Antigravity (Gemini)
-├── skills/ami-*/SKILL.md           # Skills Declarativas (24 directorios)
+├── skills/ami-*/SKILL.md           # Skills Declarativas (20 directorios)
 ├── agents/ami-*.md                 # Subagentes Autónomos (13 perfiles)
 └── rules/ami-rules.md              # Reglas Operativas Declarativas
 
-~/.agents/skills/                   # Skills Globales de Codex (24 directorios)
+~/.agents/skills/                   # Skills Globales de Codex (20 directorios)
 ~/.codex/                           # Configuración Global de Codex
 ├── agents/ami-*.toml               # Subagentes en formato TOML (13 perfiles)
 └── hooks.json                      # Hooks opcionales de ciclo de vida

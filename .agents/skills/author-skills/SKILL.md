@@ -8,24 +8,33 @@ allowed-tools: Bash, Read, Grep, Edit, Write
 
 This skill governs the standards for creating, revising, and maintaining skills and subagents within the `amiga-ia` repository.
 
-## When a Skill Earns Its Place
+## When a Skill or Agent Earns Its Place
 
-1. **The Rule of Two Manual Frictions:**
+1. **The Rule of Two Manual Frictions (Skills):**
    A skill earns its place only after the same task has been performed manually twice and caused friction (non-obvious sequences, rediscovered edge cases, or near-miss defects).
    Never create skills speculatively or "to complete a set".
-2. **Unification over Proliferation:**
+2. **Unification over Proliferation (Skills):**
    If two proposed skills share most of their procedural logic, create a single skill with clearly structured modes or branches rather than fragmenting the catalog.
+3. **When an Agent Earns Its Place (2026 Context Isolation & Tool Boundary Gate):**
+   Subagents introduce latency, token multiplication, and multi-hop serialization overhead. An `agents/*.md` definition is justified ONLY when at least one of the following architectural conditions holds:
+   - **Strict Information Barrier / Zero-Contamination Context:** The subagent must be blind to the parent conversation's implementation bias or prior reasoning (e.g., Double-Blind Cleanroom `ami-cleanroom-builder` / `ami-cleanroom-tester`, or fresh-context `ami-adversarial-verifier`).
+   - **High-Volume Context Window Protection (Fan-Out):** The subagent absorbs verbose intermediate outputs (large repo scans, multi-module audits, dataset profiling) and returns only a distilled summary to protect the primary conversation's attention budget.
+   - **Distinct Permission Sandbox:** The subagent enforces a stricter tool boundary than the parent (e.g., `sandbox_mode = "read-only"` auditors or evaluators).
+   Never create subagents merely for "thinking before thinking", multi-round roleplay chatter, or tasks that a single-pass skill in the main thread can execute directly.
 
 ## Architectural Boundaries
 
 1. **Procedural Instruction vs. Evidence:**
    - `SKILL.md` must be strictly procedural and concise (under 250 lines).
    - Long case studies, benchmark data, and historical incidents belong in `references/<topic>.md`, which loads on demand rather than bloating the system prompt.
-2. **Token Efficiency & Description Budget:**
+2. **Zero Agent-Skill Procedural Duplication (DRY Gate):**
+   - Procedural workflows belong in `skills/<name>/SKILL.md`, while agent profiles (`agents/<role>.md`) define the role identity, invariants, permission boundaries, and dispatch triggers.
+   - Never copy-paste a skill's step-by-step phases into an agent file; instruct the agent to read and follow `skills/<name>/SKILL.md`.
+3. **Token Efficiency & Description Budget:**
    - The YAML frontmatter `description` is loaded into the system prompt on every turn.
    - Keep `description` under 50 words using a functional, declarative summary: what the skill does and exact triggers.
    - Never place change logs, version numbers, or verbose narrative in the frontmatter.
-3. **Never Hardcode Queryable Facts:**
+4. **Never Hardcode Queryable Facts:**
    - Do not hardcode git statuses, PR numbers, version tags, or tool availability. Query them live via terminal tools.
 
 ## Standardized Workflow Patterns

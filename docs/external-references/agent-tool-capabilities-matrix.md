@@ -58,21 +58,30 @@ Codex subagents are invoked through the Codex multi-agent runtime using the conf
 
 ---
 
-## 4. Current Amiga IA Audit (Subagents Writing Deficit)
+## 4. Amiga IA Agent Capabilities Inventory (13 Agents)
 
-| Agent | Current `allowed-tools:` | Actual Needs | Missing Write Permissions |
-| :--- | :--- | :--- | :--- |
-| `ami-cleanroom-builder` | `Bash, Read, Grep, Write, Edit` | Write source code | Antigravity names missing |
-| `ami-cleanroom-tester` | `Bash, Read, Grep, Write, Edit` | Write test code | Antigravity names missing |
-| `ami-data-scientist` | `Bash, Read, Grep, Edit, Write` | Write notebooks/scripts | Antigravity names missing |
-| `ami-doc-architect` | `Bash, Read, Grep, WebSearch` | Write docs, sync learnings | **Antigravity write tools missing; Codex inherits parent runtime** |
-| `ami-pr-publisher` | `Bash, Read, Grep` | Write PR templates, temp logs | Missing write tools |
-| `ami-release-manager` | `Bash, Read, Edit, Write` | Bump versions, changelogs | Antigravity names missing |
-| `ami-tech-lead` | `Bash, Read, Grep, WebSearch, search_web, WebFetch, read_url_content, invoke_subagent, Write, Edit` | Architecture specs, plans | Antigravity write tools missing |
-| `ami-repo-auditor` | `Bash, Read, Grep` | Read-only audit (optional fixes) | Strictly read-only currently |
-| `ami-push-assistant` | `Bash, Read, Grep` | Pre-push checks, git status | Strictly read-only currently |
-| `ami-expert-council` | `Read, Agent, define_subagent, invoke_subagent, send_message` | Discussion & consensus | Read/debate only (intended) |
-| `ami-pr-reviewer` | `Bash, Read, Grep, WebSearch` | Review & report | Read-only reviewer (intended) |
+### 4.1. Write-Enabled Agents (`WRITE_ENABLED_AGENTS` — 8 Agents)
+
+| Agent | Canonical `allowed-tools:` | Orchestration (`Agent`) | Codex TOML Sandbox | Primary Responsibility |
+| :--- | :--- | :--- | :--- | :--- |
+| `ami-cleanroom-arbiter` | `Bash, Read, Grep, Agent, Write, Edit` | Yes | Inherited (Workspace-Write) | Freezes contracts, dispatches builder/tester, adjudicates test runs |
+| `ami-cleanroom-builder` | `Bash, Read, Grep, Write, Edit` | No (Leaf worker) | Inherited (Workspace-Write) | Implements production code strictly from frozen contract |
+| `ami-cleanroom-tester` | `Bash, Read, Grep, Write, Edit` | No (Leaf worker) | Inherited (Workspace-Write) | Generates black-box test suites strictly from frozen contract |
+| `ami-data-scientist` | `Bash, Read, Grep, Agent, Write, Edit` | Yes | Inherited (Workspace-Write) | Orchestrates SQL optimization, EDA profiling, and dashboard generation |
+| `ami-doc-architect` | `Bash, Read, Grep, WebSearch, Agent, Write, Edit` | Yes | Inherited (Workspace-Write) | Orchestrates documentation architecture, sync, and knowledge audits |
+| `ami-pr-publisher` | `Bash, Read, Grep, Agent, Write, Edit` | Yes | Inherited (Workspace-Write) | Pre-publication PR orchestration, self-review fixes, and conflict checks |
+| `ami-release-manager` | `Bash, Read, Write, Edit` | No | Inherited (Workspace-Write) | Semantic version bumping, bilingual release notes, and tag publishing |
+| `ami-tech-lead` | `Bash, Read, Grep, WebSearch, WebFetch, Agent, Write, Edit` | Yes | Inherited (Workspace-Write) | Master greenfield/feature architecture and planning orchestrator |
+
+### 4.2. Read-Only Agents (`READ_ONLY_AGENTS` — 5 Agents)
+
+| Agent | Canonical `allowed-tools:` | Orchestration (`Agent`) | Codex TOML Sandbox | Primary Responsibility |
+| :--- | :--- | :--- | :--- | :--- |
+| `ami-adversarial-verifier` | `Bash, Read, Grep` | No (Leaf verifier) | `sandbox_mode = "read-only"` | Zero-trust fresh-context falsification of implementation claims |
+| `ami-expert-council` | `Read, Grep, WebSearch` | No (Single-pass) | `sandbox_mode = "read-only"` | Single-pass orthogonal trade-off and adversarial premortem evaluator |
+| `ami-pr-reviewer` | `Bash, Read, Grep, WebSearch, Agent` | Yes | `sandbox_mode = "read-only"` | Peer/self PR review and comment analysis orchestrator |
+| `ami-push-assistant` | `Bash, Read, Grep, Agent` | Yes | `sandbox_mode = "read-only"` | Pre-push quality gate and git consistency orchestrator |
+| `ami-repo-auditor` | `Bash, Read, Grep, Agent` | Yes | `sandbox_mode = "read-only"` | Repository-wide technical debt, security, and dependency audit orchestrator |
 
 ---
 
@@ -154,5 +163,5 @@ Delegate execution to a `self` subagent clone carrying the specific orchestrator
 
 To maintain maximum schema fidelity across platforms:
 1. `adapters/capability_translator.js` must translate canonical `allowed-tools:` into `tools:` for Antigravity installations, matching official documentation specifications.
-2. `bin/setup.js` must register all write-enabled agents (`ami-cleanroom-arbiter.md`, `ami-cleanroom-builder.md`, `ami-cleanroom-tester.md`, `ami-data-scientist.md`, `ami-doc-architect.md`, `ami-release-manager.md`, `ami-tech-lead.md`) in `WRITE_MANDATORY_AGENTS`.
+2. `bin/setup.js` must register all 8 write-enabled agents (`ami-cleanroom-arbiter.md`, `ami-cleanroom-builder.md`, `ami-cleanroom-tester.md`, `ami-data-scientist.md`, `ami-doc-architect.md`, `ami-pr-publisher.md`, `ami-release-manager.md`, `ami-tech-lead.md`) in `WRITE_MANDATORY_AGENTS`, and all 8 delegating orchestrators (`ami-cleanroom-arbiter.md`, `ami-data-scientist.md`, `ami-doc-architect.md`, `ami-pr-publisher.md`, `ami-pr-reviewer.md`, `ami-push-assistant.md`, `ami-repo-auditor.md`, `ami-tech-lead.md`) in `AGENT_DELEGATION_MANDATORY_AGENTS`.
 
