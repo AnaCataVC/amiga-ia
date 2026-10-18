@@ -24,6 +24,32 @@ Analyze the repository state and user request to determine the required operatio
 
 ---
 
+## Mandatory Documentation Standards & Formatting Rules
+
+The following standards apply across all modes (Architecture, Synchronization, Lifecycle Audits, and Learnings Harvesting) and MUST be strictly enforced:
+
+1. **Strict Zero Flags Policy:**
+   - Country flag emojis or flag graphics are strictly prohibited anywhere in documentation, README files, wikis, headers, badges, or language switchers.
+   - Flags represent sovereign states and geopolitical entities, NOT languages. Associating a flag with a language introduces regional bias and geographic inaccuracy. Furthermore, flags render as broken letter pairs (`[U][S]`, `[E][S]`) or unprintable glyphs on Windows terminals, PowerShell, and desktop UI frameworks.
+   - Always use clean semantic text links (`[English](#english) | [Español](#español)` or `[English](README.md) | [Español](README.es.md)`), standard ISO language codes (`EN`, `ES`), or unadorned headings (`## English`, `## Español`).
+2. **Bilingual Navigation & HTML Anchors:**
+   - When implementing bilingual documentation in a single file, provide explicit HTML anchors (`<a name="english"></a>`, `<a name="español"></a>`) directly above section headers to guarantee cross-platform anchor resolution on GitHub, GitLab, and local viewers without relying on vendor-specific slug generation.
+   - For multi-file bilingual repositories, maintain separate symmetric bilingual files (`README.md` in English, `README.es.md` in Spanish) with reciprocal navigation links in the header.
+3. **Local Path Privacy (Zero Path Leaks):**
+   - Never leak absolute local machine paths (e.g., `C:\Users\...` or `/home/...`) in documentation, README files, architecture diagrams, command snippets, or error references.
+   - Always use relative paths (e.g., `./scripts/build.ps1`), standard environment variables (e.g., `%LOCALAPPDATA%\AppName\Logs`), or generic placeholders (e.g., `/path/to/project`).
+4. **Clean Shields.io Badges:**
+   - Format badges using standard flat style (`style=flat`), official brand logos (`logo=...`), and white glyphs (`logoColor=white`).
+   - Badges must reflect genuine technical metadata (languages, frameworks, platforms, test status, licenses).
+   - Prohibit decorative flags, emojis, or non-semantic symbols inside badge labels or icons.
+5. **Atemporal Quality Gate Directives (Zero Static Test Counts):**
+   - Never hardcode fixed numerical test counts (e.g., '57 tests passing', 'run the 12 tests') in documentation, runbooks, README files, or verification guides. Static numbers become obsolete upon the first test addition or refactoring.
+   - Formulate all verification steps dynamically and atemporally (e.g., 'verify that the full automated test suite passes with 100% success / zero regressions').
+6. **Gender Neutrality & Inclusive Language in Spanish:**
+   - In Spanish-language documentation, interfaces, release notes, and communications, use neutral phrasing (e.g., 'te damos la bienvenida', 'todo listo') and avoid gender-biased assumptions or binary gendered phrasing.
+
+---
+
 ### Section A: Architecture & Creation (New / Overhaul)
 
 1. **Scope Assessment:** Inspect root directory and documentation folders (`docs/`, `wiki/`), as well as AI guidance files (`AGENTS.md`, `CLAUDE.md`, `.cursorrules`, `.agents/`, `.gemini/`).
@@ -32,7 +58,7 @@ Analyze the repository state and user request to determine the required operatio
 2. **Alignment & Structure Proposal:**
    - Present proposed file hierarchy in chat and await explicit user approval before drafting or reorganizing files.
 3. **Iterative Generation & Review:**
-   - **Zero Flags Invariant (Mandatory):** Never use country flag emojis (e.g., US, UK, ES, MX) or flag graphics in documentation, `README.md`, wikis, headers, badges, or language switchers. Always use clean semantic text (`[English](#english) | [Español](#español)`) and unadorned headings (`## English`, `## Español`).
+   - Strictly enforce the **Mandatory Documentation Standards** (Zero Flags, HTML Anchors, Path Privacy, Clean Badges, Atemporal Quality Gates, and Spanish Gender Neutrality).
    - Write files upon approval using clean Markdown and iterate on user feedback.
 
 ---
@@ -45,7 +71,7 @@ Analyze the repository state and user request to determine the required operatio
 2. **Propose Updates:**
    - **CRITICAL:** Do NOT modify files immediately. Present a clear summary of proposed updates across human docs and AI guidance files in chat and request explicit approval.
 3. **Apply & Report:**
-   - Write changes after approval, strictly enforcing the **Zero Flags Invariant** and **Path Privacy** (never leak local user paths).
+   - Write changes after approval, strictly enforcing the **Mandatory Documentation Standards** (Zero Flags, HTML Anchors, Path Privacy, Clean Badges, Atemporal Quality Gates, and Spanish Gender Neutrality).
    - Report updated files, or state if no documentation changes were needed.
 
 ---
