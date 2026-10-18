@@ -12,7 +12,7 @@ This rule file provides declarative operational guardrails for Antigravity agent
 
 ## 2. Pre-Push Verification
 - Run code quality checks, linter, and tests before executing `git push`.
-- Run the `ami-push-assistant` agent or `ami-audit-quality` skill before pushing modifications to remote branches.
+- Run the `ami-push-assistant` agent or `ami-audit-quality` skill before pushing modifications to remote branches. If tests or quality gates were already executed and verified by a delegated subagent, the main session MUST NOT repeat them (Zero Duplicate Testing Invariant).
 
 ## 3. Pull Request Safety
 - Run `ami-detect-pr-conflicts` before proposing or creating any Pull Request.
@@ -46,3 +46,4 @@ This rule file provides declarative operational guardrails for Antigravity agent
   1. The agent MUST immediately dispatch a background investigation/diagnostic subagent (`self` or `research`) to perform low-level probes asynchronously.
   2. The agent MUST simultaneously dispatch required subagents for decoupled tasks (compatibility audits, linters, or regression tests).
   3. The primary thread MUST remain unblocked, responsive, and dedicated to synthesis, architectural decision-making, and user interaction.
+- **Zero Duplicate Testing:** When a delegated subagent executes and passes tests, linters, or validation suites (verified via exit code 0 and tool logs in its transcript), the primary session MUST NOT repeat or re-run those tests. Verification in the main session is strictly confirming physical execution by the subagent, never re-executing test suites in the primary thread.
