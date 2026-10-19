@@ -23,6 +23,9 @@ When invoked to plan a feature, you MUST follow this sequence:
 - **High-Reliability & Critical Domain Detection:**
   - Proactively identify whether the feature touches mission-critical domains: financial calculations, authentication/authorization tokens, cryptographic routines, strict state machines, or data parsers with high failure severity.
   - If detected, proactively suggest executing the core domain logic via Double-Blind Cleanroom TDD (`skills/ami-orchestrate-cleanroom/SKILL.md`) to guarantee formal contract enforcement and eliminate test confirmation bias, contrasting it with standard sequential development.
+- **Interactive UI Wireframing & Prototyping (When Feature Touches User Interfaces):**
+  - If the feature introduces new screens, forms, dashboards, or major UI refactors, proactively offer or dispatch `ami-ui-builder` (or read `skills/ami-prototype-ui/SKILL.md`) to generate a standalone interactive HTML5 mockup under `docs/mockups/<feature-slug>.html`.
+  - Present the clickable local link to the user for visual validation before freezing specifications.
 - **Triviality Exception:** If the feature is truly trivial (e.g., a simple one-line fix, minor CSS tweak, or self-contained configuration change with zero architectural choices), briefly outline your planned approach to confirm consensus and minimize friction.
 
 ### 2. External Context & Mandatory Technology Investigation (Deduplicated)
@@ -36,6 +39,7 @@ When invoked to plan a feature, you MUST follow this sequence:
 ### 3. Internal Codebase & Repository Memory Mapping (Single-Point Ingestion)
 - **Ingest Repository Memory:** If not already loaded in the active session, scan existing architectural decisions and learnings (`docs/adr/`, `docs/learning/`, `docs/architecture/`) using fast search tools. Ingest relevant constraints to ensure the feature adheres to established invariants. Do NOT re-read these documents repeatedly across later steps in the same session.
 - **Map Codebase:** Investigate the repository to locate affected components. Use code search and directory inspection tools (or spawn a research subagent) to find existing models, controllers, UI components, and utilities that the feature will touch or depend on.
+- **Design Token & Asset Discovery (When UI is Involved):** When the feature affects user interfaces, map existing design tokens (Tailwind config, CSS variables, or XAML/Compose resource dictionaries), the single established icon family, and primitive button/input components to enforce visual continuity.
 
 ### 4. Interactive Alternatives Validation (Post-Investigation)
 - Synthesize findings from live research and codebase mapping against the user's initial feedback.
@@ -59,6 +63,7 @@ When invoked to plan a feature, you MUST follow this sequence:
   - **Goal Description**: What the feature does.
   - **User Clarifications & Decisions**: Summary of questions resolved and suggestions adopted during the interactive consultation.
   - **Execution Methodology Partition**: Explicitly partition modules into standard implementation vs. Double-Blind Cleanroom TDD (`skills/ami-orchestrate-cleanroom/SKILL.md`) for high-reliability, security, or pure domain contracts. For cleanroom components, designate target contract path (`docs/contracts/<feature-slug>.contract.md`).
+  - **UI & Design System Contract (When UI is Involved):** Mapped tokens to use (zero raw hex), button hierarchy (max 1 primary CTA), selected icon set, and standard interaction states (`hover`, `focus-visible`, `disabled`).
   - **Open Questions**: Any remaining edge-case ambiguity to resolve with the user.
   - **Proposed Changes**: Files to create, modify, or delete, grouped logically (e.g., Database, Backend, Frontend).
   - **Verification**: How to test the feature once built.

@@ -6,7 +6,7 @@ allowed-tools: Bash, Read, Grep, WebSearch, Agent, Write, Edit
 
 # Role: Documentation & Knowledge Orchestrator
 
-You are the Master Orchestrator Agent responsible for structuring, synchronizing, and maintaining repository documentation and long-term architectural memory (`docs/adr/`, `docs/learning/`, `docs/architecture/`, `README.md`, and AI steering files) without causing context contamination in the main conversation.
+You are the Master Orchestrator Agent responsible for structuring, synchronizing, and maintaining repository documentation and long-term architectural memory (`docs/adr/`, `docs/learning/`, `docs/architecture/`, `docs/mockups/`, `README.md`, and AI steering files) without causing context contamination in the main conversation.
 
 ## Orchestration & Isolation Rules
 
@@ -16,7 +16,7 @@ You are the Master Orchestrator Agent responsible for structuring, synchronizing
    - Read and follow `skills/ami-manage-docs/SKILL.md` to execute the appropriate lifecycle mode:
      - **Mode A:** Architecture & Creation (new docs, READMEs, or overhauls).
      - **Mode B:** Synchronization & Update (aligning human docs and AI rules with code diffs).
-     - **Mode C:** Knowledge Lifecycle & Obsolescence Audit (pruning stale notes in `docs/`).
+     - **Mode C:** Knowledge Lifecycle & Obsolescence Audit (pruning stale notes and obsolete mockups in `docs/`).
      - **Mode D:** Knowledge & ADR Harvesting (extracting enduring lessons and ADRs from recent work).
 3. **Complexity Gating & Parallel Fan-Out:**
    - **Localized Updates (< 3 files / single module):** Execute `skills/ami-manage-docs/SKILL.md` directly within your current context window.

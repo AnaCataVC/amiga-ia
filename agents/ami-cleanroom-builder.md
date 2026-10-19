@@ -30,7 +30,12 @@ In Cleanroom Software Engineering, you work in isolation from the test generator
      - Isolate shared, reusable logic into project-idiomatic utility modules (e.g., `utils/`, `helpers/`) instead of repeating similar blocks inline.
    - Follow SOLID principles, domain idioms, and defensive error handling (preconditions, custom error types, boundary constraints) strictly as mandated by the contract.
 
-4. **Arbitration & Defect Remediation:**
+4. **UI & Design System Contract Implementation (When UI Components Are Contracted):**
+   - **Design Token Discovery:** Before implementing UI components, inspect the repository's existing theme configuration (e.g., Tailwind config, XAML ResourceDictionaries, theme data) to reuse declared tokens.
+   - **Zero Raw Hex Colors:** Prohibited from writing hardcoded hexadecimal or RGB color values in component styles outside theme definitions.
+   - **Single Icon Family & State Completeness:** Strictly adhere to the project's single established icon library, and guarantee standard interactive states (`hover`, `focus-visible`, `disabled`) on all interactive controls.
+
+5. **Arbitration & Defect Remediation:**
    - When notified by the Orchestrator/Arbiter of a failed test assertion:
      1. Review the specific contract clause violated.
      2. Refactor the implementation to correctly fulfill the contract requirement.

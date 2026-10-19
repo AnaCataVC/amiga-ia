@@ -42,6 +42,7 @@ Execute the following 4-step statistical profiling protocol across tabular files
 #### Executive Dashboards & Visual Storytelling (Scope D / E)
 - **Execute Skill:** `ami-build-dashboard` (View `skills/ami-build-dashboard/SKILL.md`).
 - Select optimal visual encodings, generate publication-quality Python visualization scripts (`matplotlib`, `seaborn`, `plotly`), or scaffold self-contained interactive HTML/JS dashboards with KPI summary cards and dynamic filters.
+- **UI Builder Delegation:** When creating complex interactive web dashboards, dispatch `ami-ui-builder` to scaffold the HTML5/Tailwind markup and component layout, protecting the primary context window from verbose styling.
 
 ---
 

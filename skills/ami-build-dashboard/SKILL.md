@@ -1,7 +1,7 @@
 ---
 name: ami-build-dashboard
 description: Build high-impact interactive web dashboards and publication-quality Python data visualizations. Translates analytical datasets and KPIs into responsive visual narratives.
-allowed-tools: Bash, Read, Grep, Edit, Write
+allowed-tools: Bash, Read, Grep, Agent, Edit, Write
 ---
 
 # Skill: Dashboard Builder & Data Visualizer
@@ -26,7 +26,9 @@ When invoked, act as an Executive Data Visualization Architect and Frontend BI S
 - **Export & Resolution Standards:** Configure figure bounds and aspect ratios specifically optimized for target viewing, enabling high-resolution export formats (`.svg`, `.pdf`, `.png` at >= 300 DPI, or standalone interactive `.html` output).
 
 ### 3. Interactive Web & Application Dashboards
-- **Web Dashboard Architecture:** Scaffold responsive, self-contained executive web dashboards using clean vanilla HTML5, declarative CSS design systems, and JavaScript visualization engines (Chart.js, D3, Apache ECharts) or light data app frameworks (Streamlit, Gradio, Dash).
+- **Web Dashboard Architecture & UI Builder Delegation:**
+  - Scaffold responsive, self-contained executive web dashboards using clean vanilla HTML5, declarative CSS design systems, and JavaScript visualization engines (Chart.js, D3, Apache ECharts) or light data app frameworks (Streamlit, Gradio, Dash).
+  - **Context Window Protection via `ami-ui-builder`:** For rich, multi-panel dashboards or high-volume HTML/Tailwind markup, dispatch `ami-ui-builder` (or apply `skills/ami-prototype-ui/SKILL.md`) to generate the interface layout, metric cards, and responsive styling in an isolated context, returning the completed standalone `.html` deliverable without exhausting conversational attention.
 - **Executive KPI Layouts & Components:**
   - Structure hero metric cards displaying prominent primary numbers accompanied by comparison trend indicators (e.g., "\(\uparrow 14.2\%\) vs. previous period").
   - Implement interactive dashboard controls: dynamic range filtering, multi-select category toggle switches, drill-down modals, and searchable datatables with pagination.

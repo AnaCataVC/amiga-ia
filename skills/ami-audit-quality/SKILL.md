@@ -61,6 +61,11 @@ Inspect the code diffs (`git diff` or changed files) across core dimensions:
    - **DRY Principle:** Procedural steps belong in skills, while agent profiles contain high-level roles and constraints.
    - **Token Efficiency & Bloat:** Ensure prompt instructions are concise and skimmable.
 
+6. **UI & Design System Consistency (When Interface Files Are Modified):**
+   - If the diff touches UI files (`.tsx`, `.jsx`, `.xaml`, `.vue`, `.svelte`, `.html`, `.dart`), adhere to `skills/ami-audit-ui-consistency/SKILL.md`.
+   - **Zero Raw Hex in New Code:** Reject unconfigured hexadecimal or RGB colors outside theme files.
+   - **Component & Asset Hygiene:** Enforce max 1 primary CTA button per view, standard interactive states (`hover`, `focus-visible`, `disabled`), single icon family, zero duplicate glyphs for the same action, and accessible labels on icon buttons.
+
 ### 3. Adversarial Verification Gate (Fresh-Context Review)
 
 For changes touching critical domain logic, algorithms, or API boundaries, conduct or invoke an adversarial check (`ami-adversarial-verifier`):

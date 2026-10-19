@@ -68,6 +68,7 @@ The following standards apply across all modes (Architecture, Synchronization, L
 1. **Locate & Cross-Reference:**
    - Scan human-facing documentation (`README.md`, `docs/`) AND AI guidance documents (`AGENTS.md`, `CLAUDE.md`, `.cursorrules`, `.agents/`).
    - Review working tree diffs and commit history to identify modified behaviors, parameters, endpoints, architecture shifts, new skills/agents, or setup steps.
+   - **UI Mockups Living Specs:** If changes introduce or refactor user interfaces, verify whether an interactive mockup exists under `docs/mockups/<feature-slug>.html`. Link approved mockups within feature documentation or architectural guides as living design specifications.
 2. **Propose Updates:**
    - **CRITICAL:** Do NOT modify files immediately. Present a clear summary of proposed updates across human docs and AI guidance files in chat and request explicit approval.
 3. **Apply & Report:**
@@ -79,11 +80,11 @@ The following standards apply across all modes (Architecture, Synchronization, L
 ### Section C: Knowledge Lifecycle & Obsolescence Audit (Learnings Pruning)
 
 1. **Knowledge Inventory & Inspection:**
-   - Scan `docs/learning/`, `docs/external-references/`, `docs/adr/`, and `docs/architecture/` against the current codebase and active dependencies.
+   - Scan `docs/learning/`, `docs/external-references/`, `docs/adr/`, `docs/architecture/`, and `docs/mockups/` against the current codebase and active dependencies.
 2. **Tri-State Classification Matrix:**
    - **Category 1 (Active / Invariant):** Active architectural invariants, non-trivial gotchas, or enduring operational constraints. Keep intact.
    - **Category 2 (Consolidate / Subsumed):** Fragmented or redundant notes that should be merged into a formal ADR (`docs/adr/`) or centralized guide.
-   - **Category 3 (Obsolete / Ephemeral / Low-Value):** Ephemeral stress-test reports (`*-stress-test.md`) for completed/discarded proposals, workarounds for removed libraries, or trivial low-signal notes.
+   - **Category 3 (Obsolete / Ephemeral / Low-Value):** Ephemeral stress-test reports (`*-stress-test.md`) for completed/discarded proposals, workarounds for removed libraries, obsolete UI mockups in `docs/mockups/` whose corresponding views have been removed or completely redesigned in production, or trivial low-signal notes.
 3. **Interactive Pruning Proposal:**
    - **CRITICAL:** NEVER delete or archive files automatically. Present a table (`File Path`, `Classification`, `Obsolescence Reason`, `Recommended Action`) and await explicit user approval before executing consolidations or deletions.
 
