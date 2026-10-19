@@ -161,8 +161,8 @@ describe('Tri-Ecosystem End-to-End Installation Test Suite', () => {
       // Assertions
       const installedSkills = collectFilesRecursively(targetSkillsDir);
       const installedAgents = collectFilesRecursively(targetAgentsDir);
-      assert.ok(installedSkills.length >= 20, `Expected >= 20 installed skill files, got ${installedSkills.length}`);
-      assert.strictEqual(installedAgents.length, 13, `Expected 13 installed agent files, got ${installedAgents.length}`);
+      assert.ok(installedSkills.length >= 22, `Expected >= 22 installed skill files, got ${installedSkills.length}`);
+      assert.strictEqual(installedAgents.length, 14, `Expected 14 installed agent files, got ${installedAgents.length}`);
 
       const allMarkdownFiles = [...installedSkills, ...installedAgents];
       for (const file of allMarkdownFiles) {
@@ -241,9 +241,9 @@ describe('Tri-Ecosystem End-to-End Installation Test Suite', () => {
       const installedPluginAgents = collectFilesRecursively(targetPluginAgentsDir);
       const installedRules = collectFilesRecursively(targetRulesDir);
 
-      assert.ok(installedSkills.length >= 20, `Expected >= 20 installed skill files, got ${installedSkills.length}`);
-      assert.strictEqual(installedAgents.length, 13, `Expected 13 installed agent files, got ${installedAgents.length}`);
-      assert.strictEqual(installedPluginAgents.length, 13, `Expected 13 installed plugin agent files, got ${installedPluginAgents.length}`);
+      assert.ok(installedSkills.length >= 22, `Expected >= 22 installed skill files, got ${installedSkills.length}`);
+      assert.strictEqual(installedAgents.length, 14, `Expected 14 installed agent files, got ${installedAgents.length}`);
+      assert.strictEqual(installedPluginAgents.length, 14, `Expected 14 installed plugin agent files, got ${installedPluginAgents.length}`);
       assert.ok(fs.existsSync(path.join(targetPluginDir, 'plugin.json')), 'Expected plugin.json manifest in plugins/amiga-ia');
       assert.ok(installedRules.length >= 1, `Expected installed rules, got ${installedRules.length}`);
 
@@ -302,8 +302,8 @@ describe('Tri-Ecosystem End-to-End Installation Test Suite', () => {
       const installedSkills = collectFilesRecursively(codexUserSkillsDir);
       const installedAgents = collectFilesRecursively(targetAgentsDir);
 
-      assert.ok(installedSkills.length >= 20, `Expected >= 20 installed skill files, got ${installedSkills.length}`);
-      assert.strictEqual(installedAgents.length, 13, `Expected exactly 13 agent TOML files, got ${installedAgents.length}`);
+      assert.ok(installedSkills.length >= 22, `Expected >= 22 installed skill files, got ${installedSkills.length}`);
+      assert.strictEqual(installedAgents.length, 14, `Expected exactly 14 agent TOML files, got ${installedAgents.length}`);
 
       const allCodexFiles = [...installedSkills, ...installedAgents];
       const skillRefRegex = /(?:[A-Za-z]:[\\/]|(?:\/[^/\s]+)+[\\/])(ami-[a-z0-9-]+)[\\/]SKILL\.md/g;
