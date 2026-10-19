@@ -20,11 +20,15 @@
 ### 1. Project Description
 **Amiga IA** is a comprehensive ecosystem of *autonomous subagents*, *stateless guardrail hooks*, and *portable declarative skills* designed to elevate AI coding assistants from passive command executors into proactive team collaborators. Engineered for **Antigravity (Gemini)**, **Claude Code**, and **OpenAI Codex**, Amiga IA provides a single source of truth for scalable AI capability management built on the **Agent Skills (Markdown + Lazy Loading)** standard.
 
-With **v3.0.0 ("The Agentic Evolution")**, Amiga IA introduces decentralized multi-skill orchestration, enabling specialized subagents to autonomously discover repository tools and conduct parallel code reviews, repository health audits, and automated documentation without requiring step-by-step human guidance.
+With its architectural evolution spanning **v3.0.0 ("The Agentic Evolution")** to **v5.6.0**, Amiga IA delivers decentralized multi-skill orchestration, Double-Blind Cleanroom TDD (`ami-cleanroom-arbiter`), tri-ecosystem native translation, and an autonomous UI rapid prototyping and design-consistency suite (`ami-ui-builder`, `ami-prototype-ui`, `ami-audit-ui-consistency`) without requiring step-by-step human guidance.
 
 ### 2. Technologies & Architectural Innovations
 * **Agent Skills (XML + Markdown Lazy Loading):** A token-efficient architecture where an index of available tools is compiled into the system prompt, allowing AI models to open and consume imperative skill instructions only when actively required.
 * **Multi-Skill Parallel Orchestration (ADR-002):** Decentralized subagent profiles (such as `ami-pr-reviewer`, `ami-doc-architect`, and `ami-repo-auditor`) coordinate parallel worker threads to scan codebase technical debt, verify pre-push consistency, and review code concurrently.
+* **Double-Blind Cleanroom TDD Triad (ADR-012, ADR-017):** Decoupled implementer (`ami-cleanroom-builder`) and QA tester (`ami-cleanroom-tester`) subagents mediated by `ami-cleanroom-arbiter` operating strictly across frozen interface contracts (`docs/contracts/`), eliminating test overfitting and confirmation bias.
+* **Tri-Ecosystem Distribution & Semantic Compiler (ADR-014, ADR-015, ADR-016):** Transforms canonical Markdown sources into platform-native formats across Anthropic Claude Code (`~/.claude/`), Google Antigravity (`~/.gemini/config/`), and OpenAI Codex (`~/.agents/` & `~/.codex/`), compiling native TOML subagent manifests and performing dynamic path expansion (`__AMIGA_CODEX_SKILLS_DIR__`).
+* **Dual-Mode Code Review & Adversarial Falsification (ADR-006, ADR-013):** Proactive adversarial auditing (`ami-adversarial-verifier`) evaluating PRs through dual review modes (Static Code Review vs. Full Dynamic Review with test execution) and 5-dimension blind-spot probes to eliminate false positives.
+* **Autonomous UI Prototyping & Consistency Auditing (ADR-018):** Offloads verbose layout markup to `ami-ui-builder`, scaffolding self-contained HTML5/Tailwind living visual specifications (`docs/mockups/`) and auditing design system token adherence across Web, Desktop, and Mobile.
 * **Zero-Overhead Stateless Execution (ADR-003):** Background security hooks are optimized for token economy and zero memory pollution, operating seamlessly across native Bash, Windows PowerShell, and zero-dependency Node.js execution engines.
 * **Compact System Prompt & Unified Hook Optimization (ADR-004):** Refactored Universal Adapter XML generation to use root-relative compact attributes and migrated inline PowerShell and Bash commands to external runtime scripts (`hooks/scripts/ami-hooks.ps1` & `ami-hooks.sh`). This achieved a verified **36.3% reduction (-1,211 tokens/turn)** in recurring System Prompt overhead (dropping from 3,335 to 2,124 tokens/turn), faster LLM inference, and zero hook deduplication errors.
 * **Interactive CLI Wizard (`amiga-ia-setup`):** An automated setup, migration, and diagnostic suite built in Node.js that cleanly installs skills, merges configurations into AI user settings, and dynamically checks system health.
@@ -32,8 +36,10 @@ With **v3.0.0 ("The Agentic Evolution")**, Amiga IA introduces decentralized mul
 ### 3. Key Learnings (Developer Takeaways)
 Building and scaling Amiga IA through its evolution into a fully agentic ecosystem yielded significant engineering lessons:
 * **Agentic vs. Passive Prompting:** Traditional step-by-step imperative scripts break down as codebases scale. Transitioning to autonomous subagent profiles that reason about project goals, discover local tools, and delegate worker threads in parallel proved dramatically more robust and scalable than monolithic prompt engineering.
+* **Cleanroom Isolation vs. Confirmation Bias:** Single-agent test generation inevitably suffers from confirmation bias—the same model that wrote the code writes tests shaped by its own assumptions. Splitting the workflow into isolated subagents that communicate strictly through immutable interface contracts (Cleanroom TDD) surfaced edge cases and architectural ambiguities before code touched production.
 * **Token Economy & Statelessness:** Early iterations utilized persistent background caching to store local session summaries. Iterative analysis revealed that retaining stale context across session restarts degraded LLM inference speed and inflated token consumption. Depreciating session state caching in favor of stateless, on-demand reactive inspections (ADR-003) drastically boosted system responsiveness and precision.
 * **Mitigating the Silent Recurring Token Tax:** Dynamic tool catalogs injected into AI System Prompts impose a severe compounding cost over extended conversational sessions. Utilizing attribute-driven root-relative indexing instead of verbose XML wrapper hierarchies eradicated massive static redundancy (ADR-004). Furthermore, transitioning from complex inline shell expressions to standardized external runtime invocations prevented OS shell escaping gotchas and eliminated string-matching deduplication failures across platforms.
+* **Cross-Platform Path Resolution & Runtime Neutralization:** Deploying declarative skills across diverse AI assistant runtimes requires strict path normalization. Absolute paths in shared packages cause environmental collisions; abstracting local directories into runtime-interpolated placeholders resolved Windows/Linux filesystem discrepancies and prevented regex replacement side effects during installation.
 * **Cross-Platform & Multi-Engine Unification:** Achieving 100% cross-compatibility between disparate AI runtimes (Antigravity, Claude Code, and OpenAI Codex) and distinct operating systems (Linux/macOS Bash vs. Windows PowerShell) required abstracting hook logic into universal runtime scripts and enforcing strict capability translation across native formats.
 
 ### 4. Repository Structure
@@ -151,9 +157,6 @@ To cleanly detach Amiga IA from your AI coding environments:
 * **Mandatory Naming Convention (`ami-` prefix):** All custom skills and agent profiles MUST begin with `ami-` (e.g., `ami-db-migrator`). This ensures clean namespace separation and protects your custom tools from external conflicts.
 * **Adding a New Skill:** Create a folder at `skills/ami-<name>/` containing a `SKILL.md` instruction file configured with standard YAML frontmatter.
 * **Adding a New Agent:** Create an autonomous persona file at `agents/ami-<name>.md` detailing behavior rules, skill invocation authorizations, and coordination directives.
-
----
-
 
 ---
 

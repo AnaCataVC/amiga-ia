@@ -36,7 +36,12 @@ amiga-ia/
 ├── hooks.json / hooks-pwsh.json   # Primary hook definitions (Bash and PowerShell variants)
 ├── hooks/                         # Auto-synced hooks copy and universal Node.js scripts
 ├── tests/                         # Native Node.js test suite (`npm test`)
-├── docs/                          # Memory, ADRs, and project documentation
+├── docs/                          # Memory, ADRs, contracts, and project documentation
+│   ├── adr/                       # Architectural Decision Records (ADRs)
+│   ├── architecture/              # Subsystem design documents and guides
+│   ├── contracts/                 # Formal Cleanroom TDD interface contracts
+│   ├── mockups/                   # Living UI specifications (HTML5 + Tailwind CSS)
+│   └── learning/                  # Persistent AI developer learnings
 └── package.json                   # NPM package definition (Single Source of Truth)
 ```
 
@@ -152,7 +157,26 @@ You are a specialized sub-agent responsible for...
 
 ---
 
-## 4. How the Universal Adapter Works
+## 4. Cleanroom Contracts & Living UI Specifications
+
+Amiga IA emphasizes strict interface isolation and rapid visual iteration through formal contracts and standalone mockups:
+
+### Formal Cleanroom Contracts (`docs/contracts/`)
+
+When architecting or implementing critical components under Double-Blind Cleanroom TDD (`ami-orchestrate-cleanroom` / `ami-cleanroom-arbiter`), formal contracts are frozen at `docs/contracts/<feature-slug>.contract.md`:
+- **Interface & Behavioral Contracts:** Explicit function signatures, types, parameters, preconditions, postconditions, and error-handling invariants.
+- **Information Isolation:** Serves as the single source of truth for `ami-cleanroom-builder` (without reading test code) and `ami-cleanroom-tester` (without reading implementation code).
+
+### Living UI Specifications (`docs/mockups/`)
+
+When designing user interfaces or interactive prototypes (`ami-prototype-ui` / `ami-ui-builder`), visual specifications are preserved under `docs/mockups/<feature-slug>.html`:
+- **Zero-Build Portability:** Must be 100% self-contained HTML5 using Tailwind CSS via CDN, viewable immediately in any browser using `file:///`.
+- **Design System Token Discipline:** Strict adherence to design tokens. Never introduce raw hex/rgb color values or arbitrary pixel offsets (`ami-audit-ui-consistency`).
+- **Single Primary Action:** Limit every screen or modal context to at most one prominent primary call-to-action button.
+
+---
+
+## 5. How the Universal Adapter Works
 
 The file `adapters/universal_adapter.js` is the bridge between the Markdown-based skill/agent definitions and the AI runtime.
 
@@ -174,7 +198,7 @@ On demand: AI reads full SKILL.md → follows imperative instructions
 
 ---
 
-## 5. How the CLI Wizard Works
+## 6. How the CLI Wizard Works
 
 The `bin/setup.js` script (exposed as the `amiga-ia-setup` command) is an interactive CLI wizard that copies skills and agents from the NPM package to the user's local AI configuration folders.
 
@@ -210,7 +234,7 @@ The wizard includes an uninstall option that **safely removes only `ami-`-prefix
 
 ---
 
-## 6. Testing Changes Locally
+## 7. Testing Changes Locally
 
 Before submitting a PR, you should test your changes locally to ensure everything works cleanly.
 
@@ -229,7 +253,9 @@ This verifies that manifest sync, frontmatter parsing, and adapter XML generatio
 Execute the integrated diagnostic suite:
 
 ```bash
-node bin/setup.js doctor
+node bin/setup.js --doctor
+# or
+amiga-ia-setup doctor
 ```
 
 This validates YAML frontmatter syntax across all `SKILL.md` files and verifies hook integrity.
@@ -246,7 +272,7 @@ This will copy your local skills and agents to your AI configuration folders for
 
 ---
 
-## 7. Commit and PR Guidelines
+## 8. Commit and PR Guidelines
 
 ### Commit Messages
 
@@ -288,7 +314,8 @@ Before opening a PR, make sure you have:
 - [ ] Included proper YAML frontmatter (`name`, `description`, `allowed-tools`).
 - [ ] Added the language rule block at the end of the file.
 - [ ] Verified `npm test` passes 100%.
-- [ ] Verified `node bin/setup.js doctor` returns 0 errors.
+- [ ] Verified `node bin/setup.js --doctor` returns 0 errors.
+- [ ] Verified Cleanroom contracts reside in `docs/contracts/` and UI prototypes in `docs/mockups/` (when applicable).
 - [ ] Written commit messages in English using Conventional Commits.
 - [ ] Ensured all code and comments are in English.
 - [ ] Ensured commit messages, docstrings, and code comments are free of internal planning references ('Phase X', 'Stage Y', 'Option Z').

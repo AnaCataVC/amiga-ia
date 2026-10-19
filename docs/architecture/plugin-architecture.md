@@ -1,12 +1,12 @@
 > **Created:** 2026-06-25
-> **Last Updated:** 2026-08-16
+> **Last Updated:** 2026-10-19
 
 # Architecture & Distribution: Amiga IA
 
-This document outlines the architectural evolution and distribution model for **Amiga IA**, covering both supported AI platforms (Antigravity / Gemini and Claude Code).
+This document outlines the architectural evolution and distribution model for **Amiga IA**, covering all three supported AI platforms: **Antigravity (Gemini)**, **Claude Code**, and **OpenAI Codex**.
 
 > [!NOTE]
-> **Architectural Decision (ADR-001):** Native plugin manifests (`plugin.json` / `.claude-plugin/plugin.json`) have been deprecated in favor of **Unified NPM Distribution (`amiga-ia-setup`)**. See [ADR-001](../adr/001-unified-npm-distribution.md) for full details.
+> **Architectural Decision (ADR-001, ADR-015, ADR-016):** Native plugin manifests (`plugin.json` / `.claude-plugin/plugin.json`) have been deprecated in favor of **Unified NPM Distribution (`amiga-ia-setup`)** with multi-ecosystem target translation. See [ADR-001](../adr/001-unified-npm-distribution.md) and [ADR-015](../adr/015-openai-codex-native-integration.md) for full details.
 
 ---
 
@@ -16,7 +16,7 @@ Amiga IA is distributed as a global NPM package featuring an automated setup wiz
 
 | Distribution Method | Mechanism | Target Environments |
 |---|---|---|
-| **NPM Package + CLI Wizard** | `npm install -g @anacatavc/amiga-ia` followed by `amiga-ia-setup` physically copies skills, agents, and rules into standard configuration directories. | Claude Code (`~/.claude/`) and Antigravity (`~/.gemini/config/`). |
+| **NPM Package + CLI Wizard** | `npm install -g @anacatavc/amiga-ia` followed by `amiga-ia-setup` physically copies skills, agents, and rules into standard configuration directories, compiling platform-specific formats (e.g. Codex TOML subagent manifests and path expansions). | Claude Code (`~/.claude/`), Antigravity (`~/.gemini/config/`), and OpenAI Codex (`~/.agents/` & `~/.codex/`). |
 
 The underlying Markdown files (`SKILL.md`, agent definitions) are loaded dynamically by each platform using **XML Lazy Loading (`universal_adapter.js`)**. For dedicated subsystem guides, see:
 - [Universal Adapter Specification](universal-adapter.md)
@@ -190,11 +190,12 @@ amiga-ia-setup
 
 The `amiga-ia-setup` command launches an interactive CLI wizard (`bin/setup.js`) that:
 
-1. Detects which AI platforms are available on the user's machine (Antigravity, Claude Code, or both).
-2. Physically copies skill directories (`skills/*/SKILL.md`) and agent files (`agents/*.md`) into the appropriate configuration folders:
-   - Antigravity: `~/.gemini/config/skills/` and `~/.gemini/config/agents/`
+1. Detects which AI platforms are available on the user's machine (Antigravity, Claude Code, and/or OpenAI Codex).
+2. Physically copies and translates skill directories (`skills/*/SKILL.md`), agent profiles (`agents/*.md`), and rules into the appropriate configuration folders:
+   - Antigravity: `~/.gemini/config/skills/`, `~/.gemini/config/agents/`, and `~/.gemini/config/rules/`
    - Claude Code: `~/.claude/skills/` and `~/.claude/agents/`
-3. Prompts the user to interactively choose their preferred hook engine (Bash, native PowerShell, or universal Node.js scripts), and cleanly merges the selected configuration into `~/.claude/settings.json`.
+   - OpenAI Codex: `~/.agents/skills/` (with skill path interpolation), compiled TOML manifests in `~/.codex/agents/*.toml`, and behavioral rules block in `~/.codex/AGENTS.md`
+3. Prompts the user to interactively choose their preferred hook engine (Bash, native PowerShell, or universal Node.js scripts), merging configurations into `~/.claude/settings.json` and `~/.codex/hooks.json`.
 
 ### Why Physical Copy Instead of Symlinks?
 
