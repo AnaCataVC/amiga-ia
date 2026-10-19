@@ -76,10 +76,12 @@ Todas las capacidades incluidas emplean de forma estricta el prefijo de espacio 
 | Agente | **ami-release-manager** | Orquestador central del ciclo de lanzamientos que calcula versiones semánticas, redacta changelogs bilingües y publica el release oficial en GitHub. |
 | Agente | **ami-repo-auditor** | Agente maestro de auditoría que evalúa concurrentemente deuda técnica, higiene de librerías y vulnerabilidades en todo el código base. |
 | Agente | **ami-tech-lead** | Agente maestro de planificación y arquitectura. Evalúa la salud del repositorio, planifica nuevas características y guía decisiones técnicas. |
+| Agente | **ami-ui-builder** | Especialista maestro en UI y prototipado. Construye mockups interactivos en HTML5/Tailwind, prototipos de interfaz, páginas web y documentación visual sin saturar la ventana de contexto principal. |
 | Skill | **ami-analyze-dependencies** | Audita las librerías del proyecto para identificar paquetes sin uso, versiones obsoletas, vulnerabilidades o dependencias fantasma. |
 | Skill | **ami-analyze-pr-comments** | Procesa observaciones de revisión de código dejadas por compañeros de equipo en PRs activos, estructurando tareas pendientes y borradores de respuesta. |
 | Skill | **ami-architect-project** | Construye de forma interactiva la arquitectura base de un nuevo proyecto, stack tecnológico, árbol de directorios y un README inicial bilingüe. |
 | Skill | **ami-audit-quality** | Audita los archivos modificados verificando legibilidad, diseño modular, principios DRY, seguridad, consistencia de esquemas de datos y buenas prácticas del framework. |
+| Skill | **ami-audit-ui-consistency** | Audita interfaces en plataformas web, desktop y mobile para garantizar cumplimiento de tokens de diseño, jerarquía de botones, estados estándar y ausencia de iconos duplicados o colisiones semánticas. |
 | Skill | **ami-build-dashboard** | Construye dashboards web interactivos y visualizaciones profesionales en Python a partir de conjuntos de datos y KPIs. |
 | Skill | **ami-create-tests** | Se ejecuta automáticamente cuando se incorpora código nuevo sin pruebas unitarias. Crea tests enfocados en proteger las nuevas funciones. |
 | Skill | **ami-debug-issue** | Ejecuta un protocolo de depuración científica basado en evidencias, aislando causas raíz sin conjeturas y escribiendo pruebas automáticas. |
@@ -91,6 +93,7 @@ Todas las capacidades incluidas emplean de forma estricta el prefijo de espacio 
 | Skill | **ami-plan-commits** | Analiza el árbol de trabajo actual, audita seguridad/secretos, planifica Conventional Commits/amend/squash y ejecuta las transacciones en Git. |
 | Skill | **ami-plan-feature** | Flujo interactivo de planificación de características y orquestación de arquitectura. Aclara dudas y propone alternativas técnicas con el usuario antes de investigar y redactar planes. |
 | Skill | **ami-prepare-release** | Prepara lanzamientos en GitHub calculando la siguiente etiqueta semántica y redactando notas de versión bilingües (inglés y español) en un flujo unificado. |
+| Skill | **ami-prototype-ui** | Construye mockups y prototipos interactivos autocontenidos en HTML5 y Tailwind CSS para validación rápida de vistas sin dependencias de compilación. |
 | Skill | **ami-research-context** | Investiga documentación externa actualizada en tiempo real y guarda hallazgos en referencias para evitar la obsolescencia de contexto. |
 | Skill | **ami-review-peer-pr** | Conduce revisiones en PRs de terceros con trazabilidad de criterios de aceptación, modos duales y auditoría de falsificación adversarial ([Falsification Check]) para eliminar falsos positivos. |
 | Skill | **ami-review-self-pr** | Actúa como un exigente Ingeniero Senior revisando tu propio código mediante modos duales, sondeos adversariales de 5 dimensiones ([Blind-Spot Probe]) y bucles de remediación local de tests. |
@@ -123,19 +126,19 @@ Al ejecutar `amiga-ia-setup`, el asistente estructura de forma segura las siguie
 
 ```text
 ~/.claude/                          # Configuración Global de Claude Code
-├── skills/ami-*/SKILL.md           # Skills Declarativas (20 directorios)
-├── agents/ami-*.md                 # Subagentes Autónomos (13 perfiles)
+├── skills/ami-*/SKILL.md           # Skills Declarativas (22 directorios)
+├── agents/ami-*.md                 # Subagentes Autónomos (14 perfiles)
 ├── settings.json                   # Hooks Fusionados (PreToolUse, PostToolUse)
 └── settings.json.amiga-backup      # Respaldo intacto del archivo original de usuario
 
 ~/.gemini/config/                   # Configuración Global de Antigravity (Gemini)
-├── skills/ami-*/SKILL.md           # Skills Declarativas (20 directorios)
-├── agents/ami-*.md                 # Subagentes Autónomos (13 perfiles)
+├── skills/ami-*/SKILL.md           # Skills Declarativas (22 directorios)
+├── agents/ami-*.md                 # Subagentes Autónomos (14 perfiles)
 └── rules/ami-rules.md              # Reglas Operativas Declarativas
 
-~/.agents/skills/                   # Skills Globales de Codex (20 directorios)
+~/.agents/skills/                   # Skills Globales de Codex (22 directorios)
 ~/.codex/                           # Configuración Global de Codex
-├── agents/ami-*.toml               # Subagentes en formato TOML (13 perfiles)
+├── agents/ami-*.toml               # Subagentes en formato TOML (14 perfiles)
 ├── AGENTS.md                       # Reglas de Comportamiento Fusionadas (Opcional)
 └── hooks.json                      # Hooks opcionales de ciclo de vida
 ```
