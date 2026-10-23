@@ -84,20 +84,23 @@ const FORBIDDEN_CLAUDE_TOOLS_IN_ANTIGRAVITY = [
 ];
 
 const READ_ONLY_CODEX_AGENTS = [
-  'ami-repo-auditor.toml',
+  'ami-adversarial-verifier.toml',
+  'ami-expert-council.toml',
   'ami-pr-reviewer.toml',
-  'ami-push-assistant.toml',
-  'ami-expert-council.toml'
+  'ami-repo-auditor.toml'
 ];
 
 const WRITE_ENABLED_CODEX_AGENTS = [
+  'ami-cleanroom-arbiter.toml',
   'ami-cleanroom-builder.toml',
   'ami-cleanroom-tester.toml',
   'ami-data-scientist.toml',
   'ami-doc-architect.toml',
   'ami-pr-publisher.toml',
+  'ami-push-assistant.toml',
   'ami-release-manager.toml',
-  'ami-tech-lead.toml'
+  'ami-tech-lead.toml',
+  'ami-ui-builder.toml'
 ];
 
 /**

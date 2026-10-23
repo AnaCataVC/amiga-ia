@@ -37,7 +37,6 @@ const FORBIDDEN_TOOL_NAMES = [
 const READ_ONLY_AGENTS = [
   'ami-repo-auditor.toml',
   'ami-pr-reviewer.toml',
-  'ami-push-assistant.toml',
   'ami-expert-council.toml',
   'ami-adversarial-verifier.toml'
 ];
@@ -49,6 +48,7 @@ const WRITE_ENABLED_AGENTS = [
   'ami-data-scientist.toml',
   'ami-doc-architect.toml',
   'ami-pr-publisher.toml',
+  'ami-push-assistant.toml',
   'ami-release-manager.toml',
   'ami-tech-lead.toml',
   'ami-ui-builder.toml'

@@ -5,7 +5,6 @@ const { translateFrontmatter } = require('../adapters/capability_translator');
 const READ_ONLY_AGENTS = new Set([
   'ami-repo-auditor',
   'ami-pr-reviewer',
-  'ami-push-assistant',
   'ami-expert-council',
   'ami-adversarial-verifier'
 ]);
