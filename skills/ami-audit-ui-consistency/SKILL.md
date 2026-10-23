@@ -32,8 +32,13 @@ Inspect modified UI code for raw, hardcoded visual values:
 2. **Spacing and Typography Consistency:**
    - Detect arbitrary inline measurements (e.g., `margin: 13px`, `p-[17px]`, `FontSize="15"`) that break the established spacing or typographic scale.
    - Enforce using standard scale tokens (e.g., `p-4`, `text-sm`, `StaticResource BaseTextBlockStyle`).
-3. **Theme Parity:**
+3. **Concentric Border-Radius Invariant (Nested Containers & Avatars):**
+   - Inspect nested rounded elements (e.g., image within a padded container, inner card inside an outer outline).
+   - Verify that outer and inner radii follow the concentric law: $R_{\text{inner}} = R_{\text{outer}} - \text{padding}$.
+   - Flag as a warning any squircle/radius mismatch where $R_{\text{inner}} > R_{\text{outer}} - \text{padding}$ that pinches corner margins or creates optical distortion.
+4. **Theme Parity & Scrollbar Styling:**
    - Verify that surfaces and text elements support Light and Dark modes without inverted or unreadable contrast.
+   - If custom scrollbar rules are defined (`::-webkit-scrollbar*`), verify that dark mode track and thumb styles (`.dark ::-webkit-scrollbar-*` or standard `scrollbar-color` on `html.dark`) are physically declared to prevent glaring white scroll tracks in dark mode.
 
 ### 3. Component Hierarchy and Interactive States Audit
 
