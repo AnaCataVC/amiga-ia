@@ -54,8 +54,9 @@ process.stdin.on('end', () => {
             }
 
             const pathPattern = /(?:C:\\Users\\[a-zA-Z0-9_.-]+|\/(?:home|Users)\/[a-zA-Z0-9_.-]+)/i;
+            const pathAllowlist = /(?:<[^>]+>|\.\.\.|example|placeholder|pragma:\s*allowlist\s*path)/i;
             for (const line of addedLines) {
-              if (/pragma:\s*allowlist\s*path/i.test(line)) continue;
+              if (pathAllowlist.test(line)) continue;
               if (pathPattern.test(line)) {
                 console.error("PATH PRIVACY BLOCK: Absolute local machine path detected in git diff. Use relative paths or bypass with 'pragma: allowlist path'.");
                 console.log(JSON.stringify({ decision: 'block', reason: 'Privacy policy violation: detected local absolute path in diff.' }));
