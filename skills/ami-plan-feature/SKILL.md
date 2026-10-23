@@ -34,7 +34,7 @@ When invoked to plan a feature, you MUST follow this sequence:
   1. **Deduplication Check:** Check if relevant, up-to-date research already exists in `docs/external-references/<topic-slug>.md` or in the active session context. If complete and recent, reuse it instead of running duplicate searches.
   2. **Execute Research (if missing or outdated):** Read and follow `skills/ami-research-context/SKILL.md`. Use live web search tools to benchmark candidate libraries, verify current API versions, and check ecosystem maintenance.
   3. **Physical Persistence:** You MUST physically write and persist the synthesized research to long-term memory under `docs/external-references/<topic-slug>.md`.
-  4. **Report to User:** Share the relative markdown link to the saved document and the key technical insights in the chat. You are strictly forbidden from creating `implementation_plan.md` in Phase 5 without first persisting the research.
+  4. **Report to User:** Share the relative markdown link to the saved document and the key technical insights in the chat. You are strictly forbidden from creating `implementation_plan.md` during plan generation (in step 5) without first persisting the research.
 
 ### 3. Internal Codebase & Repository Memory Mapping (Single-Point Ingestion)
 - **Ingest Repository Memory:** If not already loaded in the active session, scan existing architectural decisions and learnings (`docs/adr/`, `docs/learning/`, `docs/architecture/`) using fast search tools. Ingest relevant constraints to ensure the feature adheres to established invariants. Do NOT re-read these documents repeatedly across later steps in the same session.
