@@ -1,0 +1,53 @@
+{
+  "suite": "Amiga IA Agentic Benchmark Suite",
+  "timestamp": "2026-10-26T01:49:39.368Z",
+  "overallStatus": "PASSED",
+  "benchmarks": {
+    "tokenOverhead": {
+      "legacyCatalogTokens": 6643,
+      "compactCatalogTokens": 3670,
+      "savedTokensPerTurn": 2973,
+      "reductionPercentage": 44.75,
+      "targetReductionPercentage": 36.3,
+      "legacyBytes": 19451,
+      "compactBytes": 10519
+    },
+    "repoAudit": {
+      "precision": 100,
+      "recall": 100,
+      "f1Score": 1
+    },
+    "cleanroomTDD": {
+      "singleAgent": {
+        "totalTestsAuthored": 3,
+        "confirmationBiasedTests": 1,
+        "confirmationBiasRate": 33.3,
+        "overConstrainedTests": 1,
+        "overConstrainedRate": 33.3,
+        "defectsEscapedToProduction": 1,
+        "defectEscapeRate": 100,
+        "iterationsToAcceptance": 1
+      },
+      "cleanroomTDD": {
+        "totalTestsAuthored": 4,
+        "confirmationBiasedTests": 0,
+        "confirmationBiasRate": 0,
+        "overConstrainedTests": 0,
+        "overConstrainedRate": 0,
+        "defectsEscapedToProduction": 0,
+        "defectEscapeRate": 0,
+        "defectsDetectedAndFixed": 1,
+        "iterationsToConvergence": 2,
+        "arbitrationLogs": [
+          "Iteration 1: ami-cleanroom-tester executes black-box contract tests against Builder draft",
+          "Iteration 1 Results: 3 passed, 1 failed",
+          "ami-cleanroom-arbiter adjudicates failure: Contract Clause CL-003 broken by Builder",
+          "Adjudication: Implementation Defect. Re-dispatching ami-cleanroom-builder with Clause CL-003.",
+          "Iteration 2: Builder submits refined implementation complying with zero-major clause",
+          "Iteration 2 Results: 4 passed, 0 failed",
+          "ami-cleanroom-arbiter approves convergence: 100% contract compliance achieved."
+        ]
+      }
+    }
+  }
+}

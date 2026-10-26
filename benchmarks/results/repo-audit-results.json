@@ -1,0 +1,60 @@
+{
+  "benchmark": "Repository Audit & Defect Detection Benchmark",
+  "contractReference": "benchmarks/contracts/repo-audit.contract.md",
+  "timestamp": "2026-10-26T01:49:39.364Z",
+  "confusionMatrix": {
+    "totalInjectedDefects": 6,
+    "truePositives": 6,
+    "falsePositives": 0,
+    "falseNegatives": 0
+  },
+  "metrics": {
+    "precision": 100,
+    "recall": 100,
+    "f1Score": 1
+  },
+  "detectedDefects": [
+    {
+      "id": "SEC-001",
+      "category": "Security",
+      "severity": "Critical",
+      "status": "DETECTED"
+    },
+    {
+      "id": "DEP-001",
+      "category": "Dependencies",
+      "severity": "Major",
+      "status": "DETECTED"
+    },
+    {
+      "id": "CON-001",
+      "category": "Concurrency",
+      "severity": "Critical",
+      "status": "DETECTED"
+    },
+    {
+      "id": "ARC-001",
+      "category": "Architecture",
+      "severity": "Major",
+      "status": "DETECTED"
+    },
+    {
+      "id": "COP-001",
+      "category": "Complexity",
+      "severity": "Minor",
+      "status": "DETECTED"
+    },
+    {
+      "id": "SEC-002",
+      "category": "Security",
+      "severity": "Major",
+      "status": "DETECTED"
+    }
+  ],
+  "status": "PASSED",
+  "reproducibility": {
+    "zeroDependencies": true,
+    "deterministic": true,
+    "command": "npm run benchmark:audit"
+  }
+}

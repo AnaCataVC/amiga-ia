@@ -1,0 +1,20 @@
+{
+  "benchmark": "Token Overhead & System Prompt Optimization",
+  "adrReference": "ADR-004",
+  "timestamp": "2026-10-26T01:49:39.331Z",
+  "metrics": {
+    "legacyCatalogTokens": 6643,
+    "compactCatalogTokens": 3670,
+    "savedTokensPerTurn": 2973,
+    "reductionPercentage": 44.75,
+    "targetReductionPercentage": 36.3,
+    "legacyBytes": 19451,
+    "compactBytes": 10519
+  },
+  "status": "PASSED",
+  "reproducibility": {
+    "zeroDependencies": true,
+    "deterministic": true,
+    "command": "npm run benchmark:tokens"
+  }
+}

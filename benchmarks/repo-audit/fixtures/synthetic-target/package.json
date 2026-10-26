@@ -1,0 +1,13 @@
+{
+  "name": "synthetic-target-fixture",
+  "version": "1.0.0",
+  "description": "Controlled synthetic repository for multi-agent code auditor benchmark",
+  "main": "src/clean-service.js",
+  "scripts": {
+    "test": "node --test"
+  },
+  "dependencies": {
+    "picocolors": "^1.1.1",
+    "phantom-unreferenced-lib": "^0.9.0"
+  }
+}

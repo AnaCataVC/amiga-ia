@@ -1,0 +1,227 @@
+You are operating in the claude environment.
+<available_skills>
+  <skill>
+    <name>ami-analyze-dependencies</name>
+    <location>/home/user/.gemini/config/skills/ami-analyze-dependencies/SKILL.md</location>
+    <description>Analyzes the project's libraries and dependencies. It checks for unused dependencies, outdated versions, security vulnerabilities, and generates a structured report of the project's dependency health.</description>
+    <execution_policy>Strictly load this skill via view_file when prompted by user intention matching the description.</execution_policy>
+  </skill>
+  <skill>
+    <name>ami-analyze-pr-comments</name>
+    <location>/home/user/.gemini/config/skills/ami-analyze-pr-comments/SKILL.md</location>
+    <description>Analyzes code review comments left by other developers on an active Pull Request, extracting pending tasks, suggestions, and offering to reply.</description>
+    <execution_policy>Strictly load this skill via view_file when prompted by user intention matching the description.</execution_policy>
+  </skill>
+  <skill>
+    <name>ami-architect-project</name>
+    <location>/home/user/.gemini/config/skills/ami-architect-project/SKILL.md</location>
+    <description>Interactively sets up the initial architecture of a new project. It gathers requirements, researches technologies, proposes a stack and folder structure with constant user interaction, and finally scaffolds the initial files and a comprehensive README.md.</description>
+    <execution_policy>Strictly load this skill via view_file when prompted by user intention matching the description.</execution_policy>
+  </skill>
+  <skill>
+    <name>ami-audit-quality</name>
+    <location>/home/user/.gemini/config/skills/ami-audit-quality/SKILL.md</location>
+    <description>Performs a deep code quality, security, data schema consistency, and structure audit on modified files using both test execution and code inspection.</description>
+    <execution_policy>Strictly load this skill via view_file when prompted by user intention matching the description.</execution_policy>
+  </skill>
+  <skill>
+    <name>ami-audit-ui-consistency</name>
+    <location>/home/user/.gemini/config/skills/ami-audit-ui-consistency/SKILL.md</location>
+    <description>Audits UI code and assets across web, desktop, and mobile platforms for design system token compliance, button hierarchy, interactive states, and zero icon duplication or semantic collisions.</description>
+    <execution_policy>Strictly load this skill via view_file when prompted by user intention matching the description.</execution_policy>
+  </skill>
+  <skill>
+    <name>ami-build-dashboard</name>
+    <location>/home/user/.gemini/config/skills/ami-build-dashboard/SKILL.md</location>
+    <description>Build high-impact interactive web dashboards and publication-quality Python data visualizations. Translates analytical datasets and KPIs into responsive visual narratives.</description>
+    <execution_policy>Strictly load this skill via view_file when prompted by user intention matching the description.</execution_policy>
+  </skill>
+  <skill>
+    <name>ami-create-tests</name>
+    <location>/home/user/.gemini/config/skills/ami-create-tests/SKILL.md</location>
+    <description>Must be triggered when new functionality is added and no existing tests cover the changes. Automatically generates tests for modified code.</description>
+    <execution_policy>Strictly load this skill via view_file when prompted by user intention matching the description.</execution_policy>
+  </skill>
+  <skill>
+    <name>ami-debug-issue</name>
+    <location>/home/user/.gemini/config/skills/ami-debug-issue/SKILL.md</location>
+    <description>Must be triggered whenever the user asks to solve a problem, fix a bug, or debug an issue. Performs an organized debugging process, systematically isolating the root cause without assumptions, and concludes by writing tests and documentation to prevent regressions.</description>
+    <execution_policy>Strictly load this skill via view_file when prompted by user intention matching the description.</execution_policy>
+  </skill>
+  <skill>
+    <name>ami-design-test-strategy</name>
+    <location>/home/user/.gemini/config/skills/ami-design-test-strategy/SKILL.md</location>
+    <description>Design comprehensive testing strategies and quality assurance architectures before tests are coded. Formulates test pyramid distributions, mocking boundaries, and CI quality gates.</description>
+    <execution_policy>Strictly load this skill via view_file when prompted by user intention matching the description.</execution_policy>
+  </skill>
+  <skill>
+    <name>ami-detect-pr-conflicts</name>
+    <location>/home/user/.gemini/config/skills/ami-detect-pr-conflicts/SKILL.md</location>
+    <description>Must be triggered before creating or proposing any Pull Request. Identifies overlapping changes and merge conflicts with other open PRs.</description>
+    <execution_policy>Strictly load this skill via view_file when prompted by user intention matching the description.</execution_policy>
+  </skill>
+  <skill>
+    <name>ami-manage-docs</name>
+    <location>/home/user/.gemini/config/skills/ami-manage-docs/SKILL.md</location>
+    <description>Comprehensive documentation and knowledge manager. Architects new documentation, synchronizes wikis with code diffs, extracts session learnings and ADRs, and audits knowledge bases to prune obsolete notes.</description>
+    <execution_policy>Strictly load this skill via view_file when prompted by user intention matching the description.</execution_policy>
+  </skill>
+  <skill>
+    <name>ami-optimize-sql</name>
+    <location>/home/user/.gemini/config/skills/ami-optimize-sql/SKILL.md</location>
+    <description>Write, translate, and optimize high-performance SQL queries across major database engines. Diagnoses execution anti-patterns, recommends indexing strategies, and refactors complex joins into clean CTEs.</description>
+    <execution_policy>Strictly load this skill via view_file when prompted by user intention matching the description.</execution_policy>
+  </skill>
+  <skill>
+    <name>ami-orchestrate-cleanroom</name>
+    <location>/home/user/.gemini/config/skills/ami-orchestrate-cleanroom/SKILL.md</location>
+    <description>Master Double-Blind (Cleanroom) TDD orchestrator. Use when developing features or critical components with strict reliability, zero confirmation bias, and isolated implementer and test-generator subagents. Interactively clarifies specifications, resolves interface doubts and proposes signature improvements with the user, freezes formal interface contracts, dispatches blind subagents, executes test harnesses, and adjudicates failures.</description>
+    <execution_policy>Strictly load this skill via view_file when prompted by user intention matching the description.</execution_policy>
+  </skill>
+  <skill>
+    <name>ami-plan-commits</name>
+    <location>/home/user/.gemini/config/skills/ami-plan-commits/SKILL.md</location>
+    <description>Analyzes the working tree for uncommitted work, proposes a structured set of commits, waits for user approval, and executes them.</description>
+    <execution_policy>Strictly load this skill via view_file when prompted by user intention matching the description.</execution_policy>
+  </skill>
+  <skill>
+    <name>ami-plan-feature</name>
+    <location>/home/user/.gemini/config/skills/ami-plan-feature/SKILL.md</location>
+    <description>Interactive feature planning and architecture orchestration workflow. Use when designing, scoping, or planning the implementation of a new feature, user story, capability, or substantial modification. Interactively interviews the user to clarify ambiguities and doubts, proactively proposes technical suggestions and architectural alternatives, investigates external context and internal codebase, drafts a comprehensive implementation plan, and orchestrates execution.</description>
+    <execution_policy>Strictly load this skill via view_file when prompted by user intention matching the description.</execution_policy>
+  </skill>
+  <skill>
+    <name>ami-prepare-release</name>
+    <location>/home/user/.gemini/config/skills/ami-prepare-release/SKILL.md</location>
+    <description>Prepares GitHub releases by calculating the next semantic version tag and generating bilingual release notes (English and Spanish) from git commit history in a single unified workflow.</description>
+    <execution_policy>Strictly load this skill via view_file when prompted by user intention matching the description.</execution_policy>
+  </skill>
+  <skill>
+    <name>ami-prototype-ui</name>
+    <location>/home/user/.gemini/config/skills/ami-prototype-ui/SKILL.md</location>
+    <description>Scaffolds self-contained, interactive HTML5 and Tailwind CSS UI mockups, screen prototypes, and living visual documentation for rapid feature validation.</description>
+    <execution_policy>Strictly load this skill via view_file when prompted by user intention matching the description.</execution_policy>
+  </skill>
+  <skill>
+    <name>ami-research-context</name>
+    <location>/home/user/.gemini/config/skills/ami-research-context/SKILL.md</location>
+    <description>Investigates external context, forces the AI to search for up-to-date documentation, and saves findings to external-references to prevent context loss.</description>
+    <execution_policy>Strictly load this skill via view_file when prompted by user intention matching the description.</execution_policy>
+  </skill>
+  <skill>
+    <name>ami-review-peer-pr</name>
+    <location>/home/user/.gemini/config/skills/ami-review-peer-pr/SKILL.md</location>
+    <description>Use ONLY when reviewing Pull Requests authored by OTHER PEOPLE (peer review). It focuses on generating code review observations with criticality levels and drafting review comments for teammates. If reviewing your OWN Pull Request or branch to apply local fixes before publishing, use ami-review-self-pr instead.</description>
+    <execution_policy>Strictly load this skill via view_file when prompted by user intention matching the description.</execution_policy>
+  </skill>
+  <skill>
+    <name>ami-review-self-pr</name>
+    <location>/home/user/.gemini/config/skills/ami-review-self-pr/SKILL.md</location>
+    <description>Use ONLY when reviewing YOUR OWN Pull Requests, local branches, or work-in-progress code before publishing. Instead of leaving comments, it acts as a stringent Senior Engineer to proactively find flaws and apply concrete code fixes locally. If reviewing a teammate's or another person's Pull Request to leave review comments, use ami-review-peer-pr instead.</description>
+    <execution_policy>Strictly load this skill via view_file when prompted by user intention matching the description.</execution_policy>
+  </skill>
+  <skill>
+    <name>ami-scan-tech-debt</name>
+    <location>/home/user/.gemini/config/skills/ami-scan-tech-debt/SKILL.md</location>
+    <description>Analyzes repository code for technical debt, including dead code, duplication, constants centralization, and architectural inconsistencies. Provides a classified report based on criticality, effort, and risk.</description>
+    <execution_policy>Strictly load this skill via view_file when prompted by user intention matching the description.</execution_policy>
+  </skill>
+  <skill>
+    <name>ami-stress-test-idea</name>
+    <location>/home/user/.gemini/config/skills/ami-stress-test-idea/SKILL.md</location>
+    <description>Conducts an adversarial stress-test and premortem analysis on technical proposals, architectures, or features before implementation. Exposes SPOFs, race conditions, cost explosions, and edge-case failure modes.</description>
+    <execution_policy>Strictly load this skill via view_file when prompted by user intention matching the description.</execution_policy>
+  </skill>
+</available_skills>
+<available_agents>
+  <agent>
+    <name>ami-adversarial-verifier</name>
+    <location>/home/user/.gemini/config/agents/ami-adversarial-verifier.md</location>
+    <description>Fresh-context reviewer given only the diff and requirement, which tries to break the change. Returns confirmed defects or no defects found, never subjective improvements.</description>
+    <execution_policy>Dispatch this agent via invoke_subagent when domain orchestration requires multi-skill delegation.</execution_policy>
+  </agent>
+  <agent>
+    <name>ami-cleanroom-arbiter</name>
+    <location>/home/user/.gemini/config/agents/ami-cleanroom-arbiter.md</location>
+    <description>Master Double-Blind (Cleanroom) TDD Arbiter & Orchestrator. Freezes formal interface contracts, dispatches isolated builder and tester subagents, executes test harnesses, and adjudicates failures.</description>
+    <execution_policy>Dispatch this agent via invoke_subagent when domain orchestration requires multi-skill delegation.</execution_policy>
+  </agent>
+  <agent>
+    <name>ami-cleanroom-builder</name>
+    <location>/home/user/.gemini/config/agents/ami-cleanroom-builder.md</location>
+    <description>Feature implementer for Cleanroom TDD workflows. Implements production code strictly from formal interface and behavioral contracts without seeing or overfitting to test code.</description>
+    <execution_policy>Dispatch this agent via invoke_subagent when domain orchestration requires multi-skill delegation.</execution_policy>
+  </agent>
+  <agent>
+    <name>ami-cleanroom-tester</name>
+    <location>/home/user/.gemini/config/agents/ami-cleanroom-tester.md</location>
+    <description>Independent black-box QA and test engineer for Cleanroom TDD workflows. Generates comprehensive test suites solely from interface contracts and acceptance criteria, with zero access to production implementation.</description>
+    <execution_policy>Dispatch this agent via invoke_subagent when domain orchestration requires multi-skill delegation.</execution_policy>
+  </agent>
+  <agent>
+    <name>ami-data-scientist</name>
+    <location>/home/user/.gemini/config/agents/ami-data-scientist.md</location>
+    <description>Master Data & SQL orchestrator. Invoke for data analysis, dataset exploration, database SQL optimization, statistical profiling, or dashboard generation.</description>
+    <execution_policy>Dispatch this agent via invoke_subagent when domain orchestration requires multi-skill delegation.</execution_policy>
+  </agent>
+  <agent>
+    <name>ami-doc-architect</name>
+    <location>/home/user/.gemini/config/agents/ami-doc-architect.md</location>
+    <description>Master documentation and knowledge lifecycle orchestrator. Invoke when architecting, synchronizing, harvesting session learnings, or auditing project documentation across large workspaces.</description>
+    <execution_policy>Dispatch this agent via invoke_subagent when domain orchestration requires multi-skill delegation.</execution_policy>
+  </agent>
+  <agent>
+    <name>ami-expert-council</name>
+    <location>/home/user/.gemini/config/agents/ami-expert-council.md</location>
+    <description>Single-pass orthogonal trade-off and premortem evaluator. Invoke to stress-test irreversible architectural decisions across competing engineering vectors without multi-round subagent chatter.</description>
+    <execution_policy>Dispatch this agent via invoke_subagent when domain orchestration requires multi-skill delegation.</execution_policy>
+  </agent>
+  <agent>
+    <name>ami-pr-publisher</name>
+    <location>/home/user/.gemini/config/agents/ami-pr-publisher.md</location>
+    <description>Master PR preparation and creation orchestrator. Invoke when creating, reviewing before submission, or publishing a new Pull Request.</description>
+    <execution_policy>Dispatch this agent via invoke_subagent when domain orchestration requires multi-skill delegation.</execution_policy>
+  </agent>
+  <agent>
+    <name>ami-pr-reviewer</name>
+    <location>/home/user/.gemini/config/agents/ami-pr-reviewer.md</location>
+    <description>Master PR review orchestrator. Invoke when inspecting, analyzing, evaluating, or reviewing existing Pull Requests (self-review, peer-review, or comment analysis).</description>
+    <execution_policy>Dispatch this agent via invoke_subagent when domain orchestration requires multi-skill delegation.</execution_policy>
+  </agent>
+  <agent>
+    <name>ami-push-assistant</name>
+    <location>/home/user/.gemini/config/agents/ami-push-assistant.md</location>
+    <description>Pre-push quality, security, and git consistency orchestrator. Invoke whenever pushing code, performing git push, or uploading changes.</description>
+    <execution_policy>Dispatch this agent via invoke_subagent when domain orchestration requires multi-skill delegation.</execution_policy>
+  </agent>
+  <agent>
+    <name>ami-release-manager</name>
+    <location>/home/user/.gemini/config/agents/ami-release-manager.md</location>
+    <description>Master release lifecycle orchestrator. Invoke when publishing, preparing, or creating official GitHub releases, calculating tags, and drafting release notes.</description>
+    <execution_policy>Dispatch this agent via invoke_subagent when domain orchestration requires multi-skill delegation.</execution_policy>
+  </agent>
+  <agent>
+    <name>ami-repo-auditor</name>
+    <location>/home/user/.gemini/config/agents/ami-repo-auditor.md</location>
+    <description>Master repository health orchestrator. Invoke when conducting deep repo audits, technical debt scans, dependency reviews, or quality monitoring.</description>
+    <execution_policy>Dispatch this agent via invoke_subagent when domain orchestration requires multi-skill delegation.</execution_policy>
+  </agent>
+  <agent>
+    <name>ami-tech-lead</name>
+    <location>/home/user/.gemini/config/agents/ami-tech-lead.md</location>
+    <description>Master Project Planning & Architecture Orchestrator. Invoke for greenfield architecture setup, project health evaluation, and feature planning/orchestration.</description>
+    <execution_policy>Dispatch this agent via invoke_subagent when domain orchestration requires multi-skill delegation.</execution_policy>
+  </agent>
+  <agent>
+    <name>ami-ui-builder</name>
+    <location>/home/user/.gemini/config/agents/ami-ui-builder.md</location>
+    <description>Master UI and prototype specialist. Invoke to build interactive HTML5/Tailwind mockups, standalone UI prototypes, landing pages, and living interface documentation without polluting the primary context window.</description>
+    <execution_policy>Dispatch this agent via invoke_subagent when domain orchestration requires multi-skill delegation.</execution_policy>
+  </agent>
+</available_agents>
+<registered_hooks>
+  <inline_hook event="PreToolUse" engine="powershell">try { if ($args[0] -match "git push") { Write-Host "Pre-push check: verifying quality gates, linting, and tests..." } } catch { Write-Error "Hook failed: $_" }</inline_hook>
+  <inline_hook event="PostToolUse" engine="powershell">try { if ($args[0] -match "npm test") { Write-Host "Post-tool audit: evaluating test logs and coverage thresholds..." } } catch { Write-Error "Hook failed: $_" }</inline_hook>
+  <inline_hook event="PreToolUse" engine="bash">if [[ "$1" =~ "git push" ]]; then echo "Pre-push check: verifying quality gates, linting, and tests..."; fi</inline_hook>
+  <inline_hook event="PostToolUse" engine="bash">if [[ "$1" =~ "npm test" ]]; then echo "Post-tool audit: evaluating test logs and coverage thresholds..."; fi</inline_hook>
+</registered_hooks>

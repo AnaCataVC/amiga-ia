@@ -1,0 +1,56 @@
+[
+  {
+    "id": "SEC-001",
+    "category": "Security",
+    "severity": "Critical",
+    "file": "src/leaky-auth.js",
+    "line": 4,
+    "rule": "no-hardcoded-secrets",
+    "description": "Hardcoded live API secret key in plaintext variable"
+  },
+  {
+    "id": "DEP-001",
+    "category": "Dependencies",
+    "severity": "Major",
+    "file": "package.json",
+    "line": 12,
+    "rule": "no-phantom-dependencies",
+    "description": "Unused phantom dependency 'phantom-unreferenced-lib' declared in package.json"
+  },
+  {
+    "id": "CON-001",
+    "category": "Concurrency",
+    "severity": "Critical",
+    "file": "src/race-condition.js",
+    "line": 14,
+    "rule": "no-floating-promises",
+    "description": "Floating Promise without await or catch leading to unhandled asynchronous rejection"
+  },
+  {
+    "id": "ARC-001",
+    "category": "Architecture",
+    "severity": "Major",
+    "file": "src/dead-module.js",
+    "line": 16,
+    "rule": "no-dead-code",
+    "description": "Unreachable dead code block and unreferenced legacy export"
+  },
+  {
+    "id": "COP-001",
+    "category": "Complexity",
+    "severity": "Minor",
+    "file": "src/complex-calc.js",
+    "line": 5,
+    "rule": "max-cyclomatic-complexity",
+    "description": "High cyclomatic complexity (> 15 branch points in single function)"
+  },
+  {
+    "id": "SEC-002",
+    "category": "Security",
+    "severity": "Major",
+    "file": "src/insecure-hash.js",
+    "line": 8,
+    "rule": "no-insecure-hash-algorithm",
+    "description": "Deprecated cryptographic algorithm (MD5) used for password hashing"
+  }
+]

@@ -22,6 +22,10 @@
     "build": "node scripts/build-manifests.js",
     "prepack": "npm run build",
     "test": "node --test",
+    "benchmark": "node benchmarks/run-all.js",
+    "benchmark:tokens": "node benchmarks/token-overhead/measure-token-overhead.js",
+    "benchmark:audit": "node benchmarks/repo-audit/evaluate-repo-audit.js",
+    "benchmark:cleanroom": "node benchmarks/cleanroom-tdd/evaluate-cleanroom.js",
     "prepublishOnly": "npm run build && npm test",
     "release": "node scripts/release.js"
   },
