@@ -8,6 +8,54 @@ const pc = require('picocolors');
 
 const SEMVER_REGEX = /^\d+\.\d+\.\d+(-[a-zA-Z0-9.]+)?$/;
 const EXPECTED_ACCOUNT = 'AnaCataVC';
+const NON_PRODUCT_COMMIT_REGEX = /^(docs|test|tests|chore|ci|style)(\(.*\))?:/i;
+
+function isNonProductFile(filePath) {
+  const normalized = filePath.replace(/\\/g, '/').toLowerCase();
+  if (normalized.startsWith('docs/')) return true;
+  if (normalized.startsWith('benchmarks/')) return true;
+  if (normalized.startsWith('tests/') || normalized.startsWith('test/')) return true;
+  if (normalized.startsWith('.github/')) return true;
+  if (normalized.startsWith('.agents/')) return true;
+  if (normalized.startsWith('.claude/')) return true;
+  if (normalized.startsWith('.gemini/')) return true;
+  if (normalized === 'readme.md' || normalized === 'readme.es.md' || normalized === 'license' || normalized === 'license.md') return true;
+  if (normalized === 'index.html') return true;
+  if (normalized === '.gitignore' || normalized === '.editorconfig' || normalized === '.npmignore') return true;
+  return false;
+}
+
+function evaluateReleaseNecessity({ unreleasedCommits = [], changedFiles = [] }) {
+  if (unreleasedCommits.length === 0) {
+    return {
+      allowed: false,
+      reason: 'No unreleased commits detected between latest tag and HEAD.'
+    };
+  }
+
+  const allCommitsNonProduct = unreleasedCommits.every(c => {
+    const title = c.replace(/^[a-f0-9]+\s+/, '').trim();
+    return NON_PRODUCT_COMMIT_REGEX.test(title);
+  });
+
+  const hasProductFileChanges = changedFiles.some(f => !isNonProductFile(f));
+
+  if (allCommitsNonProduct || !hasProductFileChanges) {
+    return {
+      allowed: false,
+      allCommitsNonProduct,
+      hasProductFileChanges,
+      reason: 'No core product changes detected. Unreleased commits only touch documentation, tests, or internal chores.'
+    };
+  }
+
+  return {
+    allowed: true,
+    allCommitsNonProduct,
+    hasProductFileChanges,
+    reason: 'Product changes detected.'
+  };
+}
 
 function runCmd(cmd, options = {}) {
   return execSync(cmd, {
@@ -58,6 +106,7 @@ async function main() {
   const args = process.argv.slice(2);
   const isDryRun = args.includes('--dry-run');
   const autoYes = args.includes('--yes') || args.includes('-y');
+  const forceRelease = args.includes('--force') || args.includes('-f');
   const notesFlagIndex = args.indexOf('--notes');
   const customNotesFile = notesFlagIndex !== -1 ? args[notesFlagIndex + 1] : null;
 
@@ -124,6 +173,44 @@ async function main() {
   } catch (err) {
     console.error(pc.red(`Error: Failed to obtain GitHub token for '${EXPECTED_ACCOUNT}'. Run 'gh auth login'.`));
     process.exit(1);
+  }
+
+  // 4. Release Necessity & Product Changes Check
+  const latestTag = runCmdOutput('git describe --tags --abbrev=0', { cwd: rootDir, ignoreError: true });
+  if (latestTag) {
+    const headCommit = runCmdOutput('git rev-parse HEAD', { cwd: rootDir });
+    const tagCommit = runCmdOutput(`git rev-list -n 1 ${latestTag}`, { cwd: rootDir, ignoreError: true });
+
+    if (headCommit === tagCommit) {
+      console.error(pc.red(`Error: No unreleased commits detected. HEAD is already tagged as '${latestTag}'.`));
+      process.exit(1);
+    }
+
+    const unreleasedCommits = runCmdOutput(`git log ${latestTag}..HEAD --oneline`, { cwd: rootDir, ignoreError: true })
+      .split('\n')
+      .map(line => line.trim())
+      .filter(Boolean);
+
+    const changedFiles = runCmdOutput(`git diff ${latestTag}..HEAD --name-only`, { cwd: rootDir, ignoreError: true })
+      .split('\n')
+      .map(line => line.trim())
+      .filter(Boolean);
+
+    const necessity = evaluateReleaseNecessity({ unreleasedCommits, changedFiles });
+
+    if (!necessity.allowed && !forceRelease) {
+      console.error(pc.red(`\nError: ${necessity.reason}`));
+      console.error(pc.yellow(`Unreleased commits (${unreleasedCommits.length}) since ${latestTag}:`));
+      unreleasedCommits.forEach(c => console.error(pc.gray(`  - ${c}`)));
+      console.error(pc.yellow('\nRelease rejected to prevent empty/trivial version cuts. Use --force to override.'));
+      process.exit(1);
+    }
+
+    if (forceRelease && !necessity.allowed) {
+      console.log(pc.yellow(`  Warning: Forcing release despite non-product scope detected since ${latestTag}.`));
+    } else {
+      console.log(pc.green(`  Check: Product changes detected since ${latestTag} (${unreleasedCommits.length} unreleased commit(s)).`));
+    }
   }
 
   // Mitigation 1: Test-First Order (Before mutating any files)
@@ -230,7 +317,17 @@ async function main() {
   }
 }
 
-main().catch(err => {
-  console.error(pc.red(`Fatal error: ${err.message}`));
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch(err => {
+    console.error(pc.red(`Fatal error: ${err.message}`));
+    process.exit(1);
+  });
+}
+
+module.exports = {
+  isNonProductFile,
+  evaluateReleaseNecessity,
+  parseSemVer,
+  isNewerVersion,
+  main
+};

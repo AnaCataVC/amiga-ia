@@ -25,12 +25,17 @@ Act as a Version Control Manager and Technical Release Author. Your job is to an
 ### 2. Extract & Inspect Unreleased Commits
 - Run `git log <last-tag>..HEAD --oneline` (or `--pretty=format:"%s"` for raw titles).
 - **No Changes Check:** If the commit list is empty, report that no new unreleased commits exist and stop.
+- **Product Scope & Release Necessity Check (Release Gate):**
+  - Run `git diff <last-tag>..HEAD --name-only` to inspect modified files alongside commit titles.
+  - If all unreleased commits consist exclusively of non-product changes—such as pure documentation updates (`docs:`, markdown files, ADRs), internal automated tests or benchmarks (`test:`), CI/CD maintenance (`ci:`), or internal developer chores (`chore:`) that do not alter the distributed product/library source code:
+    - **Halt and reject release preparation.** Inform the user that no release is warranted because no core product functionality was modified. Do not compute a new SemVer tag or generate release notes.
 
 ### 3. Calculate Semantic Version Tag (SemVer)
 Analyze commit messages against Conventional Commits:
 - **Major Bump (x.0.0):** If any commit contains `!` (e.g., `feat!:`) or `BREAKING CHANGE:` modifying public API contracts.
 - **Minor Bump (0.x.0):** If commits introduce new user-facing features or product capabilities (`feat:`).
-- **Patch Bump (0.0.x):** If commits consist exclusively of bug fixes (`fix:`), refactoring (`refactor:`), documentation updates (`docs:`), or internal tooling chores (`chore:`).
+- **Patch Bump (0.0.x):** If commits consist of bug fixes (`fix:`), runtime performance improvements (`perf:`), or internal refactoring (`refactor:`) touching the actual distributed product codebase.
+- **No Release (Rejection):** Commits limited strictly to documentation updates (`docs:`), internal tests (`test:`), CI/CD workflows (`ci:`), or internal developer chores (`chore:`) that do not alter the shipped product do NOT qualify for a patch bump and MUST NOT trigger a release.
 
 **Tag Modifiers (if requested):**
 - **QA / RC:** Append `-qa.YYYYMMDD.n` or `-rc.YYYYMMDD.n` based on the current date and daily increment.

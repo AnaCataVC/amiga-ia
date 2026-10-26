@@ -21,7 +21,22 @@ You are the central orchestrator responsible for safely publishing new versions 
   - Verify that significant architectural decisions have corresponding ADRs in `docs/adr/` and that guides in `docs/architecture/` are fully synchronized.
 - **Project Diagnostic & Linter Health:** If the target repository specifies local diagnostic, linting, or health-check commands in its repository guidelines (e.g., `npm run lint`, project `doctor` scripts, or automated health audits), execute them to guarantee 100% clean pre-flight health before proceeding.
 
-### 2. Determine Version Tag & Draft Release Notes
+### 2. Release Necessity & Product Impact Audit (Release Gatekeeper)
+- **Zero Empty/Trivial Releases Invariant:** Evaluate whether unreleased commits introduce genuine, user-facing product value, functional enhancements, or core codebase fixes before proceeding with version calculations or packaging.
+- **Inspect Unreleased Scope:** Run `git log <last-tag>..HEAD --oneline` and inspect modified files with `git diff <last-tag>..HEAD --name-only` (or `--stat`).
+- **Reject Non-Product Releases (Halt Condition):** If all unreleased commits since the latest release tag consist exclusively of:
+  - Documentation updates (`docs:`, README edits, catalog updates, wiki revisions, ADRs).
+  - Test suite or benchmark additions/refactors (`test:`, `tests/`, `benchmarks/`) without changes to distributable product code.
+  - Internal repository housekeeping, toolchain configurations, CI/CD workflow tweaks, or AI prompts/directives (`chore:`, `ci:`, `.github/`, internal guidelines) that are not distributed to end users.
+  - Trivial style/formatting changes (`style:`).
+  -> **ABORT AND REJECT THE RELEASE:** Inform the user immediately that no release is warranted because no core product or distributable functionality has changed. Explain that these changes remain safely recorded on the `main` branch without requiring a new version tag or package publication.
+- **Release Authorization Criteria:** A release is ONLY authorized if unreleased commits contain:
+  - New user-facing features or product capabilities (`feat:`).
+  - Bug fixes affecting end users or runtime execution (`fix:`).
+  - Breaking API or contract changes (`BREAKING CHANGE` or `!`).
+  - Meaningful performance improvements (`perf:`) or architectural refactors (`refactor:`) in core distributable product code (e.g. Layer 1 distributed assets, binaries, libraries, or public CLI tools).
+
+### 3. Determine Version Tag & Draft Release Notes
 - Invoke the unified release preparation skill to calculate the target version and formulate the changelog in a single pass.
 - Execute: `ami-prepare-release` (View `skills/ami-prepare-release/SKILL.md`).
 - Pass along any parameters from the user (e.g., if they asked for a QA release or an RC release) and instruct the preparer to:
@@ -31,7 +46,7 @@ You are the central orchestrator responsible for safely publishing new versions 
   4. Generate the structured bilingual (English/Spanish) release notes draft.
 - Display the recommended tag with its semantic reasoning and the drafted notes to the user, and **explicitly wait for user confirmation** before proceeding.
 
-### 3. Update Version Files & Build Artifacts (Dual Search, Atomic Pre-Tag Commit & Fresh Build Gate)
+### 4. Update Version Files & Build Artifacts (Dual Search, Atomic Pre-Tag Commit & Fresh Build Gate)
 - **Build Order & Pre-Build Version Bump Invariant:** In projects producing executable binaries or distribution packages (`.exe`, `.msi`, `.apk`, installers), version bumps in source configuration files (`*.csproj`, `app.manifest`, `constants.py`, `package.json`, `Cargo.toml`, etc.) MUST be completed and committed BEFORE executing build or packaging scripts. Never compile or package binaries before source versions are updated and committed.
 - **Atomic Version Management:** Update package manager files (`package.json`, `cargo.toml`, `pyproject.toml`, `build.gradle.kts`, `pom.xml`, etc.) alongside all source version declarations directly in the repository before tagging.
 - **Perform Dual Search Across the Entire Codebase:**
@@ -61,12 +76,12 @@ You are the central orchestrator responsible for safely publishing new versions 
      (Get-Item <path>/<app.exe>).VersionInfo.FileVersion
      ```
 
-### 4. Review & Confirm Release Notes
+### 5. Review & Confirm Release Notes
 - Verify that the prepared bilingual markdown notes accurately capture user-facing product value and code enhancements.
 - **Zero Flags Verification (Mandatory):** Verify that the drafted release notes contain absolutely NO country flag emojis (e.g., US, UK, ES, MX) in titles or section headers. Only clean semantic headers (`# Release <Tag>`, `# Lanzamiento <Tag>`) are allowed.
 - Allow the user to request minor edits or additions to the notes before publishing.
 
-### 5. Create and Publish the Release (With Mandatory Binary Upload & Asset Verification)
+### 6. Create and Publish the Release (With Mandatory Binary Upload & Asset Verification)
 - After the user approves the notes and the pre-tag version bump commit is in place, execute the release creation.
 - **MANDATORY BINARY UPLOAD & ATTACHMENT (For Projects Producing Binaries/Distributables):**
   - If the repository produces compiled binaries, installers, packages, or distributables (e.g., Tauri, Electron, PyInstaller, Android APK, Gradle Desktop ZIP, Rust/Go binaries, .NET executables):
@@ -101,7 +116,7 @@ You are the central orchestrator responsible for safely publishing new versions 
      ```
   5. **Verify Remote Metadata:** Verify remote timestamp and asset details via GitHub API metadata.
 
-### 6. Post-Release CI/CD Workflow Run Verification (Mandatory Gate)
+### 7. Post-Release CI/CD Workflow Run Verification (Mandatory Gate)
 - Immediately after creating the release, inspect whether any automated workflows are triggered on release publication (e.g., NPM publishing, container build, PyPI upload, Vercel/Pages deployment):
   `gh run list --limit 3`
 - If an automated workflow was triggered for `<Confirm_Tag>`:
@@ -112,12 +127,12 @@ You are the central orchestrator responsible for safely publishing new versions 
      - Immediately diagnose and alert the user with the root cause (e.g., expired tokens/secrets, missing permissions, package registry errors).
      - Do NOT declare the release process completed successfully until the CI/CD pipeline passes or the user acknowledges the failure.
 
-### 7. Post-Release Local Cleanup & Artifact Hygiene (Mandatory)
+### 8. Post-Release Local Cleanup & Artifact Hygiene (Mandatory)
 - Once release publication is verified on GitHub (`gh release view <Confirm_Tag>` confirming `asset_count > 0`):
   1. **Purge Distribution Folders:** Delete locally generated `.gitignore` distribution folders and standalone binaries (`releases/`, `dist/`).
   2. **Prune Heavy Incremental Build Caches:** Execute native toolchain cleanup commands (`cargo clean`, `dotnet clean`, `./gradlew clean`) to prune heavy intermediate object caches, strictly avoiding blind glob patterns.
 
-### 8. Summary
+### 9. Summary
 - Output a success message confirming that the GitHub Release was created, live, assets verified, and that all triggered CI/CD publish workflows completed successfully.
 
 
