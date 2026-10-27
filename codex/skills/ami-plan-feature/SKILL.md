@@ -23,8 +23,8 @@ When invoked to plan a feature, you MUST follow this sequence:
 - **High-Reliability & Critical Domain Detection:**
   - Proactively identify whether the feature touches mission-critical domains: financial calculations, authentication/authorization tokens, cryptographic routines, strict state machines, or data parsers with high failure severity.
   - If detected, proactively suggest executing the core domain logic via Double-Blind Cleanroom TDD (`__AMIGA_CODEX_SKILLS_DIR__/ami-orchestrate-cleanroom/SKILL.md`) to guarantee formal contract enforcement and eliminate test confirmation bias, contrasting it with standard sequential development.
-- **Interactive UI Wireframing & Prototyping (When Feature Touches User Interfaces):**
-  - If the feature introduces new screens, forms, dashboards, or major UI refactors, proactively offer or dispatch `ami-ui-builder` (or read `__AMIGA_CODEX_SKILLS_DIR__/ami-prototype-ui/SKILL.md`) to generate a standalone interactive HTML5 mockup under `docs/mockups/<feature-slug>.html`.
+- **Interactive UX Design & UI Wireframing (When Feature Touches User Interfaces):**
+  - If the feature introduces new screens, forms, dashboards, or major UI refactors, proactively establish the UX contract (read `__AMIGA_CODEX_SKILLS_DIR__/ami-design-ux/SKILL.md` to define user journeys, microcopy, and the 5-state matrix under `docs/ux/<feature-slug>.md`), then offer or dispatch `ami-ui-builder` (or read `__AMIGA_CODEX_SKILLS_DIR__/ami-prototype-ui/SKILL.md`) to generate a standalone interactive HTML5 mockup under `docs/mockups/<feature-slug>.html`.
   - Present the clickable local link to the user for visual validation before freezing specifications.
 - **Triviality Exception:** If the feature is truly trivial (e.g., a simple one-line fix, minor CSS tweak, or self-contained configuration change with zero architectural choices), briefly outline your planned approach to confirm consensus and minimize friction.
 

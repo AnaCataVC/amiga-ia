@@ -12,11 +12,14 @@ When invoked, act as a Rapid Prototyping Specialist and UI Architect. Your purpo
 
 ### 1. Requirements Decoding & Visual Scoping
 
-Review the target screen or workflow requirements (provided by the user, `ami-plan-feature`, or documentation):
-1. **Identify Key User Flows:**
+Review the target screen or workflow requirements (provided by the user, `ami-plan-feature`, `ami-design-ux`, or documentation):
+1. **Ingest UX Specification & State Matrix (if available):**
+   - Check if `docs/ux/<feature-slug>.md` exists. If present, read the 5-State Matrix (Ideal, Empty, Loading, Error, Partial) and microcopy definitions.
+   - When present, plan to include a lightweight interactive state toggle bar (e.g. pills for [Ideal | Empty | Loading | Error]) at the top/bottom of the prototype to allow immediate evaluation of all key states.
+2. **Identify Key User Flows:**
    - Define primary content areas, navigation structure (top bar, sidebar, breadcrumbs), and key user actions.
    - Identify critical modal dialogs, data tables, form inputs, and state changes needed for realistic evaluation.
-2. **Align with Project Design Tokens (if existing):**
+3. **Align with Project Design Tokens (if existing):**
    - Check if the repository already declares a palette, typography, or component library to mirror those styling choices in the prototype.
    - When building for non-web platforms (Desktop or Mobile), adapt the HTML layout to reflect platform ergonomics (e.g., Fluent UI design for desktop or bottom navigation/app bar for mobile).
 
@@ -43,8 +46,9 @@ Build realistic, polished components following design system discipline:
    - **Destructive Actions:** Use distinct warning/red tones (`bg-red-600 hover:bg-red-700 text-white`).
 2. **Interactive States:**
    - Ensure all clickable controls implement visible `hover`, `active`, `focus-visible` (keyboard focus rings), and `disabled` states.
-3. **Lightweight Interactive Behavior (Vanilla JS):**
+3. **Lightweight Interactive Behavior & UX State Switcher (Vanilla JS):**
    - Embed minimal inline vanilla JavaScript to handle interactive state transitions:
+     - UX state switcher pill bar to toggle visibility classes (`hidden`/`block`) between Ideal, Empty, Loading, or Error states without DOM bloat.
      - Tab switching between panels.
      - Modal opening and closing with background backdrop dismissal.
      - Collapsible sidebars and dropdown menus.
