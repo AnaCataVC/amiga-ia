@@ -1,7 +1,7 @@
 {
   "benchmark": "Repository Audit & Defect Detection Benchmark",
   "contractReference": "benchmarks/contracts/repo-audit.contract.md",
-  "timestamp": "2026-10-26T01:49:39.364Z",
+  "timestamp": "2026-10-27T11:44:10.178Z",
   "confusionMatrix": {
     "totalInjectedDefects": 6,
     "truePositives": 6,

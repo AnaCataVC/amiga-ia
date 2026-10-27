@@ -1,6 +1,6 @@
 # Amiga IA — Empirical Agentic Benchmark Report
 
-> **Generated:** 2026-10-26T01:49:39.369Z  
+> **Generated:** 2026-10-27T11:44:10.183Z  
 > **Suite Version:** 1.0.0  
 > **Methodology:** Zero-Dependency Deterministic Evaluation
 
@@ -15,7 +15,7 @@ This benchmark report provides reproducible empirical evidence evaluating the ar
 
 | Benchmark Experiment | Primary Metric | Result | Benchmark Quality Gate | Status |
 |---|---|---|---|---|
-| **System Prompt Token Overhead** | Context footprint reduction per turn | **-2.973 tokens (-44.75%)** | Reduction $\ge 35.0\%$ | **PASSED** |
+| **System Prompt Token Overhead** | Context footprint reduction per turn | **-3.052 tokens (-44.77%)** | Reduction $\ge 35.0\%$ | **PASSED** |
 | **Repository Audit Defect Detection** | Precision, Recall, $F_1$-Score | **$P=100\%$, $R=100\%$, $F_1=1.00$** | $F_1 \ge 0.85$ | **PASSED** |
 | **Cleanroom TDD Isolation** | Confirmation bias & escaped defect rate | **$0.0\%$ confirmation bias, $0$ escaped defects** | $0$ escaped defects | **PASSED** |
 
@@ -30,10 +30,10 @@ This benchmark report provides reproducible empirical evidence evaluating the ar
 ### Results Matrix
 | Structure | Raw Payload Size | Estimated Context Tokens | Delta vs Baseline |
 |---|---|---|---|
-| **Legacy Pre-ADR-004 XML** | 19.451 bytes | 6.643 tokens | Baseline |
-| **Amiga IA Compact XML** | 10.519 bytes | 3.670 tokens | **-2.973 tokens (-44.75%)** |
+| **Legacy Pre-ADR-004 XML** | 19.943 bytes | 6.817 tokens | Baseline |
+| **Amiga IA Compact XML** | 10.777 bytes | 3.765 tokens | **-3.052 tokens (-44.77%)** |
 
-> **Architectural Impact:** Reducing static recurring overhead by 2.973 tokens per turn delays context window autocompaction cascades in deep engineering sessions and yields faster LLM Time-To-First-Token (TTFT) response latency.
+> **Architectural Impact:** Reducing static recurring overhead by 3.052 tokens per turn delays context window autocompaction cascades in deep engineering sessions and yields faster LLM Time-To-First-Token (TTFT) response latency.
 
 ---
 

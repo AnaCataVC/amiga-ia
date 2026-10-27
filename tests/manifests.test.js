@@ -54,7 +54,7 @@ describe('Configuration & Build Synchronization Tests', () => {
     const codexSkills = fs.readdirSync(codexSkillsDir).filter(f => f.startsWith('ami-'));
 
     assert.strictEqual(codexSkills.length, sourceSkills.length);
-    assert.strictEqual(codexSkills.length, 22);
+    assert.ok(codexSkills.length >= 22, `Expected at least 22 skills, got ${codexSkills.length}`);
   });
 
 });

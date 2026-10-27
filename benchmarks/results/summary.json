@@ -1,16 +1,16 @@
 {
   "suite": "Amiga IA Agentic Benchmark Suite",
-  "timestamp": "2026-10-26T01:49:39.368Z",
+  "timestamp": "2026-10-27T11:44:10.182Z",
   "overallStatus": "PASSED",
   "benchmarks": {
     "tokenOverhead": {
-      "legacyCatalogTokens": 6643,
-      "compactCatalogTokens": 3670,
-      "savedTokensPerTurn": 2973,
-      "reductionPercentage": 44.75,
+      "legacyCatalogTokens": 6817,
+      "compactCatalogTokens": 3765,
+      "savedTokensPerTurn": 3052,
+      "reductionPercentage": 44.77,
       "targetReductionPercentage": 36.3,
-      "legacyBytes": 19451,
-      "compactBytes": 10519
+      "legacyBytes": 19943,
+      "compactBytes": 10777
     },
     "repoAudit": {
       "precision": 100,

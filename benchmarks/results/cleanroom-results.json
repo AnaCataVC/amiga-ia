@@ -1,7 +1,7 @@
 {
   "benchmark": "Double-Blind Cleanroom TDD vs Single-Agent TDD Benchmark",
   "contractReference": "benchmarks/contracts/cleanroom-evaluation.contract.md",
-  "timestamp": "2026-10-26T01:49:39.366Z",
+  "timestamp": "2026-10-27T11:44:10.181Z",
   "modes": {
     "singleAgent": {
       "totalTestsAuthored": 3,

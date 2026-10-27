@@ -55,6 +55,12 @@ You are operating in the claude environment.
     <execution_policy>Strictly load this skill via view_file when prompted by user intention matching the description.</execution_policy>
   </skill>
   <skill>
+    <name>ami-design-ux</name>
+    <location>/home/user/.gemini/config/skills/ami-design-ux/SKILL.md</location>
+    <description>Designs user journeys, interaction models, usability heuristics, UX state matrices (ideal, empty, loading, error, partial), and actionable microcopy.</description>
+    <execution_policy>Strictly load this skill via view_file when prompted by user intention matching the description.</execution_policy>
+  </skill>
+  <skill>
     <name>ami-detect-pr-conflicts</name>
     <location>/home/user/.gemini/config/skills/ami-detect-pr-conflicts/SKILL.md</location>
     <description>Must be triggered before creating or proposing any Pull Request. Identifies overlapping changes and merge conflicts with other open PRs.</description>
@@ -215,7 +221,7 @@ You are operating in the claude environment.
   <agent>
     <name>ami-ui-builder</name>
     <location>/home/user/.gemini/config/agents/ami-ui-builder.md</location>
-    <description>Master UI and prototype specialist. Invoke to build interactive HTML5/Tailwind mockups, standalone UI prototypes, landing pages, and living interface documentation without polluting the primary context window.</description>
+    <description>Master UI, UX, and prototype specialist. Invoke to design interaction state matrices, build interactive HTML5/Tailwind mockups, standalone UI prototypes, landing pages, and living interface documentation without polluting the primary context window.</description>
     <execution_policy>Dispatch this agent via invoke_subagent when domain orchestration requires multi-skill delegation.</execution_policy>
   </agent>
 </available_agents>
