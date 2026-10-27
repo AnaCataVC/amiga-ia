@@ -68,17 +68,17 @@ Al ejecutar `amiga-ia-setup`, el asistente estructura de forma segura las siguie
 
 ```text
 ~/.claude/                          # Configuración Global de Claude Code
-├── skills/ami-*/SKILL.md           # Skills declarativas (22 directorios)
+├── skills/ami-*/SKILL.md           # Skills declarativas (23 directorios)
 ├── agents/ami-*.md                 # Subagentes autónomos (14 perfiles)
 ├── settings.json                   # Hooks fusionados (PreToolUse, PostToolUse)
 └── settings.json.amiga-backup      # Copia de seguridad original de settings
 
 ~/.gemini/config/                   # Configuración Global de Antigravity (Gemini)
-├── skills/ami-*/SKILL.md           # Skills declarativas (22 directorios)
+├── skills/ami-*/SKILL.md           # Skills declarativas (23 directorios)
 ├── agents/ami-*.md                 # Subagentes autónomos (14 perfiles)
 └── rules/ami-rules.md              # Reglas operativas declarativas
 
-~/.agents/skills/                   # Skills Globales de Codex (22 directorios)
+~/.agents/skills/                   # Skills Globales de Codex (23 directorios)
 ~/.codex/                           # Configuración Global de Codex
 ├── agents/ami-*.toml               # Subagentes en formato TOML (14 perfiles)
 ├── AGENTS.md                       # Reglas de comportamiento (Opcional)
@@ -123,7 +123,7 @@ npm run benchmark:cleanroom # Valida TDD Cleanroom (0% sesgo de confirmación)
 > 📊 La metodología detallada, los contratos de evaluación y las métricas brutas están documentados en [benchmarks/README.md](benchmarks/README.md) y en el informe generado en [BENCHMARK_REPORT.md](benchmarks/results/BENCHMARK_REPORT.md).
 
 ### 5. Capacidades Insignia y Perfiles de Agente
-Amiga IA comprende **36 capacidades integradas** (14 subagentes autónomos y 22 skills declarativas) utilizando estrictamente el prefijo de espacio de nombres `ami-` para evitar colisiones con otros ecosistemas.
+Amiga IA comprende **37 capacidades integradas** (14 subagentes autónomos y 23 skills declarativas) utilizando estrictamente el prefijo de espacio de nombres `ami-` para evitar colisiones con otros ecosistemas.
 
 La siguiente matriz destaca los **agentes y habilidades insignia** que encabezan los principales flujos de trabajo autónomos:
 
@@ -133,14 +133,15 @@ La siguiente matriz destaca los **agentes y habilidades insignia** que encabezan
 | **ami-pr-reviewer** | Agente | Orquestador de revisión de PRs mediante modos duales (revisión estática vs revisión dinámica completa con pruebas) y auditorías de falsificación adversarial. |
 | **ami-repo-auditor** | Agente | Orquestador maestro que evalúa concurrentemente deuda técnica, higiene de dependencias y vulnerabilidades de seguridad en todos los módulos. |
 | **ami-tech-lead** | Agente | Orquestador maestro de arquitectura y planificación. Evalúa la salud del repositorio, planifica características y coordina planos arquitectónicos. |
-| **ami-ui-builder** | Agente | Especialista maestro en prototipado de interfaces. Construye maquetas interactivas en HTML5 y Tailwind CSS y especificaciones vivas sin saturar el contexto principal. |
+| **ami-ui-builder** | Agente | Especialista maestro en UI, UX y prototipado de interfaces. Construye maquetas interactivas en HTML5 y Tailwind CSS y especificaciones vivas sin saturar el contexto principal. |
 | **ami-push-assistant** | Agente | Asistente de pre-push que verifica la calidad de código, escanea secretos y tokens API en texto plano, y comprueba suites de tests antes de enviar cambios al repositorio remoto. |
 | **ami-orchestrate-cleanroom** | Skill | Flujo de orquestación de TDD Cleanroom que coordina agentes aislados de implementación y diseño de pruebas de caja negra sobre contratos formales congelados. |
 | **ami-review-self-pr** | Skill | Revisión exhaustiva de código propio con sondeos de 5 dimensiones (`[Blind-Spot Probe]`) y ciclos de remediación local automatizados. |
 | **ami-audit-quality** | Skill | Inspección profunda de código evaluando mantenibilidad modular, fallos de seguridad, consistencia de esquemas y solidez estructural. |
+| **ami-design-ux** | Skill | Arquitecto maestro de UX que diseña flujos de interacción, modelos mentales, los 5 estados esenciales y microcopy (`docs/ux/`). |
 | **ami-prototype-ui** | Skill | Creación ágil de maquetas de UI y pantallas interactivas autocontenidas en HTML5 y Tailwind CSS (`docs/mockups/`). |
 
-> 📚 **Catálogo Completo:** Para consultar la referencia exhaustiva, esquemas y la categorización por dominio de las 36 capacidades, consulta el [Catálogo Completo de Capacidades](docs/catalog.md) ([Español](docs/catalog.es.md)).
+> 📚 **Catálogo Completo:** Para consultar la referencia exhaustiva, esquemas y la categorización por dominio de las 37 capacidades, consulta el [Catálogo Completo de Capacidades](docs/catalog.md) ([Español](docs/catalog.es.md)).
 
 ### 6. Aprendizajes Clave (Key Learnings)
 El desarrollo y evolución iterativa de Amiga IA hacia un ecosistema plenamente agéntico proporcionó valiosas lecciones de ingeniería de software e inteligencia artificial:
@@ -166,9 +167,12 @@ amiga-ia/
 │   ├── cleanroom-tdd/       # Benchmark de TDD Cleanroom vs Agente Único
 │   └── results/             # Métricas brutas e informe BENCHMARK_REPORT.md
 ├── docs/                    # Árbol de memoria persistente y documentación del agente
-│   ├── catalog.md           # Catálogo Completo de Capacidades (36 agentes y skills)
-│   ├── adr/                 # Registros de Decisiones Arquitectónicas (ADRs 001-019)
+│   ├── catalog.md           # Catálogo Completo de Capacidades (37 agentes y skills)
+│   ├── adr/                 # Registros de Decisiones Arquitectónicas (ADRs 001-021)
 │   ├── architecture/        # Guías profundas de arquitectura y adaptadores
+│   ├── contracts/           # Contratos formales congelados para evaluación
+│   ├── ux/                  # Especificaciones vivas de UX y matrices de estados de interacción
+│   ├── mockups/             # Especificaciones vivas de UI (HTML5 + Tailwind CSS)
 │   └── learning/            # Aprendizajes de sesión y patrones iterativos
 ├── codex/                   # Archivos generados para OpenAI Codex por el instalador
 ├── hooks/                   # Guardrail hooks multiplataforma (wrappers .js, .ps1, .sh)

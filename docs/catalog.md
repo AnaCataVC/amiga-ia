@@ -2,7 +2,7 @@
 
 [English](catalog.md) | [Español](catalog.es.md)
 
-Complete specification and functional matrix of all **36 autonomous agents (14) and declarative skills (22)** included in the Amiga IA ecosystem. All capabilities strictly adhere to the `ami-` namespace prefix.
+Complete specification and functional matrix of all **37 autonomous agents (14) and declarative skills (23)** included in the Amiga IA ecosystem. All capabilities strictly adhere to the `ami-` namespace prefix.
 
 ---
 
@@ -14,6 +14,7 @@ Autonomous subagents and skills that coordinate multi-threaded workflows, perfor
 |---|---|---|
 | **`ami-tech-lead`** | Agent | Master Project Planning & Architecture Orchestrator. Evaluates repository health, scopes features, coordinates architectural blueprints, and enforces modular contracts. |
 | **`ami-pr-reviewer`** | Agent | Master orchestrator agent that evaluates existing Pull Requests via dual review modes (static Code Review vs dynamic Full Review with test execution), repository context ingestion, and adversarial verification trails. |
+| **`ami-adversarial-verifier`** | Agent | Fresh-context reviewer given only the diff and requirement, seeking evidence-based defects to eliminate confirmation bias. |
 | **`ami-pr-publisher`** | Agent | Master orchestrator agent that performs a comprehensive review, summary drafting, and conflict audit on Pull Requests before publishing. |
 | **`ami-push-assistant`** | Agent | Pre-push orchestrator that conducts baseline quality checks, scans for leaked API secrets/tokens, and verifies test suites prior to pushing to remote remotes. |
 | **`ami-expert-council`** | Agent | Spawns a council of specialized subagents tailored to debate, stress-test, and refine architectural proposals from orthogonal perspectives in a single pass. |
@@ -62,14 +63,15 @@ Tools for inspecting technical debt, managing architectural decision records (AD
 
 ---
 
-## 4. UI Prototyping & Consistency Auditing
+## 4. UX Architecture, UI Prototyping & Consistency Auditing
 
 Specialized agents and declarative workflows for living interface specifications, mockup scaffolding, and design system token auditing.
 
 | Component | Type | Responsibility & Capabilities |
 |---|---|---|
-| **`ami-ui-builder`** | Agent | Master UI and prototype specialist. Builds interactive HTML5/Tailwind mockups, standalone prototypes, and living visual documentation without polluting the primary context window. |
+| **`ami-ui-builder`** | Agent | Master UI, UX, and prototype specialist. Builds interactive HTML5/Tailwind mockups, standalone prototypes, and living visual documentation without polluting the primary context window. |
 | **`ami-prototype-ui`** | Skill | Scaffolds self-contained, interactive HTML5 and Tailwind CSS UI mockups, screen prototypes, and visual specifications (`docs/mockups/`) for rapid feature validation. |
+| **`ami-design-ux`** | Skill | Master UX architect. Designs user journeys, mental models, interaction ergonomics, usability heuristics, UX state matrices (the 5 states), and actionable microcopy (`docs/ux/`). |
 | **`ami-audit-ui-consistency`** | Skill | Audits UI code and assets across web, desktop, and mobile platforms for design system token compliance, button hierarchy, interactive states, and zero icon duplication or semantic collisions. |
 
 ---

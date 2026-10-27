@@ -40,7 +40,7 @@ Establish a strict **Single Source of Truth (DRY)** separation between Skills an
 ## 3. Negative Constraint Placement & LLM Prior Overrides
 
 ### Problem
-When instruction templates involve strong LLM pre-training biases (such as automatically inserting country flags `🇬🇧`/`🇪🇸` for bilingual release notes), placing negative constraints as footnotes or duplicating them across orchestrator agents causes either rule omission or DRY architectural divergence.
+When instruction templates involve strong LLM pre-training biases (such as automatically inserting country flag emojis for bilingual release notes), placing negative constraints as footnotes or duplicating them across orchestrator agents causes either rule omission or DRY architectural divergence.
 
 ### Pattern
 - **Single Source of Truth:** Formatting constraints must reside exclusively within the Skill (`skills/*/SKILL.md`), keeping Orchestrator Agents (`agents/*.md`) thin.

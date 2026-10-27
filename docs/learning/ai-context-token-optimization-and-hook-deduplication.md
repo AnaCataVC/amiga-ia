@@ -17,16 +17,16 @@ When designing frameworks that dynamically inject capabilities, available skills
   <available_skills>
     <skill>
       <name>ami-manage-docs</name>
-      <location>C:/Users/anaca/Repos/amiga-ia/skills/ami-manage-docs/SKILL.md</location>
+      <location>/path/to/project/skills/ami-manage-docs/SKILL.md</location>
     </skill>
   </available_skills>
   ```
-  Repeating common absolute folder hierarchies (`C:/Users/anaca/Repos/amiga-ia/...`) hundreds of times across an active catalog results in severe token dilution.
+  Repeating common absolute folder hierarchies (`/path/to/project/...`) hundreds of times across an active catalog results in severe token dilution.
 
 * **Best Practice (Root-Relative Compact Attributes):**
   Declare the absolute root path once in the top-level container attribute, and use compact self-closing tags with relative paths for individual items:
   ```xml
-  <available_skills root_dir="C:/Users/anaca/Repos/amiga-ia">
+  <available_skills root_dir="/path/to/project">
     <skill name="ami-manage-docs" file="skills/ami-manage-docs/SKILL.md" />
   </available_skills>
   ```

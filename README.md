@@ -68,17 +68,17 @@ When running `amiga-ia-setup`, the CLI wizard populates your home directory with
 
 ```text
 ~/.claude/                          # Claude Code Global Configuration
-├── skills/ami-*/SKILL.md           # Declarative Skills (22 directories)
+├── skills/ami-*/SKILL.md           # Declarative Skills (23 directories)
 ├── agents/ami-*.md                 # Autonomous Subagents (14 profiles)
 ├── settings.json                   # Merged Hooks (PreToolUse, PostToolUse)
 └── settings.json.amiga-backup      # Safe original settings backup
 
 ~/.gemini/config/                   # Antigravity (Gemini) Global Configuration
-├── skills/ami-*/SKILL.md           # Declarative Skills (22 directories)
+├── skills/ami-*/SKILL.md           # Declarative Skills (23 directories)
 ├── agents/ami-*.md                 # Autonomous Subagents (14 profiles)
 └── rules/ami-rules.md              # Declarative Operational Rules
 
-~/.agents/skills/                   # Codex Global Skills (22 directories)
+~/.agents/skills/                   # Codex Global Skills (23 directories)
 ~/.codex/                           # Codex Global Configuration
 ├── agents/ami-*.toml               # Custom Subagents in TOML format (14 profiles)
 ├── AGENTS.md                       # Merged Behavioral Rules (Optional)
@@ -123,7 +123,7 @@ npm run benchmark:cleanroom # Validates Cleanroom TDD (0% confirmation bias)
 > 📊 Detailed methodology, evaluation contracts, and raw metrics are documented in [benchmarks/README.md](benchmarks/README.md) and the generated [BENCHMARK_REPORT.md](benchmarks/results/BENCHMARK_REPORT.md).
 
 ### 5. Flagship Capabilities & Agent Profiles
-Amiga IA encompasses **36 built-in capabilities** (14 autonomous subagents and 22 declarative skills) strictly utilizing the `ami-` namespace prefix to prevent collisions with external ecosystems.
+Amiga IA encompasses **37 built-in capabilities** (14 autonomous subagents and 23 declarative skills) strictly utilizing the `ami-` namespace prefix to prevent collisions with external ecosystems.
 
 The matrix below highlights the core **flagship agents and skills** that drive the primary autonomous workflows:
 
@@ -133,14 +133,15 @@ The matrix below highlights the core **flagship agents and skills** that drive t
 | **ami-pr-reviewer** | Agent | Master review orchestrator evaluating PRs via dual review modes (static review vs full dynamic review with tests) and adversarial falsification audits. |
 | **ami-repo-auditor** | Agent | Master audit orchestrator evaluating codebase technical debt, dependency hygiene, and security vulnerabilities across modules concurrently. |
 | **ami-tech-lead** | Agent | Master Project Planning & Architecture Orchestrator. Evaluates repository health, plans features, and coordinates architectural blueprints. |
-| **ami-ui-builder** | Agent | Master UI and prototype specialist. Builds interactive HTML5/Tailwind mockups, standalone prototypes, and living visual specs without context pollution. |
+| **ami-ui-builder** | Agent | Master UI, UX, and prototype specialist. Builds interactive HTML5/Tailwind mockups, standalone prototypes, and living visual specs without context pollution. |
 | **ami-push-assistant** | Agent | Pre-push orchestrator conducting baseline quality checks, scanning for leaked secrets/tokens, and verifying test suites before remote git push. |
 | **ami-orchestrate-cleanroom** | Skill | Double-Blind Cleanroom orchestration workflow coordinating isolated implementer and black-box test generator subagents over frozen contracts. |
 | **ami-review-self-pr** | Skill | Stringent Senior Engineer local review workflow with 5-dimension blind-spot probes and automated test remediation loops. |
 | **ami-audit-quality** | Skill | Deep code inspection workflow for modular maintainability, security flaws, schema consistency, and structural soundness. |
+| **ami-design-ux** | Skill | Master UX architect designing interaction models, user journeys, the 5 essential states, and microcopy (`docs/ux/`). |
 | **ami-prototype-ui** | Skill | Rapid scaffolding of self-contained, interactive HTML5 and Tailwind CSS UI mockups and screen prototypes (`docs/mockups/`). |
 
-> 📚 **Complete Catalog:** For the exhaustive reference, detailed schemas, and domain categorization of all 36 autonomous agents and declarative skills, see the [Full Capabilities Catalog](docs/catalog.md) ([Español](docs/catalog.es.md)).
+> 📚 **Complete Catalog:** For the exhaustive reference, detailed schemas, and domain categorization of all 37 autonomous agents and declarative skills, see the [Full Capabilities Catalog](docs/catalog.md) ([Español](docs/catalog.es.md)).
 
 ### 6. Key Learnings (Developer Takeaways)
 Building and scaling Amiga IA through its evolution into a fully agentic ecosystem yielded significant engineering lessons:
@@ -166,9 +167,12 @@ amiga-ia/
 │   ├── cleanroom-tdd/       # Double-Blind Cleanroom vs Single-Agent benchmark
 │   └── results/             # Raw metrics & generated BENCHMARK_REPORT.md
 ├── docs/                    # Persistent agent memory & documentation tree
-│   ├── catalog.md           # Full Capabilities Catalog (36 agents & skills)
-│   ├── adr/                 # Architectural Decision Records (ADRs 001-019)
+│   ├── catalog.md           # Full Capabilities Catalog (37 agents & skills)
+│   ├── adr/                 # Architectural Decision Records (ADRs 001-021)
 │   ├── architecture/        # Deep structural & adapter engineering guides
+│   ├── contracts/           # Formal Cleanroom TDD interface contracts
+│   ├── ux/                  # Living UX specifications & interaction state matrices
+│   ├── mockups/             # Living UI specifications (HTML5 + Tailwind CSS)
 │   └── learning/            # Captured session learnings and iterative patterns
 ├── codex/                   # Generated Codex-native skill and subagent files
 ├── hooks/                   # Cross-platform guardrail hooks (.js wrappers, .ps1, .sh)

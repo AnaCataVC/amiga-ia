@@ -2,7 +2,7 @@
 
 [English](catalog.md) | [Español](catalog.es.md)
 
-Especificación completa y matriz funcional de las **36 capacidades (14 subagentes autónomos y 22 skills declarativas)** incluidas en el ecosistema Amiga IA. Todas las capacidades se adhieren estrictamente al prefijo de espacio de nombres `ami-`.
+Especificación completa y matriz funcional de las **37 capacidades (14 subagentes autónomos y 23 skills declarativas)** incluidas en el ecosistema Amiga IA. Todas las capacidades se adhieren estrictamente al prefijo de espacio de nombres `ami-`.
 
 ---
 
@@ -14,6 +14,7 @@ Subagentes autónomos y skills que coordinan flujos de trabajo multi-hilo, reali
 |---|---|---|
 | **`ami-tech-lead`** | Agente | Orquestador maestro de arquitectura y planificación. Evalúa la salud del repositorio, diseña planos arquitectónicos, desglosa requerimientos y hace cumplir contratos modulares. |
 | **`ami-pr-reviewer`** | Agente | Orquestador de revisión de PRs que evalúa cambios mediante modos duales (Revisión Estática vs Revisión Dinámica con ejecución de tests), ingestión de contexto y trazabilidad adversarial. |
+| **`ami-adversarial-verifier`** | Agente | Revisor de contexto limpio que evalúa únicamente el diff y los requerimientos, buscando defectos basados en evidencia para eliminar el sesgo de confirmación. |
 | **`ami-pr-publisher`** | Agente | Orquestador que realiza la revisión previa, redacción de resúmenes estructurados y auditoría de conflictos de fusión antes de publicar un Pull Request. |
 | **`ami-push-assistant`** | Agente | Asistente de pre-push que verifica compresión de calidad, escanea secretos y tokens API en texto plano, y comprueba suites de tests antes de enviar cambios al repositorio remoto. |
 | **`ami-expert-council`** | Agente | Convoca un consejo de subagentes especializados para debatir y someter a prueba de estrés propuestas arquitectónicas desde perspectivas ortogonales en un solo pase. |
@@ -62,14 +63,15 @@ Herramientas para auditar deuda técnica, gestionar registros de decisiones arqu
 
 ---
 
-## 4. Prototipado de UI y Auditoría de Consistencia
+## 4. Arquitectura de UX, Prototipado de UI y Auditoría de Consistencia
 
 Agentes y habilidades especializadas para la creación ágil de prototipos visuales interactivos y auditoría de tokens de diseño.
 
 | Componente | Tipo | Responsabilidad y Capacidades |
 |---|---|---|
-| **`ami-ui-builder`** | Agente | Especialista maestro en prototipado de interfaces. Construye maquetas interactivas en HTML5 y Tailwind CSS y especificaciones vivas sin saturar la ventana de contexto principal. |
+| **`ami-ui-builder`** | Agente | Especialista maestro en UI, UX y prototipado de interfaces. Construye maquetas interactivas en HTML5 y Tailwind CSS y especificaciones vivas sin saturar la ventana de contexto principal. |
 | **`ami-prototype-ui`** | Skill | Genera maquetas autocontenidas e interactivas en HTML5 y Tailwind CSS (`docs/mockups/`) para la validación visual rápida de requerimientos. |
+| **`ami-design-ux`** | Skill | Arquitecto maestro de UX. Diseña flujos de usuario, modelos mentales, ergonomía de interacción, heurísticas de usabilidad, matrices de 5 estados (ideal, vacío, carga, error, parcial) y microcopy accionable (`docs/ux/`). |
 | **`ami-audit-ui-consistency`** | Skill | Audita código y recursos de UI en web, escritorio y móvil para verificar adherencia a tokens de diseño, jerarquía de botones, estados interactivos y ausencia de iconos duplicados. |
 
 ---

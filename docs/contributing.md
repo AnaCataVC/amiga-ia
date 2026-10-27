@@ -40,6 +40,7 @@ amiga-ia/
 │   ├── adr/                       # Architectural Decision Records (ADRs)
 │   ├── architecture/              # Subsystem design documents and guides
 │   ├── contracts/                 # Formal Cleanroom TDD interface contracts
+│   ├── ux/                        # Living UX specifications, interaction models & state matrices
 │   ├── mockups/                   # Living UI specifications (HTML5 + Tailwind CSS)
 │   └── learning/                  # Persistent AI developer learnings
 └── package.json                   # NPM package definition (Single Source of Truth)
@@ -157,15 +158,21 @@ You are a specialized sub-agent responsible for...
 
 ---
 
-## 4. Cleanroom Contracts & Living UI Specifications
+## 4. Cleanroom Contracts, Living UX Specifications & UI Mockups
 
-Amiga IA emphasizes strict interface isolation and rapid visual iteration through formal contracts and standalone mockups:
+Amiga IA emphasizes strict interface isolation and rapid visual iteration through formal contracts, interaction state matrices, and standalone mockups:
 
 ### Formal Cleanroom Contracts (`docs/contracts/`)
 
 When architecting or implementing critical components under Double-Blind Cleanroom TDD (`ami-orchestrate-cleanroom` / `ami-cleanroom-arbiter`), formal contracts are frozen at `docs/contracts/<feature-slug>.contract.md`:
 - **Interface & Behavioral Contracts:** Explicit function signatures, types, parameters, preconditions, postconditions, and error-handling invariants.
 - **Information Isolation:** Serves as the single source of truth for `ami-cleanroom-builder` (without reading test code) and `ami-cleanroom-tester` (without reading implementation code).
+
+### Living UX Specifications (`docs/ux/`)
+
+When architecting user journeys or component state handling (`ami-design-ux`), specifications are preserved under `docs/ux/<feature-slug>.md`:
+- **The 5 Essential UX States:** Explicit definition of Ideal, Empty, Loading, Error, and Partial states before visual layouts are coded.
+- **Ergonomics & Actionable Microcopy:** User flow mapping, progressive disclosure strategy, and verb-oriented button microcopy.
 
 ### Living UI Specifications (`docs/mockups/`)
 
@@ -315,7 +322,7 @@ Before opening a PR, make sure you have:
 - [ ] Added the language rule block at the end of the file.
 - [ ] Verified `npm test` passes 100%.
 - [ ] Verified `node bin/setup.js --doctor` returns 0 errors.
-- [ ] Verified Cleanroom contracts reside in `docs/contracts/` and UI prototypes in `docs/mockups/` (when applicable).
+- [ ] Verified Cleanroom contracts reside in `docs/contracts/`, UX specifications in `docs/ux/`, and UI prototypes in `docs/mockups/` (when applicable).
 - [ ] Written commit messages in English using Conventional Commits.
 - [ ] Ensured all code and comments are in English.
 - [ ] Ensured commit messages, docstrings, and code comments are free of internal planning references ('Phase X', 'Stage Y', 'Option Z').

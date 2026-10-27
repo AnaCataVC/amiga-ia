@@ -101,5 +101,5 @@ To eliminate confusion in Antigravity and Claude Code:
 
 ## 5. References
 - [Git Documentation: git-worktree](https://git-scm.com/docs/git-worktree)
-- [Antigravity Subagent Workspace Architecture & Inheritance](file:///c:/Users/anaca/Repos/amiga-ia/docs/architecture/universal-adapter.md)
+- [Antigravity Subagent Workspace Architecture & Inheritance](../architecture/universal-adapter.md)
 - [Multi-Agent Isolation & Parallel Execution Patterns](https://nimbalyst.com)
