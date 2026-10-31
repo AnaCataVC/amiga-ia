@@ -19,11 +19,12 @@ When invoked to perform an overall repository audit, clean up tech debt, or insp
 - Scan the workspace and repository configuration manifests (such as `.github/agents/` or `.gemini/agents/`) to discover pre-existing, custom domain-specific worker subagents (e.g., internal enterprise security linters or schema validators).
 - Prioritize utilizing discovered local custom agents over generic workers to maintain adherence to local engineering protocols.
 
-### 3. Multi-Skill Parallel Fan-Out (The Audit Triad)
+### 3. Multi-Skill Parallel Fan-Out (The Audit Suite)
 - To prevent attention decay over large file volumes, deploy concurrent background worker subagents using the **Skill-Injection pattern**, directing each worker to evaluate specific modules against specialized audit skills:
   - **Technical Debt & Dead Code Inspection:** Inject `skills/ami-scan-tech-debt/SKILL.md` into worker prompts to uncover duplicated abstractions, obsolete TODOs/FIXMEs, and unreferenced code.
   - **Dependency Hygiene & Vulnerability Scanning:** Inject `skills/ami-analyze-dependencies/SKILL.md` into worker prompts to audit lockfiles, outdated library versions, and undeclared packages.
   - **Static Quality & Security Audit:** Inject `skills/ami-audit-quality/SKILL.md` into worker prompts to detect structural flaws and static security defect risks.
+  - **Automations Discovery & Toil Audit:** Inject `skills/ami-discover-automations/SKILL.md` into worker prompts to inventory active CI/CD pipelines, task runner scripts, and detect manual toil opportunities.
 - For small repositories or single-folder investigations, execute these checks sequentially inside the active context window to preserve token economy.
 
 ### 4. Executive Health Scorecard Reporting
