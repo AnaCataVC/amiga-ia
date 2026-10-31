@@ -46,7 +46,7 @@ Codex subagents are invoked through the Codex multi-agent runtime using the conf
 - **Strictness:** Unknown tool names may be ignored, but omitting expected names leaves the subagent strictly read-only.
 
 ### Google Antigravity / Gemini Mechanics
-- **Discovery Locations:** Global `~/.gemini/config/agents/*.md`, project `.agents/agents/*/agent.md` (or `.agent/`), and built-in configurations.
+- **Discovery Locations:** Global `~/.gemini/config/agents/*.md`, project `.agents/agents/<name>.md` (or `.agents/agents/<name>/agent.md`, `.agent/`), and built-in configurations.
 - **Frontmatter fields:**
   - `name`: (string, required) Unique identifier.
   - `description`: (string, required) Trigger summary.

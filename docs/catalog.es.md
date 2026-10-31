@@ -2,7 +2,7 @@
 
 [English](catalog.md) | [Español](catalog.es.md)
 
-Especificación completa y matriz funcional de las **38 capacidades (14 subagentes autónomos y 24 skills declarativas)** incluidas en el ecosistema Amiga IA. Todas las capacidades se adhieren estrictamente al prefijo de espacio de nombres `ami-`.
+Especificación completa y matriz funcional de las **39 capacidades (14 subagentes autónomos y 25 skills declarativas)** incluidas en el ecosistema Amiga IA. Todas las capacidades se adhieren estrictamente al prefijo de espacio de nombres `ami-`.
 
 ---
 
@@ -50,6 +50,7 @@ Herramientas para auditar deuda técnica, gestionar registros de decisiones arqu
 | **`ami-repo-auditor`** | Agente | Orquestador maestro que evalúa concurrentemente deuda técnica, higiene de dependencias y vulnerabilidades de seguridad en todos los módulos del repositorio. |
 | **`ami-doc-architect`** | Agente | Orquestador maestro de documentación. Coordina la creación de documentación técnica, auditorías de obsolescencia, investigación de contexto y extracción de aprendizajes. |
 | **`ami-release-manager`** | Agente | Orquestador central que calcula etiquetas de versión semántica, redacta notas de lanzamiento bilingües y automatiza publicaciones en GitHub Releases. |
+| **`ami-discover-ai-agents`** | Skill | Audita repositorios para descubrir skills y subagentes de dominio, generando configuraciones nativas para Antigravity, Claude Code y Codex. |
 | **`ami-discover-automations`** | Skill | Escanea el repositorio en busca de pipelines de CI/CD, scripts de empaquetado y tareas de dominio, detectando oportunidades de automatización de alto ROI. |
 | **`ami-audit-quality`** | Skill | Inspecciona código modificado evaluando mantenibilidad, buenas prácticas de diseño modular, seguridad, consistencia de esquemas de datos y solidez estructural. |
 | **`ami-scan-tech-debt`** | Skill | Escanea el repositorio en busca de deuda técnica, importaciones obsoletas, duplicidad lógica, código muerto y comentarios pendientes (TODOs/FIXMEs). |

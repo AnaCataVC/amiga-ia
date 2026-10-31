@@ -1,15 +1,15 @@
 {
   "benchmark": "Token Overhead & System Prompt Optimization",
   "adrReference": "ADR-004",
-  "timestamp": "2026-10-31T02:03:44.926Z",
+  "timestamp": "2026-10-31T12:56:44.236Z",
   "metrics": {
-    "legacyCatalogTokens": 6978,
-    "compactCatalogTokens": 3848,
-    "savedTokensPerTurn": 3130,
-    "reductionPercentage": 44.86,
+    "legacyCatalogTokens": 7139,
+    "compactCatalogTokens": 3975,
+    "savedTokensPerTurn": 3164,
+    "reductionPercentage": 44.32,
     "targetReductionPercentage": 36.3,
-    "legacyBytes": 20411,
-    "compactBytes": 11011
+    "legacyBytes": 20891,
+    "compactBytes": 11379
   },
   "status": "PASSED",
   "reproducibility": {

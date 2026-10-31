@@ -67,6 +67,12 @@ You are operating in the claude environment.
     <execution_policy>Strictly load this skill via view_file when prompted by user intention matching the description.</execution_policy>
   </skill>
   <skill>
+    <name>ami-discover-ai-agents</name>
+    <location>/home/user/.gemini/config/skills/ami-discover-ai-agents/SKILL.md</location>
+    <description>Discovers high-ROI opportunities for project-specific skills and autonomous subagents, scaffolds native configurations for Antigravity, Claude Code, and Codex.</description>
+    <execution_policy>Strictly load this skill via view_file when prompted by user intention matching the description.</execution_policy>
+  </skill>
+  <skill>
     <name>ami-discover-automations</name>
     <location>/home/user/.gemini/config/skills/ami-discover-automations/SKILL.md</location>
     <description>Scans repositories for existing automations (CI/CD, scripts, domain jobs) and discovers high-ROI automation opportunities from manual friction.</description>
