@@ -2,7 +2,7 @@
 
 [English](catalog.md) | [Español](catalog.es.md)
 
-Complete specification and functional matrix of all **37 autonomous agents (14) and declarative skills (23)** included in the Amiga IA ecosystem. All capabilities strictly adhere to the `ami-` namespace prefix.
+Complete specification and functional matrix of all **38 autonomous agents (14) and declarative skills (24)** included in the Amiga IA ecosystem. All capabilities strictly adhere to the `ami-` namespace prefix.
 
 ---
 
@@ -50,6 +50,7 @@ Tools for inspecting technical debt, managing architectural decision records (AD
 | **`ami-repo-auditor`** | Agent | Master audit orchestrator that evaluates codebase technical debt, dependency hygiene, and security vulnerabilities across modules concurrently. |
 | **`ami-doc-architect`** | Agent | Master documentation orchestrator. Coordinates greenfield docs generation, obsolescence audits, context research, and session learnings extraction. |
 | **`ami-release-manager`** | Agent | Central orchestrator agent that automates version tag calculation, bilingual semantic changelog drafting, and GitHub release publication. |
+| **`ami-discover-automations`** | Skill | Scans repositories for active CI/CD pipelines, package scripts, domain jobs, and discovers high-ROI automation opportunities from manual toil. |
 | **`ami-audit-quality`** | Skill | Conducts deep inspections on modified code for maintainability, modular design best practices, security flaws, data schema consistency, and structural soundness. |
 | **`ami-scan-tech-debt`** | Skill | Scans repositories for technical debt, obsolete imports, duplicated logic, dead code, and pending comments (TODOs/FIXMEs). |
 | **`ami-analyze-dependencies`** | Skill | Audits project library health, detecting unused, outdated, vulnerable, or phantom dependencies in package manifests. |

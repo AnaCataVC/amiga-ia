@@ -68,17 +68,17 @@ When running `amiga-ia-setup`, the CLI wizard populates your home directory with
 
 ```text
 ~/.claude/                          # Claude Code Global Configuration
-├── skills/ami-*/SKILL.md           # Declarative Skills (23 directories)
+├── skills/ami-*/SKILL.md           # Declarative Skills (24 directories)
 ├── agents/ami-*.md                 # Autonomous Subagents (14 profiles)
 ├── settings.json                   # Merged Hooks (PreToolUse, PostToolUse)
 └── settings.json.amiga-backup      # Safe original settings backup
 
 ~/.gemini/config/                   # Antigravity (Gemini) Global Configuration
-├── skills/ami-*/SKILL.md           # Declarative Skills (23 directories)
+├── skills/ami-*/SKILL.md           # Declarative Skills (24 directories)
 ├── agents/ami-*.md                 # Autonomous Subagents (14 profiles)
 └── rules/ami-rules.md              # Declarative Operational Rules
 
-~/.agents/skills/                   # Codex Global Skills (23 directories)
+~/.agents/skills/                   # Codex Global Skills (24 directories)
 ~/.codex/                           # Codex Global Configuration
 ├── agents/ami-*.toml               # Custom Subagents in TOML format (14 profiles)
 ├── AGENTS.md                       # Merged Behavioral Rules (Optional)
@@ -123,7 +123,7 @@ npm run benchmark:cleanroom # Validates Cleanroom TDD (0% confirmation bias)
 > 📊 Detailed methodology, evaluation contracts, and raw metrics are documented in [benchmarks/README.md](benchmarks/README.md) and the generated [BENCHMARK_REPORT.md](benchmarks/results/BENCHMARK_REPORT.md).
 
 ### 5. Flagship Capabilities & Agent Profiles
-Amiga IA encompasses **37 built-in capabilities** (14 autonomous subagents and 23 declarative skills) strictly utilizing the `ami-` namespace prefix to prevent collisions with external ecosystems.
+Amiga IA encompasses **38 built-in capabilities** (14 autonomous subagents and 24 declarative skills) strictly utilizing the `ami-` namespace prefix to prevent collisions with external ecosystems.
 
 The matrix below highlights the core **flagship agents and skills** that drive the primary autonomous workflows:
 
@@ -141,7 +141,7 @@ The matrix below highlights the core **flagship agents and skills** that drive t
 | **ami-design-ux** | Skill | Master UX architect designing interaction models, user journeys, the 5 essential states, and microcopy (`docs/ux/`). |
 | **ami-prototype-ui** | Skill | Rapid scaffolding of self-contained, interactive HTML5 and Tailwind CSS UI mockups and screen prototypes (`docs/mockups/`). |
 
-> 📚 **Complete Catalog:** For the exhaustive reference, detailed schemas, and domain categorization of all 37 autonomous agents and declarative skills, see the [Full Capabilities Catalog](docs/catalog.md) ([Español](docs/catalog.es.md)).
+> 📚 **Complete Catalog:** For the exhaustive reference, detailed schemas, and domain categorization of all 38 autonomous agents and declarative skills, see the [Full Capabilities Catalog](docs/catalog.md) ([Español](docs/catalog.es.md)).
 
 ### 6. Key Learnings (Developer Takeaways)
 Building and scaling Amiga IA through its evolution into a fully agentic ecosystem yielded significant engineering lessons:
@@ -167,7 +167,7 @@ amiga-ia/
 │   ├── cleanroom-tdd/       # Double-Blind Cleanroom vs Single-Agent benchmark
 │   └── results/             # Raw metrics & generated BENCHMARK_REPORT.md
 ├── docs/                    # Persistent agent memory & documentation tree
-│   ├── catalog.md           # Full Capabilities Catalog (37 agents & skills)
+│   ├── catalog.md           # Full Capabilities Catalog (38 agents & skills)
 │   ├── adr/                 # Architectural Decision Records (ADRs 001-021)
 │   ├── architecture/        # Deep structural & adapter engineering guides
 │   ├── contracts/           # Formal Cleanroom TDD interface contracts

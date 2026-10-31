@@ -67,6 +67,12 @@ You are operating in the claude environment.
     <execution_policy>Strictly load this skill via view_file when prompted by user intention matching the description.</execution_policy>
   </skill>
   <skill>
+    <name>ami-discover-automations</name>
+    <location>/home/user/.gemini/config/skills/ami-discover-automations/SKILL.md</location>
+    <description>Scans repositories for existing automations (CI/CD, scripts, domain jobs) and discovers high-ROI automation opportunities from manual friction.</description>
+    <execution_policy>Strictly load this skill via view_file when prompted by user intention matching the description.</execution_policy>
+  </skill>
+  <skill>
     <name>ami-manage-docs</name>
     <location>/home/user/.gemini/config/skills/ami-manage-docs/SKILL.md</location>
     <description>Comprehensive documentation and knowledge manager. Architects new documentation, synchronizes wikis with code diffs, extracts session learnings and ADRs, and audits knowledge bases to prune obsolete notes.</description>

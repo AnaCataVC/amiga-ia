@@ -68,17 +68,17 @@ Al ejecutar `amiga-ia-setup`, el asistente estructura de forma segura las siguie
 
 ```text
 ~/.claude/                          # Configuración Global de Claude Code
-├── skills/ami-*/SKILL.md           # Skills declarativas (23 directorios)
+├── skills/ami-*/SKILL.md           # Skills declarativas (24 directorios)
 ├── agents/ami-*.md                 # Subagentes autónomos (14 perfiles)
 ├── settings.json                   # Hooks fusionados (PreToolUse, PostToolUse)
 └── settings.json.amiga-backup      # Copia de seguridad original de settings
 
 ~/.gemini/config/                   # Configuración Global de Antigravity (Gemini)
-├── skills/ami-*/SKILL.md           # Skills declarativas (23 directorios)
+├── skills/ami-*/SKILL.md           # Skills declarativas (24 directorios)
 ├── agents/ami-*.md                 # Subagentes autónomos (14 perfiles)
 └── rules/ami-rules.md              # Reglas operativas declarativas
 
-~/.agents/skills/                   # Skills Globales de Codex (23 directorios)
+~/.agents/skills/                   # Skills Globales de Codex (24 directorios)
 ~/.codex/                           # Configuración Global de Codex
 ├── agents/ami-*.toml               # Subagentes en formato TOML (14 perfiles)
 ├── AGENTS.md                       # Reglas de comportamiento (Opcional)
@@ -123,7 +123,7 @@ npm run benchmark:cleanroom # Valida TDD Cleanroom (0% sesgo de confirmación)
 > 📊 La metodología detallada, los contratos de evaluación y las métricas brutas están documentados en [benchmarks/README.md](benchmarks/README.md) y en el informe generado en [BENCHMARK_REPORT.md](benchmarks/results/BENCHMARK_REPORT.md).
 
 ### 5. Capacidades Insignia y Perfiles de Agente
-Amiga IA comprende **37 capacidades integradas** (14 subagentes autónomos y 23 skills declarativas) utilizando estrictamente el prefijo de espacio de nombres `ami-` para evitar colisiones con otros ecosistemas.
+Amiga IA comprende **38 capacidades integradas** (14 subagentes autónomos y 24 skills declarativas) utilizando estrictamente el prefijo de espacio de nombres `ami-` para evitar colisiones con otros ecosistemas.
 
 La siguiente matriz destaca los **agentes y habilidades insignia** que encabezan los principales flujos de trabajo autónomos:
 
@@ -141,7 +141,7 @@ La siguiente matriz destaca los **agentes y habilidades insignia** que encabezan
 | **ami-design-ux** | Skill | Arquitecto maestro de UX que diseña flujos de interacción, modelos mentales, los 5 estados esenciales y microcopy (`docs/ux/`). |
 | **ami-prototype-ui** | Skill | Creación ágil de maquetas de UI y pantallas interactivas autocontenidas en HTML5 y Tailwind CSS (`docs/mockups/`). |
 
-> 📚 **Catálogo Completo:** Para consultar la referencia exhaustiva, esquemas y la categorización por dominio de las 37 capacidades, consulta el [Catálogo Completo de Capacidades](docs/catalog.md) ([Español](docs/catalog.es.md)).
+> 📚 **Catálogo Completo:** Para consultar la referencia exhaustiva, esquemas y la categorización por dominio de las 38 capacidades, consulta el [Catálogo Completo de Capacidades](docs/catalog.md) ([Español](docs/catalog.es.md)).
 
 ### 6. Aprendizajes Clave (Key Learnings)
 El desarrollo y evolución iterativa de Amiga IA hacia un ecosistema plenamente agéntico proporcionó valiosas lecciones de ingeniería de software e inteligencia artificial:
@@ -167,7 +167,7 @@ amiga-ia/
 │   ├── cleanroom-tdd/       # Benchmark de TDD Cleanroom vs Agente Único
 │   └── results/             # Métricas brutas e informe BENCHMARK_REPORT.md
 ├── docs/                    # Árbol de memoria persistente y documentación del agente
-│   ├── catalog.md           # Catálogo Completo de Capacidades (37 agentes y skills)
+│   ├── catalog.md           # Catálogo Completo de Capacidades (38 agentes y skills)
 │   ├── adr/                 # Registros de Decisiones Arquitectónicas (ADRs 001-021)
 │   ├── architecture/        # Guías profundas de arquitectura y adaptadores
 │   ├── contracts/           # Contratos formales congelados para evaluación
