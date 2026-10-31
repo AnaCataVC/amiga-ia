@@ -161,7 +161,10 @@ function buildManifests() {
       }
     }
     for (const entry of sourceEntries) {
-      fs.cpSync(path.join(sourceDir, entry), path.join(targetDir, entry), { recursive: true });
+      fs.cpSync(path.join(sourceDir, entry), path.join(targetDir, entry), {
+        recursive: true,
+        filter: (src) => !src.includes('antigravity-tools.md')
+      });
     }
   };
 
