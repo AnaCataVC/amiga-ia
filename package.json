@@ -16,7 +16,8 @@
     "hooks/",
     "rules/",
     "hooks.json",
-    "hooks-pwsh.json"
+    "hooks-pwsh.json",
+    "icon.png"
   ],
   "scripts": {
     "build": "node scripts/build-manifests.js",

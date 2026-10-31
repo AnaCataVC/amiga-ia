@@ -449,6 +449,7 @@ function hasAmigaItems(targetDir) {
   const skillsDir = path.join(targetDir, 'skills');
   const agentsDir = path.join(targetDir, 'agents');
   const pluginAgentsDir = path.join(targetDir, 'plugins', 'amiga-ia', 'agents');
+  const pluginSkillsDir = path.join(targetDir, 'plugins', 'amiga-ia', 'skills');
   let found = false;
   const checkDir = (dir) => {
     if (!fs.existsSync(dir)) return;
@@ -462,6 +463,7 @@ function hasAmigaItems(targetDir) {
   checkDir(skillsDir);
   checkDir(agentsDir);
   checkDir(pluginAgentsDir);
+  checkDir(pluginSkillsDir);
   if (!found && typeof codexDir !== 'undefined' && targetDir === codexDir && typeof codexUserSkillsDir !== 'undefined') {
     checkDir(codexUserSkillsDir);
   }
@@ -557,19 +559,31 @@ async function runDoctor() {
   console.log(pc.blue('\n🔍 Checking Antigravity plugin configuration...'));
   const geminiPluginDir = path.join(geminiDir, 'plugins', 'amiga-ia');
   const geminiPluginAgentsDir = path.join(geminiPluginDir, 'agents');
+  const geminiPluginSkillsDir = path.join(geminiPluginDir, 'skills');
+  const geminiPluginAssetsDir = path.join(geminiPluginDir, 'assets');
   if (fs.existsSync(geminiPluginDir)) {
     const hasAgents = fs.existsSync(geminiPluginAgentsDir) && fs.readdirSync(geminiPluginAgentsDir).some(f => f.startsWith('ami-'));
+    const hasSkills = fs.existsSync(geminiPluginSkillsDir) && fs.readdirSync(geminiPluginSkillsDir).some(f => f.startsWith('ami-'));
     const hasPluginJson = fs.existsSync(path.join(geminiPluginDir, 'plugin.json'));
-    if (hasAgents && hasPluginJson) {
-      console.log(pc.green('  ✅ Antigravity plugin manifest and custom agents properly configured in ~/.gemini/config/plugins/amiga-ia.'));
+    const hasReadme = fs.existsSync(path.join(geminiPluginDir, 'README.md'));
+    const hasIcon = fs.existsSync(path.join(geminiPluginAssetsDir, 'icon.png'));
+
+    if (hasAgents && hasSkills && hasPluginJson && hasReadme && hasIcon) {
+      console.log(pc.green('  ✅ Antigravity plugin manifest, assets, documentation, custom agents, and skills properly configured in ~/.gemini/config/plugins/amiga-ia.'));
     } else {
-      console.log(pc.yellow('  ⚠️  WARNING: ~/.gemini/config/plugins/amiga-ia is missing agents or plugin.json.'));
-      console.log(pc.gray("     Recommendation: Run 'amiga-ia-setup' to reconfigure Antigravity custom agents."));
+      const missing = [];
+      if (!hasAgents) missing.push('agents');
+      if (!hasSkills) missing.push('skills');
+      if (!hasPluginJson) missing.push('plugin.json');
+      if (!hasReadme) missing.push('README.md (overview)');
+      if (!hasIcon) missing.push('assets/icon.png (logo)');
+      console.log(pc.yellow(`  ⚠️  WARNING: ~/.gemini/config/plugins/amiga-ia is missing: ${missing.join(', ')}.`));
+      console.log(pc.gray("     Recommendation: Run 'amiga-ia-setup' to reconfigure Antigravity plugin bundle."));
       issueCount++;
     }
   } else if (geminiStatus.installed) {
     console.log(pc.yellow('  ⚠️  WARNING: Antigravity is installed but ~/.gemini/config/plugins/amiga-ia is missing.'));
-    console.log(pc.gray("     Recommendation: Run 'amiga-ia-setup' to ensure Custom Agents appear in Antigravity."));
+    console.log(pc.gray("     Recommendation: Run 'amiga-ia-setup' to ensure Custom Agents and Skills appear in Antigravity."));
     issueCount++;
   } else {
     console.log(pc.gray('  ℹ️  Antigravity plugin not configured (Optional feature).'));
@@ -873,6 +887,53 @@ function checkLegacyDirs() {
   console.log(pc.magenta('\n✨ Setup complete! Restart your AI assistant for changes to take effect.\n'));
 }
 
+function generatePluginReadme(version) {
+  return `# Amiga IA — Universal Agent Skills & Subagents
+
+Amiga IA is an ecosystem of autonomous subagents, stateless guardrail hooks, and portable declarative skills for Google Antigravity, Claude Code, and OpenAI Codex. It elevates coding agents into proactive, disciplined engineering collaborators.
+
+---
+
+## 🚀 Core Capabilities
+
+- **Double-Blind Cleanroom TDD:** Decoupled implementer and tester subagents mediated by an arbiter operating strictly against frozen interface contracts (\`ami-orchestrate-cleanroom\`).
+- **Interactive Architecture & Planning:** Structured interviews to resolve trade-offs, architecture blueprints, and implementation plans (\`ami-plan-feature\`, \`ami-architect-project\`).
+- **Autonomous Git Hygiene & Commits:** Working tree analysis, atomic Conventional Commits, branch rebase verification, and pre-push quality gates (\`ami-plan-commits\`, \`ami-push-assistant\`).
+- **Quality & Security Audits:** Deep static and dynamic analysis, data schema validation, and technical debt classification (\`ami-audit-quality\`, \`ami-scan-tech-debt\`).
+- **Release Automation:** Semantic version calculation and bilingual release notes generated directly from git history (\`ami-prepare-release\`, \`ami-release-manager\`).
+
+---
+
+## 🤖 Bundled Subagents
+
+| Subagent | Role | Specialty |
+| :--- | :--- | :--- |
+| \`ami-tech-lead\` | Technical Lead | Master planning, architecture blueprints, contract definitions |
+| \`ami-cleanroom-arbiter\` | Cleanroom Arbiter | Double-blind TDD orchestration and failure adjudication |
+| \`ami-cleanroom-builder\` | Cleanroom Implementer | Isolated contract-first component implementation |
+| \`ami-cleanroom-tester\` | Cleanroom QA Tester | Independent black-box test suite generation |
+| \`ami-push-assistant\` | Push Assistant | Pre-push quality gates, CI verification, and Git remote hygiene |
+| \`ami-release-manager\` | Release Manager | Atomic versioning, changelog compilation, and GitHub releases |
+| \`ami-pr-publisher\` | PR Publisher | Branch rebase check, conflict detection, and pull request staging |
+| \`ami-pr-reviewer\` | PR Reviewer | Autonomous code review with multi-tier criticality analysis |
+| \`ami-repo-auditor\` | Repository Auditor | Deep technical debt, architectural smell, and dead code audit |
+| \`ami-doc-architect\` | Documentation Architect | Technical documentation, wiki sync, and ADR maintenance |
+| \`ami-data-scientist\` | Data Scientist | SQL query optimization, ETL profiling, and data schema contracts |
+| \`ami-expert-council\` | Expert Council | Single-pass orthogonal trade-off and premortem analysis |
+| \`ami-ui-builder\` | UI Builder | Self-contained HTML5/Tailwind living visual specifications |
+| \`ami-adversarial-verifier\` | Adversarial Verifier | Hypothesis falsification, edge-case probing, and stress testing |
+
+---
+
+## ⚡ Quick Start Prompts
+
+Use the starter prompt buttons above or type in chat:
+- \`"Review my uncommitted changes and organize conventional commits"\`
+- \`"Plan a new feature with interactive architecture guidance"\`
+- \`"Run double-blind cleanroom TDD on this component"\`
+`;
+}
+
 async function runInstall() {
   const { version: currentVersion } = getPackageInfo();
   console.log(pc.cyan('======================================================'));
@@ -971,27 +1032,74 @@ async function runInstall() {
     console.log(pc.blue('\nInstalling for Antigravity...'));
     const geminiPluginDir = path.join(geminiDir, 'plugins', 'amiga-ia');
     const geminiPluginAgentsDir = path.join(geminiPluginDir, 'agents');
+    const geminiPluginSkillsDir = path.join(geminiPluginDir, 'skills');
+    const geminiPluginAssetsDir = path.join(geminiPluginDir, 'assets');
+
     if (!fs.existsSync(geminiPluginAgentsDir)) {
       fs.mkdirSync(geminiPluginAgentsDir, { recursive: true });
+    }
+    if (!fs.existsSync(geminiPluginSkillsDir)) {
+      fs.mkdirSync(geminiPluginSkillsDir, { recursive: true });
+    }
+    if (!fs.existsSync(geminiPluginAssetsDir)) {
+      fs.mkdirSync(geminiPluginAssetsDir, { recursive: true });
     }
 
     const pluginManifest = {
       name: 'amiga-ia',
       displayName: 'Amiga IA',
       version: currentVersion,
-      description: 'Amiga IA Universal Agent Skills & Subagents'
+      description: 'Amiga IA Universal Agent Skills & Subagents for Antigravity, Claude Code, and Codex',
+      logo: 'assets/icon.png',
+      suggestedPrompts: [
+        'Review uncommitted changes and organize conventional commits with ami-plan-commits',
+        'Architect and plan a new feature with interactive guidance using ami-plan-feature',
+        'Run double-blind cleanroom TDD with ami-orchestrate-cleanroom'
+      ],
+      keywords: [
+        'skills',
+        'agents',
+        'orchestrator',
+        'git',
+        'cleanroom',
+        'code-quality',
+        'antigravity'
+      ],
+      author: {
+        name: 'Ana Catalina',
+        url: 'https://ana-catalina.com'
+      },
+      homepage: 'https://amiga-ia.ana-catalina.com',
+      repository: 'https://github.com/AnaCataVC/amiga-ia',
+      license: 'MIT'
     };
     fs.writeFileSync(path.join(geminiPluginDir, 'plugin.json'), JSON.stringify(pluginManifest, null, 2));
 
-    cleanOrphanedFiles(sourceSkillsDir, path.join(geminiDir, 'skills'));
-    cleanOrphanedFiles(sourceAgentsDir, geminiPluginAgentsDir);
-    cleanOrphanedFiles(sourceAgentsDir, path.join(geminiDir, 'agents'));
+    const sourceIcon = path.join(__dirname, '../icon.png');
+    if (fs.existsSync(sourceIcon)) {
+      fs.copyFileSync(sourceIcon, path.join(geminiPluginAssetsDir, 'icon.png'));
+    }
 
-    copyRecursiveSync(sourceSkillsDir, path.join(geminiDir, 'skills'), 'antigravity');
+    fs.writeFileSync(path.join(geminiPluginDir, 'README.md'), generatePluginReadme(currentVersion));
+
+    cleanOrphanedFiles(sourceSkillsDir, geminiPluginSkillsDir);
+    cleanOrphanedFiles(sourceAgentsDir, geminiPluginAgentsDir);
+
+    copyRecursiveSync(sourceSkillsDir, geminiPluginSkillsDir, 'antigravity');
     copyRecursiveSync(sourceAgentsDir, geminiPluginAgentsDir, 'antigravity');
-    copyRecursiveSync(sourceAgentsDir, path.join(geminiDir, 'agents'), 'antigravity');
+
+    // Clean legacy loose skills and agents from ~/.gemini/config/ to consolidate into plugin bundle
+    const looseSkillsDir = path.join(geminiDir, 'skills');
+    const looseAgentsDir = path.join(geminiDir, 'agents');
+    if (fs.existsSync(looseSkillsDir)) {
+      deleteMatchingFiles(sourceSkillsDir, looseSkillsDir);
+    }
+    if (fs.existsSync(looseAgentsDir)) {
+      deleteMatchingFiles(sourceAgentsDir, looseAgentsDir);
+    }
+
     saveVersionManifest(geminiDir, currentVersion);
-    console.log(pc.green('✅ Skills and Custom Agents successfully configured for Antigravity at ~/.gemini/config/'));
+    console.log(pc.green('✅ Plugin bundle successfully configured for Antigravity at ~/.gemini/config/plugins/amiga-ia/'));
 
     const installAntigravityRules = await confirm({ message: 'Install recommended Amiga IA rules in ~/.gemini/config/rules/?', initialValue: true });
     if (isCancel(installAntigravityRules)) process.exit(0);

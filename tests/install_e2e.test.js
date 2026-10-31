@@ -211,13 +211,52 @@ describe('Tri-Ecosystem End-to-End Installation Test Suite', () => {
     it('simulates full Antigravity installation and asserts tool isolation, rules synchronization, and relative hook paths', () => {
       const tmpHome = fs.mkdtempSync(path.join(os.tmpdir(), 'amiga-e2e-antigravity-'));
       const geminiDir = path.join(tmpHome, '.gemini', 'config');
-      const targetSkillsDir = path.join(geminiDir, 'skills');
-      const targetAgentsDir = path.join(geminiDir, 'agents');
+      const targetPluginDir = path.join(geminiDir, 'plugins', 'amiga-ia');
+      const targetPluginSkillsDir = path.join(targetPluginDir, 'skills');
+      const targetPluginAgentsDir = path.join(targetPluginDir, 'agents');
+      const targetPluginAssetsDir = path.join(targetPluginDir, 'assets');
       const targetRulesDir = path.join(geminiDir, 'rules');
 
-      // 1. Install skills and agents
-      copyRecursiveSync(sourceSkillsDir, targetSkillsDir, 'antigravity');
-      copyRecursiveSync(sourceAgentsDir, targetAgentsDir, 'antigravity');
+      // 1. Install plugin bundle (skills, agents, assets, readme, manifest)
+      copyRecursiveSync(sourceSkillsDir, targetPluginSkillsDir, 'antigravity');
+      copyRecursiveSync(sourceAgentsDir, targetPluginAgentsDir, 'antigravity');
+
+      fs.mkdirSync(targetPluginAssetsDir, { recursive: true });
+      fs.copyFileSync(path.join(__dirname, '../icon.png'), path.join(targetPluginAssetsDir, 'icon.png'));
+
+      let readmeContent = fs.readFileSync(path.join(__dirname, '../README.md'), 'utf8');
+      readmeContent = readmeContent.replace(/src=["']icon\.png["']/g, 'src="assets/icon.png"');
+      fs.writeFileSync(path.join(targetPluginDir, 'README.md'), readmeContent);
+
+      const pluginManifest = {
+        name: 'amiga-ia',
+        displayName: 'Amiga IA',
+        version: '5.9.0',
+        description: 'Amiga IA Universal Agent Skills & Subagents for Antigravity, Claude Code, and Codex',
+        logo: 'assets/icon.png',
+        suggestedPrompts: [
+          'Review uncommitted changes and organize conventional commits with ami-plan-commits',
+          'Architect and plan a new feature with interactive guidance using ami-plan-feature',
+          'Run double-blind cleanroom TDD with ami-orchestrate-cleanroom'
+        ],
+        keywords: [
+          'skills',
+          'agents',
+          'orchestrator',
+          'git',
+          'cleanroom',
+          'code-quality',
+          'antigravity'
+        ],
+        author: {
+          name: 'Ana Catalina',
+          url: 'https://ana-catalina.com'
+        },
+        homepage: 'https://amiga-ia.ana-catalina.com',
+        repository: 'https://github.com/AnaCataVC/amiga-ia',
+        license: 'MIT'
+      };
+      fs.writeFileSync(path.join(targetPluginDir, 'plugin.json'), JSON.stringify(pluginManifest, null, 2));
 
       // 2. Install rules
       copyRecursiveSync(sourceRulesDir, targetRulesDir, 'antigravity');
@@ -227,28 +266,23 @@ describe('Tri-Ecosystem End-to-End Installation Test Suite', () => {
       const hooksMerged = installNodeHooks(geminiDir, geminiSettings, { targetEnv: 'antigravity' });
       assert.strictEqual(hooksMerged, true, 'Antigravity hooks merge must return true');
 
-      // 1b. Install plugin agents and manifest
-      const targetPluginDir = path.join(geminiDir, 'plugins', 'amiga-ia');
-      const targetPluginAgentsDir = path.join(targetPluginDir, 'agents');
-      copyRecursiveSync(sourceAgentsDir, targetPluginAgentsDir, 'antigravity');
-      fs.writeFileSync(path.join(targetPluginDir, 'plugin.json'), JSON.stringify({
-        name: 'amiga-ia',
-        displayName: 'Amiga IA',
-        version: '5.4.0',
-        description: 'Amiga IA Universal Agent Skills & Subagents'
-      }));
-
       // Assertions
-      const installedSkills = collectFilesRecursively(targetSkillsDir);
-      const installedAgents = collectFilesRecursively(targetAgentsDir);
-      const installedPluginAgents = collectFilesRecursively(targetPluginAgentsDir);
+      const installedSkills = collectFilesRecursively(targetPluginSkillsDir);
+      const installedAgents = collectFilesRecursively(targetPluginAgentsDir);
       const installedRules = collectFilesRecursively(targetRulesDir);
 
       assert.ok(installedSkills.length >= 22, `Expected >= 22 installed skill files, got ${installedSkills.length}`);
       assert.strictEqual(installedAgents.length, 14, `Expected 14 installed agent files, got ${installedAgents.length}`);
-      assert.strictEqual(installedPluginAgents.length, 14, `Expected 14 installed plugin agent files, got ${installedPluginAgents.length}`);
       assert.ok(fs.existsSync(path.join(targetPluginDir, 'plugin.json')), 'Expected plugin.json manifest in plugins/amiga-ia');
+      assert.ok(fs.existsSync(path.join(targetPluginDir, 'README.md')), 'Expected README.md overview in plugins/amiga-ia');
+      assert.ok(fs.existsSync(path.join(targetPluginAssetsDir, 'icon.png')), 'Expected icon.png logo in plugins/amiga-ia/assets');
       assert.ok(installedRules.length >= 1, `Expected installed rules, got ${installedRules.length}`);
+
+      const parsedManifest = JSON.parse(fs.readFileSync(path.join(targetPluginDir, 'plugin.json'), 'utf8'));
+      assert.strictEqual(parsedManifest.logo, 'assets/icon.png', 'Manifest must declare assets/icon.png logo');
+      assert.strictEqual(parsedManifest.suggestedPrompts.length, 3, 'Manifest must declare 3 suggested prompts');
+      assert.strictEqual(parsedManifest.author.name, 'Ana Catalina');
+      assert.ok(parsedManifest.homepage && parsedManifest.repository);
 
       const allMarkdownFiles = [...installedSkills, ...installedAgents];
       for (const file of allMarkdownFiles) {
