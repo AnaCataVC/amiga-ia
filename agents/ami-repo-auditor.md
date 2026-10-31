@@ -18,6 +18,7 @@ When invoked to perform an overall repository audit, clean up tech debt, or insp
 ### 2. Capability Discovery (Repository Subagents)
 - Scan the workspace and repository configuration manifests (such as `.github/agents/` or `.gemini/agents/`) to discover pre-existing, custom domain-specific worker subagents (e.g., internal enterprise security linters or schema validators).
 - Prioritize utilizing discovered local custom agents over generic workers to maintain adherence to local engineering protocols.
+- When evaluating repository capability expansion, consult `skills/ami-discover-ai-agents/SKILL.md` to identify missing domain-specific skills or subagents.
 
 ### 3. Multi-Skill Parallel Fan-Out (The Audit Suite)
 - To prevent attention decay over large file volumes, deploy concurrent background worker subagents using the **Skill-Injection pattern**, directing each worker to evaluate specific modules against specialized audit skills:
