@@ -1,0 +1,98 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "amiga-ia-ecosystem",
+  "description": "Amiga IA declarative packs and runtime extensions registry",
+  "packs": {
+    "essential": {
+      "id": "essential",
+      "name": "Essential Engineering Pack",
+      "description": "Core software engineering, architecture, code quality, git hygiene, testing, cleanroom, and meta-tooling capabilities.",
+      "kind": "domain-pack",
+      "default": true,
+      "agents": [
+        "ami-tech-lead",
+        "ami-expert-council",
+        "ami-repo-auditor",
+        "ami-adversarial-verifier",
+        "ami-pr-publisher",
+        "ami-pr-reviewer",
+        "ami-push-assistant",
+        "ami-release-manager",
+        "ami-doc-architect",
+        "ami-cleanroom-arbiter",
+        "ami-cleanroom-builder",
+        "ami-cleanroom-tester"
+      ],
+      "skills": [
+        "ami-architect-project",
+        "ami-plan-feature",
+        "ami-stress-test-idea",
+        "ami-research-context",
+        "ami-audit-quality",
+        "ami-scan-tech-debt",
+        "ami-analyze-dependencies",
+        "ami-debug-issue",
+        "ami-analyze-pr-comments",
+        "ami-detect-pr-conflicts",
+        "ami-plan-commits",
+        "ami-prepare-release",
+        "ami-review-peer-pr",
+        "ami-review-self-pr",
+        "ami-manage-docs",
+        "ami-create-tests",
+        "ami-design-test-strategy",
+        "ami-orchestrate-cleanroom",
+        "ami-discover-ai-agents",
+        "ami-discover-automations"
+      ]
+    },
+    "data": {
+      "id": "data",
+      "name": "Data & Analytics Pack",
+      "description": "Data science profiling, SQL query optimization, ETL contracts, and analytical dashboards.",
+      "kind": "domain-pack",
+      "default": true,
+      "agents": [
+        "ami-data-scientist"
+      ],
+      "skills": [
+        "ami-optimize-sql",
+        "ami-build-dashboard"
+      ]
+    },
+    "ui": {
+      "id": "ui",
+      "name": "UI & UX Engineering Pack",
+      "description": "UI wireframing, UX interaction design, living prototypes, and token consistency auditing.",
+      "kind": "domain-pack",
+      "default": true,
+      "agents": [
+        "ami-ui-builder"
+      ],
+      "skills": [
+        "ami-design-ux",
+        "ami-prototype-ui",
+        "ami-audit-ui-consistency"
+      ]
+    }
+  },
+  "extensions": {
+    "claude-mods": {
+      "id": "claude-mods",
+      "name": "AMI Claude Code Mods",
+      "description": "Production-grade mods, reactive UI panels, and function hooks for Claude Code CLI.",
+      "kind": "runtime-extension",
+      "platform": "claude",
+      "repository": "https://github.com/AnaCataVC/ami-claude-mods.git",
+      "targetDir": ".claude/mods",
+      "mods": [
+        "child-sessions",
+        "cleanroom-guard",
+        "close-checklist",
+        "context-guard",
+        "hooks-viewer",
+        "undelegated-reads"
+      ]
+    }
+  }
+}

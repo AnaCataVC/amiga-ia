@@ -48,20 +48,25 @@ flowchart TD
 ```
 
 ### 2. Compilación, Instalación y Quickstart
-El método oficial y recomendado es instalar Amiga IA de forma global mediante el registro de paquetes de NPM:
+El método oficial y recomendado es instalar Amiga IA de forma global mediante el registro de paquetes de NPM usando la CLI `ami`:
 
 ```bash
 # 1. Instalar globalmente desde el registro de NPM
 npm install -g @anacatavc/amiga-ia
 
-# 2. Iniciar el asistente interactivo de configuración CLI
-amiga-ia-setup
+# 2. Iniciar el asistente interactivo de configuración (o usar amiga-ia-setup)
+ami install
 
-# 3. Comprobar la salud del entorno y la integridad de esquemas
-amiga-ia-setup doctor
+# 3. Consultar el catálogo de paquetes y el estado de los asistentes
+ami list
+
+# 4. Comprobar la salud del entorno y la integridad de esquemas
+ami doctor
 ```
 
 > 💡 **Hooks Multi-Motor y Guardrails:** Claude Code admite recordatorios preventivos y bloqueos de seguridad que se integran limpiamente en `~/.claude/settings.json` (con respaldo automático en `~/.claude/settings.json.amiga-backup`). Google Antigravity ejecuta de forma nativa su pipeline de planificación atómica y reglas declarativas vía `rules/ami-rules.md`. OpenAI Codex admite hooks de ciclo de vida no bloqueantes en `~/.codex/hooks.json`.
+>
+> 📖 Para el uso detallado de comandos de la CLI, paquetes de dominio (`ami add data`, `ami add ui`) y extensiones para Claude Code (`ami add claude-mods`), consulta la [Guía de Uso e Instalación de la CLI](docs/cli-installation-guide.es.md) ([English](docs/cli-installation-guide.md)).
 
 #### 2.1 Directorios Multi-Ecosistema Configurados
 Al ejecutar `amiga-ia-setup`, el asistente estructura de forma segura las siguientes configuraciones en el directorio de usuario:
@@ -87,7 +92,7 @@ Al ejecutar `amiga-ia-setup`, el asistente estructura de forma segura las siguie
 
 #### 2.2 Desinstalación
 Para retirar limpiamente Amiga IA y devolver tu configuración al estado original:
-1. Ejecuta `amiga-ia-setup` y selecciona la opción `u` (Uninstall) para eliminar en segundos todas las habilidades, subagentes, reglas y hooks fusionados.
+1. Ejecuta `ami uninstall` (o `amiga-ia-setup` y selecciona `Uninstall`) para eliminar en segundos todas las habilidades, subagentes, reglas y hooks fusionados.
 2. Ejecuta `npm uninstall -g @anacatavc/amiga-ia` para desinstalar el paquete global de tu sistema.
 
 ### 3. Tecnologías e Innovaciones Arquitectónicas

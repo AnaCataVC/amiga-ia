@@ -57,4 +57,32 @@ describe('Configuration & Build Synchronization Tests', () => {
     assert.ok(codexSkills.length >= 22, `Expected at least 22 skills, got ${codexSkills.length}`);
   });
 
+  test('registry/packs.json accounts for all skills and agents without orphaned or unmapped items', () => {
+    const rootDir = path.resolve(__dirname, '..');
+    const { loadRegistry } = require('../src/core/registry');
+    const registry = loadRegistry();
+
+    assert.ok(registry.packs, 'Registry must define packs');
+    assert.ok(registry.packs.essential, 'Registry must define essential pack');
+    assert.ok(registry.packs.data, 'Registry must define data pack');
+    assert.ok(registry.packs.ui, 'Registry must define ui pack');
+
+    const sourceSkillsDir = path.join(rootDir, 'skills');
+    const sourceAgentsDir = path.join(rootDir, 'agents');
+
+    const diskSkills = fs.readdirSync(sourceSkillsDir).filter(f => f.startsWith('ami-'));
+    const diskAgents = fs.readdirSync(sourceAgentsDir).filter(f => f.startsWith('ami-') && f.endsWith('.md')).map(f => f.slice(0, -3));
+
+    const registrySkills = [];
+    const registryAgents = [];
+
+    for (const pack of Object.values(registry.packs)) {
+      if (Array.isArray(pack.skills)) registrySkills.push(...pack.skills);
+      if (Array.isArray(pack.agents)) registryAgents.push(...pack.agents);
+    }
+
+    assert.deepStrictEqual(registrySkills.sort(), diskSkills.sort(), 'Registry skills must match disk skills exactly');
+    assert.deepStrictEqual(registryAgents.sort(), diskAgents.sort(), 'Registry agents must match disk agents exactly');
+  });
+
 });

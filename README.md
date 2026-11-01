@@ -48,20 +48,25 @@ flowchart TD
 ```
 
 ### 2. Getting Started & Installation
-The official and recommended setup method is installing Amiga IA globally via the NPM package registry:
+The official and recommended setup method is installing Amiga IA globally via the NPM package registry using the `ami` CLI:
 
 ```bash
 # 1. Install globally from the NPM registry
 npm install -g @anacatavc/amiga-ia
 
-# 2. Launch the interactive CLI setup wizard
-amiga-ia-setup
+# 2. Launch the interactive CLI setup wizard (or use amiga-ia-setup)
+ami install
 
-# 3. Verify health, hooks, and YAML frontmatter integrity
-amiga-ia-setup doctor
+# 3. View the ecosystem catalog, packs, and assistant status
+ami list
+
+# 4. Verify system health, hooks, and YAML frontmatter integrity
+ami doctor
 ```
 
 > 💡 **Multi-Engine Hooks & Guardrails:** Claude Code supports automated pre-commit advisory reminders and security interdictions merged cleanly into `~/.claude/settings.json` (with automatic rollback backup at `~/.claude/settings.json.amiga-backup`). Google Antigravity natively executes its atomic planning pipeline and declarative guardrails via `rules/ami-rules.md`. OpenAI Codex supports non-blocking lifecycle hooks in `~/.codex/hooks.json`.
+>
+> 📖 For advanced CLI usage, selective domain packs (`ami add data`, `ami add ui`), and Claude Code runtime extensions (`ami add claude-mods`), see the [Amiga IA CLI & Installation Guide](docs/cli-installation-guide.md) ([Español](docs/cli-installation-guide.es.md)).
 
 #### 2.1 Multi-Ecosystem Environments Configured
 When running `amiga-ia-setup`, the CLI wizard populates your home directory with clean, isolated capability configurations:
@@ -87,7 +92,7 @@ When running `amiga-ia-setup`, the CLI wizard populates your home directory with
 
 #### 2.2 Uninstallation
 To cleanly detach Amiga IA from your AI coding environments:
-1. Run `amiga-ia-setup` and select option `u` (Uninstall) to cleanly remove all copied skills, agents, rules, and hook injections from your settings.
+1. Run `ami uninstall` (or `amiga-ia-setup` and select `Uninstall`) to cleanly remove all copied skills, agents, rules, and hook injections from your settings.
 2. Run `npm uninstall -g @anacatavc/amiga-ia` to purge the CLI package from your system.
 
 ### 3. Technologies & Architectural Innovations
