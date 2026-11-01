@@ -11,7 +11,7 @@ You are the central orchestrator responsible for safely publishing new versions 
 ## Workflow
 
 ### 1. Pre-Flight Check & Deployment Readiness Audit
-- **Git Branch Hygiene:** Ensure we are on the main/master branch and there are no uncommitted changes. If there are uncommitted changes, advise the user to run `ami-plan-commits` (View `skills/ami-plan-commits/SKILL.md`) or `ami-push-assistant` first, and abort.
+- **Git Branch Hygiene & Remote Tags Sync:** Ensure we are on the main/master branch and there are no uncommitted changes. Run `git fetch --tags` to guarantee local tracking branches and all remote tags (including tags created via GitHub releases or web interfaces) are synchronized before evaluating release readiness. If there are uncommitted changes, advise the user to run `ami-plan-commits` (View `skills/ami-plan-commits/SKILL.md`) or `ami-push-assistant` first, and abort.
 - **Environment Variables & Secrets Sync:** Verify if recent code modifications introduced new environment variables or secret consumption across the repository. Ensure corresponding template files (`.env.example`, `.env.template`, or project deployment documentation) are properly synchronized without exposing actual credentials.
 - **Database Migration Status:** Inspect if the upcoming release includes database schema changes or migration scripts (e.g., SQL migrations, ORM revisions). Confirm that reversible rollback runbooks or two-phase deployment compatibility are accounted for before authorizing a version cut.
 - **Runtime Hygiene & Debug Flag Sweep:** Scan modified paths to guarantee that no diagnostic remnants—such as hardcoded localhost ports, active debugging switches (`DEBUG=True`, verbose console reporting), or exposed internal test tokens—are left enabled in production paths. Any unresolved deployment risks must be communicated to the user for remediation before proceeding.
@@ -40,10 +40,11 @@ You are the central orchestrator responsible for safely publishing new versions 
 - Invoke the unified release preparation skill to calculate the target version and formulate the changelog in a single pass.
 - Execute: `ami-prepare-release` (View `skills/ami-prepare-release/SKILL.md`).
 - Pass along any parameters from the user (e.g., if they asked for a QA release or an RC release) and instruct the preparer to:
-  1. Inspect any repository-specific versioning documentation or policies (`VERSIONING.md`, `docs/versioning.md`, `.agents/AGENTS.md`, `README.md`).
-  2. Compare the hash of the latest tag with `HEAD` to see if we can reuse the current tag.
-  3. Perform a semantic analysis of the commits since the last tag. If new product features or capabilities (`feat:`) were added, propose a **Minor Bump (`0.x.0`)**.
-  4. Generate the structured bilingual (English/Spanish) release notes draft.
+  1. Synchronize remote tags with `git fetch --tags` and cross-check against published GitHub releases (`gh release list --limit 5`).
+  2. Inspect any repository-specific versioning documentation or policies (`VERSIONING.md`, `docs/versioning.md`, `.agents/AGENTS.md`, `README.md`).
+  3. Compare the hash of the latest tag with `HEAD` to see if we can reuse the current tag.
+  4. Perform a semantic analysis of the commits since the last tag. If new product features or capabilities (`feat:`) were added, propose a **Minor Bump (`0.x.0`)**.
+  5. Generate the structured bilingual (English/Spanish) release notes draft.
 - Display the recommended tag with its semantic reasoning and the drafted notes to the user, and **explicitly wait for user confirmation** before proceeding.
 
 ### 4. Update Version Files & Build Artifacts (Dual Search, Atomic Pre-Tag Commit & Fresh Build Gate)

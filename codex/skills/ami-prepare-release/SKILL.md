@@ -17,10 +17,17 @@ Act as a Version Control Manager and Technical Release Author. Your job is to an
 ## Workflow
 
 ### 1. Fetch Remote State & Identify Baseline Tag
-- Run `git fetch` to synchronize remote commits and tags.
-- Scan repository documentation for versioning policies (e.g., `VERSIONING.md`, `CONTRIBUTING.md`, or `README.md`). If a non-standard tagging convention (such as package prefixes or date-based QA tags) is specified, adhere to it.
-- Run `git describe --tags --abbrev=0` to locate the latest tag. If no tag exists, use `v0.0.0` as the baseline.
-- **Current Tag Verification:** Compare the commit hash of the latest tag (`git rev-list -n 1 <last-tag>`) with `HEAD` (`git rev-parse HEAD`). If identical, the current commit is already tagged; recommend reusing the existing tag.
+- **Mandatory Remote Tags Synchronization:**
+  - Run `git fetch --tags` to ensure all remote tags (including tags created via GitHub Releases or external pipelines) are fetched locally. Standard `git fetch` does NOT guarantee downloading remote tags.
+- **Remote Releases Cross-Check:**
+  - If GitHub CLI (`gh`) is available, run `gh release list --limit 5` to inspect the most recent published releases and their associated tags directly from the remote repository.
+  - Cross-check candidate tags from GitHub releases against local tags. If a release tag (e.g., `v1.8.0`) is listed remotely, ensure it is considered when resolving the baseline version to prevent suggesting an already existing version tag.
+- **Baseline Tag Resolution:**
+  - Locate the latest tag reachable from `HEAD` using `git describe --tags --abbrev=0`.
+  - Also inspect all local tags sorted by version using `git tag -l --sort=-version:refname`.
+  - Determine the true baseline tag by selecting the highest SemVer tag found across `git describe`, `git tag -l`, and `gh release list --limit 5`. If no tags exist, use `v0.0.0` as the baseline.
+- **Scan Versioning Policies:** Scan repository documentation for versioning policies (e.g., `VERSIONING.md`, `CONTRIBUTING.md`, or `README.md`). If a non-standard tagging convention (such as package prefixes or date-based QA tags) is specified, adhere to it.
+- **Current Tag Verification:** Compare the commit hash of the baseline tag (`git rev-list -n 1 <last-tag>`) with `HEAD` (`git rev-parse HEAD`). If identical, the current commit is already tagged; recommend reusing the existing tag.
 
 ### 2. Extract & Inspect Unreleased Commits
 - Run `git log <last-tag>..HEAD --oneline` (or `--pretty=format:"%s"` for raw titles).
