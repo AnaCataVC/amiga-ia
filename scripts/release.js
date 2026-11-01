@@ -176,6 +176,7 @@ async function main() {
   }
 
   // 4. Release Necessity & Product Changes Check
+  runCmdOutput('git fetch --tags', { cwd: rootDir, ignoreError: true });
   const latestTag = runCmdOutput('git describe --tags --abbrev=0', { cwd: rootDir, ignoreError: true });
   if (latestTag) {
     const headCommit = runCmdOutput('git rev-parse HEAD', { cwd: rootDir });
