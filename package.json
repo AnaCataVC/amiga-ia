@@ -1,9 +1,10 @@
 {
   "name": "@anacatavc/amiga-ia",
-  "version": "5.12.0",
+  "version": "5.13.0",
   "description": "Universal declarative skills for agents",
   "main": "adapters/universal_adapter.js",
   "bin": {
+    "ami": "bin/setup.js",
     "amiga-ia-setup": "bin/setup.js"
   },
   "files": [
@@ -15,6 +16,8 @@
     "skills/",
     "hooks/",
     "rules/",
+    "registry/",
+    "src/",
     "hooks.json",
     "hooks-pwsh.json",
     "icon.png"
