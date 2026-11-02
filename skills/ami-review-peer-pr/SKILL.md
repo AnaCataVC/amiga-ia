@@ -12,8 +12,8 @@ When invoked, act as a **PR Peer Reviewer**.
 
 ### 1. Context and Validation
 - Identify the Pull Request to be reviewed.
-- Verify that you are in the correct local repository. **CRITICAL:** You MUST check out the PR's branch locally using `gh pr checkout <number>` BEFORE performing any analysis. If you do not check out the PR's branch, you will analyze the wrong code.
-- Identify the author of the PR. **CRITICAL:** The PR must belong to someone else. The author must NOT be the user currently invoking this skill. If you detect that the user is reviewing their own PR, branch, or code, **IMMEDIATELY STOP**, explain the difference between both skills, and recommend switching to **`ami-review-self-pr`** (which is explicitly designed to audit your own work and apply concrete fixes directly to your files instead of just leaving comments). Offer to execute `ami-review-self-pr` right away.
+- Verify that you are in the correct local repository. **CRITICAL:** You MUST read the PR at its head commit BEFORE performing any analysis, or you will analyze the wrong code. Prefer a scratch `git worktree` of `origin/<branch>` over `gh pr checkout <number>` (switching branches in the main clone can disturb uncommitted work); remove the worktree when the review ends, including when it is abandoned.
+- Identify the author of the PR before reading the diff, from `gh pr view <number> --json author` compared against `gh api user --jq .login` — never infer it from the branch name or conversation. **CRITICAL:** The PR must belong to someone else. The author must NOT be the user currently invoking this skill. If you detect that the user is reviewing their own PR, branch, or code, **IMMEDIATELY STOP**, explain the difference between both skills, and recommend switching to **`ami-review-self-pr`** (which is explicitly designed to audit your own work and apply concrete fixes directly to your files instead of just leaving comments). Offer to execute `ami-review-self-pr` right away.
 
 ### 2. Understand the Goal, Ingest PR Body & Repository Context
 - **PR Metadata & Acceptance Criteria Ingestion:**
@@ -67,6 +67,8 @@ When invoked, act as a **PR Peer Reviewer**.
 - **Deduplication & Consensus Rules:**
   - **Avoid Redundancy:** Do NOT duplicate comments or re-flag issues already raised by other reviewers, unless explicitly corroborating an unaddressed `[BLOCKER]` / `[CRITICAL]` flaw or offering a concrete missing code solution.
   - **Factor Consensus into Verdict:** Incorporate the state of prior discussions into your assessment (e.g., verify if changes requested in earlier reviews were genuinely resolved in the latest commits).
+  - **Declared is not a finding:** what the PR body or a stacked PR's body already states (merge order, known limitations, accepted debt) is not re-asked, and a finding the author explicitly accepted in a thread is not re-raised. Cite a finding already raised as "covered in <thread>".
+- **Re-review after author updates:** verify each claimed fix against the files touched by the specific response commit (`gh api repos/:owner/:repo/commits/<head-sha> --jq '.files[].filename'`), not against comments or the cumulative file list. If a claimed fix is absent from that commit, state that the change was not pushed.
 
 ### 6. Clarification and Interactive QA
 - Before analyzing the code deeply, determine if you fully understand the PR's intent and architectural context.
@@ -97,6 +99,8 @@ When invoked, act as a **PR Peer Reviewer**.
   - **Fully Disproved:** If upstream guards, type invariants, or caller constraints make the defect impossible in practice, **DISCARD** the observation entirely. Do not escalate non-issues.
   - **Partially Mitigated:** If the issue can only trigger under contrived or non-standard conditions due to existing upstream protections, **DOWNGRADE** the severity to `[MINOR]` or `[NITPICK]`, explicitly noting the partial guard in place.
   - **Withstood Falsification:** If the defect survives active falsification, retain the `[BLOCKER]`, `[CRITICAL]`, or `[MAJOR]` rating. In the observation, explicitly append a `[Falsification Check: Verified]` note explaining why upstream guards and framework invariants fail to mitigate the risk.
+- **Verified before asserted:** a finding whose mechanism you could not check against the running system ships as a question, not a defect. A repository sweep proves only what the repositories contain — manual DDL, external tools and other non-repo consumers leave no trace in code.
+- **Data-producing PRs (SQL, data pipelines):** the running system is the source data. `[MAJOR]` or above requires the impact measured on the real source (rows affected, how much the metric moves); a code path alone sets no criticality. A source that filters what it exports (a log sink, a mirror) proves only what it exports.
 
 ### 9. Generate Quality Observations and Recommendation
 - Output a comprehensive list of observations based on your analysis.
@@ -105,7 +109,11 @@ When invoked, act as a **PR Peer Reviewer**.
 - Include any `[Test Failure]` observations if running in Full Review Mode and dynamic tests failed.
 - Include `[Falsification Check: Verified]` evidence for all surviving high-severity findings, and summarize any discarded or downgraded observations.
 - Provide clear reasoning for your observations and, when applicable, suggest code snippets or alternative approaches to resolve the issue.
-- **Recommendation:** Based on your findings, clearly recommend to the user what the final verdict should be ("Approve", "Comment", or "Request Changes") and justify your recommendation.
+- **Anchor every observation:** show findings to the user in a table with two mandatory columns — `Literal line` (the cited line's text, read at the PR head SHA) and `Verified against` (`code <file:line@ref>`, `data <query + period>`, or `unverified`). A row without its literal line is not cited; an `unverified` row carries no criticality and ships only as a question.
+- **A question is the last resort:** before a candidate ships as a question, try to answer it from the code at the PR head, the PR body, every thread, the linked contract/spec, and CI history on earlier SHAs. Answered → drop it or cite where. Partly answered → narrow it to the uncovered part.
+- **Missing context block:** list unresolved ambiguities under a separate `Missing context` block for the user only — never published. Anything listed there cannot also ship as `[BLOCKER]`; resolve it or ask it.
+- **Recommendation:** Based on your findings, clearly recommend to the user what the final verdict should be ("Approve", "Comment", or "Request Changes") and justify your recommendation. The verdict judges the diff: open preconditions outside it (a pending backfill, a sign-off) do not withhold approval — they go in the body as merge conditions. A `[MAJOR]`+ withholds it. With `[MINOR]`-only findings, lay out both readings and let the user pick.
+- **Tone:** highlight findings rather than issuing orders; start inline comments directly on the technical defect. No self-referential statements ("I reviewed this code"), and never mention the reviewer's unfamiliarity with the repository.
 
 ### 10. Publishing the Review
 - Wait for the user to confirm their final decision regarding the verdict.
@@ -141,7 +149,9 @@ When invoked, act as a **PR Peer Reviewer**.
        - Check if the new feedback overlaps with or contradicts your drafted review.
        - Adjust your drafted comments with the user's approval.
   3. **Publish Execution:**
-     - Only after verifying code freshness and confirming there are no conflicting concurrent updates, draft the comments according to the chosen tone and language, and execute the commands to publish the review.
+     - Only after verifying code freshness and confirming there are no conflicting concurrent updates, draft the comments according to the chosen tone and language.
+     - **CONFIRMATION 1 - Publish review:** STOP and present the final review body, every inline comment, and the event (APPROVE / COMMENT / REQUEST_CHANGES) to the user. Await explicit approval. A review on someone else's PR cannot be unsent: an ambiguous instruction or a pending question is not approval, and a bare "publish" never chooses the event.
+     - Remove the `Missing context` block, then publish the body and all inline comments in one review API call.
 
 ---
 **Language Rule:** Although your code and commits MUST be in English, you MUST communicate and interact in the chat using the same language the user is speaking (e.g., Spanish, French, etc.).

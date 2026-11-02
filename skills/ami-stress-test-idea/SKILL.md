@@ -20,15 +20,19 @@ You must systematically evaluate the proposal across these five critical dimensi
 - If this implementation catastrophically fails in production, what caused it?
 - Look for fragile assumptions (e.g., "the external API will always respond under 200ms", "users will always follow the happy path", "the database query will scale linearly").
 - What happens during cold starts, network timeouts, or intermittent third-party outages?
+- Does a partial failure leave orphaned state, and does it roll back cleanly?
+- What happens when an upstream source silently changes its schema, semantics, or volume?
 
 ### 2. Concurrency, Race Conditions & State Drift
 - How does the system behave when multiple users or parallel subagents access or mutate the same resource simultaneously?
 - Are there unhandled race conditions, cache invalidation pitfalls, or distributed state inconsistencies?
+- What happens when events arrive duplicated or out of order?
 - Where are the Single Points of Failure (SPOF)?
 
 ### 3. Cost & Resource Explosion (Economic & Performance Vectors)
 - Does the architecture introduce hidden cost multipliers (e.g., unthrottled API calls, recursive AI token generation, unindexed table scans, runaway background cron jobs)?
 - What is the memory footprint and CPU behavior under 10x or 100x expected load?
+- Can an occasional event trigger a burst (e.g. a third-party full re-sync replaying history, a query whose filter skips partition pruning for some parameters, a client call billed to the wrong quota project)?
 
 ### 4. Security, Authorization & Abuse Vectors
 - How could a malicious or careless user exploit this feature?
@@ -53,7 +57,8 @@ You must systematically evaluate the proposal across these five critical dimensi
      - **[Minor / Observability]:** Corner case or maintenance debt that should be monitored or documented.
 
 3. **Synthesize Mitigations & Hardening Countermeasures:**
-   - For every identified weakness, provide a concrete, minimal mitigation (e.g., idempotency keys, circuit breakers, rate limits, atomic transactions).
+   - For every identified weakness, state whether the proposal already mitigates it and provide a concrete, minimal mitigation (e.g., idempotency keys, circuit breakers, rate limits, atomic transactions).
+   - List the required preconditions: safeguards that must enter the implementation plan before development proceeds.
 
 4. **Persist the Stress-Test Report (Persistence Gating):**
    - **Evaluate Longevity & Impact:** Stress-testing is primarily a transient analysis during feature design.

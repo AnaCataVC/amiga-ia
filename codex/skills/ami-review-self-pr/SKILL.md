@@ -8,11 +8,16 @@ allowed-tools: Bash, Read, Grep, Edit, Write
 
 When this skill is invoked, you act as a stringent Senior Engineer reviewing the user's own work. Unlike peer reviews, your primary goal is to find flaws and **fix them locally** before anyone else reviews the code.
 
+- **Never bypass hooks:** never run `git commit`/`git push` with `--no-verify` to get past pre-commit or pre-push findings; fix the root cause.
+- **Repo-provided reviewers:** if the target repository ships its own reviewer agent (e.g. under `.claude/agents/`), run the review through it — it owns repo-specific blocking gates a generic reviewer never sees.
+
 ## Workflow
 
 1. **Context Identification, Validation & Dynamic Diffing:**
    - Ask the user which PR, branch, or specific commit they want you to review.
    - **CRITICAL AUTHORSHIP CHECK:** Identify if the PR or code belongs to another developer or teammate. This skill is exclusively for reviewing and directly fixing the user's OWN code. If the user is trying to review someone else's PR or give peer feedback to a teammate, **IMMEDIATELY STOP**, explain the difference between both skills, and recommend switching to **`ami-review-peer-pr`** (which focuses on interactive QA, criticality observations, and publishing GitHub review comments without altering local files). Offer to invoke `ami-review-peer-pr` right away.
+     - Verify, never assume: compare `gh pr view <target> --json author` against the authenticated user (`gh api user --jq .login`). Uncommitted or unpushed work with no PR belongs to the user by definition.
+   - **Where fixes live:** if the PR's branch is not the current checkout, work in a scratch `git worktree` of `origin/<branch>`. Never switch branches in the main clone (it may hold uncommitted work) and never create a new branch. Remove the worktree when the review ends, pushed or not.
    - If a PR URL or number is provided and belongs to the user, read the diff directly against its configured base branch (`baseRefName`).
    - If it's a local branch, determine its target base branch:
      - **Stacked PR Awareness:** Check if the local branch builds upon an intermediate layer in a **Stacked PRs** chain rather than branching directly from `main` or `master` (e.g., verifying `baseRefName` via GitHub CLI or stacking tools like `gh stack` / Graphite `gt`).
@@ -20,6 +25,7 @@ When this skill is invoked, you act as a stringent Senior Engineer reviewing the
    - **PR Description & Acceptance Criteria Ingestion:**
      - If inspecting an active PR, read its body description, title, and milestone via `gh pr view --json title,body,milestone`.
      - Map the proposed diff against the author's own checklist and acceptance criteria (e.g. `- [ ]` / `- [x]`) to ensure no promised item was left half-implemented.
+     - Anything the author already declared in the body (merge order, accepted debt, excluded scope) is not a finding. Exception: metadata the repo governs (criticality, "does not touch X") is a claim — verify it against the touched files. Pass the body to any subagent reviewing on your behalf.
      - Ingest repository architecture documents (`README.md`, `docs/adr/`, `docs/architecture/`) to ensure alignment with repository invariants.
    - **Pre-Review Existing Comments Gate (Comment Analysis Prerequisite):**
      - **Local Branch Bypass:** If reviewing a local branch or uncommitted code with no active remote PR (or if `gh pr view` returns non-zero / no pull request found), immediately bypass this gate and proceed directly to local diff analysis against base branch.
@@ -45,7 +51,21 @@ When this skill is invoked, you act as a stringent Senior Engineer reviewing the
      - Hardcoded values or magic numbers.
      - Missing error handling or logging.
      - Potential performance bottlenecks.
-     - Missing or outdated tests.
+     - Missing or outdated tests — a test counts only if it fails with the fix reverted; fixtures that pass by coincidence (same-length IDs, a fake client exposing fields the real API lacks) do not.
+     - Committed measurements (baselines, reports) that the committed tooling cannot regenerate, or that do not isolate the PR's own effect.
+   - **Failure resilience and state safety:**
+     - **Cleanup and rollback:** a mid-execution failure (timeout, exception, disconnect) must not leave corrupted or half-mutated state.
+     - **Idempotency under retries:** retried functions must not duplicate side effects.
+     - **Model-controlled input:** LLM tool arguments are untrusted — validate them against the contract before interpolating into a URL/path (above all one carrying a service token), never echo upstream error bodies back to the model, cap payload sizes reusing an existing limit constant.
+     - **Silent defaults:** every `catch` must log diagnostic context (identifiers, no PII or credentials) or state why it suppresses; every fallback that fabricates a default or disables a feature must log or alert.
+   - **Semantic drift:**
+     - **Duplicated decisions:** two predicates evaluating the same condition will drift apart — consolidate or verify they share timing and context.
+     - **Partial gate alignment:** when aligning a surface (prompt, UI, reported state) with a gate, enumerate every condition of the gate (capability and role, flag and property, tenant and user). A read-visibility scope is a gate too: if a write's safety depends on reading state back (dedup, re-check), confirm every role allowed to write can also read it.
+     - **Naming drift:** identifiers whose meaning widened or narrowed keep stale names — rename them.
+     - **Contract drift:** check changed behavior clause by clause against its contract (OpenAPI, schema, tool definition, docstring): error codes documented, payload shape exact, always-present fields always sent. A docstring promising an unenforced guarantee is drift.
+     - **Sibling flows:** a behavior wired into one of several parallel flows must be checked and tested in every sibling. When the diff removes a helper's last caller, delete the helper and its test.
+     - **Contextual scope:** inspect code adjacent to the diff. When the diff edits prompts or docs, read the whole file and its recent history on the base branch — a rule merged meanwhile may already say the same thing.
+   - **Over-engineering:** for each added abstraction, config knob, dependency or helper, ask whether it is needed now and whether existing code, the stdlib, the platform or an installed dependency already covers it. An interface with one implementation or a setting for a value that never changes is a finding; the fix is deletion. Trust-boundary validation, data-loss error handling and security are never "extra".
    - **Validate every path, not just the happy path.** Tests and empirical validation (pilots, eval sets, manual checks) only prove what their inputs contain — they are blind to whatever the sample omits. So reason beyond them:
      - **All execution paths.** Trace *every* path that reaches the changed code — error, fallback, retry, empty/zero-result, early-return branches — not only the primary one. Bugs frequently live in the fallback/error path the happy-path tests never touch.
      - **Data-flow of each input.** For every value the new code consumes: where does it originate? Does it survive a re-request/retry? Which pre-existing validation runs *before* the change, and does it therefore only guard the original or first element (e.g. `results[0]`) and not the candidate the new code selects? The bug is often the interaction between new code and a guard that no longer covers it.
@@ -64,6 +84,7 @@ When this skill is invoked, you act as a stringent Senior Engineer reviewing the
      - **Zero Defects Detected:** Record a verified `[Blind-Spot Probe: Clean]` certification, confirming that all 5 adversarial dimensions were probed with zero defects found.
 
 4. **Concrete Code Suggestions (KISS & DRY):**
+   - **Anchor every finding** to a `file:line` you actually inspected on the reviewed ref; unanchored findings lead to fixes applied to intact code.
    - Instead of leaving abstract comments (e.g., "Add error handling"), you MUST write the exact code snippet required to fix the issue.
    - **Simplicity First:** Propose the simplest professional fix that completely resolves the issue without introducing architectural bloat or excessive layers.
    - **Extract Duplication to Utilities:** If the fix involves logic repeated across files or methods, refactor and isolate the common routine into a centralized helper (`utils/` or `helpers/`) rather than copying code.
@@ -81,8 +102,10 @@ When this skill is invoked, you act as a stringent Senior Engineer reviewing the
        - If approved, apply the fix to the files and re-execute the test runner until all tests pass.
 
 6. **Proactive Implementation (Code Review Mode):**
+   - **Findings-only mode:** when an orchestrator batching several PRs requests it, stop after Step 4 — no edits, no prompt, no test run.
    - Ask the user: "Would you like me to apply these fixes directly to the files?"
    - If the user approves, use your file editing tools to apply the exact fixes locally.
+   - **Re-review applied fixes:** they are new code — re-read the modified files (naming drift, duplicated decisions, error paths) and run the repo's checks; fix regressions and re-run until they pass.
    - Once applied, advise the user to amend their commit or push the new changes to their branch.
 
 ---

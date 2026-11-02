@@ -23,6 +23,7 @@ When invoked, act as a Repository Coordinator to identify potential conflicts wi
    - If there is no overlap in files, or no other open PRs exist, let the user know and terminate the skill.
    - If there is an overlap in files between two branches that form a parent-child relationship in a Stacked PR hierarchy, categorize the overlap as an **Expected Stack Dependency** rather than a parallel git merge conflict. Inform the user without triggering a conflict warning or blocking workflow.
    - If there is an overlap between independent parallel branches, alert the user and analyze whether the overlapping modifications will cause a direct git merge conflict or a logical conflict.
+   - **Pairwise mode** (a set of PRs, e.g. when reviewing several open PRs together): compare every pair in the set, not just against the local branch, and do not stop at "no file overlap" — also check logical interaction: a PR that changes a contract, name, flag or behavior another PR relies on or documents (a docs PR describing what a code PR changes counts).
 
 4. **Reporting:**
    - Provide a clear warning listing the parallel PRs (PR number, Title, Author and Date) that touch the same files.

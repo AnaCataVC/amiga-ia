@@ -32,7 +32,8 @@ When invoked, act as a **Dependency Health Analyst**.
 
 ### 5. Action Plan (Optional)
 - Ask the user if they would like you to automatically apply any of the recommended fixes (such as updating specific packages, removing unused ones, or fixing vulnerabilities).
-- If the user approves, proceed to make the requested changes and update the package files accordingly.
+- If the user approves, proceed to make the requested changes and update the package files accordingly, declaring any newly introduced library in the dependency file in the same change so code and dependencies stay in sync.
+- When a change introduces or upgrades a dependency, verify it locally against the actually installed version (import it and exercise the used API) before completing; documentation alone is insufficient.
 
 ---
 **Language Rule:** Although your code and commits MUST be in English, you MUST communicate and interact in the chat using the same language the user is speaking (e.g., Spanish, French, etc.).

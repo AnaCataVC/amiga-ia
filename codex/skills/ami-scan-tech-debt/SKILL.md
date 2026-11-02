@@ -22,7 +22,7 @@ When invoked, act as a **Tech Debt Analyst**.
 
 ### 3. Code Quality and Architecture Audit
 - Scan the codebase to identify:
-  - **Dead code:** Unused variables, functions, components, or files.
+  - **Dead code:** Unused variables, functions, components, or files. Where the repo declares dead-code or duplication analyzers (e.g. `vulture`, `ts-prune`, `jscpd`), run them and report their output instead of hunting by eye.
   - **Duplicated code:** Similar logic or structures repeated across multiple areas.
   - **Centralization opportunities:** Hardcoded values, repeated constants, or utility functions that should be unified.
   - **Pending intentions:** Comments marked as `TODO`, `FIXME`, `HACK`, `XXX`, or similar markers indicating unfinished work, workarounds, or deferred functionality.
@@ -30,7 +30,8 @@ When invoked, act as a **Tech Debt Analyst**.
     - **Type Erosion & Permissive Contracts:** Overuse of generic/permissive types (`any`, un-schematized dicts/objects) or missing contract boundaries.
     - **De-facto vs. Enforced Gating:** Components relying on caller assumptions rather than self-enforced guards.
     - **Silenced Patches & Swallowed Exceptions:** Exception blocks that swallow errors silently or return empty fallbacks to mask underlying integration failures.
-  - **Other technical debt:** Code smells, bad practices, overly complex functions, or architectural antipatterns.
+  - **Over-Engineering:** Single-implementation interfaces, delegating-only wrappers, single-product factories, configuration flags for static values, or premature abstractions. Report the largest pruning opportunities first.
+  - **Other technical debt:** Code smells, bad practices, functions disproportionately long or nested relative to the repo's baseline, or architectural antipatterns.
 
 ### 4. Classify and Report Findings
 - If no technical debt is found during your audit, you MUST simply output **"NO TECH DEBT FOUND"**. Do not list anything, and do not proceed to step 5.
@@ -40,10 +41,11 @@ When invoked, act as a **Tech Debt Analyst**.
   - **Criticality:** (e.g., `[HIGH]`, `[MEDIUM]`, `[LOW]`)
   - **Ease of Resolution:** (e.g., `[EASY]`, `[MODERATE]`, `[HARD]`)
   - **Implementation Risk:** (e.g., `[HIGH RISK]`, `[MEDIUM RISK]`, `[LOW RISK]`)
-- Provide a clear explanation of the debt, why it is problematic, and a recommended approach to resolve it.
+- Anchor every finding to its concrete file path, and provide a clear explanation of the debt, why it is problematic, and a recommended approach to resolve it.
 - **CRITICAL:** You MUST output this complete list of findings directly to the user in the chat interface before doing anything else.
 
 ### 5. Store Findings (Optional)
+- An audit reports; it does not execute refactors. Do not create branches, PRs, or modify code as part of this skill.
 - If no technical debt was found, do NOT offer to document anything.
 - After showing the list of found debt to the user, you MUST ask for their explicit permission to save this report to the `docs/tech-debt.md` file. DO NOT create or update the file automatically.
 - If the user approves, write the complete structured list of findings into the file.

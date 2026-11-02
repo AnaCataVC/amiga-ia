@@ -17,6 +17,8 @@ When invoked, act as a methodical and rigorous debugger. Your goal is to find th
    - **CONFIRMATION 1:** Before moving forward, summarize your understanding of the bug (whether deduced or provided) and STOP to ask the user if your understanding is correct. Do not proceed to debugging until the user confirms.
 
 2. **Hypothesis Generation & Systematic Isolation:**
+   - Rule out the simplest explanations first (syntax error, missing dependency, wrong environment or config) before deep debugging. Gather evidence before forming hypotheses.
+   - If the bug depends on real input data, reproduce it with a captured real input rather than a synthetic one.
    - Formulate multiple potential hypotheses for the bug.
    - Use a "divide and conquer" or "binary search" approach to isolate the issue. Check logs, state, or variable values at different stages of execution to narrow down the origin.
    - Test each hypothesis one by one, eliminating them based on evidence. Add temporary logging (e.g. `console.log`, `print`) or use the project's debug tools. Run the code and analyze the output.
@@ -34,7 +36,7 @@ When invoked, act as a methodical and rigorous debugger. Your goal is to find th
    - Once the user approves the solution, apply the fix cleanly and verify that the bug is no longer reproducible locally.
 
 5. **Regression Prevention & Documentation Proposal:**
-   - **Write Tests:** Before creating new tests from scratch, check if existing tests can be leveraged or optimized to cover this bug. If no tests exist or a new suite is needed, plan to invoke the `ami-create-tests` skill.
+   - **Write Tests:** Before creating new tests from scratch, check if existing tests can be leveraged or optimized to cover this bug. If no tests exist or a new suite is needed, plan to invoke the `ami-create-tests` skill. Neutralize the fix once and confirm the regression test fails; a test that never failed proves nothing.
    - **Documentation:** Plan the documentation of the root cause, fix, and learnings using the `ami-manage-docs` skill (Mode D: Knowledge & ADR Harvesting).
    - **CONFIRMATION 3:** STOP and present the plan for tests and documentation. Ask the user if the approach for testing and documenting is OK before executing it.
 

@@ -92,11 +92,18 @@ Analyze commit messages against Conventional Commits:
 Present the prepared release bundle clearly:
 1. **Target Version Tag:** e.g., `v5.2.0`
 2. **Bilingual Release Notes Draft:** English followed by Spanish.
-3. Confirm with the user before publishing the release or updating package manager manifests.
+3. CONFIRMATION 1 - Publish release: STOP and present the target tag, the notes draft, and any manifest version changes to the user. Await explicit approval before creating the tag, publishing the release, or editing package manifests.
 
 > [!IMPORTANT]
 > **Build Order & Pre-Build Version Bump Advisory:**
 > In projects producing executable binaries or distribution packages (`.exe`, `.msi`, `.apk`, installers), version bumps in source configuration files (`*.csproj`, `app.manifest`, `constants.py`, `package.json`, `Cargo.toml`, etc.) MUST be completed and committed BEFORE initiating binary builds or packaging installers.
+> For installers (e.g. Inno Setup, WiX, NSIS), the build output path must match the installer script's source paths, otherwise a stale binary is packaged silently; check the built binary reports the new version before packaging.
+
+### 6. Post-Publish Verification
+- **Tag scope:** `git log --oneline origin/main..<TAG>` must be empty (or contain only the intended commits); unmerged stacked-PR work must not leak into the tag.
+- **Assets:** A release that ships binaries is not done until its assets are attached: `gh release view <TAG> --json assets` must list the expected files. Missing or stale assets -> propose `gh release upload <TAG> <files> --clobber`.
+- **Deployment truth:** A green pipeline is not a deployment. If the release deploys, confirm the running version from the serving system (e.g. the deployed container image, or a version/build endpoint).
+- **Cleanup:** Remove gitignored build/dist output with the toolchain's native clean (e.g. `cargo clean`, `dotnet clean`) or explicit paths, never broad globs like `*build*` or `*bin*` that can match source folders.
 
 ---
 **Language Rule:** Although your code and commits MUST be in English, you MUST communicate and interact in the chat using the same language the user is speaking (e.g., Spanish, French, etc.).

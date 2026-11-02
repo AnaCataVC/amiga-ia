@@ -38,6 +38,7 @@ The following standards apply across all modes (Architecture, Synchronization, L
 3. **Local Path Privacy (Zero Path Leaks):**
    - Never leak absolute local machine paths (e.g., `C:\Users\...` or `/home/...`) in documentation, README files, architecture diagrams, command snippets, or error references.
    - Always use relative paths (e.g., `./scripts/build.ps1`), standard environment variables (e.g., `%LOCALAPPDATA%\AppName\Logs`), or generic placeholders (e.g., `/path/to/project`).
+   - Never reference internal planning phases or design options (e.g., 'Phase 1', 'Option B') in documentation.
 4. **Clean Shields.io Badges:**
    - Format badges using standard flat style (`style=flat`), official brand logos (`logo=...`), and white glyphs (`logoColor=white`).
    - Badges must reflect genuine technical metadata (languages, frameworks, platforms, test status, licenses).
@@ -47,6 +48,9 @@ The following standards apply across all modes (Architecture, Synchronization, L
    - Formulate all verification steps dynamically and atemporally (e.g., 'verify that the full automated test suite passes with 100% success / zero regressions').
 6. **Gender Neutrality & Inclusive Language in Spanish:**
    - In Spanish-language documentation, interfaces, release notes, and communications, use neutral phrasing (e.g., 'te damos la bienvenida', 'todo listo') and avoid gender-biased assumptions or binary gendered phrasing.
+7. **Research Before Writing:**
+   - Follow the repo's established documentation language; default to English when none exists.
+   - If technical background is missing for what you are documenting, gather it first (read the code; use `ami-research-context` for external libraries, APIs, or frameworks). Never document from a guess.
 
 ---
 
@@ -56,6 +60,7 @@ The following standards apply across all modes (Architecture, Synchronization, L
    - If documentation exists, adopt established patterns or propose a restructuring plan if fragmented.
    - If starting from scratch, infer layout from codebase structure and propose both human-facing documentation (`README.md`, `docs/`) and AI assistant guidance (`AGENTS.md`, `CLAUDE.md`).
 2. **Alignment & Structure Proposal:**
+   - Define the target audience (internal developers vs. end users) and technical depth.
    - Present proposed file hierarchy in chat and await explicit user approval before drafting or reorganizing files.
 3. **Iterative Generation & Review:**
    - Strictly enforce the **Mandatory Documentation Standards** (Zero Flags, HTML Anchors, Path Privacy, Clean Badges, Atemporal Quality Gates, and Spanish Gender Neutrality).
@@ -74,6 +79,7 @@ The following standards apply across all modes (Architecture, Synchronization, L
 3. **Apply & Report:**
    - Write changes after approval, strictly enforcing the **Mandatory Documentation Standards** (Zero Flags, HTML Anchors, Path Privacy, Clean Badges, Atemporal Quality Gates, and Spanish Gender Neutrality).
    - Report updated files, or state if no documentation changes were needed.
+   - If new features lack documentation entirely, offer to run **Section A** to draft it.
 
 ---
 
@@ -103,6 +109,12 @@ The following standards apply across all modes (Architecture, Synchronization, L
    - Check `docs/learning/`, `docs/external-references/`, and `docs/adr/` to avoid duplicating existing records.
    - **CRITICAL:** Present extracted learnings/decisions to the user first and request explicit permission before creating files.
    - Once approved, persist architectural decisions as sequential ADRs in `docs/adr/` and high-signal technical lessons in `docs/learning/<topic-slug>.md`. If changes were trivial, report that no persistent learning record was required.
+
+---
+
+## Fan-out for Large Jobs
+
+Below about three documents, write them in this context. Above that, or across several modules, split the work by component (e.g., API reference, tutorial, package READMEs) and hand each to a parallel subagent carrying this SKILL.md. The approval gates still apply: present all drafts together before anything is written.
 
 ---
 **Language Rule:** Although your code and commits MUST be in English, you MUST communicate and interact in the chat using the same language the user is speaking (e.g., Spanish, French, etc.).
