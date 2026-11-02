@@ -8,6 +8,7 @@ const { loadRegistry, resolvePackOrExtension, getAllPackCapabilities } = require
 const { loadReceipt, saveReceipt, updatePackReceipt } = require('../src/core/receipts');
 const { installClaudeMods, removeClaudeMods } = require('../src/core/extensions');
 const { filterSkillsByPacks, filterAgentsByPacks, cleanUnselectedPackFiles } = require('../src/core/installer');
+const { parseInstallArgs } = require('../bin/setup');
 
 describe('Amiga IA Ecosystem Registry & Pack Resolution Tests', () => {
 
@@ -137,6 +138,96 @@ describe('Amiga IA Claude Mods Runtime Extension Tests', () => {
 
     fs.rmSync(tmpClaudeDir, { recursive: true, force: true });
     fs.rmSync(tmpSourceDir, { recursive: true, force: true });
+  });
+
+});
+
+describe('Amiga IA CLI Argument Parsing Tests', () => {
+
+  test('parseInstallArgs parses --packs and -p with comma-separated values', () => {
+    const res1 = parseInstallArgs(['--packs', 'essential,data']);
+    assert.deepStrictEqual(res1.packs, ['essential', 'data']);
+
+    const res2 = parseInstallArgs(['-p', 'ui,data']);
+    assert.deepStrictEqual(res2.packs, ['ui', 'data']);
+
+    const res3 = parseInstallArgs(['--packs=essential,ui']);
+    assert.deepStrictEqual(res3.packs, ['essential', 'ui']);
+
+    const res4 = parseInstallArgs(['-p=data']);
+    assert.deepStrictEqual(res4.packs, ['data']);
+  });
+
+  test('parseInstallArgs handles --all and --essential-only convenience flags', () => {
+    const resAll = parseInstallArgs(['--all']);
+    assert.deepStrictEqual(resAll.packs, ['essential', 'data', 'ui']);
+    assert.strictEqual(resAll.installAll, true);
+
+    const resEss = parseInstallArgs(['--essential-only']);
+    assert.deepStrictEqual(resEss.packs, ['essential']);
+    assert.strictEqual(resEss.essentialOnly, true);
+  });
+
+  test('parseInstallArgs handles assistant selectors and claude-mods toggles', () => {
+    const resAss = parseInstallArgs(['--assistants', 'claude,codex', '--claude-mods']);
+    assert.deepStrictEqual(resAss.assistants, ['claude', 'codex']);
+    assert.strictEqual(resAss.claudeMods, true);
+
+    const resAssShort = parseInstallArgs(['-a=antigravity', '--no-claude-mods']);
+    assert.deepStrictEqual(resAssShort.assistants, ['antigravity']);
+    assert.strictEqual(resAssShort.claudeMods, false);
+  });
+
+});
+
+describe('Amiga IA Domain Pack Selective Installation & Pruning Tests', () => {
+
+  test('cleanUnselectedPackFiles cleanly prunes deselected packs while preserving essential and user files', () => {
+    const tmpDestDir = fs.mkdtempSync(path.join(os.tmpdir(), 'amiga-clean-packs-test-'));
+
+    // Create mock skills in destination
+    fs.mkdirSync(path.join(tmpDestDir, 'ami-plan-feature'), { recursive: true });
+    fs.mkdirSync(path.join(tmpDestDir, 'ami-optimize-sql'), { recursive: true });
+    fs.mkdirSync(path.join(tmpDestDir, 'ami-design-ux'), { recursive: true });
+    fs.mkdirSync(path.join(tmpDestDir, 'my-custom-skill'), { recursive: true });
+
+    // Allowed skills: only essential pack skills (which contains ami-plan-feature, but NOT ami-optimize-sql or ami-design-ux)
+    const essentialCaps = getAllPackCapabilities(['essential']);
+    const deleted = cleanUnselectedPackFiles(tmpDestDir, essentialCaps.skills);
+
+    assert.ok(deleted.includes('ami-optimize-sql'));
+    assert.ok(deleted.includes('ami-design-ux'));
+    assert.ok(!deleted.includes('ami-plan-feature'));
+    assert.ok(!deleted.includes('my-custom-skill'));
+
+    // Verify physical file system state
+    assert.ok(fs.existsSync(path.join(tmpDestDir, 'ami-plan-feature')), 'essential skill must remain');
+    assert.ok(fs.existsSync(path.join(tmpDestDir, 'my-custom-skill')), 'user custom skill must NEVER be deleted');
+    assert.ok(!fs.existsSync(path.join(tmpDestDir, 'ami-optimize-sql')), 'deselected data skill must be pruned');
+    assert.ok(!fs.existsSync(path.join(tmpDestDir, 'ami-design-ux')), 'deselected ui skill must be pruned');
+
+    fs.rmSync(tmpDestDir, { recursive: true, force: true });
+  });
+
+  test('cleanUnselectedPackFiles cleanly prunes agent files (.md and .toml) while preserving user custom agents', () => {
+    const tmpAgentsDir = fs.mkdtempSync(path.join(os.tmpdir(), 'amiga-clean-agents-test-'));
+
+    fs.writeFileSync(path.join(tmpAgentsDir, 'ami-tech-lead.md'), '# Tech Lead');
+    fs.writeFileSync(path.join(tmpAgentsDir, 'ami-data-scientist.md'), '# Data Scientist');
+    fs.writeFileSync(path.join(tmpAgentsDir, 'my-own-agent.md'), '# User Agent');
+
+    const essentialCaps = getAllPackCapabilities(['essential']);
+    const deleted = cleanUnselectedPackFiles(tmpAgentsDir, essentialCaps.agents.map(a => `${a}.md`));
+
+    assert.ok(deleted.includes('ami-data-scientist.md'));
+    assert.ok(!deleted.includes('ami-tech-lead.md'));
+    assert.ok(!deleted.includes('my-own-agent.md'));
+
+    assert.ok(fs.existsSync(path.join(tmpAgentsDir, 'ami-tech-lead.md')));
+    assert.ok(fs.existsSync(path.join(tmpAgentsDir, 'my-own-agent.md')));
+    assert.ok(!fs.existsSync(path.join(tmpAgentsDir, 'ami-data-scientist.md')));
+
+    fs.rmSync(tmpAgentsDir, { recursive: true, force: true });
   });
 
 });

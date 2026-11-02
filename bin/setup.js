@@ -447,7 +447,7 @@ function saveVersionManifest(targetDir, version, extra = {}) {
       version: version,
       installedAt: existing.installedAt || new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      installedPacks: extra.installedPacks || existing.installedPacks || ['essential', 'data', 'ui'],
+      installedPacks: Array.isArray(extra.installedPacks) ? Array.from(new Set(extra.installedPacks)) : (existing.installedPacks || ['essential', 'data', 'ui']),
       installedExtensions: extra.installedExtensions || existing.installedExtensions || {},
       files: extra.files || existing.files || []
     }, null, 2);
@@ -969,7 +969,60 @@ Use the starter prompt buttons above or type in chat:
 `;
 }
 
-async function runInstall() {
+function parseInstallArgs(args = []) {
+  const parsed = {
+    assistants: null,
+    packs: null,
+    installAll: false,
+    essentialOnly: false,
+    claudeMods: null,
+    nonInteractive: false
+  };
+
+  for (let i = 0; i < args.length; i++) {
+    const a = args[i].toLowerCase();
+    if (a === '--packs' || a === '-p') {
+      const val = args[i + 1];
+      if (val && !val.startsWith('-')) {
+        parsed.packs = val.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+        i++;
+      }
+    } else if (a.startsWith('--packs=')) {
+      parsed.packs = a.slice('--packs='.length).split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+    } else if (a.startsWith('-p=')) {
+      parsed.packs = a.slice('-p='.length).split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+    } else if (a === '--all') {
+      parsed.installAll = true;
+    } else if (a === '--essential-only') {
+      parsed.essentialOnly = true;
+    } else if (a === '--assistants' || a === '-a') {
+      const val = args[i + 1];
+      if (val && !val.startsWith('-')) {
+        parsed.assistants = val.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+        i++;
+      }
+    } else if (a.startsWith('--assistants=') || a.startsWith('-a=')) {
+      const prefix = a.startsWith('--assistants=') ? '--assistants=' : '-a=';
+      parsed.assistants = a.slice(prefix.length).split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+    } else if (a === '--claude-mods' || a === '--mods') {
+      parsed.claudeMods = true;
+    } else if (a === '--no-claude-mods' || a === '--no-mods') {
+      parsed.claudeMods = false;
+    } else if (a === '-y' || a === '--yes' || a === '--non-interactive') {
+      parsed.nonInteractive = true;
+    }
+  }
+
+  if (parsed.installAll) {
+    parsed.packs = ['essential', 'data', 'ui'];
+  } else if (parsed.essentialOnly) {
+    parsed.packs = ['essential'];
+  }
+
+  return parsed;
+}
+
+async function runInstall(options = {}) {
   const { version: currentVersion } = getPackageInfo();
   console.log(pc.cyan('======================================================'));
   console.log(pc.bold(pc.white(` 🌟 Welcome to Amiga IA Setup Wizard [v${currentVersion}]`)));
@@ -977,34 +1030,112 @@ async function runInstall() {
   console.log('This wizard will install the Amiga IA Universal Agent Skills');
   console.log('into your local AI environments.\n');
 
-  const choices = await multiselect({
-    message: 'Which assistants do you want to configure?',
-    options: [
-      { label: 'Claude Code', value: 'claude' },
-      { label: 'Antigravity (Gemini)', value: 'antigravity' },
-      { label: 'Codex', value: 'codex' }
-    ],
-    initialValues: ['claude', 'antigravity'],
-    required: true
-  });
-  if (isCancel(choices)) process.exit(0);
+  let choices = options.assistants;
+  if (!choices || choices.length === 0) {
+    choices = await multiselect({
+      message: 'Which assistants do you want to configure?',
+      options: [
+        { label: 'Claude Code', value: 'claude' },
+        { label: 'Antigravity (Gemini)', value: 'antigravity' },
+        { label: 'Codex', value: 'codex' }
+      ],
+      initialValues: ['claude', 'antigravity'],
+      required: true
+    });
+    if (isCancel(choices)) process.exit(0);
+  }
+
+  // Domain Packs Selection
+  let selectedPacks = options.packs;
+  if (!selectedPacks || selectedPacks.length === 0) {
+    const packChoices = [
+      {
+        label: 'Essential Engineering (essential) — Core architecture, testing, cleanroom, quality, git, docs',
+        value: 'essential'
+      },
+      {
+        label: 'Data & Analytics (data) — Data science profiling, SQL optimization, dashboards',
+        value: 'data'
+      },
+      {
+        label: 'UI & UX Engineering (ui) — Design heuristics, living prototypes, token consistency',
+        value: 'ui'
+      }
+    ];
+
+    const chosen = await multiselect({
+      message: 'Which domain packs do you want to install?',
+      options: packChoices,
+      initialValues: ['essential', 'data', 'ui'],
+      required: true
+    });
+    if (isCancel(chosen)) process.exit(0);
+    selectedPacks = chosen;
+  }
+
+  // Ensure essential is always included as foundational base
+  if (!selectedPacks.includes('essential')) {
+    selectedPacks.unshift('essential');
+  }
+
+  console.log(pc.cyan(`\n📦 Active Domain Packs: [${selectedPacks.join(', ')}]`));
+  const packCapabilities = getAllPackCapabilities(selectedPacks);
+  console.log(pc.gray(`   Selected capabilities: ${packCapabilities.agents.length} agents, ${packCapabilities.skills.length} skills\n`));
+
+  let installClaudeModsExt = options.claudeMods;
+  if (choices.includes('claude') && installClaudeModsExt === null && !options.nonInteractive) {
+    installClaudeModsExt = await confirm({
+      message: 'Install recommended Claude Code runtime extension (claude-mods)?',
+      initialValue: true
+    });
+    if (isCancel(installClaudeModsExt)) process.exit(0);
+  }
 
   if (choices.includes('claude')) {
     console.log(pc.blue('\nInstalling for Claude Code...'));
-    cleanOrphanedFiles(sourceSkillsDir, path.join(claudeDir, 'skills'));
-    cleanOrphanedFiles(sourceAgentsDir, path.join(claudeDir, 'agents'));
-    copyRecursiveSync(sourceSkillsDir, path.join(claudeDir, 'skills'), 'claude');
-    copyRecursiveSync(sourceAgentsDir, path.join(claudeDir, 'agents'), 'claude');
-    saveVersionManifest(claudeDir, currentVersion);
-    console.log(pc.green('✅ Skills and Agents directories successfully configured.'));
+    const claudeSkillsDir = path.join(claudeDir, 'skills');
+    const claudeAgentsDir = path.join(claudeDir, 'agents');
+    if (!fs.existsSync(claudeSkillsDir)) fs.mkdirSync(claudeSkillsDir, { recursive: true });
+    if (!fs.existsSync(claudeAgentsDir)) fs.mkdirSync(claudeAgentsDir, { recursive: true });
+
+    cleanUnselectedPackFiles(claudeSkillsDir, packCapabilities.skills);
+    cleanUnselectedPackFiles(claudeAgentsDir, packCapabilities.agents.map(a => `${a}.md`));
+    cleanOrphanedFiles(sourceSkillsDir, claudeSkillsDir);
+    cleanOrphanedFiles(sourceAgentsDir, claudeAgentsDir);
+
+    for (const skill of packCapabilities.skills) {
+      const src = path.join(sourceSkillsDir, skill);
+      const dest = path.join(claudeSkillsDir, skill);
+      if (fs.existsSync(src)) copyRecursiveSync(src, dest, 'claude');
+    }
+    for (const agent of packCapabilities.agents) {
+      const src = path.join(sourceAgentsDir, `${agent}.md`);
+      const dest = path.join(claudeAgentsDir, `${agent}.md`);
+      if (fs.existsSync(src)) copyRecursiveSync(src, dest, 'claude');
+    }
+
+    if (installClaudeModsExt) {
+      try {
+        const modRes = installClaudeMods(claudeDir);
+        console.log(pc.green(`✅ Installed ${modRes.installedMods.length} Claude Code mod(s) to ~/.claude/mods/.`));
+      } catch (e) {
+        console.log(pc.yellow(`⚠️ Claude Code mods installation skipped: ${e.message}`));
+      }
+    }
+
+    saveVersionManifest(claudeDir, currentVersion, { installedPacks: selectedPacks });
+    console.log(pc.green(`✅ Skills and Agents directories successfully configured [packs: ${selectedPacks.join(', ')}].`));
 
     const claudeRuleContent = `## 🤖 Amiga IA Universal Directives
 - **Skills & Subagents:** Inspect and proactively invoke \`ami-*\` skills and specialized subagents for planning, coding sessions, git hygiene, documentation, PR reviews, and releases.
 - **Workflow Orchestration:** When handling complex tasks or release lifecycles, delegate strictly to orchestrators (\`ami-push-assistant\`, \`ami-release-manager\`, \`ami-tech-lead\`, \`ami-pr-publisher\`).
 - **Clean Commits:** Follow Conventional Commits in English (\`feat:\`, \`fix:\`, \`chore:\`, \`refactor:\`).`;
 
-    const installClaudeRules = await confirm({ message: 'Install recommended Amiga IA behavioral rules in ~/.claude/CLAUDE.md?', initialValue: true });
-    if (isCancel(installClaudeRules)) process.exit(0);
+    let installClaudeRules = !options.nonInteractive;
+    if (!options.nonInteractive) {
+      installClaudeRules = await confirm({ message: 'Install recommended Amiga IA behavioral rules in ~/.claude/CLAUDE.md?', initialValue: true });
+      if (isCancel(installClaudeRules)) process.exit(0);
+    }
     if (installClaudeRules) {
       if (!fs.existsSync(claudeDir)) fs.mkdirSync(claudeDir, { recursive: true });
       const claudeMdPath = path.join(claudeDir, 'CLAUDE.md');
@@ -1018,7 +1149,7 @@ async function runInstall() {
       console.log(pc.gray('⏭️ Rules installation skipped for Claude Code.'));
     }
 
-    if (fs.existsSync(sourceSettingsPath)) {
+    if (fs.existsSync(sourceSettingsPath) && !options.nonInteractive) {
       console.log('\nClaude Code supports powerful background Hooks (Pre-commit checks, context restoring).');
       const installHooks = await confirm({ message: 'Install recommended Amiga IA Hooks? (We will merge them and create a backup)', initialValue: true });
       if (isCancel(installHooks)) process.exit(0);
@@ -1117,11 +1248,21 @@ async function runInstall() {
 
     fs.writeFileSync(path.join(geminiPluginDir, 'README.md'), generatePluginReadme(currentVersion));
 
+    cleanUnselectedPackFiles(geminiPluginSkillsDir, packCapabilities.skills);
+    cleanUnselectedPackFiles(geminiPluginAgentsDir, packCapabilities.agents.map(a => `${a}.md`));
     cleanOrphanedFiles(sourceSkillsDir, geminiPluginSkillsDir);
     cleanOrphanedFiles(sourceAgentsDir, geminiPluginAgentsDir);
 
-    copyRecursiveSync(sourceSkillsDir, geminiPluginSkillsDir, 'antigravity');
-    copyRecursiveSync(sourceAgentsDir, geminiPluginAgentsDir, 'antigravity');
+    for (const skill of packCapabilities.skills) {
+      const src = path.join(sourceSkillsDir, skill);
+      const dest = path.join(geminiPluginSkillsDir, skill);
+      if (fs.existsSync(src)) copyRecursiveSync(src, dest, 'antigravity');
+    }
+    for (const agent of packCapabilities.agents) {
+      const src = path.join(sourceAgentsDir, `${agent}.md`);
+      const dest = path.join(geminiPluginAgentsDir, `${agent}.md`);
+      if (fs.existsSync(src)) copyRecursiveSync(src, dest, 'antigravity');
+    }
 
     // Clean legacy loose skills and agents from ~/.gemini/config/ to consolidate into plugin bundle
     const looseSkillsDir = path.join(geminiDir, 'skills');
@@ -1133,11 +1274,14 @@ async function runInstall() {
       deleteMatchingFiles(sourceAgentsDir, looseAgentsDir);
     }
 
-    saveVersionManifest(geminiDir, currentVersion);
-    console.log(pc.green('✅ Plugin bundle successfully configured for Antigravity at ~/.gemini/config/plugins/amiga-ia/'));
+    saveVersionManifest(geminiDir, currentVersion, { installedPacks: selectedPacks });
+    console.log(pc.green(`✅ Plugin bundle successfully configured for Antigravity at ~/.gemini/config/plugins/amiga-ia/ [packs: ${selectedPacks.join(', ')}]`));
 
-    const installAntigravityRules = await confirm({ message: 'Install recommended Amiga IA rules in ~/.gemini/config/rules/?', initialValue: true });
-    if (isCancel(installAntigravityRules)) process.exit(0);
+    let installAntigravityRules = !options.nonInteractive;
+    if (!options.nonInteractive) {
+      installAntigravityRules = await confirm({ message: 'Install recommended Amiga IA rules in ~/.gemini/config/rules/?', initialValue: true });
+      if (isCancel(installAntigravityRules)) process.exit(0);
+    }
     if (installAntigravityRules) {
       cleanOrphanedFiles(sourceRulesDir, path.join(geminiDir, 'rules'));
       copyRecursiveSync(sourceRulesDir, path.join(geminiDir, 'rules'), 'antigravity');
@@ -1146,7 +1290,7 @@ async function runInstall() {
       console.log(pc.gray('⏭️ Rules installation skipped for Antigravity.'));
     }
 
-    if (fs.existsSync(sourceSettingsPath)) {
+    if (fs.existsSync(sourceSettingsPath) && !options.nonInteractive) {
       console.log('\nAntigravity supports background Hooks via universal Node.js scripts (Pre-commit reminders, Debug statement checks).');
       const installHooks = await confirm({ message: 'Install recommended universal Amiga IA Hooks for Antigravity?', initialValue: true });
       if (isCancel(installHooks)) process.exit(0);
@@ -1167,20 +1311,38 @@ async function runInstall() {
 
   if (choices.includes('codex')) {
     console.log(pc.blue('\nInstalling for Codex...'));
+    const codexAgentsDir = path.join(codexDir, 'agents');
+    if (!fs.existsSync(codexUserSkillsDir)) fs.mkdirSync(codexUserSkillsDir, { recursive: true });
+    if (!fs.existsSync(codexAgentsDir)) fs.mkdirSync(codexAgentsDir, { recursive: true });
+
+    cleanUnselectedPackFiles(codexUserSkillsDir, packCapabilities.skills);
+    cleanUnselectedPackFiles(codexAgentsDir, packCapabilities.agents.map(a => `${a}.toml`));
     cleanOrphanedFiles(sourceCodexSkillsDir, codexUserSkillsDir);
-    cleanOrphanedFiles(sourceCodexAgentsDir, path.join(codexDir, 'agents'));
-    copyRecursiveSync(sourceCodexSkillsDir, codexUserSkillsDir, 'codex', { codexUserSkillsDir });
-    copyRecursiveSync(sourceCodexAgentsDir, path.join(codexDir, 'agents'), 'codex', { codexUserSkillsDir });
-    saveVersionManifest(codexDir, currentVersion);
-    console.log(pc.green('✅ Codex skills installed in ~/.agents/skills/ and custom subagents in ~/.codex/agents/.'));
+    cleanOrphanedFiles(sourceCodexAgentsDir, codexAgentsDir);
+
+    for (const skill of packCapabilities.skills) {
+      const src = path.join(sourceCodexSkillsDir, skill);
+      const dest = path.join(codexUserSkillsDir, skill);
+      if (fs.existsSync(src)) copyRecursiveSync(src, dest, 'codex', { codexUserSkillsDir });
+    }
+    for (const agent of packCapabilities.agents) {
+      const src = path.join(sourceCodexAgentsDir, `${agent}.toml`);
+      const dest = path.join(codexAgentsDir, `${agent}.toml`);
+      if (fs.existsSync(src)) copyRecursiveSync(src, dest, 'codex', { codexUserSkillsDir });
+    }
+    saveVersionManifest(codexDir, currentVersion, { installedPacks: selectedPacks });
+    console.log(pc.green(`✅ Codex skills installed in ~/.agents/skills/ and custom subagents in ~/.codex/agents/ [packs: ${selectedPacks.join(', ')}].`));
 
     const codexRuleContent = `## 🤖 Amiga IA Universal Directives
 - **Skills & Subagents:** Inspect and proactively invoke \`ami-*\` skills and custom subagents for planning, coding sessions, git hygiene, documentation, PR reviews, and releases.
 - **Workflow Orchestration:** When handling complex tasks or release lifecycles, delegate strictly to orchestrators (\`ami-push-assistant\`, \`ami-release-manager\`, \`ami-tech-lead\`, \`ami-pr-publisher\`).
 - **Clean Commits:** Follow Conventional Commits in English (\`feat:\`, \`fix:\`, \`chore:\`, \`refactor:\`).`;
 
-    const installCodexRules = await confirm({ message: 'Install recommended Amiga IA behavioral rules in ~/.codex/AGENTS.md?', initialValue: true });
-    if (isCancel(installCodexRules)) process.exit(0);
+    let installCodexRules = !options.nonInteractive;
+    if (!options.nonInteractive) {
+      installCodexRules = await confirm({ message: 'Install recommended Amiga IA behavioral rules in ~/.codex/AGENTS.md?', initialValue: true });
+      if (isCancel(installCodexRules)) process.exit(0);
+    }
     if (installCodexRules) {
       if (!fs.existsSync(codexDir)) fs.mkdirSync(codexDir, { recursive: true });
       const codexAgentsMdPath = path.join(codexDir, 'AGENTS.md');
@@ -1194,11 +1356,13 @@ async function runInstall() {
       console.log(pc.gray('⏭️ Rules installation skipped for Codex.'));
     }
 
-    const installHooks = await confirm({ message: 'Install Amiga IA advisory hooks for Codex? Codex will ask you to review and trust them before their first run.', initialValue: true });
-    if (isCancel(installHooks)) process.exit(0);
-    if (installHooks) {
-      const merged = installCodexHooks();
-      if (merged) console.log(pc.green('✅ Codex lifecycle hooks configured in ~/.codex/hooks.json.'));
+    if (!options.nonInteractive) {
+      const installHooks = await confirm({ message: 'Install Amiga IA advisory hooks for Codex? Codex will ask you to review and trust them before their first run.', initialValue: true });
+      if (isCancel(installHooks)) process.exit(0);
+      if (installHooks) {
+        const merged = installCodexHooks();
+        if (merged) console.log(pc.green('✅ Codex lifecycle hooks configured in ~/.codex/hooks.json.'));
+      }
     }
   }
 
@@ -1361,9 +1525,30 @@ async function runList() {
 }
 
 async function runAdd(target) {
+  const registry = loadRegistry();
+
   if (!target) {
-    console.error(pc.red('❌ Error: Missing target name to add. Example: ami add data, ami add ui, ami add claude-mods'));
-    process.exit(1);
+    const choices = [];
+    for (const [id, pack] of Object.entries(registry.packs || {})) {
+      choices.push({
+        label: `Pack: ${pack.name} (${id})`,
+        value: id,
+        hint: `${pack.skills.length} skills, ${pack.agents.length} agents`
+      });
+    }
+    for (const [id, ext] of Object.entries(registry.extensions || {})) {
+      choices.push({
+        label: `Extension: ${ext.name} (${id})`,
+        value: id,
+        hint: `Platform: ${ext.platform}`
+      });
+    }
+    const chosen = await select({
+      message: 'Which pack or extension would you like to add?',
+      options: choices
+    });
+    if (isCancel(chosen)) return;
+    target = chosen;
   }
 
   const resolved = resolvePackOrExtension(target);
@@ -1454,9 +1639,35 @@ async function runAdd(target) {
 }
 
 async function runRemove(target) {
+  const registry = loadRegistry();
+
   if (!target) {
-    console.error(pc.red('❌ Error: Missing target name to remove. Example: ami remove data, ami remove ui, ami remove claude-mods'));
-    process.exit(1);
+    const choices = [];
+    for (const [id, pack] of Object.entries(registry.packs || {})) {
+      if (id === 'essential') continue; // cannot remove essential
+      choices.push({
+        label: `Pack: ${pack.name} (${id})`,
+        value: id,
+        hint: `${pack.skills.length} skills, ${pack.agents.length} agents`
+      });
+    }
+    for (const [id, ext] of Object.entries(registry.extensions || {})) {
+      choices.push({
+        label: `Extension: ${ext.name} (${id})`,
+        value: id,
+        hint: `Platform: ${ext.platform}`
+      });
+    }
+    if (choices.length === 0) {
+      console.log(pc.yellow('ℹ️ No removable optional packs or extensions available.'));
+      return;
+    }
+    const chosen = await select({
+      message: 'Which pack or extension would you like to remove?',
+      options: choices
+    });
+    if (isCancel(chosen)) return;
+    target = chosen;
   }
 
   const resolved = resolvePackOrExtension(target);
@@ -1542,6 +1753,8 @@ async function showPrimaryMenu() {
     options: [
       { label: 'Install / Configure Assistants & Packs', value: 'install' },
       { label: 'List Available Packs & Status (ami list)', value: 'list' },
+      { label: 'Add a Domain Pack or Extension (ami add)', value: 'add' },
+      { label: 'Remove a Domain Pack or Extension (ami remove)', value: 'remove' },
       { label: 'Run Amiga Doctor (Diagnostics)', value: 'doctor' },
       { label: 'Uninstall Amiga IA', value: 'uninstall' },
       { label: 'Exit', value: 'exit' }
@@ -1553,6 +1766,10 @@ async function showPrimaryMenu() {
     await runInstall();
   } else if (action === 'list') {
     await runList();
+  } else if (action === 'add') {
+    await runAdd();
+  } else if (action === 'remove') {
+    await runRemove();
   } else if (action === 'doctor') {
     await runDoctor();
   } else if (action === 'uninstall') {
@@ -1569,8 +1786,12 @@ async function main() {
 
   if (arg === 'doctor' || arg === '--doctor') {
     await runDoctor();
-  } else if (arg === 'install') {
-    await runInstall();
+  } else if (arg === 'install' || arg === 'i') {
+    const installOpts = parseInstallArgs(args.slice(1));
+    await runInstall(installOpts);
+  } else if (arg.startsWith('-')) {
+    const installOpts = parseInstallArgs(args);
+    await runInstall(installOpts);
   } else if (arg === 'list' || arg === 'ls') {
     await runList();
   } else if (arg === 'add') {
@@ -1584,7 +1805,17 @@ async function main() {
   }
 }
 
-main().catch(err => {
-  console.error(pc.red('An error occurred:'), err);
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch(err => {
+    console.error(pc.red('An error occurred:'), err);
+    process.exit(1);
+  });
+} else {
+  module.exports = {
+    parseInstallArgs,
+    runInstall,
+    runAdd,
+    runRemove,
+    runList
+  };
+}
