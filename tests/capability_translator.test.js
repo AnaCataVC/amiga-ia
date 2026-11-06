@@ -121,7 +121,7 @@ test('Cross-Platform Capability Translator Unit Tests', async (t) => {
     ].join('\r\n');
 
     const result = translateFrontmatter(markdown, 'antigravity');
-    assert.ok(result.includes('tools: write_to_file, replace_file_content, multi_replace_file_content, run_command, manage_task, view_file'));
+    assert.ok(result.includes('tools: [write_to_file, replace_file_content, multi_replace_file_content, run_command, manage_task, view_file]'));
     assert.ok(result.includes('\r\n')); // Preserves CRLF
 
   });
@@ -140,7 +140,7 @@ test('Cross-Platform Capability Translator Unit Tests', async (t) => {
     ].join('\n');
 
     const result = translateFrontmatter(markdown, 'antigravity');
-    assert.ok(result.includes('tools: write_to_file, replace_file_content, multi_replace_file_content, view_file'));
+    assert.ok(result.includes('tools: [write_to_file, replace_file_content, multi_replace_file_content, view_file]'));
     assert.ok(result.includes('name: ami-yaml-list-agent'));
   });
 });

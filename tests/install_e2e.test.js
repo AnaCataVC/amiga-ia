@@ -288,6 +288,12 @@ describe('Tri-Ecosystem End-to-End Installation Test Suite', () => {
       for (const file of allMarkdownFiles) {
         const content = fs.readFileSync(file, 'utf8');
         const allowedTools = extractAllowedTools(content);
+        if (allowedTools) {
+          assert.ok(
+            allowedTools.trim().startsWith('[') && allowedTools.trim().endsWith(']'),
+            `Antigravity installed file ${path.relative(geminiDir, file)} must format tools as a YAML flow sequence [...] to satisfy CustomAgentConfig unmarshaling, got: "${allowedTools}"`
+          );
+        }
 
         // Assert no Claude PascalCase tools in Antigravity allowed-tools
         for (const forbidden of FORBIDDEN_CLAUDE_TOOLS_IN_ANTIGRAVITY) {

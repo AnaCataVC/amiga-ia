@@ -176,11 +176,11 @@ const FORBIDDEN_CODEX_ANTIGRAVITY_TOOLS = new Set([
  */
 function normalizeToolInput(tools) {
   if (Array.isArray(tools)) {
-    return tools.flatMap(t => String(t).split(',')).map(t => t.trim()).filter(Boolean);
+    return tools.flatMap(t => String(t).replace(/^\[|\]$/g, '').split(',')).map(t => t.trim()).filter(Boolean);
   }
   if (typeof tools === 'string') {
     const matchToolLine = tools.match(/^(?:allowed-tools|tools):\s*(.+)$/m);
-    const source = matchToolLine ? matchToolLine[1] : tools;
+    const source = (matchToolLine ? matchToolLine[1] : tools).trim().replace(/^\[|\]$/g, '');
     return source.split(',').map(t => t.trim()).filter(Boolean);
   }
   return [];
@@ -290,10 +290,14 @@ function translateFrontmatter(markdownContent, platform) {
       }
 
       const translated = translateTools(rawTools, platform);
-      const outputKey = (platform === 'antigravity' || platform === 'gemini')
+      const isAntigravity = platform === 'antigravity' || platform === 'gemini';
+      const outputKey = isAntigravity
         ? 'tools'
         : (platform === 'claude' ? 'allowed-tools' : key);
-      updatedLines.push(`${outputKey}: ${translated.join(', ')}`);
+      const formattedTools = isAntigravity
+        ? `[${translated.join(', ')}]`
+        : translated.join(', ');
+      updatedLines.push(`${outputKey}: ${formattedTools}`);
       hasReplaced = true;
 
     } else {

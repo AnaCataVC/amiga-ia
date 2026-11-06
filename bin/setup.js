@@ -589,8 +589,28 @@ async function runDoctor() {
     const hasReadme = fs.existsSync(path.join(geminiPluginDir, 'README.md'));
     const hasIcon = fs.existsSync(path.join(geminiPluginAssetsDir, 'icon.png'));
 
-    if (hasAgents && hasSkills && hasPluginJson && hasReadme && hasIcon) {
+    let hasScalarToolsInAgents = false;
+    if (hasAgents) {
+      const agentFiles = fs.readdirSync(geminiPluginAgentsDir).filter(f => f.startsWith('ami-') && f.endsWith('.md'));
+      for (const file of agentFiles) {
+        const content = fs.readFileSync(path.join(geminiPluginAgentsDir, file), 'utf8');
+        const fmMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+        if (fmMatch) {
+          const toolsLine = fmMatch[1].match(/^tools:\s*(.+)$/m);
+          if (toolsLine && !toolsLine[1].trim().startsWith('[')) {
+            hasScalarToolsInAgents = true;
+            break;
+          }
+        }
+      }
+    }
+
+    if (hasAgents && hasSkills && hasPluginJson && hasReadme && hasIcon && !hasScalarToolsInAgents) {
       console.log(pc.green('  ✅ Antigravity plugin manifest, assets, documentation, custom agents, and skills properly configured in ~/.gemini/config/plugins/amiga-ia.'));
+    } else if (hasScalarToolsInAgents) {
+      console.log(pc.yellow('  ⚠️  WARNING: ~/.gemini/config/plugins/amiga-ia/agents contains scalar tools frontmatter that breaks Antigravity YAML sequence unmarshaling.'));
+      console.log(pc.gray("     Recommendation: Run 'amiga-ia-setup' to re-translate agent frontmatter into YAML sequence format (tools: [...])."));
+      issueCount++;
     } else {
       const missing = [];
       if (!hasAgents) missing.push('agents');
