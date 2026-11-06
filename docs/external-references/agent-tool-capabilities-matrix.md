@@ -1,5 +1,5 @@
 > **Created:** 2026-10-03
-> **Last Updated:** 2026-10-12
+> **Last Updated:** 2026-11-05
 
 
 # Cross-Platform Agent Tool Capabilities Matrix: Codex, Claude Code, and Antigravity / Gemini
@@ -46,11 +46,11 @@ Codex subagents are invoked through the Codex multi-agent runtime using the conf
 - **Strictness:** Unknown tool names may be ignored, but omitting expected names leaves the subagent strictly read-only.
 
 ### Google Antigravity / Gemini Mechanics
-- **Discovery Locations:** Global `~/.gemini/config/agents/*.md`, project `.agents/agents/<name>.md` (or `.agents/agents/<name>/agent.md`, `.agent/`), and built-in configurations.
+- **Discovery Locations:** Global `~/.gemini/config/agents/*.md`, global plugin bundles `~/.gemini/config/plugins/<name>/agents/*.md`, project `.agents/agents/<name>.md` (or `.agents/agents/<name>/agent.md`, `.agent/`), and built-in configurations.
 - **Frontmatter fields:**
   - `name`: (string, required) Unique identifier.
   - `description`: (string, required) Trigger summary.
-  - `tools` / `allowed-tools`: Comma-separated list or YAML array of tool function identifiers (`write_to_file`, `replace_file_content`, `multi_replace_file_content`, `run_command`, `manage_task`, `view_file`, `grep_search`, `find_by_name`, `list_dir`, `search_web`, `read_url_content`, `invoke_subagent`, `send_message`).
+  - `tools`: **Must be formatted as a YAML sequence** (e.g., `tools: [write_to_file, replace_file_content, multi_replace_file_content, run_command, manage_task, view_file, grep_search, find_by_name, list_dir, search_web, read_url_content, invoke_subagent, send_message]`). The Antigravity Go language server unmarshals `tools` into a `[]string` slice (`Tools []string yaml:"tools,omitempty"`); passing a comma-separated scalar string causes YAML unmarshaling to fail and silently drops the agent from discovery and the UI selector.
   - `model`: Optional model specification (`inherit`, `flash`, `pro`, `flash_lite`).
 - **Default Permissions:** Read tools (`view_file`, `list_dir`, `grep_search`, `find_by_name`) and communication (`send_message`) are granted by default.
 - **Write Permissions:** Write tools (`write_to_file`, `replace_file_content`, `multi_replace_file_content`) are gated. Unless explicitly enumerated in `tools:` / `allowed-tools:`, subagents cannot modify the filesystem.
@@ -162,6 +162,6 @@ Delegate execution to a `self` subagent clone carrying the specific orchestrator
 ## 8. Distribution Translation Standard (Antigravity Parity)
 
 To maintain maximum schema fidelity across platforms:
-1. `adapters/capability_translator.js` must translate canonical `allowed-tools:` into `tools:` for Antigravity installations, matching official documentation specifications.
+1. `adapters/capability_translator.js` must translate canonical `allowed-tools:` into a YAML flow sequence `tools: [...]` for Antigravity installations so the Go language server's `[]string` unmarshaler loads every custom agent cleanly.
 2. `bin/setup.js` must register all 8 write-enabled agents (`ami-cleanroom-arbiter.md`, `ami-cleanroom-builder.md`, `ami-cleanroom-tester.md`, `ami-data-scientist.md`, `ami-doc-architect.md`, `ami-pr-publisher.md`, `ami-release-manager.md`, `ami-tech-lead.md`) in `WRITE_MANDATORY_AGENTS`, and all 8 delegating orchestrators (`ami-cleanroom-arbiter.md`, `ami-data-scientist.md`, `ami-doc-architect.md`, `ami-pr-publisher.md`, `ami-pr-reviewer.md`, `ami-push-assistant.md`, `ami-repo-auditor.md`, `ami-tech-lead.md`) in `AGENT_DELEGATION_MANDATORY_AGENTS`.
 
