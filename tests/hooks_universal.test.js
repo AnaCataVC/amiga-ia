@@ -127,6 +127,46 @@ describe('Universal Hook Scripts Compatibility Tests', () => {
     assert.deepStrictEqual(stdoutJson, {});
   });
 
+  test('ami-post-tool-use.js should detect debug statements directly in-memory from tool args (zero-spawn fast path)', () => {
+    const inputPayload = JSON.stringify({
+      toolCall: {
+        name: 'replace_file_content',
+        args: {
+          Replacement: 'function add() { console.log("in-memory fast path"); return a + b; }'
+        }
+      }
+    });
+
+    const result = spawnSync('node', [postScript], {
+      input: inputPayload,
+      encoding: 'utf8'
+    });
+
+    assert.strictEqual(result.status, 0);
+    assert.strictEqual(result.stderr.includes('Warning: Detected debug statements or TODOs'), true);
+    const stdoutJson = JSON.parse(result.stdout.trim());
+    assert.deepStrictEqual(stdoutJson, {});
+  });
+
+  test('ami-post-tool-use.js should detect Claude Code in-memory new_str edits without filesystem dependency', () => {
+    const inputPayload = JSON.stringify({
+      tool_input: {
+        file_path: 'non_existent_virtual_file.js',
+        new_str: '// TODO: fixme later\nconst ready = true;'
+      }
+    });
+
+    const result = spawnSync('node', [postScript], {
+      input: inputPayload,
+      encoding: 'utf8'
+    });
+
+    assert.strictEqual(result.status, 0);
+    assert.strictEqual(result.stderr.includes('Warning: Detected debug statements or TODOs in modified lines of non_existent_virtual_file.js'), true);
+    const stdoutJson = JSON.parse(result.stdout.trim());
+    assert.deepStrictEqual(stdoutJson, {});
+  });
+
   test('ami-codex-pre-tool-use.js should emit hookSpecificOutput for git and gh commands', () => {
     const inputPayload = JSON.stringify({
       tool_name: 'Bash',

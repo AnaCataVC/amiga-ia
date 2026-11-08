@@ -38,9 +38,9 @@ if [ "$event" = "PreToolUse" ]; then
   # 2. Secret and path check on commit/push
   if echo "$input" | grep -E -q '(git commit|git push)'; then
     if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-      diff_out=$(git diff --cached -U0 2>/dev/null || true)
+      diff_out=$(GIT_OPTIONAL_LOCKS=0 git diff --cached -U0 2>/dev/null || true)
       if [ -z "$diff_out" ]; then
-        diff_out=$(git diff HEAD~1..HEAD -U0 2>/dev/null || true)
+        diff_out=$(GIT_OPTIONAL_LOCKS=0 git diff HEAD~1..HEAD -U0 2>/dev/null || true)
       fi
 
       if [ -n "$diff_out" ]; then
@@ -74,18 +74,25 @@ if [ "$event" = "PreToolUse" ]; then
     echo "Reminder: Consider running ami-detect-pr-conflicts or ami-pr-publisher before creating PR." >&2
   fi
 elif [ "$event" = "PostToolUse" ]; then
-  file=$(echo "$input" | sed -n 's/.*"\(file_path\|TargetFile\|AbsolutePath\)":[[:space:]]*"\([^"]*\)".*/\2/p' | head -n 1)
-  
-  if [ -n "$file" ] && [ -f "$file" ]; then
+  # Fast in-memory extraction (Zero-Spawn)
+  added=$(echo "$input" | sed -n 's/.*"\(Replacement\|new_str\|new_string\|Content\|content\|patch\)":[[:space:]]*"\([^"]*\)".*/\2/p' | head -n 1)
+
+  file=$(echo "$input" | sed -n 's/.*"\(file_path\|TargetFile\|AbsolutePath\|target_file\|path\)":[[:space:]]*"\([^"]*\)".*/\2/p' | head -n 1)
+
+  if [ -z "$added" ] && [ -n "$file" ] && [ -f "$file" ]; then
     if git ls-files --error-unmatch "$file" >/dev/null 2>&1; then
-      added=$(git diff -U0 "$file" 2>/dev/null | grep -E '^\+[^\\+]' || echo "")
+      added=$(GIT_OPTIONAL_LOCKS=0 git diff -U0 "$file" 2>/dev/null | grep -E '^\+[^\\+]' || echo "")
     else
       added=$(cat "$file" 2>/dev/null || echo "")
     fi
-    
-    if [ -n "$added" ]; then
-      if echo "$added" | grep -E -q "console\.log|debugger|TODO|FIXME"; then
+  fi
+
+  if [ -n "$added" ]; then
+    if echo "$added" | grep -E -q "console\.log|debugger|TODO|FIXME"; then
+      if [ -n "$file" ]; then
         echo "Warning: Detected debug statements or TODOs in modified lines of $file. Review before commit." >&2
+      else
+        echo "Warning: Detected debug statements or TODOs in recent tool modifications. Review before commit." >&2
       fi
     fi
   fi

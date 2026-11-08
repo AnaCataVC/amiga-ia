@@ -48,10 +48,13 @@ try {
             $diffOutput = ""
             $isGit = git rev-parse --is-inside-work-tree 2>$null
             if ($isGit -eq 'true') {
+                $prevEnvLock = $env:GIT_OPTIONAL_LOCKS
+                $env:GIT_OPTIONAL_LOCKS = '0'
                 $diffOutput = git diff --cached -U0 2>$null
                 if (-not $diffOutput) {
                     $diffOutput = git diff HEAD~1..HEAD -U0 2>$null
                 }
+                $env:GIT_OPTIONAL_LOCKS = $prevEnvLock
             }
 
             if ($diffOutput) {
@@ -103,35 +106,54 @@ try {
     }
     elseif ($Event -eq 'PostToolUse') {
         $file = $null
+        $inMemoryContent = $null
         if ($null -ne $payload) {
+            $toolArgs = $payload
             if ($null -ne $payload.tool_input) {
-                if ($null -ne $payload.tool_input.file_path) { $file = $payload.tool_input.file_path }
-                elseif ($null -ne $payload.tool_input.TargetFile) { $file = $payload.tool_input.TargetFile }
-                elseif ($null -ne $payload.tool_input.AbsolutePath) { $file = $payload.tool_input.AbsolutePath }
+                $toolArgs = $payload.tool_input
+            } elseif ($null -ne $payload.toolCall -and $null -ne $payload.toolCall.args) {
+                $toolArgs = $payload.toolCall.args
             }
-            if (-not $file) {
-                if ($null -ne $payload.TargetFile) { $file = $payload.TargetFile }
-                elseif ($null -ne $payload.AbsolutePath) { $file = $payload.AbsolutePath }
+
+            if ($null -ne $toolArgs.file_path) { $file = [string]$toolArgs.file_path }
+            elseif ($null -ne $toolArgs.TargetFile) { $file = [string]$toolArgs.TargetFile }
+            elseif ($null -ne $toolArgs.AbsolutePath) { $file = [string]$toolArgs.AbsolutePath }
+            elseif ($null -ne $toolArgs.target_file) { $file = [string]$toolArgs.target_file }
+            elseif ($null -ne $toolArgs.path) { $file = [string]$toolArgs.path }
+
+            # Fast in-memory extraction (Zero-Spawn)
+            if ($toolArgs.Replacement) { $inMemoryContent = [string]$toolArgs.Replacement }
+            elseif ($toolArgs.new_str) { $inMemoryContent = [string]$toolArgs.new_str }
+            elseif ($toolArgs.new_string) { $inMemoryContent = [string]$toolArgs.new_string }
+            elseif ($toolArgs.Content) { $inMemoryContent = [string]$toolArgs.Content }
+            elseif ($toolArgs.content) { $inMemoryContent = [string]$toolArgs.content }
+            elseif ($toolArgs.patch) { $inMemoryContent = [string]$toolArgs.patch }
+            elseif ($null -ne $toolArgs.edits -and $toolArgs.edits -is [System.Collections.IEnumerable]) {
+                $inMemoryContent = ($toolArgs.edits | ForEach-Object { $_.new_text -or $_.replacement -or $_.Replacement }) -join "`n"
             }
         }
 
-        if (-not $file -and ($rawInput -match '"(?:file_path|TargetFile|AbsolutePath)"\s*:\s*"([^"]*)"')) {
+        if (-not $file -and ($rawInput -match '"(?:file_path|TargetFile|AbsolutePath|target_file|path)"\s*:\s*"([^"]*)"')) {
             $file = $Matches[1]
         }
 
-        if ($file -and (Test-Path -Path $file -PathType Leaf -ErrorAction SilentlyContinue)) {
+        $added = $inMemoryContent
+        if (-not $added -and $file -and (Test-Path -Path $file -PathType Leaf -ErrorAction SilentlyContinue)) {
+            $prevEnvLock = $env:GIT_OPTIONAL_LOCKS
+            $env:GIT_OPTIONAL_LOCKS = '0'
             $null = git ls-files --error-unmatch $file 2>$null
-            $added = ""
             if ($LASTEXITCODE -eq 0) {
                 # Only added lines count; removed lines and the "+++" header must not trigger the warning.
                 $added = git diff -U0 -- $file 2>$null | Where-Object { $_ -match '^\+' -and $_ -notmatch '^\+\+\+' } | Out-String
             } else {
                 $added = Get-Content -Path $file -Raw -ErrorAction SilentlyContinue
             }
+            $env:GIT_OPTIONAL_LOCKS = $prevEnvLock
+        }
 
-            if ($added -match 'console\.log|debugger|TODO|FIXME') {
-                [Console]::Error.WriteLine("Warning: Detected debug statements or TODOs in modified lines of $file. Review before commit.")
-            }
+        if ($added -match 'console\.log|debugger|TODO|FIXME') {
+            $targetLabel = if ($file) { "in modified lines of $file" } else { "in recent tool modifications" }
+            [Console]::Error.WriteLine("Warning: Detected debug statements or TODOs $targetLabel. Review before commit.")
         }
     }
 } catch {

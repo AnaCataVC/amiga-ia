@@ -18,10 +18,11 @@ process.stdin.on('end', () => {
       if (/\bgit\s+(commit|push)\b/.test(command)) {
         try {
           let diffOutput = '';
+          const gitEnv = { ...process.env, GIT_OPTIONAL_LOCKS: '0' };
           try {
-            diffOutput = execSync('git diff --cached -U0', { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] });
+            diffOutput = execSync('git diff --cached -U0', { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'], env: gitEnv });
             if (!diffOutput.trim()) {
-              diffOutput = execSync('git diff HEAD~1..HEAD -U0', { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] });
+              diffOutput = execSync('git diff HEAD~1..HEAD -U0', { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'], env: gitEnv });
             }
           } catch {
             diffOutput = '';
