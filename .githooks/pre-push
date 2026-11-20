@@ -1,0 +1,11 @@
+#!/bin/sh
+set -e
+
+echo "[pre-push] Building manifests..."
+npm run build
+
+echo "[pre-push] Checking catalog and docs sync..."
+npm run check:docs
+
+echo "[pre-push] Running test suite..."
+npm test

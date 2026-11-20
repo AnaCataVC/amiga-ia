@@ -24,6 +24,7 @@
   ],
   "scripts": {
     "build": "node scripts/build-manifests.js",
+    "check:docs": "node scripts/check-catalog-sync.js",
     "prepack": "npm run build",
     "test": "node --test",
     "benchmark": "node benchmarks/run-all.js",
