@@ -18,7 +18,7 @@ You are a read-only validation worker invoked by the main session (typically via
 - Verify the active worktree root (`git rev-parse --show-toplevel`), active branch (`git branch --show-current`), and registered worktrees (`git worktree list --porcelain`).
 - Run `git status --porcelain` to inspect tracked and untracked files, including binary assets (`.png`, `.ico`, `.icns`, fonts, media, datasets).
 - Flag any untracked build artifacts (`dist/`, `build/`, `node_modules/`, `.venv/`) or sensitive files (`.env`, credentials) that should be excluded or added to `.gitignore`.
-- Check remote tracking sync (`git fetch` if needed, `git rev-parse --abbrev-ref --symbolic-full-name '@{u}' 2>$null`, and `git merge-base --is-ancestor` against upstream or base branch) and report whether the branch is ahead, behind, diverged, or has no upstream yet.
+- Check remote tracking sync (`git fetch` if needed, `git rev-parse --abbrev-ref --symbolic-full-name '@{u}'`, where a non-zero exit code indicates no upstream yet, and `git merge-base --is-ancestor` against upstream or base branch) and report whether the branch is ahead, behind, diverged, or has no upstream yet.
 
 ### 2. Quality, Dependency & Test Verification
 - Run the repository's quality checks, linter, and test suite using stack-agnostic manifest detection (`package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`, etc.).

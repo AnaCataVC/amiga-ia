@@ -44,7 +44,7 @@ Wait for both subagents to complete and consolidate their blockers, warnings, an
 
 ### 5. Push Confirmation
 - Run `git fetch` and verify remote sync:
-  - If an upstream tracking branch exists (`git rev-parse --abbrev-ref --symbolic-full-name '@{u}' 2>$null`), verify `git merge-base --is-ancestor '@{u}' HEAD` so remote commits are not overwritten. If local is behind or diverged, advise `git pull --rebase` and halt.
+  - If an upstream tracking branch exists (`git rev-parse --abbrev-ref --symbolic-full-name '@{u}'`, non-zero exit means no upstream), verify `git merge-base --is-ancestor '@{u}' HEAD` so remote commits are not overwritten. If local is behind or diverged, advise `git pull --rebase` and halt.
   - If no upstream exists, prepare `git push -u origin <branch>`.
 - **CONFIRMATION 3 - Execute Push:** Present the exact `git push` command and target remote branch. Execute only after explicit user approval.
 
