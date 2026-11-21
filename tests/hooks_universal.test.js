@@ -28,7 +28,7 @@ describe('Universal Hook Scripts Compatibility Tests', () => {
     });
 
     assert.strictEqual(result.status, 0);
-    assert.strictEqual(result.stderr.includes('Reminder: Run ami-push-assistant agent before pushing code.'), true);
+    assert.strictEqual(result.stderr.includes('Reminder: Run ami-ship-change (with ami-change-validator) before pushing code.'), true);
     const stdoutJson = JSON.parse(result.stdout.trim());
     assert.deepStrictEqual(stdoutJson, { decision: 'allow' });
   });

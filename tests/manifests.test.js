@@ -29,7 +29,7 @@ describe('Configuration & Build Synchronization Tests', () => {
     const codexAgents = fs.readdirSync(codexAgentsDir).filter(f => f.startsWith('ami-') && f.endsWith('.toml'));
 
     assert.strictEqual(codexAgents.length, sourceAgents.length);
-    assert.strictEqual(codexAgents.length, 14);
+    assert.strictEqual(codexAgents.length, 13);
 
     for (const sourceFile of sourceAgents) {
       const tomlFile = `${path.basename(sourceFile, '.md')}.toml`;

@@ -38,7 +38,8 @@ const READ_ONLY_AGENTS = [
   'ami-repo-auditor.toml',
   'ami-pr-reviewer.toml',
   'ami-expert-council.toml',
-  'ami-adversarial-verifier.toml'
+  'ami-adversarial-verifier.toml',
+  'ami-change-validator.toml'
 ];
 
 const WRITE_ENABLED_AGENTS = [
@@ -47,8 +48,6 @@ const WRITE_ENABLED_AGENTS = [
   'ami-cleanroom-tester.toml',
   'ami-data-scientist.toml',
   'ami-doc-architect.toml',
-  'ami-pr-publisher.toml',
-  'ami-push-assistant.toml',
   'ami-release-manager.toml',
   'ami-tech-lead.toml',
   'ami-ui-builder.toml'

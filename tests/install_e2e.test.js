@@ -85,6 +85,7 @@ const FORBIDDEN_CLAUDE_TOOLS_IN_ANTIGRAVITY = [
 
 const READ_ONLY_CODEX_AGENTS = [
   'ami-adversarial-verifier.toml',
+  'ami-change-validator.toml',
   'ami-expert-council.toml',
   'ami-pr-reviewer.toml',
   'ami-repo-auditor.toml'
@@ -96,8 +97,6 @@ const WRITE_ENABLED_CODEX_AGENTS = [
   'ami-cleanroom-tester.toml',
   'ami-data-scientist.toml',
   'ami-doc-architect.toml',
-  'ami-pr-publisher.toml',
-  'ami-push-assistant.toml',
   'ami-release-manager.toml',
   'ami-tech-lead.toml',
   'ami-ui-builder.toml'
@@ -165,7 +164,7 @@ describe('Tri-Ecosystem End-to-End Installation Test Suite', () => {
       const installedSkills = collectFilesRecursively(targetSkillsDir);
       const installedAgents = collectFilesRecursively(targetAgentsDir);
       assert.ok(installedSkills.length >= 22, `Expected >= 22 installed skill files, got ${installedSkills.length}`);
-      assert.strictEqual(installedAgents.length, 14, `Expected 14 installed agent files, got ${installedAgents.length}`);
+      assert.strictEqual(installedAgents.length, 13, `Expected 13 installed agent files, got ${installedAgents.length}`);
 
       const allMarkdownFiles = [...installedSkills, ...installedAgents];
       for (const file of allMarkdownFiles) {
@@ -272,7 +271,7 @@ describe('Tri-Ecosystem End-to-End Installation Test Suite', () => {
       const installedRules = collectFilesRecursively(targetRulesDir);
 
       assert.ok(installedSkills.length >= 22, `Expected >= 22 installed skill files, got ${installedSkills.length}`);
-      assert.strictEqual(installedAgents.length, 14, `Expected 14 installed agent files, got ${installedAgents.length}`);
+      assert.strictEqual(installedAgents.length, 13, `Expected 13 installed agent files, got ${installedAgents.length}`);
       assert.ok(fs.existsSync(path.join(targetPluginDir, 'plugin.json')), 'Expected plugin.json manifest in plugins/amiga-ia');
       assert.ok(fs.existsSync(path.join(targetPluginDir, 'README.md')), 'Expected README.md overview in plugins/amiga-ia');
       assert.ok(fs.existsSync(path.join(targetPluginAssetsDir, 'icon.png')), 'Expected icon.png logo in plugins/amiga-ia/assets');
@@ -346,7 +345,7 @@ describe('Tri-Ecosystem End-to-End Installation Test Suite', () => {
       const installedAgents = collectFilesRecursively(targetAgentsDir);
 
       assert.ok(installedSkills.length >= 22, `Expected >= 22 installed skill files, got ${installedSkills.length}`);
-      assert.strictEqual(installedAgents.length, 14, `Expected exactly 14 agent TOML files, got ${installedAgents.length}`);
+      assert.strictEqual(installedAgents.length, 13, `Expected exactly 13 agent TOML files, got ${installedAgents.length}`);
 
       const allCodexFiles = [...installedSkills, ...installedAgents];
       const skillRefRegex = /(?:[A-Za-z]:[\\/]|(?:\/[^/\s]+)+[\\/])(ami-[a-z0-9-]+)[\\/]SKILL\.md/g;

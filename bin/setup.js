@@ -106,6 +106,8 @@ const AMIGA_HOOK_SIGNATURES = [
   'commit-assistant',
   'push-assistant',
   'ami-pr-publisher',
+  'ami-ship-change',
+  'ami-change-validator',
   'ami-pr-reviewer',
   'ami-detect-pr-conflicts',
   'docs/coding-sessions',
@@ -640,7 +642,6 @@ async function runDoctor() {
     'ami-cleanroom-tester.md',
     'ami-data-scientist.md',
     'ami-doc-architect.md',
-    'ami-pr-publisher.md',
     'ami-release-manager.md',
     'ami-tech-lead.md'
   ]);
@@ -649,9 +650,7 @@ async function runDoctor() {
     'ami-cleanroom-arbiter.md',
     'ami-data-scientist.md',
     'ami-doc-architect.md',
-    'ami-pr-publisher.md',
     'ami-pr-reviewer.md',
-    'ami-push-assistant.md',
     'ami-repo-auditor.md',
     'ami-tech-lead.md'
   ]);
@@ -953,7 +952,7 @@ Amiga IA is an ecosystem of autonomous subagents, stateless guardrail hooks, and
 
 - **Double-Blind Cleanroom TDD:** Decoupled implementer and tester subagents mediated by an arbiter operating strictly against frozen interface contracts (\`ami-orchestrate-cleanroom\`).
 - **Interactive Architecture & Planning:** Structured interviews to resolve trade-offs, architecture blueprints, and implementation plans (\`ami-plan-feature\`, \`ami-architect-project\`).
-- **Autonomous Git Hygiene & Commits:** Working tree analysis, atomic Conventional Commits, branch rebase verification, and pre-push quality gates (\`ami-plan-commits\`, \`ami-push-assistant\`).
+- **Autonomous Git Hygiene & Commits:** Working tree analysis, atomic Conventional Commits, branch rebase verification, and pre-push/PR quality gates (\`ami-plan-commits\`, \`ami-ship-change\`).
 - **Quality & Security Audits:** Deep static and dynamic analysis, data schema validation, and technical debt classification (\`ami-audit-quality\`, \`ami-scan-tech-debt\`).
 - **Release Automation:** Semantic version calculation and bilingual release notes generated directly from git history (\`ami-prepare-release\`, \`ami-release-manager\`).
 
@@ -967,9 +966,8 @@ Amiga IA is an ecosystem of autonomous subagents, stateless guardrail hooks, and
 | \`ami-cleanroom-arbiter\` | Cleanroom Arbiter | Double-blind TDD orchestration and failure adjudication |
 | \`ami-cleanroom-builder\` | Cleanroom Implementer | Isolated contract-first component implementation |
 | \`ami-cleanroom-tester\` | Cleanroom QA Tester | Independent black-box test suite generation |
-| \`ami-push-assistant\` | Push Assistant | Pre-push quality gates, CI verification, and Git remote hygiene |
+| \`ami-change-validator\` | Change Validator | Read-only quality, dependency, test, conflict, and PR readiness checks |
 | \`ami-release-manager\` | Release Manager | Atomic versioning, changelog compilation, and GitHub releases |
-| \`ami-pr-publisher\` | PR Publisher | Branch rebase check, conflict detection, and pull request staging |
 | \`ami-pr-reviewer\` | PR Reviewer | Autonomous code review with multi-tier criticality analysis |
 | \`ami-repo-auditor\` | Repository Auditor | Deep technical debt, architectural smell, and dead code audit |
 | \`ami-doc-architect\` | Documentation Architect | Technical documentation, wiki sync, and ADR maintenance |
@@ -1148,7 +1146,7 @@ async function runInstall(options = {}) {
 
     const claudeRuleContent = `## 🤖 Amiga IA Universal Directives
 - **Skills & Subagents:** Inspect and proactively invoke \`ami-*\` skills and specialized subagents for planning, coding sessions, git hygiene, documentation, PR reviews, and releases.
-- **Workflow Orchestration:** When handling complex tasks or release lifecycles, delegate strictly to orchestrators (\`ami-push-assistant\`, \`ami-release-manager\`, \`ami-tech-lead\`, \`ami-pr-publisher\`).
+- **Workflow Orchestration:** When handling complex tasks or release lifecycles, use main-session orchestrators (\`ami-ship-change\`) and specialized subagents (\`ami-change-validator\`, \`ami-release-manager\`, \`ami-tech-lead\`).
 - **Clean Commits:** Follow Conventional Commits in English (\`feat:\`, \`fix:\`, \`chore:\`, \`refactor:\`).`;
 
     let installClaudeRules = !options.nonInteractive;
@@ -1355,7 +1353,7 @@ async function runInstall(options = {}) {
 
     const codexRuleContent = `## 🤖 Amiga IA Universal Directives
 - **Skills & Subagents:** Inspect and proactively invoke \`ami-*\` skills and custom subagents for planning, coding sessions, git hygiene, documentation, PR reviews, and releases.
-- **Workflow Orchestration:** When handling complex tasks or release lifecycles, delegate strictly to orchestrators (\`ami-push-assistant\`, \`ami-release-manager\`, \`ami-tech-lead\`, \`ami-pr-publisher\`).
+- **Workflow Orchestration:** When handling complex tasks or release lifecycles, use main-session orchestrators (\`ami-ship-change\`) and specialized subagents (\`ami-change-validator\`, \`ami-release-manager\`, \`ami-tech-lead\`).
 - **Clean Commits:** Follow Conventional Commits in English (\`feat:\`, \`fix:\`, \`chore:\`, \`refactor:\`).`;
 
     let installCodexRules = !options.nonInteractive;
