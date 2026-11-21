@@ -73,19 +73,19 @@ Al ejecutar `amiga-ia-setup`, el asistente estructura de forma segura las siguie
 
 ```text
 ~/.claude/                          # Configuración Global de Claude Code
-├── skills/ami-*/SKILL.md           # Skills declarativas (25 directorios)
-├── agents/ami-*.md                 # Subagentes autónomos (14 perfiles)
+├── skills/ami-*/SKILL.md           # Skills declarativas (26 directorios)
+├── agents/ami-*.md                 # Subagentes autónomos (13 perfiles)
 ├── settings.json                   # Hooks fusionados (PreToolUse, PostToolUse)
 └── settings.json.amiga-backup      # Copia de seguridad original de settings
 
 ~/.gemini/config/                   # Configuración Global de Antigravity (Gemini)
-├── skills/ami-*/SKILL.md           # Skills declarativas (25 directorios)
-├── agents/ami-*.md                 # Subagentes autónomos (14 perfiles)
+├── skills/ami-*/SKILL.md           # Skills declarativas (26 directorios)
+├── agents/ami-*.md                 # Subagentes autónomos (13 perfiles)
 └── rules/ami-rules.md              # Reglas operativas declarativas
 
-~/.agents/skills/                   # Skills Globales de Codex (25 directorios)
+~/.agents/skills/                   # Skills Globales de Codex (26 directorios)
 ~/.codex/                           # Configuración Global de Codex
-├── agents/ami-*.toml               # Subagentes en formato TOML (14 perfiles)
+├── agents/ami-*.toml               # Subagentes en formato TOML (13 perfiles)
 ├── AGENTS.md                       # Reglas de comportamiento (Opcional)
 └── hooks.json                      # Hooks opcionales de ciclo de vida
 ```
@@ -128,7 +128,7 @@ npm run benchmark:cleanroom # Valida TDD Cleanroom (0% sesgo de confirmación)
 > 📊 La metodología detallada, los contratos de evaluación y las métricas brutas están documentados en [benchmarks/README.md](benchmarks/README.md) y en el informe generado en [BENCHMARK_REPORT.md](benchmarks/results/BENCHMARK_REPORT.md).
 
 ### 5. Capacidades Insignia y Perfiles de Agente
-Amiga IA comprende **39 capacidades integradas** (14 subagentes autónomos y 25 skills declarativas) utilizando estrictamente el prefijo de espacio de nombres `ami-` para evitar colisiones con otros ecosistemas.
+Amiga IA comprende **39 capacidades integradas** (13 subagentes autónomos y 26 skills declarativas) utilizando estrictamente el prefijo de espacio de nombres `ami-` para evitar colisiones con otros ecosistemas.
 
 La siguiente matriz destaca los **agentes y habilidades insignia** que encabezan los principales flujos de trabajo autónomos:
 
@@ -139,7 +139,8 @@ La siguiente matriz destaca los **agentes y habilidades insignia** que encabezan
 | **ami-repo-auditor** | Agente | Orquestador maestro que evalúa concurrentemente deuda técnica, higiene de dependencias y vulnerabilidades de seguridad en todos los módulos. |
 | **ami-tech-lead** | Agente | Orquestador maestro de arquitectura y planificación. Evalúa la salud del repositorio, planifica características y coordina planos arquitectónicos. |
 | **ami-ui-builder** | Agente | Especialista maestro en UI, UX y prototipado de interfaces. Construye maquetas interactivas en HTML5 y Tailwind CSS y especificaciones vivas sin saturar el contexto principal. |
-| **ami-push-assistant** | Agente | Asistente de pre-push que verifica la calidad de código, escanea secretos y tokens API en texto plano, y comprueba suites de tests antes de enviar cambios al repositorio remoto. |
+| **ami-change-validator** | Agente | Validador de cambios y preparación de PR en solo lectura que ejecuta chequeos de calidad, dependencias, tests, conflictos y desfase documental. |
+| **ami-ship-change** | Skill | Orquestador de envío en sesión principal que coordina validación/revisión en paralelo, fixes aprobados, verificación adversarial, commit, push y PR. |
 | **ami-orchestrate-cleanroom** | Skill | Flujo de orquestación de TDD Cleanroom que coordina agentes aislados de implementación y diseño de pruebas de caja negra sobre contratos formales congelados. |
 | **ami-review-self-pr** | Skill | Revisión exhaustiva de código propio con sondeos de 5 dimensiones (`[Blind-Spot Probe]`) y ciclos de remediación local automatizados. |
 | **ami-audit-quality** | Skill | Inspección profunda de código evaluando mantenibilidad modular, fallos de seguridad, consistencia de esquemas y solidez estructural. |

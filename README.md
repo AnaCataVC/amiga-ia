@@ -73,19 +73,19 @@ When running `amiga-ia-setup`, the CLI wizard populates your home directory with
 
 ```text
 ~/.claude/                          # Claude Code Global Configuration
-├── skills/ami-*/SKILL.md           # Declarative Skills (25 directories)
-├── agents/ami-*.md                 # Autonomous Subagents (14 profiles)
+├── skills/ami-*/SKILL.md           # Declarative Skills (26 directories)
+├── agents/ami-*.md                 # Autonomous Subagents (13 profiles)
 ├── settings.json                   # Merged Hooks (PreToolUse, PostToolUse)
 └── settings.json.amiga-backup      # Safe original settings backup
 
 ~/.gemini/config/                   # Antigravity (Gemini) Global Configuration
-├── skills/ami-*/SKILL.md           # Declarative Skills (25 directories)
-├── agents/ami-*.md                 # Autonomous Subagents (14 profiles)
+├── skills/ami-*/SKILL.md           # Declarative Skills (26 directories)
+├── agents/ami-*.md                 # Autonomous Subagents (13 profiles)
 └── rules/ami-rules.md              # Declarative Operational Rules
 
-~/.agents/skills/                   # Codex Global Skills (25 directories)
+~/.agents/skills/                   # Codex Global Skills (26 directories)
 ~/.codex/                           # Codex Global Configuration
-├── agents/ami-*.toml               # Custom Subagents in TOML format (14 profiles)
+├── agents/ami-*.toml               # Custom Subagents in TOML format (13 profiles)
 ├── AGENTS.md                       # Merged Behavioral Rules (Optional)
 └── hooks.json                      # Optional Lifecycle Hooks
 ```
@@ -128,7 +128,7 @@ npm run benchmark:cleanroom # Validates Cleanroom TDD (0% confirmation bias)
 > 📊 Detailed methodology, evaluation contracts, and raw metrics are documented in [benchmarks/README.md](benchmarks/README.md) and the generated [BENCHMARK_REPORT.md](benchmarks/results/BENCHMARK_REPORT.md).
 
 ### 5. Flagship Capabilities & Agent Profiles
-Amiga IA encompasses **39 built-in capabilities** (14 autonomous subagents and 25 declarative skills) strictly utilizing the `ami-` namespace prefix to prevent collisions with external ecosystems.
+Amiga IA encompasses **39 built-in capabilities** (13 autonomous subagents and 26 declarative skills) strictly utilizing the `ami-` namespace prefix to prevent collisions with external ecosystems.
 
 The matrix below highlights the core **flagship agents and skills** that drive the primary autonomous workflows:
 
@@ -139,7 +139,8 @@ The matrix below highlights the core **flagship agents and skills** that drive t
 | **ami-repo-auditor** | Agent | Master audit orchestrator evaluating codebase technical debt, dependency hygiene, and security vulnerabilities across modules concurrently. |
 | **ami-tech-lead** | Agent | Master Project Planning & Architecture Orchestrator. Evaluates repository health, plans features, and coordinates architectural blueprints. |
 | **ami-ui-builder** | Agent | Master UI, UX, and prototype specialist. Builds interactive HTML5/Tailwind mockups, standalone prototypes, and living visual specs without context pollution. |
-| **ami-push-assistant** | Agent | Pre-push orchestrator conducting baseline quality checks, scanning for leaked secrets/tokens, and verifying test suites before remote git push. |
+| **ami-change-validator** | Agent | Read-only change and PR readiness validator running quality, dependency, test, conflict, and docs drift checks. |
+| **ami-ship-change** | Skill | Main-session shipping orchestrator coordinating parallel validation/review, approved fixes, adversarial verification, commit, push, and PR gates. |
 | **ami-orchestrate-cleanroom** | Skill | Double-Blind Cleanroom orchestration workflow coordinating isolated implementer and black-box test generator subagents over frozen contracts. |
 | **ami-review-self-pr** | Skill | Stringent Senior Engineer local review workflow with 5-dimension blind-spot probes and automated test remediation loops. |
 | **ami-audit-quality** | Skill | Deep code inspection workflow for modular maintainability, security flaws, schema consistency, and structural soundness. |

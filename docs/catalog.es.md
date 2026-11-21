@@ -2,7 +2,7 @@
 
 [English](catalog.md) | [Español](catalog.es.md)
 
-Especificación completa y matriz funcional de las **39 capacidades (14 subagentes autónomos y 25 skills declarativas)** incluidas en el ecosistema Amiga IA. Todas las capacidades se adhieren estrictamente al prefijo de espacio de nombres `ami-`.
+Especificación completa y matriz funcional de las **39 capacidades (13 subagentes autónomos y 26 skills declarativas)** incluidas en el ecosistema Amiga IA. Todas las capacidades se adhieren estrictamente al prefijo de espacio de nombres `ami-`.
 
 ---
 
@@ -15,9 +15,9 @@ Subagentes autónomos y skills que coordinan flujos de trabajo multi-hilo, reali
 | **`ami-tech-lead`** | Agente | Orquestador maestro de arquitectura y planificación. Evalúa la salud del repositorio, diseña planos arquitectónicos, desglosa requerimientos y hace cumplir contratos modulares. |
 | **`ami-pr-reviewer`** | Agente | Orquestador de revisión de PRs que evalúa cambios mediante modos duales (Revisión Estática vs Revisión Dinámica con ejecución de tests), ingestión de contexto y trazabilidad adversarial. |
 | **`ami-adversarial-verifier`** | Agente | Revisor de contexto limpio que evalúa únicamente el diff y los requerimientos, buscando defectos basados en evidencia para eliminar el sesgo de confirmación. |
-| **`ami-pr-publisher`** | Agente | Orquestador que realiza la revisión previa, redacción de resúmenes estructurados y auditoría de conflictos de fusión antes de publicar un Pull Request. |
-| **`ami-push-assistant`** | Agente | Asistente de pre-push que verifica compresión de calidad, escanea secretos y tokens API en texto plano, y comprueba suites de tests antes de enviar cambios al repositorio remoto. |
+| **`ami-change-validator`** | Agente | Validador de cambios y preparación de PR en solo lectura. Ejecuta verificaciones de calidad, dependencias y tests, y en modo `pr` evalúa tamaño, conflictos, desfase documental y borrador de PR. |
 | **`ami-expert-council`** | Agente | Convoca un consejo de subagentes especializados para debatir y someter a prueba de estrés propuestas arquitectónicas desde perspectivas ortogonales en un solo pase. |
+| **`ami-ship-change`** | Skill | Orquestador en sesión principal que coordina validación y autorrevisión en paralelo, fixes aprobados, verificación adversarial, plan de commits, push y creación opcional de PR con confirmaciones numeradas. |
 | **`ami-review-self-pr`** | Skill | Actúa como un Ingeniero Senior riguroso auditando código local en curso, aplicando sondeos de 5 dimensiones (`[Blind-Spot Probe]`) y ciclos de remediación autónoma. |
 | **`ami-review-peer-pr`** | Skill | Realiza revisiones de código en PRs de compañeros con trazabilidad hacia criterios de aceptación y auditorías de falsificación (`[Falsification Check]`) para eliminar falsas alarmas. |
 | **`ami-analyze-pr-comments`** | Skill | Analiza observaciones dejadas por revisores en PRs activos, estructurando planes de acción y formulando respuestas técnicas precisas. |

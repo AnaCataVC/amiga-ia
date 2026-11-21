@@ -2,7 +2,7 @@
 
 [English](catalog.md) | [Español](catalog.es.md)
 
-Complete specification and functional matrix of all **39 autonomous agents (14) and declarative skills (25)** included in the Amiga IA ecosystem. All capabilities strictly adhere to the `ami-` namespace prefix.
+Complete specification and functional matrix of all **39 autonomous agents (13) and declarative skills (26)** included in the Amiga IA ecosystem. All capabilities strictly adhere to the `ami-` namespace prefix.
 
 ---
 
@@ -15,9 +15,9 @@ Autonomous subagents and skills that coordinate multi-threaded workflows, perfor
 | **`ami-tech-lead`** | Agent | Master Project Planning & Architecture Orchestrator. Evaluates repository health, scopes features, coordinates architectural blueprints, and enforces modular contracts. |
 | **`ami-pr-reviewer`** | Agent | Master orchestrator agent that evaluates existing Pull Requests via dual review modes (static Code Review vs dynamic Full Review with test execution), repository context ingestion, and adversarial verification trails. |
 | **`ami-adversarial-verifier`** | Agent | Fresh-context reviewer given only the diff and requirement, seeking evidence-based defects to eliminate confirmation bias. |
-| **`ami-pr-publisher`** | Agent | Master orchestrator agent that performs a comprehensive review, summary drafting, and conflict audit on Pull Requests before publishing. |
-| **`ami-push-assistant`** | Agent | Pre-push orchestrator that conducts baseline quality checks, scans for leaked API secrets/tokens, and verifies test suites prior to pushing to remote remotes. |
+| **`ami-change-validator`** | Agent | Read-only change and PR readiness validator. Runs quality, dependency, and test checks, and in `pr` mode evaluates diff size, conflicts, documentation drift, and drafts PR descriptions. |
 | **`ami-expert-council`** | Agent | Spawns a council of specialized subagents tailored to debate, stress-test, and refine architectural proposals from orthogonal perspectives in a single pass. |
+| **`ami-ship-change`** | Skill | Main-session orchestrator that coordinates parallel validation/review, approved fixes, adversarial verification, commit planning, push, and optional PR creation with numbered confirmation gates. |
 | **`ami-review-self-pr`** | Skill | Operates as a stringent Senior Engineer reviewing local work-in-progress code, applying 5-dimension blind-spot probes (`[Blind-Spot Probe]`) and local remediation loops. |
 | **`ami-review-peer-pr`** | Skill | Conducts peer reviews on teammate Pull Requests with acceptance criteria traceability and adversarial falsification checks (`[Falsification Check]`) to eliminate false alarms. |
 | **`ami-analyze-pr-comments`** | Skill | Analyzes code review observations left by teammates on active PRs, organizing action items and formulating accurate replies. |
