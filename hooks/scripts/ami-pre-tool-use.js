@@ -72,10 +72,10 @@ process.stdin.on('end', () => {
         console.error('Reminder: Use ami-plan-commits for proper commit formatting.');
       }
       if (command.includes('git push')) {
-        console.error('Reminder: Run ami-push-assistant agent before pushing code.');
+        console.error('Reminder: Run ami-ship-change (with ami-change-validator) before pushing code.');
       }
       if (command.includes('gh pr create')) {
-        console.error('Reminder: Consider running ami-detect-pr-conflicts or ami-pr-publisher before creating PR.');
+        console.error('Reminder: Run ami-ship-change (pr mode) or ami-detect-pr-conflicts before creating a PR.');
       }
     }
   } catch { /* Don't block on parse errors */ }

@@ -98,10 +98,10 @@ try {
             [Console]::Error.WriteLine('Reminder: Use ami-plan-commits for proper commit formatting.')
         }
         if ($cmd -match '\bgit\s+push\b') {
-            [Console]::Error.WriteLine('Reminder: Run ami-push-assistant agent before pushing code.')
+            [Console]::Error.WriteLine('Reminder: Run ami-ship-change (with ami-change-validator) before pushing code.')
         }
         if ($cmd -match '\bgh\s+pr\s+create\b') {
-            [Console]::Error.WriteLine('Reminder: Consider running ami-detect-pr-conflicts or ami-pr-publisher before creating PR.')
+            [Console]::Error.WriteLine('Reminder: Run ami-ship-change (pr mode) or ami-detect-pr-conflicts before creating a PR.')
         }
     }
     elseif ($Event -eq 'PostToolUse') {

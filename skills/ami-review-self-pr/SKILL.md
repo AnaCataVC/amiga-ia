@@ -102,11 +102,11 @@ When this skill is invoked, you act as a stringent Senior Engineer reviewing the
        - If approved, apply the fix to the files and re-execute the test runner until all tests pass.
 
 6. **Proactive Implementation (Code Review Mode):**
-   - **Findings-only mode:** when an orchestrator batching several PRs requests it, stop after Step 4 — no edits, no prompt, no test run.
+   - **Findings-only mode:** when invoked by an orchestrator (such as `ami-ship-change`), stop after Step 4 — no edits, no prompt, no test run.
    - Ask the user: "Would you like me to apply these fixes directly to the files?"
    - If the user approves, use your file editing tools to apply the exact fixes locally.
    - **Re-review applied fixes:** they are new code — re-read the modified files (naming drift, duplicated decisions, error paths) and run the repo's checks; fix regressions and re-run until they pass.
-   - Once applied, advise the user to amend their commit or push the new changes to their branch.
+   - When running standalone (outside `ami-ship-change`), do not commit or push directly; offer to run `ami-ship-change` to validate, commit, push, and optionally open/update the PR.
 
 ---
 **Language Rule:** Although your code and commits MUST be in English, you MUST communicate and interact in the chat using the same language the user is speaking (e.g., Spanish, French, etc.).

@@ -68,10 +68,10 @@ if [ "$event" = "PreToolUse" ]; then
     echo "Reminder: Use ami-plan-commits for proper commit formatting." >&2
   fi
   if echo "$input" | grep -E -q "(git push|git-push)"; then
-    echo "Reminder: Run ami-push-assistant agent before pushing code." >&2
+    echo "Reminder: Run ami-ship-change (with ami-change-validator) before pushing code." >&2
   fi
   if echo "$input" | grep -E -q "gh pr create"; then
-    echo "Reminder: Consider running ami-detect-pr-conflicts or ami-pr-publisher before creating PR." >&2
+    echo "Reminder: Run ami-ship-change (pr mode) or ami-detect-pr-conflicts before creating a PR." >&2
   fi
 elif [ "$event" = "PostToolUse" ]; then
   # Fast in-memory extraction (Zero-Spawn)
