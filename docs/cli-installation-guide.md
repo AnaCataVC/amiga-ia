@@ -42,13 +42,13 @@ ami list            # displays the ecosystem catalog and local assistant status
 
 ## 3. Domain Packs & Runtime Extensions
 
-Amiga IA organizes its **39 capabilities** (14 subagents and 25 declarative skills) and external platform mods into logical packages defined in `registry/packs.json`:
+Amiga IA organizes its **39 capabilities** (13 subagents and 26 declarative skills) and external platform mods into logical packages defined in `registry/packs.json`:
 
 ```text
 AMIGA IA Ecosystem
 │
 ├── In-Tree Domain Packs (Portable, Declarative Markdown Skills & Agents)
-│   ├── essential   (Core baseline: 12 agents, 20 skills — mandatory)
+│   ├── essential   (Core baseline: 11 agents, 21 skills — mandatory)
 │   ├── data        (Analytics & SQL: ami-data-scientist, ami-optimize-sql, ami-build-dashboard)
 │   └── ui          (UI/UX: ami-ui-builder, ami-design-ux, ami-prototype-ui, ami-audit-ui-consistency)
 │
@@ -106,7 +106,7 @@ The diagnostic tool asserts:
 1. **Version Parity:** Asserts that all installed environments match the executing package version.
 2. **Registry Updates:** Checks NPM registry for newer package releases.
 3. **Plugin Integrity (Antigravity):** Confirms `~/.gemini/config/plugins/amiga-ia` manifests, assets, and icons exist.
-4. **Frontmatter Integrity:** Scans all 25 skills and 14 subagents to assert standard YAML metadata (`name:`, `description:`, `allowed-tools:`, write permissions, and subagent delegation).
+4. **Frontmatter Integrity:** Scans all 26 skills and 13 subagents to assert standard YAML metadata (`name:`, `description:`, `allowed-tools:`, write permissions, and subagent delegation).
 5. **Hooks Syntax & Safety:** Validates `settings.json` and `hooks.json` syntax across platforms, alerting on shell mismatches (e.g. bash hooks on Windows).
 6. **Rules Ingestion:** Checks delimited blocks in `CLAUDE.md`, `AGENTS.md`, and `rules/ami-rules.md`.
 7. **Runtime Extensions (Claude Code):** Audits installed mods in `~/.claude/mods/`.

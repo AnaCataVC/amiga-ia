@@ -47,7 +47,7 @@ When installed as a native plugin, the expected location is:
 │   │   └── SKILL.md
 │   └── ...
 ├── agents/              # Subagent definitions (.md files)
-│   ├── ami-push-assistant.md
+│   ├── ami-change-validator.md
 │   ├── ami-release-manager.md
 │   └── ...
 └── hooks.json           # Optional hooks (Antigravity uses universal Node.js scripts)
@@ -66,10 +66,8 @@ The root `plugin.json` uses explicit `skills` and `agents` fields to declare all
   "agents": [
     "./agents/ami-doc-architect.md",
     "./agents/ami-expert-council.md",
-    "./agents/ami-next-step-assistant.md",
-    "./agents/ami-pr-publisher.md",
+    "./agents/ami-change-validator.md",
     "./agents/ami-pr-reviewer.md",
-    "./agents/ami-push-assistant.md",
     "./agents/ami-release-manager.md",
     "./agents/ami-repo-auditor.md"
   ],
@@ -102,7 +100,7 @@ Claude Code uses a different layout convention. The manifest lives inside a `.cl
 │   │   └── SKILL.md
 │   └── ...
 ├── agents/                 # At repo root, NOT inside .claude-plugin/
-│   ├── ami-push-assistant.md
+│   ├── ami-change-validator.md
 │   └── ...
 └── hooks/
     └── hooks.json          # Hooks in separate directory, NOT inline in plugin.json

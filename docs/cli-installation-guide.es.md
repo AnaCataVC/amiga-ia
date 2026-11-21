@@ -42,13 +42,13 @@ ami list            # muestra el catálogo del ecosistema y el estado local de a
 
 ## 3. Domain Packs y Extensiones de Runtime
 
-Amiga IA organiza sus **39 capacidades** (14 subagentes y 25 skills declarativas) y extensiones de plataforma en paquetes lógicos definidos en `registry/packs.json`:
+Amiga IA organiza sus **39 capacidades** (13 subagentes y 26 skills declarativas) y extensiones de plataforma en paquetes lógicos definidos en `registry/packs.json`:
 
 ```text
 Ecosistema AMIGA IA
 │
 ├── Domain Packs Integrados (Skills y Agentes Declarativos y Portables en Markdown)
-│   ├── essential   (Núcleo base: 12 agentes, 20 skills — obligatorio)
+│   ├── essential   (Núcleo base: 11 agentes, 21 skills — obligatorio)
 │   ├── data        (Analítica y SQL: ami-data-scientist, ami-optimize-sql, ami-build-dashboard)
 │   └── ui          (UI/UX: ami-ui-builder, ami-design-ux, ami-prototype-ui, ami-audit-ui-consistency)
 │
@@ -106,7 +106,7 @@ El diagnóstico audita de forma exhaustiva:
 1. **Paridad de Versiones:** Comprueba que los entornos locales coincidan con la versión del paquete CLI ejecutado.
 2. **Actualizaciones en NPM:** Verifica si existe una versión más reciente publicada en el registro de NPM.
 3. **Integridad del Plugin (Antigravity):** Confirma la estructura de manifiestos, assets e iconos en `~/.gemini/config/plugins/amiga-ia`.
-4. **Validación de YAML Frontmatter:** Inspecciona las 25 skills y 14 subagentes verificando esquemas (`name:`, `description:`, `allowed-tools:`, permisos de escritura y delegación).
+4. **Validación de YAML Frontmatter:** Inspecciona las 26 skills y 13 subagentes verificando esquemas (`name:`, `description:`, `allowed-tools:`, permisos de escritura y delegación).
 5. **Sintaxis y Compatibilidad de Hooks:** Valida `settings.json` y `hooks.json`, alertando si hay scripts de bash en Windows o powershell en Linux.
 6. **Integración de Reglas:** Revisa los bloques delimitados en `CLAUDE.md`, `AGENTS.md` y `rules/ami-rules.md`.
 7. **Extensiones de Runtime (Claude Code):** Inspecciona los mods instalados en `~/.claude/mods/`.
