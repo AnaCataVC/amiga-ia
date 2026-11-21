@@ -25,13 +25,15 @@ Inspect all global local configuration directories:
 1. **Google Antigravity:**
    - `~/.gemini/config/rules/*.md`
    - `~/.gemini/config/AGENTS.md`
+   - `~/.gemini/config/skills/` and `~/.gemini/config/agents/` (recent non-`ami-*` or locally modified definitions)
 2. **Anthropic Claude Code:**
    - `~/.claude/CLAUDE.md`
    - `~/.claude/rules/*.md` (if present)
+   - `~/.claude/skills/` and `~/.claude/agents/` (compare timestamps to detect newly added or refactored orchestrators/workflows)
 3. **OpenAI Codex:**
    - `~/.codex/` and `~/.agents/skills/`
 
-Compare file timestamps and structural contents against existing repository assets in `rules/`, `skills/`, `agents/`, and repo-level `AGENTS.md`.
+Compare file timestamps and structural contents against existing repository assets in `rules/`, `skills/`, `agents/`, and repo-level `AGENTS.md`. Even if a recent local skill or agent uses a workspace-specific prefix, inspect its orchestration pattern and boundaries to check for generalizable architectural improvements before applying the Phase 1 isolation filter.
 
 ---
 
