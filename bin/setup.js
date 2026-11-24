@@ -1040,6 +1040,14 @@ function parseInstallArgs(args = []) {
   return parsed;
 }
 
+const ASSISTANT_PROMPT_OPTIONS = [
+  { label: 'Antigravity (Gemini)', value: 'antigravity' },
+  { label: 'Claude Code', value: 'claude' },
+  { label: 'Codex (experimental)', value: 'codex' }
+];
+
+const DEFAULT_ASSISTANT_CHOICES = ['antigravity'];
+
 async function runInstall(options = {}) {
   const { version: currentVersion } = getPackageInfo();
   console.log(pc.cyan('======================================================'));
@@ -1052,12 +1060,8 @@ async function runInstall(options = {}) {
   if (!choices || choices.length === 0) {
     choices = await multiselect({
       message: 'Which assistants do you want to configure?',
-      options: [
-        { label: 'Claude Code', value: 'claude' },
-        { label: 'Antigravity (Gemini)', value: 'antigravity' },
-        { label: 'Codex', value: 'codex' }
-      ],
-      initialValues: ['claude', 'antigravity'],
+      options: ASSISTANT_PROMPT_OPTIONS,
+      initialValues: DEFAULT_ASSISTANT_CHOICES,
       required: true
     });
     if (isCancel(choices)) process.exit(0);
@@ -1830,6 +1834,8 @@ if (require.main === module) {
   });
 } else {
   module.exports = {
+    ASSISTANT_PROMPT_OPTIONS,
+    DEFAULT_ASSISTANT_CHOICES,
     parseInstallArgs,
     runInstall,
     runAdd,

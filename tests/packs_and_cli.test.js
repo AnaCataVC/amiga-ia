@@ -8,7 +8,7 @@ const { loadRegistry, resolvePackOrExtension, getAllPackCapabilities } = require
 const { loadReceipt, saveReceipt, updatePackReceipt } = require('../src/core/receipts');
 const { installClaudeMods, removeClaudeMods } = require('../src/core/extensions');
 const { filterSkillsByPacks, filterAgentsByPacks, cleanUnselectedPackFiles } = require('../src/core/installer');
-const { parseInstallArgs } = require('../bin/setup');
+const { ASSISTANT_PROMPT_OPTIONS, DEFAULT_ASSISTANT_CHOICES, parseInstallArgs } = require('../bin/setup');
 
 describe('Amiga IA Ecosystem Registry & Pack Resolution Tests', () => {
 
@@ -176,6 +176,15 @@ describe('Amiga IA CLI Argument Parsing Tests', () => {
     const resAssShort = parseInstallArgs(['-a=antigravity', '--no-claude-mods']);
     assert.deepStrictEqual(resAssShort.assistants, ['antigravity']);
     assert.strictEqual(resAssShort.claudeMods, false);
+  });
+
+  test('setup wizard lists Antigravity first, then Claude Code, then Codex (experimental) with only Antigravity selected by default', () => {
+    assert.deepStrictEqual(ASSISTANT_PROMPT_OPTIONS, [
+      { label: 'Antigravity (Gemini)', value: 'antigravity' },
+      { label: 'Claude Code', value: 'claude' },
+      { label: 'Codex (experimental)', value: 'codex' }
+    ]);
+    assert.deepStrictEqual(DEFAULT_ASSISTANT_CHOICES, ['antigravity']);
   });
 
 });
