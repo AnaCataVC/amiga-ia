@@ -2,12 +2,17 @@ const TOOL_CAPABILITY_MAP = {
   // Read capabilities
   Read: {
     claude: ['Read'],
-    antigravity: ['view_file'],
+    antigravity: ['view_file', 'read_file'],
     codex: ['Read']
   },
   view_file: {
     claude: ['Read'],
-    antigravity: ['view_file'],
+    antigravity: ['view_file', 'read_file'],
+    codex: ['Read']
+  },
+  read_file: {
+    claude: ['Read'],
+    antigravity: ['view_file', 'read_file'],
     codex: ['Read']
   },
 
@@ -43,29 +48,39 @@ const TOOL_CAPABILITY_MAP = {
   // File creation (Write)
   Write: {
     claude: ['Write'],
-    antigravity: ['write_to_file'],
+    antigravity: ['write_to_file', 'write_file'],
     codex: ['Write']
   },
   write_to_file: {
     claude: ['Write'],
-    antigravity: ['write_to_file'],
+    antigravity: ['write_to_file', 'write_file'],
+    codex: ['Write']
+  },
+  write_file: {
+    claude: ['Write'],
+    antigravity: ['write_to_file', 'write_file'],
     codex: ['Write']
   },
 
   // File modification (Edit)
   Edit: {
     claude: ['Edit'],
-    antigravity: ['replace_file_content', 'multi_replace_file_content'],
+    antigravity: ['replace_file_content', 'multi_replace_file_content', 'edit_file'],
     codex: ['Edit']
   },
   replace_file_content: {
     claude: ['Edit'],
-    antigravity: ['replace_file_content'],
+    antigravity: ['replace_file_content', 'edit_file'],
     codex: ['Edit']
   },
   multi_replace_file_content: {
     claude: ['Edit'],
-    antigravity: ['multi_replace_file_content'],
+    antigravity: ['multi_replace_file_content', 'edit_file'],
+    codex: ['Edit']
+  },
+  edit_file: {
+    claude: ['Edit'],
+    antigravity: ['replace_file_content', 'multi_replace_file_content', 'edit_file'],
     codex: ['Edit']
   },
 
@@ -143,6 +158,8 @@ const TOOL_CAPABILITY_MAP = {
 const WRITE_TOOL_IDENTIFIERS = new Set([
   'write',
   'edit',
+  'write_file',
+  'edit_file',
   'write_to_file',
   'replace_file_content',
   'multi_replace_file_content'
@@ -159,9 +176,12 @@ const SUPPORTED_PLATFORMS = new Set(['claude', 'antigravity', 'gemini', 'codex']
 
 const FORBIDDEN_CODEX_ANTIGRAVITY_TOOLS = new Set([
   'write_to_file',
+  'write_file',
   'replace_file_content',
   'multi_replace_file_content',
+  'edit_file',
   'view_file',
+  'read_file',
   'grep_search',
   'find_by_name',
   'list_dir',

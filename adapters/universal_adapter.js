@@ -4,6 +4,11 @@ const path = require('path');
 /**
  * Universal Adapter for Agent Skills
  * Generates an XML `<available_skills>` block using Lazy Loading.
+ *
+ * @deprecated Since v6.0.0 — Google Antigravity, Anthropic Claude Code, and OpenAI Codex CLI
+ * now perform native progressive disclosure of `SKILL.md` and subagent manifests directly
+ * in their platform harnesses. Retained for ADR-004 token overhead benchmarking
+ * (`benchmarks/token-overhead/measure-token-overhead.js`) and SDK backward compatibility.
  */
 class UniversalAdapter {
   constructor(environment) {

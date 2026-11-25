@@ -33,7 +33,6 @@
         "ami-debug-issue",
         "ami-analyze-pr-comments",
         "ami-detect-pr-conflicts",
-        "ami-plan-commits",
         "ami-prepare-release",
         "ami-review-peer-pr",
         "ami-review-self-pr",

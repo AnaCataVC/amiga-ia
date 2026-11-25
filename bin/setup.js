@@ -287,7 +287,7 @@ function installNodeHooks(targetDir, settingsPath, options = {}) {
   const hooksConfig = {
     hooks: {
       PreToolUse: [{ matcher: 'Bash|PowerShell|run_command', hooks: [{ type: 'command', command: nodeCmd('ami-pre-tool-use.js') }] }],
-      PostToolUse: [{ matcher: 'Edit|Write|write_to_file|replace_file_content|multi_replace_file_content', hooks: [{ type: 'command', command: nodeCmd('ami-post-tool-use.js') }] }]
+      PostToolUse: [{ matcher: 'Edit|Write|write_file|edit_file|write_to_file|replace_file_content|multi_replace_file_content', hooks: [{ type: 'command', command: nodeCmd('ami-post-tool-use.js') }] }]
     }
   };
 
@@ -339,7 +339,7 @@ function installPwshHooks(targetDir, settingsPath, options = {}) {
   const hooksConfig = {
     hooks: {
       PreToolUse: [{ matcher: 'Bash|PowerShell|run_command', hooks: [{ type: 'command', shell: 'pwsh', command: pwshCmd('PreToolUse') }] }],
-      PostToolUse: [{ matcher: 'Edit|Write|write_to_file|replace_file_content|multi_replace_file_content', hooks: [{ type: 'command', shell: 'pwsh', command: pwshCmd('PostToolUse') }] }]
+      PostToolUse: [{ matcher: 'Edit|Write|write_file|edit_file|write_to_file|replace_file_content|multi_replace_file_content', hooks: [{ type: 'command', shell: 'pwsh', command: pwshCmd('PostToolUse') }] }]
     }
   };
 
@@ -367,7 +367,7 @@ function installBashHooks(targetDir, settingsPath, options = {}) {
   const hooksConfig = {
     hooks: {
       PreToolUse: [{ matcher: 'Bash|PowerShell|run_command', hooks: [{ type: 'command', shell: 'bash', command: bashCmd('PreToolUse') }] }],
-      PostToolUse: [{ matcher: 'Edit|Write|write_to_file|replace_file_content|multi_replace_file_content', hooks: [{ type: 'command', shell: 'bash', command: bashCmd('PostToolUse') }] }]
+      PostToolUse: [{ matcher: 'Edit|Write|write_file|edit_file|write_to_file|replace_file_content|multi_replace_file_content', hooks: [{ type: 'command', shell: 'bash', command: bashCmd('PostToolUse') }] }]
     }
   };
 
@@ -952,7 +952,7 @@ Amiga IA is an ecosystem of autonomous subagents, stateless guardrail hooks, and
 
 - **Double-Blind Cleanroom TDD:** Decoupled implementer and tester subagents mediated by an arbiter operating strictly against frozen interface contracts (\`ami-orchestrate-cleanroom\`).
 - **Interactive Architecture & Planning:** Structured interviews to resolve trade-offs, architecture blueprints, and implementation plans (\`ami-plan-feature\`, \`ami-architect-project\`).
-- **Autonomous Git Hygiene & Commits:** Working tree analysis, atomic Conventional Commits, branch rebase verification, and pre-push/PR quality gates (\`ami-plan-commits\`, \`ami-ship-change\`).
+- **Autonomous Git Hygiene & Commits:** Working tree analysis, atomic Conventional Commits, branch rebase verification, and pre-push/PR quality gates (\`ami-ship-change\`).
 - **Quality & Security Audits:** Deep static and dynamic analysis, data schema validation, and technical debt classification (\`ami-audit-quality\`, \`ami-scan-tech-debt\`).
 - **Release Automation:** Semantic version calculation and bilingual release notes generated directly from git history (\`ami-prepare-release\`, \`ami-release-manager\`).
 
@@ -1240,7 +1240,7 @@ async function runInstall(options = {}) {
       description: 'Amiga IA Universal Agent Skills & Subagents for Antigravity, Claude Code, and Codex',
       logo: 'assets/icon.png',
       suggestedPrompts: [
-        'Review uncommitted changes and organize conventional commits with ami-plan-commits',
+        'Review uncommitted changes and organize conventional commits with ami-ship-change',
         'Architect and plan a new feature with interactive guidance using ami-plan-feature',
         'Run double-blind cleanroom TDD with ami-orchestrate-cleanroom'
       ],
