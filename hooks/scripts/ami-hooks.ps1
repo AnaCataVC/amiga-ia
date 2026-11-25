@@ -95,7 +95,7 @@ try {
 
         # Reminders for conventional skills
         if ($cmd -match '\bgit\s+commit\b') {
-            [Console]::Error.WriteLine('Reminder: Use ami-plan-commits for proper commit formatting.')
+            [Console]::Error.WriteLine('Reminder: Use ami-ship-change (commit-only mode) for proper commit formatting.')
         }
         if ($cmd -match '\bgit\s+push\b') {
             [Console]::Error.WriteLine('Reminder: Run ami-ship-change (with ami-change-validator) before pushing code.')
@@ -116,6 +116,7 @@ try {
             }
 
             if ($null -ne $toolArgs.file_path) { $file = [string]$toolArgs.file_path }
+            elseif ($null -ne $toolArgs.Path) { $file = [string]$toolArgs.Path }
             elseif ($null -ne $toolArgs.TargetFile) { $file = [string]$toolArgs.TargetFile }
             elseif ($null -ne $toolArgs.AbsolutePath) { $file = [string]$toolArgs.AbsolutePath }
             elseif ($null -ne $toolArgs.target_file) { $file = [string]$toolArgs.target_file }
@@ -133,7 +134,7 @@ try {
             }
         }
 
-        if (-not $file -and ($rawInput -match '"(?:file_path|TargetFile|AbsolutePath|target_file|path)"\s*:\s*"([^"]*)"')) {
+        if (-not $file -and ($rawInput -match '"(?:file_path|Path|TargetFile|AbsolutePath|target_file|path)"\s*:\s*"([^"]*)"')) {
             $file = $Matches[1]
         }
 

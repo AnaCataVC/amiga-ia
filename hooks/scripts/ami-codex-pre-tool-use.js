@@ -6,7 +6,7 @@ process.stdin.on('end', () => {
     const input = JSON.parse(Buffer.concat(chunks).toString());
     const toolInput = input.tool_input || input.toolCall?.args || input.args || {};
     const command = toolInput.command || toolInput.cmd || toolInput.CommandLine || toolInput.command_line || input.command || '';
-    if (command.includes('git commit')) reminders.push('Use the ami-plan-commits skill before creating a commit.');
+    if (command.includes('git commit')) reminders.push('Use the ami-ship-change skill (commit-only mode) before creating a commit.');
     if (command.includes('git push')) reminders.push('Use the appropriate Amiga IA push workflow before pushing.');
     if (command.includes('gh pr create')) reminders.push('Run ami-detect-pr-conflicts before creating a pull request.');
   } catch { /* Keep hook failures non-blocking. */ }

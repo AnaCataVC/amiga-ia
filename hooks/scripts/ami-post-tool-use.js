@@ -19,7 +19,7 @@ process.stdin.on('end', () => {
   try {
     const input = JSON.parse(Buffer.concat(chunks).toString());
     const toolArgs = input.toolCall?.args || input.tool_input || input;
-    const filePath = toolArgs.file_path || toolArgs.TargetFile || toolArgs.AbsolutePath || toolArgs.target_file || toolArgs.path || '';
+    const filePath = toolArgs.file_path || toolArgs.Path || toolArgs.TargetFile || toolArgs.AbsolutePath || toolArgs.target_file || toolArgs.path || '';
 
     let added = extractModifiedContent(toolArgs);
 

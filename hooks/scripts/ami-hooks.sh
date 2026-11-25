@@ -65,7 +65,7 @@ if [ "$event" = "PreToolUse" ]; then
 
   # Reminders for conventional skills
   if echo "$input" | grep -E -q "(git commit|git-commit)"; then
-    echo "Reminder: Use ami-plan-commits for proper commit formatting." >&2
+    echo "Reminder: Use ami-ship-change (commit-only mode) for proper commit formatting." >&2
   fi
   if echo "$input" | grep -E -q "(git push|git-push)"; then
     echo "Reminder: Run ami-ship-change (with ami-change-validator) before pushing code." >&2
@@ -77,7 +77,7 @@ elif [ "$event" = "PostToolUse" ]; then
   # Fast in-memory extraction (Zero-Spawn)
   added=$(echo "$input" | sed -n 's/.*"\(Replacement\|new_str\|new_string\|Content\|content\|patch\)":[[:space:]]*"\([^"]*\)".*/\2/p' | head -n 1)
 
-  file=$(echo "$input" | sed -n 's/.*"\(file_path\|TargetFile\|AbsolutePath\|target_file\|path\)":[[:space:]]*"\([^"]*\)".*/\2/p' | head -n 1)
+  file=$(echo "$input" | sed -n 's/.*"\(file_path\|Path\|TargetFile\|AbsolutePath\|target_file\|path\)":[[:space:]]*"\([^"]*\)".*/\2/p' | head -n 1)
 
   if [ -z "$added" ] && [ -n "$file" ] && [ -f "$file" ]; then
     if git ls-files --error-unmatch "$file" >/dev/null 2>&1; then

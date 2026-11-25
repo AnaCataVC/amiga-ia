@@ -69,7 +69,7 @@ process.stdin.on('end', () => {
       }
 
       if (command.includes('git commit')) {
-        console.error('Reminder: Use ami-plan-commits for proper commit formatting.');
+        console.error('Reminder: Use ami-ship-change (commit-only mode) for proper commit formatting.');
       }
       if (command.includes('git push')) {
         console.error('Reminder: Run ami-ship-change (with ami-change-validator) before pushing code.');
