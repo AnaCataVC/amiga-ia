@@ -1,5 +1,5 @@
 > **Created:** 2026-10-03
-> **Last Updated:** 2026-11-05
+> **Last Updated:** 2026-11-25
 
 
 # Cross-Platform Agent Tool Capabilities Matrix: Codex, Claude Code, and Antigravity / Gemini
@@ -69,18 +69,18 @@ Codex subagents are invoked through the Codex multi-agent runtime using the conf
 | `ami-cleanroom-tester` | `Bash, Read, Grep, Write, Edit` | No (Leaf worker) | Inherited (Workspace-Write) | Generates black-box test suites strictly from frozen contract |
 | `ami-data-scientist` | `Bash, Read, Grep, Agent, Write, Edit` | Yes | Inherited (Workspace-Write) | Orchestrates SQL optimization, EDA profiling, and dashboard generation |
 | `ami-doc-architect` | `Bash, Read, Grep, WebSearch, Agent, Write, Edit` | Yes | Inherited (Workspace-Write) | Orchestrates documentation architecture, sync, and knowledge audits |
-| `ami-pr-publisher` | `Bash, Read, Grep, Agent, Write, Edit` | Yes | Inherited (Workspace-Write) | Pre-publication PR orchestration, self-review fixes, and conflict checks |
-| `ami-release-manager` | `Bash, Read, Write, Edit` | No | Inherited (Workspace-Write) | Semantic version bumping, bilingual release notes, and tag publishing |
+| `ami-release-manager` | `Bash, Read, Grep, Write, Edit` | No | Inherited (Workspace-Write) | Semantic version bumping, bilingual release notes, and tag publishing |
 | `ami-tech-lead` | `Bash, Read, Grep, WebSearch, WebFetch, Agent, Write, Edit` | Yes | Inherited (Workspace-Write) | Master greenfield/feature architecture and planning orchestrator |
+| `ami-ui-builder` | `Bash, Read, Grep, Edit, Write` | No (Leaf worker) | Inherited (Workspace-Write) | Interactive HTML5/Tailwind mockups, UI prototypes, and living specs |
 
 ### 4.2. Read-Only Agents (`READ_ONLY_AGENTS` — 5 Agents)
 
 | Agent | Canonical `allowed-tools:` | Orchestration (`Agent`) | Codex TOML Sandbox | Primary Responsibility |
 | :--- | :--- | :--- | :--- | :--- |
 | `ami-adversarial-verifier` | `Bash, Read, Grep` | No (Leaf verifier) | `sandbox_mode = "read-only"` | Zero-trust fresh-context falsification of implementation claims |
+| `ami-change-validator` | `Bash, Read, Grep, Glob` | No (Leaf validator) | `sandbox_mode = "read-only"` | Read-only change and PR readiness validator (quality, dependencies, tests, conflicts) |
 | `ami-expert-council` | `Read, Grep, WebSearch` | No (Single-pass) | `sandbox_mode = "read-only"` | Single-pass orthogonal trade-off and adversarial premortem evaluator |
 | `ami-pr-reviewer` | `Bash, Read, Grep, WebSearch, Agent` | Yes | `sandbox_mode = "read-only"` | Peer/self PR review and comment analysis orchestrator |
-| `ami-push-assistant` | `Bash, Read, Grep, Agent` | Yes | `sandbox_mode = "read-only"` | Pre-push quality gate and git consistency orchestrator |
 | `ami-repo-auditor` | `Bash, Read, Grep, Agent` | Yes | `sandbox_mode = "read-only"` | Repository-wide technical debt, security, and dependency audit orchestrator |
 
 ---

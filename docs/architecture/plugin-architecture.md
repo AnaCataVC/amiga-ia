@@ -41,7 +41,6 @@ When installed as a native plugin, the expected location is:
 ~/.gemini/config/plugins/amiga-ia/
 ├── plugin.json          # Manifest: name, version, description, skills[], agents[], hooks
 ├── skills/              # Skill directories, each containing a SKILL.md
-│   ├── ami-plan-commits/
 │   │   └── SKILL.md
 │   ├── ami-quick-reviewer/
 │   │   └── SKILL.md
@@ -96,7 +95,6 @@ Claude Code uses a different layout convention. The manifest lives inside a `.cl
 │   ├── plugin.json         # Manifest: name, version, description, skills[], agents[]
 │   └── marketplace.json    # Marketplace registry metadata
 ├── skills/                 # At repo root, NOT inside .claude-plugin/
-│   ├── ami-plan-commits/
 │   │   └── SKILL.md
 │   └── ...
 ├── agents/                 # At repo root, NOT inside .claude-plugin/

@@ -29,7 +29,7 @@ Hooks in Amiga IA act as non-blocking guardrails that provide real-time advisory
 ## 3. Event Interceptions & Behaviors
 
 ### 3.1 `PreToolUse` (Pre-Execution Interception)
-- **Git Commit Formatting:** When a `git commit` command is detected, the hook outputs an advisory to ensure the user uses `ami-plan-commits` for proper Conventional Commit formatting.
+- **Git Commit Formatting:** When a `git commit` command is detected, the hook outputs an advisory to ensure the user uses `ami-ship-change` (commit-only mode` for proper Conventional Commit formatting.
 - **Git Push Protection:** When a `git push` command is detected, the hook outputs an advisory to run `ami-ship-change` (with `ami-change-validator`) before pushing code.
 - **Pull Request Creation:** When a `gh pr create` command is detected, the hook advises running `ami-ship-change` (`pr` mode) or `ami-detect-pr-conflicts` before publishing the PR.
 

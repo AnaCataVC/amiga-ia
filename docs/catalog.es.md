@@ -2,7 +2,7 @@
 
 [English](catalog.md) | [Español](catalog.es.md)
 
-Especificación completa y matriz funcional de las **39 capacidades (13 subagentes autónomos y 26 skills declarativas)** incluidas en el ecosistema Amiga IA. Todas las capacidades se adhieren estrictamente al prefijo de espacio de nombres `ami-`.
+Especificación completa y matriz funcional de las **38 capacidades (13 subagentes autónomos y 25 skills declarativas)** incluidas en el ecosistema Amiga IA. Todas las capacidades se adhieren estrictamente al prefijo de espacio de nombres `ami-`.
 
 ---
 
@@ -17,12 +17,11 @@ Subagentes autónomos y skills que coordinan flujos de trabajo multi-hilo, reali
 | **`ami-adversarial-verifier`** | Agente | Revisor de contexto limpio que evalúa únicamente el diff y los requerimientos, buscando defectos basados en evidencia para eliminar el sesgo de confirmación. |
 | **`ami-change-validator`** | Agente | Validador de cambios y preparación de PR en solo lectura. Ejecuta verificaciones de calidad, dependencias y tests, y en modo `pr` evalúa tamaño, conflictos, desfase documental y borrador de PR. |
 | **`ami-expert-council`** | Agente | Convoca un consejo de subagentes especializados para debatir y someter a prueba de estrés propuestas arquitectónicas desde perspectivas ortogonales en un solo pase. |
-| **`ami-ship-change`** | Skill | Orquestador en sesión principal que coordina validación y autorrevisión en paralelo, fixes aprobados, verificación adversarial, plan de commits, push y creación opcional de PR con confirmaciones numeradas. |
+| **`ami-ship-change`** | Skill | Orquestador en sesión principal con modos `commit-only`, `push` y `pr`. Planifica Conventional Commits estructurados y coordina validación y autorrevisión en paralelo, verificación adversarial, push remoto y creación de PR con confirmaciones numeradas. |
 | **`ami-review-self-pr`** | Skill | Actúa como un Ingeniero Senior riguroso auditando código local en curso, aplicando sondeos de 5 dimensiones (`[Blind-Spot Probe]`) y ciclos de remediación autónoma. |
 | **`ami-review-peer-pr`** | Skill | Realiza revisiones de código en PRs de compañeros con trazabilidad hacia criterios de aceptación y auditorías de falsificación (`[Falsification Check]`) para eliminar falsas alarmas. |
 | **`ami-analyze-pr-comments`** | Skill | Analiza observaciones dejadas por revisores en PRs activos, estructurando planes de acción y formulando respuestas técnicas precisas. |
 | **`ami-detect-pr-conflicts`** | Skill | Identifica commits superpuestos y posibles conflictos de merge entre ramas activas antes de crear o proponer Pull Requests. |
-| **`ami-plan-commits`** | Skill | Analiza el árbol de trabajo de git, ejecuta auditorías de seguridad, planifica commits convencionales y coordina acciones de versionado. |
 
 ---
 

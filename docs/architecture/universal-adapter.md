@@ -22,7 +22,7 @@ Per **ADR-004**, the Universal Adapter utilizes a root-relative, attribute-drive
 
 ```xml
 <available_skills>
-  <skill name="ami-plan-commits" path="skills/ami-plan-commits/SKILL.md">Analyzes the working tree, performs security/leak audits, plans Conventional Commits, and executes git transactions.</skill>
+  <skill name="ami-ship-change" path="skills/ami-ship-change/SKILL.md">Orchestrates commit planning, validation, push, and Pull Request creation with confirmation gates.</skill>
   <skill name="ami-manage-docs" path="skills/ami-manage-docs/SKILL.md">Comprehensive documentation manager. Detects whether to architect new docs from scratch or synchronize existing wikis with code diffs.</skill>
   <agent name="ami-tech-lead" path="agents/ami-tech-lead.md">Master Project Planning & Architecture Orchestrator. Invoke for greenfield architecture setup, project health evaluation, and feature planning.</agent>
 </available_skills>

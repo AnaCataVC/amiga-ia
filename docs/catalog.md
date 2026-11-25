@@ -2,7 +2,7 @@
 
 [English](catalog.md) | [Español](catalog.es.md)
 
-Complete specification and functional matrix of all **39 autonomous agents (13) and declarative skills (26)** included in the Amiga IA ecosystem. All capabilities strictly adhere to the `ami-` namespace prefix.
+Complete specification and functional matrix of all **38 autonomous agents (13) and declarative skills (25)** included in the Amiga IA ecosystem. All capabilities strictly adhere to the `ami-` namespace prefix.
 
 ---
 
@@ -17,12 +17,11 @@ Autonomous subagents and skills that coordinate multi-threaded workflows, perfor
 | **`ami-adversarial-verifier`** | Agent | Fresh-context reviewer given only the diff and requirement, seeking evidence-based defects to eliminate confirmation bias. |
 | **`ami-change-validator`** | Agent | Read-only change and PR readiness validator. Runs quality, dependency, and test checks, and in `pr` mode evaluates diff size, conflicts, documentation drift, and drafts PR descriptions. |
 | **`ami-expert-council`** | Agent | Spawns a council of specialized subagents tailored to debate, stress-test, and refine architectural proposals from orthogonal perspectives in a single pass. |
-| **`ami-ship-change`** | Skill | Main-session orchestrator that coordinates parallel validation/review, approved fixes, adversarial verification, commit planning, push, and optional PR creation with numbered confirmation gates. |
+| **`ami-ship-change`** | Skill | Main-session git and release-shipping orchestrator supporting `commit-only`, `push`, and `pr` modes. Plans structured Conventional Commits, coordinates parallel validation/review, adversarial verification, remote push, and PR creation with numbered confirmation gates. |
 | **`ami-review-self-pr`** | Skill | Operates as a stringent Senior Engineer reviewing local work-in-progress code, applying 5-dimension blind-spot probes (`[Blind-Spot Probe]`) and local remediation loops. |
 | **`ami-review-peer-pr`** | Skill | Conducts peer reviews on teammate Pull Requests with acceptance criteria traceability and adversarial falsification checks (`[Falsification Check]`) to eliminate false alarms. |
 | **`ami-analyze-pr-comments`** | Skill | Analyzes code review observations left by teammates on active PRs, organizing action items and formulating accurate replies. |
 | **`ami-detect-pr-conflicts`** | Skill | Proactively detects overlapping commit histories and potential merge conflicts across active branches before PR publication. |
-| **`ami-plan-commits`** | Skill | Analyzes the git working tree, performs security/leak audits, plans Conventional Commits, and safely executes staged git operations. |
 
 ---
 
