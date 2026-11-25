@@ -24,9 +24,12 @@ const {
 // Constants defined by Contract
 const FORBIDDEN_TOOL_NAMES = [
   'write_to_file',
+  'write_file',
   'replace_file_content',
   'multi_replace_file_content',
+  'edit_file',
   'view_file',
+  'read_file',
   'grep_search',
   'find_by_name',
   'list_dir',

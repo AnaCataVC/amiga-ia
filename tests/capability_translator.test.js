@@ -23,8 +23,8 @@ test('Cross-Platform Capability Translator Unit Tests', async (t) => {
       'Agent'
     ]);
 
-    // Reverse snake_case input should also translate cleanly into Claude Code tools
-    const snakeInput = ['write_to_file', 'replace_file_content', 'run_command', 'view_file', 'grep_search', 'search_web'];
+    // Reverse snake_case input (both legacy and AGY 2.0+ tool names) should also translate cleanly into Claude Code tools
+    const snakeInput = ['write_to_file', 'write_file', 'replace_file_content', 'edit_file', 'run_command', 'view_file', 'read_file', 'grep_search', 'search_web'];
     const fromSnake = translateTools(snakeInput, 'claude');
     assert.deepStrictEqual(fromSnake, [
       'Write',
@@ -36,16 +36,19 @@ test('Cross-Platform Capability Translator Unit Tests', async (t) => {
     ]);
   });
 
-  await t.test('translateTools for Antigravity translates tokens into snake_case Antigravity tools', () => {
+  await t.test('translateTools for Antigravity translates tokens into snake_case Antigravity tools (legacy + AGY 2.0+)', () => {
     const input = 'Write, Edit, Bash, Read, Grep, Agent';
     const translated = translateTools(input, 'antigravity');
     assert.deepStrictEqual(translated, [
       'write_to_file',
+      'write_file',
       'replace_file_content',
       'multi_replace_file_content',
+      'edit_file',
       'run_command',
       'manage_task',
       'view_file',
+      'read_file',
       'grep_search',
       'invoke_subagent',
       'send_message',
@@ -65,12 +68,12 @@ test('Cross-Platform Capability Translator Unit Tests', async (t) => {
   });
 
   await t.test('translateTools deduplicates mapped tools cleanly', () => {
-    const input = 'Write, write_to_file, Edit, replace_file_content, multi_replace_file_content';
+    const input = 'Write, write_to_file, write_file, Edit, replace_file_content, multi_replace_file_content, edit_file';
     const forClaude = translateTools(input, 'claude');
     assert.deepStrictEqual(forClaude, ['Write', 'Edit']);
 
     const forAntigravity = translateTools(input, 'antigravity');
-    assert.deepStrictEqual(forAntigravity, ['write_to_file', 'replace_file_content', 'multi_replace_file_content']);
+    assert.deepStrictEqual(forAntigravity, ['write_to_file', 'write_file', 'replace_file_content', 'multi_replace_file_content', 'edit_file']);
   });
 
   await t.test('hasWriteCapabilities accurately detects write abilities across platforms and YAML blocks', () => {
@@ -79,6 +82,8 @@ test('Cross-Platform Capability Translator Unit Tests', async (t) => {
     assert.strictEqual(hasWriteCapabilities('Bash, Read, Grep, Write'), true);
     assert.strictEqual(hasWriteCapabilities('Bash, Read, Grep, Edit'), true);
     assert.strictEqual(hasWriteCapabilities('view_file, grep_search, write_to_file'), true);
+    assert.strictEqual(hasWriteCapabilities('read_file, write_file'), true);
+    assert.strictEqual(hasWriteCapabilities(['read_file', 'edit_file']), true);
     assert.strictEqual(hasWriteCapabilities(['view_file', 'replace_file_content']), true);
     assert.strictEqual(hasWriteCapabilities('name: test\ndescription: desc\nallowed-tools: Write, Read'), true);
   });
@@ -121,7 +126,7 @@ test('Cross-Platform Capability Translator Unit Tests', async (t) => {
     ].join('\r\n');
 
     const result = translateFrontmatter(markdown, 'antigravity');
-    assert.ok(result.includes('tools: [write_to_file, replace_file_content, multi_replace_file_content, run_command, manage_task, view_file]'));
+    assert.ok(result.includes('tools: [write_to_file, write_file, replace_file_content, multi_replace_file_content, edit_file, run_command, manage_task, view_file, read_file]'));
     assert.ok(result.includes('\r\n')); // Preserves CRLF
 
   });
@@ -140,7 +145,7 @@ test('Cross-Platform Capability Translator Unit Tests', async (t) => {
     ].join('\n');
 
     const result = translateFrontmatter(markdown, 'antigravity');
-    assert.ok(result.includes('tools: [write_to_file, replace_file_content, multi_replace_file_content, view_file]'));
+    assert.ok(result.includes('tools: [write_to_file, write_file, replace_file_content, multi_replace_file_content, edit_file, view_file, read_file]'));
     assert.ok(result.includes('name: ami-yaml-list-agent'));
   });
 });

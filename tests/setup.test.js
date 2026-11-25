@@ -215,7 +215,7 @@ describe('Amiga IA setup.js installNodeHooks universal tests', () => {
     const updatedData = JSON.parse(fs.readFileSync(testSettingsPath, 'utf8'));
     assert.strictEqual(updatedData.hooks.PreToolUse[0].matcher, 'Bash|PowerShell|run_command');
     assert.strictEqual(updatedData.hooks.PreToolUse[0].hooks[0].command, 'node ./hooks/ami-pre-tool-use.js');
-    assert.strictEqual(updatedData.hooks.PostToolUse[0].matcher, 'Edit|Write|write_to_file|replace_file_content|multi_replace_file_content');
+    assert.strictEqual(updatedData.hooks.PostToolUse[0].matcher, 'Edit|Write|write_file|edit_file|write_to_file|replace_file_content|multi_replace_file_content');
     assert.strictEqual(updatedData.hooks.PostToolUse[0].hooks[0].command, 'node ./hooks/ami-post-tool-use.js');
 
     fs.rmSync(tmpDir, { recursive: true, force: true });
@@ -254,7 +254,7 @@ describe('Amiga IA setup.js installPwshHooks tests', () => {
 
     const updatedData = JSON.parse(fs.readFileSync(testSettingsPath, 'utf8'));
     assert.strictEqual(updatedData.hooks.PreToolUse[0].matcher, 'Bash|PowerShell|run_command');
-    assert.strictEqual(updatedData.hooks.PostToolUse[0].matcher, 'Edit|Write|write_to_file|replace_file_content|multi_replace_file_content');
+    assert.strictEqual(updatedData.hooks.PostToolUse[0].matcher, 'Edit|Write|write_file|edit_file|write_to_file|replace_file_content|multi_replace_file_content');
 
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
@@ -274,7 +274,7 @@ describe('Amiga IA setup.js installBashHooks tests', () => {
 
     const updatedData = JSON.parse(fs.readFileSync(testSettingsPath, 'utf8'));
     assert.strictEqual(updatedData.hooks.PreToolUse[0].matcher, 'Bash|PowerShell|run_command');
-    assert.strictEqual(updatedData.hooks.PostToolUse[0].matcher, 'Edit|Write|write_to_file|replace_file_content|multi_replace_file_content');
+    assert.strictEqual(updatedData.hooks.PostToolUse[0].matcher, 'Edit|Write|write_file|edit_file|write_to_file|replace_file_content|multi_replace_file_content');
 
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
@@ -476,7 +476,7 @@ describe('Amiga IA setup.js copyRecursiveSync tests', () => {
     copyRecursiveSyncFunc(fs, path, srcDir, destDir, 'antigravity');
 
     const copiedContent = fs.readFileSync(path.join(destDir, 'ami-doc-architect.md'), 'utf8');
-    assert.ok(copiedContent.includes('tools: [write_to_file, replace_file_content, multi_replace_file_content, run_command, manage_task, view_file]'));
+    assert.ok(copiedContent.includes('tools: [write_to_file, write_file, replace_file_content, multi_replace_file_content, edit_file, run_command, manage_task, view_file, read_file]'));
 
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });

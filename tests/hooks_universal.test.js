@@ -46,7 +46,7 @@ describe('Universal Hook Scripts Compatibility Tests', () => {
     });
 
     assert.strictEqual(result.status, 0);
-    assert.strictEqual(result.stderr.includes('Reminder: Use ami-plan-commits for proper commit formatting.'), true);
+    assert.strictEqual(result.stderr.includes('Reminder: Use ami-ship-change (commit-only mode) for proper commit formatting.'), true);
     const stdoutJson = JSON.parse(result.stdout.trim());
     assert.deepStrictEqual(stdoutJson, { decision: 'allow' });
   });
@@ -167,6 +167,29 @@ describe('Universal Hook Scripts Compatibility Tests', () => {
     assert.deepStrictEqual(stdoutJson, {});
   });
 
+  test('ami-post-tool-use.js should detect Antigravity 2.0 edit_file and write_file payloads using Path and Replacement/Content in memory (zero-spawn)', () => {
+    const inputPayload = JSON.stringify({
+      toolCall: {
+        name: 'edit_file',
+        args: {
+          Path: 'src/virtual_agy2_component.js',
+          Target: 'const x = 1;',
+          Replacement: 'const x = 1; console.log("agy 2.0 edit_file test");'
+        }
+      }
+    });
+
+    const result = spawnSync('node', [postScript], {
+      input: inputPayload,
+      encoding: 'utf8'
+    });
+
+    assert.strictEqual(result.status, 0);
+    assert.strictEqual(result.stderr.includes('Warning: Detected debug statements or TODOs in modified lines of src/virtual_agy2_component.js'), true);
+    const stdoutJson = JSON.parse(result.stdout.trim());
+    assert.deepStrictEqual(stdoutJson, {});
+  });
+
   test('ami-codex-pre-tool-use.js should emit hookSpecificOutput for git and gh commands', () => {
     const inputPayload = JSON.stringify({
       tool_name: 'Bash',
@@ -182,7 +205,7 @@ describe('Universal Hook Scripts Compatibility Tests', () => {
     const output = JSON.parse(result.stdout.trim());
     assert.ok(output.hookSpecificOutput);
     assert.strictEqual(output.hookSpecificOutput.hookEventName, 'PreToolUse');
-    assert.ok(output.hookSpecificOutput.additionalContext.includes('ami-plan-commits'));
+    assert.ok(output.hookSpecificOutput.additionalContext.includes('ami-ship-change'));
   });
 
   test('ami-codex-pre-tool-use.js should handle fallback tool input formats and malformed input gracefully', () => {

@@ -64,9 +64,12 @@ const installCodexHooks = (targetCodexDir) => {
 
 const FORBIDDEN_ANTIGRAVITY_TOOLS_IN_CLAUDE = [
   'write_to_file',
+  'write_file',
   'replace_file_content',
   'multi_replace_file_content',
+  'edit_file',
   'view_file',
+  'read_file',
   'grep_search',
   'find_by_name',
   'list_dir',
@@ -234,7 +237,7 @@ describe('Tri-Ecosystem End-to-End Installation Test Suite', () => {
         description: 'Amiga IA Universal Agent Skills & Subagents for Antigravity, Claude Code, and Codex',
         logo: 'assets/icon.png',
         suggestedPrompts: [
-          'Review uncommitted changes and organize conventional commits with ami-plan-commits',
+          'Review uncommitted changes and organize conventional commits with ami-ship-change',
           'Architect and plan a new feature with interactive guidance using ami-plan-feature',
           'Run double-blind cleanroom TDD with ami-orchestrate-cleanroom'
         ],
