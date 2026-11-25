@@ -10,7 +10,7 @@ When invoked, act as an **Automation & Workflow Architect**.
 
 ## Scope & Target Domains
 
-This skill operates in **Dual Mode** across three architectural automation domains:
+This skill audits **repository software engineering automations** across three architectural domains (distinct from personal desktop assistant cron reminders or chat timers, which belong to native platform scheduling commands):
 1. **CI/CD & GitOps:** Workflows (`.github/workflows/`, GitLab CI, Azure Pipelines), git hooks (`.husky/`, `.pre-commit-config.yaml`, native hooks), release scripts, and automated dependency updaters (Dependabot, Renovate).
 2. **Development, Build & Maintenance Scripts:** Manifest scripts (`package.json`, `pyproject.toml`, `Cargo.toml`), task runners (`Makefile`, `justfile`, `Taskfile`), and shell/PowerShell maintenance scripts (`scripts/`).
 3. **Domain & Code Automations:** Application cronjobs, queues and background workers (BullMQ, Celery, Sidekiq, Daemons), and automated database lifecycles (migrations, seeds, schema validation).

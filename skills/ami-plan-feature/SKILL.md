@@ -70,8 +70,8 @@ When invoked to plan a feature, you MUST follow this sequence:
 - Present the plan to the user for explicit approval before writing code.
 
 ### 7. Orchestration & Context Injection (Post-Approval)
-- Once the user approves the plan, break it down into a `task.md` checklist.
-- Either execute the steps yourself sequentially, or spawn specialized subagents (e.g., to write tests, create UI components). If multi-agent delegation is not supported by the environment, execute the steps directly.
+- Once the user approves the plan, track progress using the platform's native step checklist or a `task.md` artifact.
+- Execute the steps sequentially, or delegate independent work streams to specialized subagents or parallel workflow runners supported by the active platform. If multi-agent delegation is not supported by the environment, execute the steps directly.
 - **Double-Blind Cleanroom Delegation Protocol:**
   - For modules designated for Cleanroom TDD in the approved plan, invoke `ami-orchestrate-cleanroom` (View `skills/ami-orchestrate-cleanroom/SKILL.md`).
   - Directly inject pre-ingested ADR invariants, external research context (`docs/external-references/`), and target interface requirements into the prompt so the cleanroom inception phase builds upon established decisions without redundant inquiries.

@@ -23,16 +23,18 @@ Review the target screen or workflow requirements (provided by the user, `ami-pl
    - Check if the repository already declares a palette, typography, or component library to mirror those styling choices in the prototype.
    - When building for non-web platforms (Desktop or Mobile), adapt the HTML layout to reflect platform ergonomics (e.g., Fluent UI design for desktop or bottom navigation/app bar for mobile).
 
-### 2. Standalone HTML5 Architecture (Zero Build Friction)
+### 2. Standalone HTML5 vs. Native Inline Generative UI
 
-Generate a single, self-contained HTML5 file adhering to strict standards:
-1. **CDN Setup:**
+Choose the delivery surface according to the target environment and user request:
+1. **Persistent Repository Mockups (`docs/mockups/<feature-slug>.html` — Default):**
    - Include Tailwind CSS via official CDN script tag (`<script src="https://cdn.tailwindcss.com"></script>`).
    - Configure a clean Tailwind custom script block if custom brand colors or fonts are specified.
-2. **Semantic Structure:**
+2. **Native Inline Chat Widgets (When Running in Environments with Built-in `generative_ui`):**
+   - If the user asks for an inline interactive widget directly inside the chat canvas rather than a persistent repository file, follow the platform's built-in `generative_ui` skill conventions (using its CSP-allowlisted Tailwind script and semantic theme CSS variables such as `--background`, `--card`, `--foreground`, and `<agent-embed>`).
+3. **Semantic Structure:**
    - Use semantic HTML landmarks: `<header>`, `<nav>`, `<main>`, `<aside>`, `<footer>`.
    - Ensure clean document metadata: viewport configuration, title, and UTF-8 encoding.
-3. **Responsive Foundations:**
+4. **Responsive Foundations:**
    - Ensure the layout is fluid and responsive using Flexbox and CSS Grid.
    - For mobile-specific mockups, wrap the interface inside an optional phone frame container to simulate realistic viewport dimensions.
 
