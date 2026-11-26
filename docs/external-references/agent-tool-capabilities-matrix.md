@@ -37,11 +37,11 @@ Codex subagents are invoked through the Codex multi-agent runtime using the conf
 ### Claude Code Mechanics
 - **Discovery Locations:** Global `~/.claude/agents/*.md` and project `.claude/agents/*.md`.
 - **Frontmatter fields:**
-  - `name`: (string, required) Unique identifier.
-  - `description`: (string, required) Trigger summary.
-  - `tools` / `allowed-tools`: Comma-separated list or YAML array of permitted tools (`Write`, `Edit`, `Bash`, `Read`, `Grep`, `Glob`, `WebSearch`, `WebFetch`, `Agent`).
+  - `name`: (string, required) Unique identifier matching the `.md` filename stem.
+  - `description`: (string, required) Concise trigger summary (`<= 50 words` / `<= 250 chars`).
+  - `tools`: Comma-separated list or YAML array of permitted tools (`Write`, `Edit`, `Bash`, `Read`, `Grep`, `Glob`, `WebSearch`, `WebFetch`, `Agent`, `Skill`). *(Note: Skills in `SKILL.md` read `allowed-tools:`, whereas subagents in `agents/*.md` strictly read `tools:`; placing `allowed-tools:` without `tools:` on a subagent causes Claude Code to inherit all tools.)*
   - `disallowedTools`: Optional denylist.
-  - `model`: Optional model override (e.g. `sonnet`, `haiku`, `inherit`).
+  - `model`: Optional model override (`sonnet`, `opus`, `haiku`, `inherit`).
 - **Enforcement:** Hard OS-level permission boundary. If `Write` or `Edit` is omitted or disallowed, tool calls fail or are suppressed.
 - **Strictness:** Unknown tool names may be ignored, but omitting expected names leaves the subagent strictly read-only.
 
@@ -154,8 +154,8 @@ Delegate execution to a `self` subagent clone carrying the specific orchestrator
 ```
 
 ### Contrast with Anthropic Claude Code & OpenAI Codex
-- **Claude Code:** Strictly reads `allowed-tools:` from `~/.claude/agents/*.md` and enforces an OS-level allowlist. Named subagents invoked with `TypeName: "ami-push-assistant"` directly inherit `Bash`, `Write`, and `Edit` without needing `define_subagent` or `self`.
-- **OpenAI Codex:** Custom subagents in `~/.codex/agents/*.toml` inherit the parent runtime environment configuration directly.
+- **Claude Code:** Strictly reads `tools:` (and `model:`) from `~/.claude/agents/*.md` (`translateFrontmatter(content, 'claude', { kind: 'agent' })`), while reading `allowed-tools:` from `~/.claude/skills/*/SKILL.md`. Named subagents invoked in Claude Code directly enforce their `tools:` allowlist (`Bash`, `Write`, `Edit`, or read-only subsets) without needing `define_subagent` or `self`.
+- **OpenAI Codex:** Custom subagents in `~/.codex/agents/*.toml` inherit the parent runtime environment configuration (with `sandbox_mode = "read-only"` emitted for read-only auditors/verifiers).
 
 ---
 
