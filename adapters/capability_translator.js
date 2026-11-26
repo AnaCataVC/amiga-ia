@@ -147,6 +147,13 @@ const TOOL_CAPABILITY_MAP = {
     codex: ['Agent']
   },
 
+  // Skill invocation (native in Claude Code; file-based SKILL.md reading in Antigravity & Codex)
+  Skill: {
+    claude: ['Skill'],
+    antigravity: [],
+    codex: []
+  },
+
   // Questions / Interaction
   ask_question: {
     claude: [],
@@ -266,13 +273,16 @@ function hasAgentCapabilities(tools) {
   return toolList.some(tool => AGENT_TOOL_IDENTIFIERS.has(tool.toLowerCase()));
 }
 
+const ANTIGRAVITY_VALID_MODELS = new Set(['inherit', 'flash', 'pro', 'flash_lite']);
+
 /**
- * Replaces tool declarations inside Markdown frontmatter with platform-translated equivalents.
+ * Replaces tool and model declarations inside Markdown frontmatter with platform-translated equivalents.
  * @param {string} markdownContent
  * @param {'claude'|'antigravity'|'gemini'|'codex'} platform
+ * @param {{ kind?: 'skill'|'agent' }} [options]
  * @returns {string}
  */
-function translateFrontmatter(markdownContent, platform) {
+function translateFrontmatter(markdownContent, platform, options = {}) {
   if (typeof platform !== 'string' || !SUPPORTED_PLATFORMS.has(platform)) {
     throw new Error(`Unsupported platform: ${platform}`);
   }
@@ -284,6 +294,8 @@ function translateFrontmatter(markdownContent, platform) {
   const yamlBlock = match[1];
   const isCrlf = match[0].includes('\r\n');
   const newline = isCrlf ? '\r\n' : '\n';
+  const isAntigravity = platform === 'antigravity' || platform === 'gemini';
+  const isAgent = options && options.kind === 'agent';
 
   let hasReplaced = false;
   const yamlLines = yamlBlock.split(/\r?\n/);
@@ -292,6 +304,7 @@ function translateFrontmatter(markdownContent, platform) {
   for (let i = 0; i < yamlLines.length; i++) {
     const line = yamlLines[i];
     const matchToolKey = line.match(/^(allowed-tools|tools):\s*(.*)$/);
+    const matchModelKey = line.match(/^model:\s*(.+)$/);
 
     if (matchToolKey) {
       const key = matchToolKey[1];
@@ -310,16 +323,24 @@ function translateFrontmatter(markdownContent, platform) {
       }
 
       const translated = translateTools(rawTools, platform);
-      const isAntigravity = platform === 'antigravity' || platform === 'gemini';
       const outputKey = isAntigravity
         ? 'tools'
-        : (platform === 'claude' ? 'allowed-tools' : key);
+        : (platform === 'claude' ? (isAgent ? 'tools' : 'allowed-tools') : key);
       const formattedTools = isAntigravity
         ? `[${translated.join(', ')}]`
         : translated.join(', ');
       updatedLines.push(`${outputKey}: ${formattedTools}`);
       hasReplaced = true;
-
+    } else if (matchModelKey) {
+      const rawModel = matchModelKey[1].trim().replace(/^['"]|['"]$/g, '');
+      if (isAntigravity && !ANTIGRAVITY_VALID_MODELS.has(rawModel)) {
+        updatedLines.push('model: inherit');
+        hasReplaced = true;
+      } else if (platform === 'codex' && !isAgent) {
+        hasReplaced = true;
+      } else {
+        updatedLines.push(line);
+      }
     } else {
       updatedLines.push(line);
     }
@@ -328,7 +349,7 @@ function translateFrontmatter(markdownContent, platform) {
   if (!hasReplaced) return markdownContent;
 
   const newYaml = updatedLines.join(newline);
-  return markdownContent.replace(frontmatterRegex, `---${newline}${newYaml}${newline}---`);
+  return markdownContent.replace(frontmatterRegex, () => `---${newline}${newYaml}${newline}---`);
 }
 
 module.exports = {
