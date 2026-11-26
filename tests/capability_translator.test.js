@@ -97,38 +97,57 @@ test('Cross-Platform Capability Translator Unit Tests', async (t) => {
     assert.strictEqual(hasAgentCapabilities('name: test\ndescription: desc\nallowed-tools: Agent, Read'), true);
   });
 
-  await t.test('translateFrontmatter transforms inline allowed-tools for Claude Code', () => {
-    const markdown = [
+  await t.test('translateFrontmatter transforms inline allowed-tools for Claude Code skills vs agents', () => {
+    const skillMarkdown = [
+      '---',
+      'name: ami-test-skill',
+      'description: A test skill.',
+      'allowed-tools: write_to_file, replace_file_content, run_command, view_file, Skill',
+      '---',
+      '# Skill Instructions',
+      'Run workflow.'
+    ].join('\n');
+
+    const skillResult = translateFrontmatter(skillMarkdown, 'claude');
+    assert.ok(skillResult.includes('allowed-tools: Write, Edit, Bash, Read, Skill'));
+    assert.ok(!/^tools:/m.test(skillResult));
+
+    const agentMarkdown = [
       '---',
       'name: ami-test-agent',
       'description: A test subagent.',
-      'allowed-tools: write_to_file, replace_file_content, run_command, view_file',
+      'allowed-tools: write_to_file, replace_file_content, run_command, view_file, Skill',
+      'model: sonnet',
       '---',
       '# System Prompt',
       'You are a test agent.'
     ].join('\n');
 
-    const result = translateFrontmatter(markdown, 'claude');
-    assert.ok(result.includes('allowed-tools: Write, Edit, Bash, Read'));
-    assert.ok(result.includes('# System Prompt'));
-    assert.ok(result.includes('name: ami-test-agent'));
+    const agentResult = translateFrontmatter(agentMarkdown, 'claude', { kind: 'agent' });
+    assert.ok(agentResult.includes('tools: Write, Edit, Bash, Read, Skill'));
+    assert.ok(!agentResult.includes('allowed-tools:'));
+    assert.ok(agentResult.includes('model: sonnet'));
+    assert.ok(agentResult.includes('# System Prompt'));
+    assert.ok(agentResult.includes('name: ami-test-agent'));
   });
 
-  await t.test('translateFrontmatter transforms inline allowed-tools for Antigravity', () => {
+  await t.test('translateFrontmatter transforms inline allowed-tools and normalizes Claude model for Antigravity', () => {
     const markdown = [
       '---',
       'name: ami-test-agent',
       'description: A test subagent.',
-      'allowed-tools: Write, Edit, Bash, Read',
+      'allowed-tools: Write, Edit, Bash, Read, Skill',
+      'model: opus',
       '---',
       '# System Prompt',
       'You are a test agent.'
     ].join('\r\n');
 
-    const result = translateFrontmatter(markdown, 'antigravity');
+    const result = translateFrontmatter(markdown, 'antigravity', { kind: 'agent' });
     assert.ok(result.includes('tools: [write_to_file, write_file, replace_file_content, multi_replace_file_content, edit_file, run_command, manage_task, view_file, read_file]'));
+    assert.ok(!result.includes('Skill'));
+    assert.ok(result.includes('model: inherit'));
     assert.ok(result.includes('\r\n')); // Preserves CRLF
-
   });
 
   await t.test('translateFrontmatter handles YAML multiline array format', () => {

@@ -38,11 +38,14 @@ function copyRecursiveSync(src, dest, targetEnv = null, options = {}) {
   } else {
     if (dest.endsWith('.md')) {
       let content = fs.readFileSync(src, 'utf8');
+      const normalizedSrc = src.replace(/\\/g, '/');
+      const normalizedDest = dest.replace(/\\/g, '/');
+      const kind = options.kind || (/(?:^|\/)agents\/[^/]+\.md$/.test(normalizedDest) || /(?:^|\/)agents\/[^/]+\.md$/.test(normalizedSrc) ? 'agent' : 'skill');
       if (targetEnv === 'claude') {
         content = content.replace(/\.gemini\/agents\//g, '.claude/agents/');
-        content = translateFrontmatter(content, 'claude');
+        content = translateFrontmatter(content, 'claude', { kind });
       } else if (targetEnv === 'antigravity' || targetEnv === 'gemini') {
-        content = translateFrontmatter(content, 'antigravity');
+        content = translateFrontmatter(content, 'antigravity', { kind });
       } else if (targetEnv === 'codex') {
         if (!options.codexUserSkillsDir) {
           throw new Error('Codex skills directory is required to install skills.');
@@ -124,7 +127,7 @@ function mergeSettings(targetPath, sourcePath, options = {}) {
   let targetData = {};
   if (fs.existsSync(targetPath)) {
     try {
-      targetData = JSON.parse(fs.readFileSync(targetPath, 'utf8'));
+      targetData = JSON.parse(fs.readFileSync(targetPath, 'utf8').replace(/^\uFEFF/, ''));
     } catch (e) {
       console.error('\n❌ ERROR: Could not parse existing settings.json (invalid JSON).');
       console.error('   Aborting hooks merge to protect your custom settings.');
@@ -132,7 +135,7 @@ function mergeSettings(targetPath, sourcePath, options = {}) {
       return false;
     }
   }
-  const sourceData = JSON.parse(fs.readFileSync(sourcePath, 'utf8'));
+  const sourceData = JSON.parse(fs.readFileSync(sourcePath, 'utf8').replace(/^\uFEFF/, ''));
 
   if (!targetData.hooks) targetData.hooks = {};
 
@@ -170,7 +173,7 @@ function mergeSettings(targetPath, sourcePath, options = {}) {
 function removeAmigaHooks(targetPath) {
   if (!fs.existsSync(targetPath)) return false;
   try {
-    const targetData = JSON.parse(fs.readFileSync(targetPath, 'utf8'));
+    const targetData = JSON.parse(fs.readFileSync(targetPath, 'utf8').replace(/^\uFEFF/, ''));
     if (!targetData.hooks) return false;
 
     let cleanedCount = 0;
@@ -632,6 +635,25 @@ async function runDoctor() {
     console.log(pc.gray('  ℹ️  Antigravity plugin not configured (Optional feature).'));
   }
 
+  const claudeAgentsDirCheck = path.join(claudeDir, 'agents');
+  if (fs.existsSync(claudeAgentsDirCheck)) {
+    const installedClaudeAgents = fs.readdirSync(claudeAgentsDirCheck).filter(f => f.startsWith('ami-') && f.endsWith('.md'));
+    if (installedClaudeAgents.length > 0) {
+      const legacyAllowedToolsAgents = installedClaudeAgents.filter(file => {
+        const content = fs.readFileSync(path.join(claudeAgentsDirCheck, file), 'utf8');
+        const fmMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+        return fmMatch && /^allowed-tools:/m.test(fmMatch[1]);
+      });
+      if (legacyAllowedToolsAgents.length > 0) {
+        console.log(pc.yellow(`  ⚠️  WARNING: ~/.claude/agents contains ${legacyAllowedToolsAgents.length} Amiga agent(s) using 'allowed-tools:' instead of 'tools:'. Claude Code subagents require 'tools:' to enforce least-privilege sandboxing.`));
+        console.log(pc.gray("     Recommendation: Run 'amiga-ia-setup' to re-translate Claude agent frontmatter into 'tools:'."));
+        issueCount++;
+      } else {
+        console.log(pc.green(`  ✅ Claude Code custom agents (${installedClaudeAgents.length}) use native 'tools:' frontmatter.`));
+      }
+    }
+  }
+
   // 3. YAML Frontmatter Validator
   console.log(pc.blue('\n🔍 Validating YAML frontmatter for skills and agents...'));
   let invalidDefinitions = 0;
@@ -643,7 +665,8 @@ async function runDoctor() {
     'ami-data-scientist.md',
     'ami-doc-architect.md',
     'ami-release-manager.md',
-    'ami-tech-lead.md'
+    'ami-tech-lead.md',
+    'ami-ui-builder.md'
   ]);
 
   const AGENT_DELEGATION_MANDATORY_AGENTS = new Set([
@@ -732,7 +755,7 @@ async function runDoctor() {
   const claudeSettingsPath = path.join(claudeDir, 'settings.json');
   if (fs.existsSync(claudeSettingsPath)) {
     try {
-      const settings = JSON.parse(fs.readFileSync(claudeSettingsPath, 'utf8'));
+      const settings = JSON.parse(fs.readFileSync(claudeSettingsPath, 'utf8').replace(/^\uFEFF/, ''));
       if (settings.hooks && (settings.hooks.PreToolUse || settings.hooks.PostToolUse)) {
         const isWindows = os.platform() === 'win32';
         const hookEvents = Object.values(settings.hooks).flat();
@@ -788,7 +811,7 @@ async function runDoctor() {
   const geminiHooksPath = path.join(geminiDir, 'hooks.json');
   if (fs.existsSync(geminiHooksPath)) {
     try {
-      const geminiHooks = JSON.parse(fs.readFileSync(geminiHooksPath, 'utf8'));
+      const geminiHooks = JSON.parse(fs.readFileSync(geminiHooksPath, 'utf8').replace(/^\uFEFF/, ''));
       if (geminiHooks.hooks && (geminiHooks.hooks.PreToolUse || geminiHooks.hooks.PostToolUse)) {
         const hookEvents = Object.values(geminiHooks.hooks).flat();
         const hookCmds = [];
@@ -834,7 +857,7 @@ async function runDoctor() {
   const codexHooksPath = path.join(codexDir, 'hooks.json');
   if (fs.existsSync(codexHooksPath)) {
     try {
-      const codexHooks = JSON.parse(fs.readFileSync(codexHooksPath, 'utf8'));
+      const codexHooks = JSON.parse(fs.readFileSync(codexHooksPath, 'utf8').replace(/^\uFEFF/, ''));
       if (codexHooks.hooks && (codexHooks.hooks.PreToolUse || codexHooks.hooks.PostToolUse)) {
         const hookEvents = Object.values(codexHooks.hooks).flat();
         const hookCmds = [];

@@ -191,6 +191,19 @@ describe('Tri-Ecosystem End-to-End Installation Test Suite', () => {
         );
       }
 
+      // Assert Claude skills use 'allowed-tools:' and Claude subagents strictly use 'tools:' + 'model:'
+      for (const skillFile of installedSkills.filter(f => path.basename(f) === 'SKILL.md')) {
+        const fmMatch = fs.readFileSync(skillFile, 'utf8').match(/^---\r?\n([\s\S]*?)\r?\n---/);
+        assert.ok(fmMatch && /^allowed-tools:/m.test(fmMatch[1]), `Claude skill ${path.basename(path.dirname(skillFile))} must declare allowed-tools:`);
+      }
+      for (const agentFile of installedAgents) {
+        const fmMatch = fs.readFileSync(agentFile, 'utf8').match(/^---\r?\n([\s\S]*?)\r?\n---/);
+        assert.ok(fmMatch, `Claude agent ${path.basename(agentFile)} must have YAML frontmatter`);
+        assert.ok(/^tools:/m.test(fmMatch[1]), `Claude agent ${path.basename(agentFile)} must declare tools:`);
+        assert.strictEqual(/^allowed-tools:/m.test(fmMatch[1]), false, `Claude agent ${path.basename(agentFile)} must NOT declare allowed-tools:`);
+        assert.ok(/^model:\s*(?:sonnet|opus|haiku|inherit)/m.test(fmMatch[1]), `Claude agent ${path.basename(agentFile)} must declare a valid model:`);
+      }
+
       // Assert CLAUDE.md rules block exists
       const claudeMdContent = fs.readFileSync(claudeMdPath, 'utf8');
       assert.ok(claudeMdContent.includes('AMIGA_IA_RULES_START:DO_NOT_EDIT'));
@@ -304,6 +317,17 @@ describe('Tri-Ecosystem End-to-End Installation Test Suite', () => {
             regex.test(allowedTools),
             false,
             `Antigravity installed file ${path.relative(geminiDir, file)} contains Claude tool "${forbidden}" in allowed-tools: "${allowedTools}"`
+          );
+        }
+      }
+
+      // Assert Antigravity agents normalize model to valid Antigravity values (never raw sonnet/opus)
+      for (const agentFile of installedAgents) {
+        const fmMatch = fs.readFileSync(agentFile, 'utf8').match(/^---\r?\n([\s\S]*?)\r?\n---/);
+        if (fmMatch && /^model:/m.test(fmMatch[1])) {
+          assert.ok(
+            /^model:\s*(?:inherit|flash|pro|flash_lite)\s*$/m.test(fmMatch[1]),
+            `Antigravity agent ${path.basename(agentFile)} must normalize model to inherit/flash/pro/flash_lite`
           );
         }
       }

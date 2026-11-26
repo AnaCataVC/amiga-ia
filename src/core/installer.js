@@ -43,11 +43,14 @@ function copySelectiveItem(src, dest, targetEnv, options = {}) {
   } else {
     if (dest.endsWith('.md')) {
       let content = fs.readFileSync(src, 'utf8');
+      const normalizedSrc = src.replace(/\\/g, '/');
+      const normalizedDest = dest.replace(/\\/g, '/');
+      const kind = options.kind || (/(?:^|\/)agents\/[^/]+\.md$/.test(normalizedDest) || /(?:^|\/)agents\/[^/]+\.md$/.test(normalizedSrc) ? 'agent' : 'skill');
       if (targetEnv === 'claude') {
         content = content.replace(/\.gemini\/agents\//g, '.claude/agents/');
-        content = translateFrontmatter(content, 'claude');
+        content = translateFrontmatter(content, 'claude', { kind });
       } else if (targetEnv === 'antigravity' || targetEnv === 'gemini') {
-        content = translateFrontmatter(content, 'antigravity');
+        content = translateFrontmatter(content, 'antigravity', { kind });
       } else if (targetEnv === 'codex') {
         if (!options.codexUserSkillsDir) {
           throw new Error('Codex skills directory is required to install skills.');
