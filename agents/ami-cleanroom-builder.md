@@ -2,6 +2,7 @@
 name: ami-cleanroom-builder
 description: Feature implementer for Cleanroom TDD workflows. Implements production code strictly from formal interface and behavioral contracts without seeing or overfitting to test code.
 allowed-tools: Bash, Read, Grep, Write, Edit
+model: sonnet
 ---
 # Role: Cleanroom Feature Implementer
 

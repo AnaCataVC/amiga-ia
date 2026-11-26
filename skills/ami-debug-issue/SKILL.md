@@ -1,48 +1,49 @@
 ---
 name: ami-debug-issue
-description: Must be triggered whenever the user asks to solve a problem, fix a bug, or debug an issue. Performs an organized debugging process, systematically isolating the root cause without assumptions, and concludes by writing tests and documentation to prevent regressions.
+description: Isolate non-obvious root causes of reproducible bugs (multi-layer regressions, stateful or intermittent failures, or bugs surviving a first fix) via systematic bisection, hypothesis testing, and regression tests.
 allowed-tools: Bash, Read, Grep, Edit, Write
 ---
 
 # Skill: Methodical Debugger
 
-When invoked, act as a methodical and rigorous debugger. Your goal is to find the true root cause of a bug without jumping to conclusions, test your hypotheses systematically, and secure the fix with regression tests.
+When invoked, act as a methodical and rigorous debugger. Your goal is to isolate the true root cause of non-obvious defects without guessing, cross-reference independent runtime signals, and secure the fix with a falsifiable regression test.
 
 ## Workflow
 
+0. **Scope Triage (Fast-Path vs. Bisection Protocol):**
+   - Inspect the error message, stack trace, and immediate failure site first.
+   - **Trivial Fast-Path:** If inspection immediately proves an unambiguous single-cause defect (e.g., syntax typo, wrong identifier/import, obvious missing guard), state the root cause directly and apply a minimal fix plus regression verification without multi-stop bisection ceremony.
+   - **Full Bisection Protocol:** Use Steps 1-6 below whenever the root cause is **not immediately evident** (e.g., the defect survived a first fix attempt, crosses module/service boundaries, or depends on state/timing).
+
 1. **Information Gathering & Problem Confirmation:**
-   - Attempt to deduce the problem and symptoms from the current conversation context.
-   - ONLY if the problem is unclear from the context, ask the user for the exact symptoms, error messages, and steps to reproduce.
-   - Do NOT assume the root cause based on initial symptoms.
-   - **CONFIRMATION 1:** Before moving forward, summarize your understanding of the bug (whether deduced or provided) and STOP to ask the user if your understanding is correct. Do not proceed to debugging until the user confirms.
+   - Deduce symptoms and failure conditions from the conversation context; ask the user for exact error traces or reproduction steps ONLY when missing from context.
+   - Do NOT assume the root cause from surface symptoms.
+   - **CONFIRMATION 1:** Summarize the observed failure symptoms and reproduction scope, then STOP to confirm your understanding with the user before starting deep isolation.
 
 2. **Hypothesis Generation & Systematic Isolation:**
-   - Rule out the simplest explanations first (syntax error, missing dependency, wrong environment or config) before deep debugging. Gather evidence before forming hypotheses.
-   - If the bug depends on real input data, reproduce it with a captured real input rather than a synthetic one.
-   - Formulate multiple potential hypotheses for the bug.
-   - Use a "divide and conquer" or "binary search" approach to isolate the issue. Check logs, state, or variable values at different stages of execution to narrow down the origin.
-   - Test each hypothesis one by one, eliminating them based on evidence. Add temporary logging (e.g. `console.log`, `print`) or use the project's debug tools. Run the code and analyze the output.
-
-   > **Language-specific tips:** For Python, use `pdb` for interactive debugging and `pytest -vv` for verbose test output. Adapt these tools to the project's language and framework.
+   - Rule out baseline issues first (syntax errors, missing dependencies, stale build artifacts, wrong environment/configuration) and gather concrete evidence before forming hypotheses.
+   - When the bug depends on production-shaped payloads or edge inputs, reproduce with a captured real input fixture rather than synthetic guesswork.
+   - Formulate competing hypotheses and apply binary search / divide-and-conquer across execution boundaries to narrow down where expected state diverges from actual state.
+   - **Multi-Signal Cross-Reference Requirement:** Before concluding on a root cause, cross-reference independent signals—error/execution logs, static code path trace, and live runtime state or targeted test runs. Never conclude from code reading or a single unverified signal alone.
+   - Test hypotheses one at a time using native debuggers or temporary instrumentation (e.g., `pdb` and `pytest -vv` in Python, `node --inspect`, or framework test harnesses), removing any temporary debug output afterward.
 
 3. **Root Cause Confirmation & Solution Proposal:**
-   - Once a hypothesis seems correct, construct a minimal reproduction case if possible, or verify the exact failure point.
-   - Draft a targeted, minimal fix that addresses the root cause directly, rather than patching symptoms or introducing complex architectural rewrites.
-   - **Simplicity & Anti-Overengineering Invariant:** Choose the simplest clean solution that resolves the defect professionally. Avoid refactoring unrelated systems or introducing speculative abstractions during a bug fix.
-   - **DRY Fixes:** If the fix involves recurring validation or parsing logic, isolate it into a reusable helper function or utility rather than duplicating the snippet.
-   - **CONFIRMATION 2:** STOP and explain the root cause found. Present the proposed solution to the user and ask for their approval before applying any code changes.
+   - Construct a minimal reproduction case (or pinpoint the exact failing state transition when a standalone reproducer is infeasible).
+   - Draft a targeted, minimal fix addressing the root cause rather than masking symptoms.
+   - **Simplicity & Anti-Overengineering Invariant:** Choose the cleanest minimal change that resolves the defect without refactoring unrelated code or introducing speculative abstractions.
+   - **DRY Fixes:** If the fix involves recurring validation or parsing logic, extract a focused shared helper rather than duplicating guards.
+   - **CONFIRMATION 2:** STOP, explain the verified root cause and cross-referenced evidence, present the proposed fix, and await explicit user approval before modifying production code.
 
 4. **Implementation of the Fix:**
-   - Once the user approves the solution, apply the fix cleanly and verify that the bug is no longer reproducible locally.
+   - Apply the approved fix cleanly and verify locally that the reproduction case now passes with zero regressions.
 
 5. **Regression Prevention & Documentation Proposal:**
-   - **Write Tests:** Before creating new tests from scratch, check if existing tests can be leveraged or optimized to cover this bug. If no tests exist or a new suite is needed, plan to invoke the `ami-create-tests` skill. Neutralize the fix once and confirm the regression test fails; a test that never failed proves nothing.
-   - **Documentation:** Plan the documentation of the root cause, fix, and learnings using the `ami-manage-docs` skill (Mode D: Knowledge & ADR Harvesting).
-   - **CONFIRMATION 3:** STOP and present the plan for tests and documentation. Ask the user if the approach for testing and documenting is OK before executing it.
+   - **Write Tests:** Check whether existing tests can be extended first; otherwise plan regression coverage via `ami-create-tests`. Neutralize the fix once to confirm the regression test turns red (then restore the fix)—a test that never failed proves nothing.
+   - **Documentation:** Plan durable root-cause and gotcha capture via `ami-manage-docs` (Mode D: Knowledge & ADR Harvesting) when the defect reveals a non-obvious architectural trap.
+   - **CONFIRMATION 3:** STOP and present the proposed test and documentation plan, awaiting user approval before execution.
 
 6. **Execution of Tests & Documentation (Reporting):**
-   - After user approval, execute the test generation and documentation extraction.
-   - Present a final clear summary to the user explaining everything that was accomplished.
+   - Execute the approved regression test and documentation updates, then deliver a concise summary of the root cause, fix, and verification results.
 
 ---
 **Language Rule:** Although your code, tests, and commits MUST be in English, you MUST communicate and interact in the chat using the same language the user is speaking (e.g., Spanish).

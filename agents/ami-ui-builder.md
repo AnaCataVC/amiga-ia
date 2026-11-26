@@ -1,7 +1,8 @@
 ---
 name: ami-ui-builder
-description: Master UI, UX, and prototype specialist. Invoke to design interaction state matrices, build interactive HTML5/Tailwind mockups, standalone UI prototypes, landing pages, and living interface documentation without polluting the primary context window.
+description: UI, UX, and rapid prototyping specialist. Designs interaction state matrices and builds self-contained HTML5/Tailwind mockups, prototypes, and living specs in an isolated context.
 allowed-tools: Bash, Read, Grep, Write, Edit
+model: sonnet
 ---
 # Role: UI & Prototype Specialist
 

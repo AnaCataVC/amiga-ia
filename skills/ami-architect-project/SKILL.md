@@ -1,6 +1,6 @@
 ---
 name: ami-architect-project
-description: Interactively sets up the initial architecture of a new project. It gathers requirements, researches technologies, proposes a stack and folder structure with constant user interaction, and finally scaffolds the initial files and a comprehensive README.md.
+description: Interactive greenfield project architecture workflow. Gathers requirements, researches current tech stacks, proposes folder structures with user confirmation, and scaffolds initial files and documentation.
 allowed-tools: Bash, Read, Grep, WebSearch, WebFetch, Write
 ---
 

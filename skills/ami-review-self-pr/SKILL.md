@@ -1,112 +1,65 @@
 ---
 name: ami-review-self-pr
-description: Use ONLY when reviewing YOUR OWN Pull Requests, local branches, or work-in-progress code before publishing. Instead of leaving comments, it acts as a stringent Senior Engineer to proactively find flaws and apply concrete code fixes locally. If reviewing a teammate's or another person's Pull Request to leave review comments, use ami-review-peer-pr instead.
+description: Reviews YOUR OWN Pull Requests, local branches, or uncommitted changes before publishing. Proactively finds semantic flaws, verifies test neutralization, and applies concrete fixes locally. For peer PRs, use ami-review-peer-pr.
 allowed-tools: Bash, Read, Grep, Edit, Write
 ---
 
 # Skill: PR Self-Reviewer
 
-When this skill is invoked, you act as a stringent Senior Engineer reviewing the user's own work. Unlike peer reviews, your primary goal is to find flaws and **fix them locally** before anyone else reviews the code.
+When invoked, act as a stringent Senior Engineer reviewing the user's **own** work. Unlike peer reviews, your primary goal is to uncover semantic flaws and **fix them locally** before anyone else reviews the code.
 
-- **Never bypass hooks:** never run `git commit`/`git push` with `--no-verify` to get past pre-commit or pre-push findings; fix the root cause.
-- **Repo-provided reviewers:** if the target repository ships its own reviewer agent (e.g. under `.claude/agents/`), run the review through it — it owns repo-specific blocking gates a generic reviewer never sees.
+- **Never bypass hooks:** Never run `git commit` or `git push` with `--no-verify`; fix the root cause.
+- **Repo-provided reviewers:** If the target repository ships its own reviewer agent (e.g., under `.claude/agents/` or `.agents/`), run the review through it so repository-specific blocking gates are enforced.
+- **Division of labor:** Delegate mechanical checks (formatting, lint, unused imports, static types) to automated validation tooling; focus manual audit attention on semantic integrity, contracts, concurrent state, and failure resilience.
 
 ## Workflow
 
-1. **Context Identification, Validation & Dynamic Diffing:**
-   - Ask the user which PR, branch, or specific commit they want you to review.
-   - **CRITICAL AUTHORSHIP CHECK:** Identify if the PR or code belongs to another developer or teammate. This skill is exclusively for reviewing and directly fixing the user's OWN code. If the user is trying to review someone else's PR or give peer feedback to a teammate, **IMMEDIATELY STOP**, explain the difference between both skills, and recommend switching to **`ami-review-peer-pr`** (which focuses on interactive QA, criticality observations, and publishing GitHub review comments without altering local files). Offer to invoke `ami-review-peer-pr` right away.
-     - Verify, never assume: compare `gh pr view <target> --json author` against the authenticated user (`gh api user --jq .login`). Uncommitted or unpushed work with no PR belongs to the user by definition.
-   - **Where fixes live:** if the PR's branch is not the current checkout, work in a scratch `git worktree` of `origin/<branch>`. Never switch branches in the main clone (it may hold uncommitted work) and never create a new branch. Remove the worktree when the review ends, pushed or not.
-   - If a PR URL or number is provided and belongs to the user, read the diff directly against its configured base branch (`baseRefName`).
-   - If it's a local branch, determine its target base branch:
-     - **Stacked PR Awareness:** Check if the local branch builds upon an intermediate layer in a **Stacked PRs** chain rather than branching directly from `main` or `master` (e.g., verifying `baseRefName` via GitHub CLI or stacking tools like `gh stack` / Graphite `gt`).
-     - Analyze uncommitted changes or recent commits **strictly against its direct parent branch (`baseRefName`)**, preventing redundant review of lower layers in the stack.
-   - **PR Description & Acceptance Criteria Ingestion:**
-     - If inspecting an active PR, read its body description, title, and milestone via `gh pr view --json title,body,milestone`.
-     - Map the proposed diff against the author's own checklist and acceptance criteria (e.g. `- [ ]` / `- [x]`) to ensure no promised item was left half-implemented.
-     - Anything the author already declared in the body (merge order, accepted debt, excluded scope) is not a finding. Exception: metadata the repo governs (criticality, "does not touch X") is a claim — verify it against the touched files. Pass the body to any subagent reviewing on your behalf.
-     - Ingest repository architecture documents (`README.md`, `docs/adr/`, `docs/architecture/`) to ensure alignment with repository invariants.
-   - **Pre-Review Existing Comments Gate (Comment Analysis Prerequisite):**
-     - **Local Branch Bypass:** If reviewing a local branch or uncommitted code with no active remote PR (or if `gh pr view` returns non-zero / no pull request found), immediately bypass this gate and proceed directly to local diff analysis against base branch.
-     - **Active PR Inspection:** When inspecting an active PR:
-       ```bash
-       gh pr view <target> --json comments,reviews
-       ```
-     - **Resolved & Outdated Comments Bypass:** If all existing comments are already marked resolved in GitHub, belong to outdated diff hunks from earlier commits, or were already processed and resolved in the current session/task, do not block the self-audit.
-     - **Unresolved Feedback Gate:** If active, unresolved review comments or change requests from human reviewers remain unaddressed:
-       - Inform the user and prioritize resolving external reviewer feedback first.
-       - **Mandatory Delegation / Chaining:** Execute or guide through **`ami-analyze-pr-comments`** to extract and categorize observations (Blocking, Suggestions, Questions), apply local fixes, and draft professional responses tagging each reviewer with `@<username>` (strictly avoiding informal colloquialisms).
-       - Once existing feedback is processed or acknowledged by the user, resume this skill to conduct the independent self-audit and blind-spot probes on the updated diff.
-   - **Review Mode Selection:**
-     - Support two operational review modes:
-       - **Code Review Mode (Default):** Static analysis of logic, contracts, edge cases, error paths, and clean code standards. Fast and zero-execution overhead.
-       - **Full Review Mode (Dynamic):** Static analysis combined with dynamic execution of local test suites and build/typecheck validation.
-     - **Mode Negotiation UX:** Default to `Code Review Mode`. Inform the user that static analysis is being performed, and offer to switch to `Full Review Mode` if they want to run the test suite locally.
+1. **Context Identification, Authorship, Worktree & Dynamic Diffing:**
+   - **Orchestrator Fast-Path:** When an orchestrator (`ami-ship-change`, `ami-pr-reviewer`) passes an explicit target (PR, branch, or `<base>..HEAD` + working tree) or invokes **Findings-only mode**, do **not** prompt the user for target or review mode. Ask for a target only when invoked standalone without one.
+   - **CRITICAL AUTHORSHIP CHECK:** Compare `gh pr view <target> --json author` against `gh api user --jq .login` (never assume from branch names). Uncommitted or unpushed local work with no PR belongs to the user by definition. If the PR belongs to another developer, **IMMEDIATELY STOP**, explain the distinction, and offer to invoke **`ami-review-peer-pr`**.
+   - **Scratch Worktree Isolation:** If the PR branch is not the active checkout, inspect and fix inside a scratch worktree (`git worktree prune`, then `git -c core.longpaths=true worktree add --detach <scratch-wt> origin/<branch>`; use a short path on Windows `MAX_PATH` limits). Never switch branches in the main clone, and always tear down the worktree (`git worktree remove` + `git worktree prune`, deleting directory junctions safely first) on completion or abort.
+   - **Stack-Aware & Stale-Base Three-Way Diffing:**
+     - Detect Stacked PR chains (`baseRefName` via `gh pr view` or `gh stack` / Graphite `gt`) and diff strictly against the direct parent (`baseRefName`) to avoid re-reviewing lower stack layers.
+     - **Stale-Base Guard:** When `<base>` has advanced past the branch point (`git merge-base --is-ancestor <base> <head>` fails), two-tree `git diff <base> <head>` misreports base-only commits as deletions. Inspect `git merge-tree --write-tree --messages <base> <head>` (diffing `<base>:<file> <tree>:<file>` for auto-merged files, or using `git diff <base>...<head>`) so base-only changes are never misattributed as regressions.
+   - **PR Body, Cross-References & Pre-Review Comments Gate:**
+     - On an active PR, read `gh pr view <target> --json title,body,milestone,comments,reviews` and timeline cross-references (`gh api repos/{owner}/{repo}/issues/{n}/timeline --paginate`, no leading slash). Map `- [ ]` / `- [x]` promises against the diff to flag `[Requirement Gap]`. Author-declared exclusions/debt are not findings unless governed repo claims ("does not touch X") contradict touched files. Pass the PR body to any delegated subagent.
+     - Read `README.md`, `CLAUDE.md` / `AGENTS.md`, `docs/adr/`, and `docs/architecture/`.
+     - **Existing Comments Gate:** Skip on local branches with no PR. On an active PR with unresolved, non-outdated human reviewer comments or change requests, run **`ami-analyze-pr-comments`** first to resolve external feedback, then audit the updated diff.
+   - **Review Mode Selection (Standalone Only):** Default to `Code Review Mode` (static semantic analysis + targeted guard neutralization) and mention that `Full Review Mode` (full test/build suite execution) is available on request.
 
-2. **Strict Self-Audit:**
-   - Analyze the diff explicitly looking for:
-     - Unfulfilled items from the PR description or missing acceptance criteria (`[Requirement Gap]`).
-     - Logic gaps and unhandled edge cases.
-     - Hardcoded values or magic numbers.
-     - Missing error handling or logging.
-     - Potential performance bottlenecks.
-     - Missing or outdated tests — a test counts only if it fails with the fix reverted; fixtures that pass by coincidence (same-length IDs, a fake client exposing fields the real API lacks) do not.
-     - Committed measurements (baselines, reports) that the committed tooling cannot regenerate, or that do not isolate the PR's own effect.
-   - **Failure resilience and state safety:**
-     - **Cleanup and rollback:** a mid-execution failure (timeout, exception, disconnect) must not leave corrupted or half-mutated state.
-     - **Idempotency under retries:** retried functions must not duplicate side effects.
-     - **Model-controlled input:** LLM tool arguments are untrusted — validate them against the contract before interpolating into a URL/path (above all one carrying a service token), never echo upstream error bodies back to the model, cap payload sizes reusing an existing limit constant.
-     - **Silent defaults:** every `catch` must log diagnostic context (identifiers, no PII or credentials) or state why it suppresses; every fallback that fabricates a default or disables a feature must log or alert.
-   - **Semantic drift:**
-     - **Duplicated decisions:** two predicates evaluating the same condition will drift apart — consolidate or verify they share timing and context.
-     - **Partial gate alignment:** when aligning a surface (prompt, UI, reported state) with a gate, enumerate every condition of the gate (capability and role, flag and property, tenant and user). A read-visibility scope is a gate too: if a write's safety depends on reading state back (dedup, re-check), confirm every role allowed to write can also read it.
-     - **Naming drift:** identifiers whose meaning widened or narrowed keep stale names — rename them.
-     - **Contract drift:** check changed behavior clause by clause against its contract (OpenAPI, schema, tool definition, docstring): error codes documented, payload shape exact, always-present fields always sent. A docstring promising an unenforced guarantee is drift.
-     - **Sibling flows:** a behavior wired into one of several parallel flows must be checked and tested in every sibling. When the diff removes a helper's last caller, delete the helper and its test.
-     - **Contextual scope:** inspect code adjacent to the diff. When the diff edits prompts or docs, read the whole file and its recent history on the base branch — a rule merged meanwhile may already say the same thing.
-   - **Over-engineering:** for each added abstraction, config knob, dependency or helper, ask whether it is needed now and whether existing code, the stdlib, the platform or an installed dependency already covers it. An interface with one implementation or a setting for a value that never changes is a finding; the fix is deletion. Trust-boundary validation, data-loss error handling and security are never "extra".
-   - **Validate every path, not just the happy path.** Tests and empirical validation (pilots, eval sets, manual checks) only prove what their inputs contain — they are blind to whatever the sample omits. So reason beyond them:
-     - **All execution paths.** Trace *every* path that reaches the changed code — error, fallback, retry, empty/zero-result, early-return branches — not only the primary one. Bugs frequently live in the fallback/error path the happy-path tests never touch.
-     - **Data-flow of each input.** For every value the new code consumes: where does it originate? Does it survive a re-request/retry? Which pre-existing validation runs *before* the change, and does it therefore only guard the original or first element (e.g. `results[0]`) and not the candidate the new code selects? The bug is often the interaction between new code and a guard that no longer covers it.
-     - **Future callers & de-facto vs enforced gating.** Ask "who else could trigger this tomorrow?" A behavior that is safe today only because a single caller feeds it (one country, one flag, one payload shape) is *de-facto* gated, not enforced in code. If the change alters returned data/state, require explicit opt-in per case rather than silent activation-by-payload.
+2. **Strict Semantic Self-Audit & Active Test Neutralization:**
+   - **Active Test Neutralization (Mandatory for New Guards/Branches):**
+     - A test counts only if it fails when its guard is neutralized; coincidental fixtures (same-length IDs, permissive fakes) do not count.
+     - For every new guard, branch, or rule: find test files referencing it (`git grep -l <symbol> -- tests`; zero matches means it survives automatically and is a finding). In an isolated scratch worktree (`git -c core.longpaths=true worktree add --detach <wt> HEAD`), physically neutralize the guard, run **only** those covering test files, restore/remove the worktree cleanly, and report every surviving guard whose tests stayed green. When PR CI is already green, do not re-run the full unchanged suite until new local fixes are applied.
+   - **Committed Measurements:** Baselines or metric reports committed in the diff must be regenerable by committed tooling and isolate the PR's own effect.
+   - **Path, External-Input & Seam Tracing:**
+     - **All execution paths & input data-flow:** Trace error, fallback, retry, empty/zero-result, and early-return paths. Check where each input originates, whether it survives retries, and whether pre-existing guards only validated `results[0]` rather than newly selected candidates.
+     - **Untrusted external responses:** Check fields read from external HTTP/queue/file payloads for missing, `null`, empty, `0`, negative, and `NaN` before overwriting owned state (silent primitive defaults do not make values valid).
+     - **Producer-consumer seams & rolling compatibility:** Verify at least one test crosses real producer/consumer boundaries rather than asserting isolated mocks. Check dual-phase backward compatibility for schema, ORM, or payload renames/removals.
+     - **Future callers:** Require explicit opt-in gating rather than silent payload-shape activation.
+   - **Failure Resilience, State Safety & Debuggability:**
+     - **Cleanup & atomicity:** Mid-loop or mid-execution exceptions must not leave partial state mutations without rollback (compute everything first, apply at the end).
+     - **Idempotency & model-controlled input:** Retries must not duplicate side effects. Validate LLM/tool arguments against contract patterns before URL/path interpolation, cap payload sizes with existing constants, and never echo raw upstream error bodies to models.
+     - **Silent defaults:** Every `catch` must log entity identifiers (no PII/secrets) or state why it suppresses; every fallback fabricating a default or disabling behavior must log or alert.
+   - **Semantic Drift, Per-Environment Config Matrix & Over-Engineering:**
+     - Check duplicated predicates, partial gate alignment (verify **every** condition of a gate AND trace read-visibility scope per role whenever write safety depends on reading state back), stale identifier names, clause-by-clause contract/docstring drift, sibling flows (delete orphaned helpers and their dead tests), and recent `origin/main` history on edited prompts/docs.
+     - **Per-Environment Config Matrix:** Whenever `.env.*`, `values-*.yaml`, or per-environment manifests/secrets change, render a side-by-side `key x environment -> value` table across environments. Flag identical values that must differ per environment (IDs, URLs, hosts, buckets, tenants) unless explicitly intended, question keys missing in sibling environments, and state **where the running service actually reads that key** (runtime env, secret mount, or build-time file).
+     - **Over-Engineering:** Delete single-implementation interfaces, unused config knobs, or helpers already covered by stdlib/installed packages (trust-boundary validation and security are never "extra").
 
-3. **Adversarial Blind-Spot Probe ([Blind-Spot Probe]):**
-   - **Trigger Condition:** Execute this probe whenever Step 2 yields zero defects ("clean diff / LGTM") or only trivial styling/cosmetic issues (`[MINOR]`, `[NITPICK]`).
-   - **Adversarial Objective:** Break complacency bias by presuming the diff harbors subtle, undetected defects. Actively probe five critical vulnerability dimensions:
-     - **Dimension 1 (Concurrency & Asynchronous Timing):** Hunt for race conditions in concurrent execution, unawaited promises/tasks, missing cancellation token handling, stale closures in asynchronous callbacks or reactive hooks, and shared mutable state without synchronization.
-     - **Dimension 2 (Boundary Extremes & Zero/Null Invariants):** Stress-test behavior with empty collections (`[]`), empty strings (`""`), zero (`0`), negative values, integer limits (`MAX_SAFE_INTEGER`, overflows), null/undefined states, and malformed structures. Verify whether optional chaining (`?.`) or fallback defaults silently hide broken upstream state.
-     - **Dimension 3 (Silent Failures & Partial State Corruption):** Inspect `catch` blocks and fallback routines. Are exceptions swallowed without logging? Does a partial failure leave databases, caches, or state machines half-mutated without rollback or cleanup?
-     - **Dimension 4 (Resource & Memory Lifecycles):** Inspect disposal of open handles, database connections, streams, timers, event listeners, and subscriptions. Ensure singletons or long-lived structures do not accumulate unbounded memory references.
-     - **Dimension 5 (Malicious Payloads & Injection Surfaces):** Evaluate untrusted inputs against path traversal (`../`), prototype pollution, regular expression denial of service (ReDoS), and unexpected parameter combinations.
-   - **Probe Outcomes:**
-     - **Defects Detected:** Promote each uncovered issue to an actionable finding and formulate an exact local fix in Step 4.
-     - **Zero Defects Detected:** Record a verified `[Blind-Spot Probe: Clean]` certification, confirming that all 5 adversarial dimensions were probed with zero defects found.
+3. **Adversarial Blind-Spot Probe (`[Blind-Spot Probe]`):**
+   - **Trigger:** Run whenever Step 2 finds zero defects or only `[MINOR]`/`[NITPICK]` items.
+   - Probe 5 dimensions: (1) **Concurrency & Async Timing** (races, unawaited tasks, missing cancellation, stale closures), (2) **Boundary Extremes & Zero/Null Invariants** (`[]`, `""`, `0`, negatives, `MAX_SAFE_INTEGER`, `?.` masking broken upstream state), (3) **Silent Failures & Partial State Corruption**, (4) **Resource & Memory Lifecycles** (handles, streams, timers, listeners, unbounded caches), and (5) **Malicious Payloads & Injection Surfaces** (`../`, prototype pollution, ReDoS).
+   - Promote uncovered defects to Step 4, or record `[Blind-Spot Probe: Clean]`.
 
 4. **Concrete Code Suggestions (KISS & DRY):**
-   - **Anchor every finding** to a `file:line` you actually inspected on the reviewed ref; unanchored findings lead to fixes applied to intact code.
-   - Instead of leaving abstract comments (e.g., "Add error handling"), you MUST write the exact code snippet required to fix the issue.
-   - **Simplicity First:** Propose the simplest professional fix that completely resolves the issue without introducing architectural bloat or excessive layers.
-   - **Extract Duplication to Utilities:** If the fix involves logic repeated across files or methods, refactor and isolate the common routine into a centralized helper (`utils/` or `helpers/`) rather than copying code.
-   - Present your findings as a numbered list. For each flaw, provide the proposed code modification.
+   - Anchor every finding to an inspected `file:line` with its verification target (`<file:line@ref>`, `origin/<base>`, or `unverified` — settle `unverified` items before editing).
+   - Provide exact, minimal code replacements (extracting repeated logic into shared `utils/` or `helpers/`) as a numbered list.
 
-5. **Dynamic Test Execution & Iterative Remediation Loop (Full Review Mode):**
-   - When running in `Full Review Mode`:
-     - **Stack-Agnostic Test Runner Discovery:** Inspect root manifests (`package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`, `*.sln`, etc.) to determine the appropriate test command, or ask the user if multiple test suites exist.
-     - **Safe Local Execution:** Run the test suite in the local workspace.
-     - **Remediation Loop on Failure:**
-       - If tests fail, diagnose the root cause immediately: isolate whether the defect is in the newly modified logic or in an outdated test expectation.
-       - Formulate the exact fix.
-       - Present the diagnosis and propose applying the fix locally:
-         "[Test Failure Detected] Summary of failing tests. I have prepared a fix for the affected files. Would you like me to apply this fix and re-run the tests?"
-       - If approved, apply the fix to the files and re-execute the test runner until all tests pass.
-
-6. **Proactive Implementation (Code Review Mode):**
-   - **Findings-only mode:** when invoked by an orchestrator (such as `ami-ship-change`), stop after Step 4 — no edits, no prompt, no test run.
-   - Ask the user: "Would you like me to apply these fixes directly to the files?"
-   - If the user approves, use your file editing tools to apply the exact fixes locally.
-   - **Re-review applied fixes:** they are new code — re-read the modified files (naming drift, duplicated decisions, error paths) and run the repo's checks; fix regressions and re-run until they pass.
-   - When running standalone (outside `ami-ship-change`), do not commit or push directly; offer to run `ami-ship-change` to validate, commit, push, and optionally open/update the PR.
+5. **Proactive Implementation & Capped Verification Loop (Max 3 Rounds):**
+   - **Findings-only mode:** When invoked by an orchestrator (`ami-ship-change`, `ami-pr-reviewer`), **stop after Step 4** — return anchored findings with no edits, no prompts, and no suite execution.
+   - Ask the user: `"Would you like me to apply these fixes directly to the files?"` On approval, apply exact fixes locally.
+   - **Re-review & Dynamic Checks (Max 3 Rounds):** Applied fixes are new code — re-read modified files for naming drift, duplicated predicates, and error paths, and run repository checks/tests (in `Full Review Mode`, discover stack manifests and diagnose whether test failures stem from new logic or stale assertions before proposing fixes). Cap post-fix verification/remediation at **3 rounds**; if round 3 still fails, stop and report the failing check.
+   - Standalone runs never commit or push directly; offer `ami-ship-change` (which skips redundant self-review on the validated `HEAD`) and tear down any scratch worktree.
 
 ---
 **Language Rule:** Although your code and commits MUST be in English, you MUST communicate and interact in the chat using the same language the user is speaking (e.g., Spanish, French, etc.).

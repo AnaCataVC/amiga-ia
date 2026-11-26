@@ -1,157 +1,55 @@
 ---
 name: ami-review-peer-pr
-description: Use ONLY when reviewing Pull Requests authored by OTHER PEOPLE (peer review). It focuses on generating code review observations with criticality levels and drafting review comments for teammates. If reviewing your OWN Pull Request or branch to apply local fixes before publishing, use ami-review-self-pr instead.
-allowed-tools: Bash, Read, Grep
+description: Reviews Pull Requests authored by OTHER developers (peer review). Performs static path tracing, falsification checks, and drafts evidence-backed review comments without executing peer code. For your own PRs, use ami-review-self-pr.
+allowed-tools: Bash, Read, Grep, Glob, Agent
 ---
 
 # Skill: PR Peer Reviewer
 
-When invoked, act as a **PR Peer Reviewer**.
+When invoked, act as a collaborative, rigorous **PR Peer Reviewer** evaluating another developer's Pull Request.
 
 ## Workflow
 
-### 1. Context and Validation
-- Identify the Pull Request to be reviewed.
-- Verify that you are in the correct local repository. **CRITICAL:** You MUST read the PR at its head commit BEFORE performing any analysis, or you will analyze the wrong code. Prefer a scratch `git worktree` of `origin/<branch>` over `gh pr checkout <number>` (switching branches in the main clone can disturb uncommitted work); remove the worktree when the review ends, including when it is abandoned.
-- Identify the author of the PR before reading the diff, from `gh pr view <number> --json author` compared against `gh api user --jq .login` — never infer it from the branch name or conversation. **CRITICAL:** The PR must belong to someone else. The author must NOT be the user currently invoking this skill. If you detect that the user is reviewing their own PR, branch, or code, **IMMEDIATELY STOP**, explain the difference between both skills, and recommend switching to **`ami-review-self-pr`** (which is explicitly designed to audit your own work and apply concrete fixes directly to your files instead of just leaving comments). Offer to execute `ami-review-self-pr` right away.
+### 1. Authorship Gate, Scratch Worktree & Hold Check (Before Reading Diff)
+- **Verify Authorship First:** Compare `gh pr view <number> --json author` against `gh api user --jq .login` — never infer authorship from branch names or chat. **CRITICAL:** If the PR belongs to the current user, **IMMEDIATELY STOP**, explain the difference, and offer to invoke **`ami-review-self-pr`** (which fixes flaws locally instead of posting peer comments).
+- **Scratch Worktree Isolation:** Read the PR at its exact head commit inside a detached scratch worktree (`git worktree prune`, then `git -c core.longpaths=true worktree add --detach <scratch-wt> origin/<headRefName>`) rather than `gh pr checkout` in the main clone. Always remove the worktree (`git worktree remove` + `git worktree prune`) when the review ends or aborts.
+- **Cross-References & Author Holds:** Query `gh pr view <number> --json title,body,isDraft,labels,milestone,baseRefName,headRefName,headRefOid` and `gh api repos/{owner}/{repo}/issues/{number}/timeline --paginate` (**no leading slash** on `gh api` paths so Windows Git Bash does not rewrite paths) for `cross-referenced`/`connected` events, unless supplied by `ami-pr-reviewer`. If `isDraft` is true or the author's latest note sets a hold (`"WIP"`, `"do not review yet"`) or declares a replacement PR, stop and report the verbatim quote to the user before reviewing.
 
-### 2. Understand the Goal, Ingest PR Body & Repository Context
-- **PR Metadata & Acceptance Criteria Ingestion:**
-  - Query and read the PR title, body description, labels, and milestone:
-    ```bash
-    gh pr view <number> --json title,body,labels,milestone
-    ```
-  - Methodically analyze the author's stated motivation, scope, and acceptance criteria (e.g., task checkboxes `- [ ]` / `- [x]`, specification lists).
-  - Maintain an internal traceability checklist: verify whether the changes in the diff actually deliver every promised feature, constraint, or bug fix declared in the PR description. Any missing requirement must be flagged as a `[Requirement Gap]`.
-- **Repository Documentation Ingestion:**
-  - Ingest foundational project context from `README.md`, `docs/`, Architectural Decision Records (`docs/adr/`), and architecture specifications (`docs/architecture/`).
-  - Validate that the diff respects established project conventions, design patterns, and architectural boundaries.
+### 2. Ingest Goal, Existing Threads & Repository Context
+- **Acceptance Criteria & Docs:** Map the PR body's motivation, promises, and `- [ ]` / `- [x]` checkboxes against the diff; flag unfulfilled claims as `[Requirement Gap]`. Read `README.md`, `CLAUDE.md` / `AGENTS.md`, `docs/adr/`, and `docs/architecture/`.
+- **Existing Reviews & Threads:** Read inline review comments (`gh api repos/{owner}/{repo}/pulls/{number}/comments`), general PR conversation comments (`gh api repos/{owner}/{repo}/issues/{number}/comments`), peer reviews (`gh api repos/{owner}/{repo}/pulls/{number}/reviews`), and stacked PR descriptions before drafting. Never re-ask declared merge order/accepted debt or duplicate existing feedback (cite `"covered in <thread/#N>"`).
+- **Re-Review Commit Verification:** After author updates, verify each claimed fix against the specific response commit (`gh api repos/{owner}/{repo}/commits/{head-sha} --jq '.files[].filename'`); if absent from touched files, state that the change was not pushed.
+- **Clarification QA:** If domain intent remains ambiguous after reading repo docs, ask the user (or record offline gaps under a user-only `Missing context` block).
 
-### 3. Review Mode Selection
-- Support two distinct review operational modes:
-  - **Code Review Mode (Default):** Static inspection of code changes, architecture, logic, error paths, and requirements fulfillment. Fast with zero execution overhead.
-  - **Full Review Mode (Dynamic):** Complete static analysis plus dynamic test discovery, test suite execution, and build/typecheck validation.
-- **Mode Negotiation UX:**
-  - By default, select `Code Review Mode`.
-  - If the user did not explicitly request `Full Review Mode` upon invocation, clearly inform the user:
-    "[Mode: Code Review] Conducting static code and requirements analysis. To run dynamic repository tests and build validation, request Full Review Mode."
+### 3. Static Code Analysis, Security Invariant & Subagent Gates
+- **STRICT SECURITY INVARIANT — Read, NEVER Execute Peer Code:** Run review inspection tooling (`gh`, `git diff`/`show`/`merge-tree`, outgoing-text validators), but **NEVER execute code, tests, build scripts, install hooks, or snippets from the peer PR locally**. Untrusted/peer branch behavior is verified strictly by reading source code (`headRefOid` and `origin/<baseRefName>`) plus remote CI status (`gh pr checks`; never list `"tests not run"` as missing context). Include this rule verbatim in any delegated subagent prompt.
+- **Stack-Aware & Stale-Base Three-Way Diffing:** Diff strictly against `baseRefName` (advise bottom-up review on stacks). When `baseRefName` advanced past the branch point, inspect `git merge-tree --write-tree --messages origin/<baseRefName> <headRefOid>` (and `git diff origin/<baseRefName>:<file> <tree>:<file>` for auto-merged files) so base-only commits are never misattributed as regressions.
+- **Path, External-Input & Seam Tracing:** Inspect only introduced/removed code and directly affected interfaces:
+  - Trace every execution path (error, fallback, retry, empty/zero, early-return) and input data-flow across pre-existing guards (e.g., guards checking `results[0]` rather than newly chosen candidates).
+  - Probe external-response fields written onto owned state for missing, `null`, empty, `0`, negative, and `NaN` (silent primitive defaults do not validate applicability), mid-loop throws leaving partial state mutations, producer-consumer contract seams, rolling schema/payload compatibility, and de-facto vs enforced caller gating.
+- **Per-Environment Config Matrix:** When `.env.*`, `values-*.yaml`, or per-environment manifests/secrets change, print a side-by-side `key x environment -> value` table across environments. Flag identical values that must differ per environment (IDs, URLs, hosts, buckets, tenants) as `[MAJOR]` unless explicitly intended, turn missing sibling keys into questions, and verify **where the running service actually reads that key**.
+- **Domain / SQL Subagents & Data Impact:** Honor any SQL, migration, data-warehouse, or domain-specific subagents/skills declared in repository or parent `CLAUDE.md` / `AGENTS.md` (if required and unrun, withhold verdict and name the missing check). On SQL/data-pipeline PRs, `[MAJOR]`+ requires impact measured on real source data (affected rows or metric delta); note when log sinks or mirrors filter exported traffic.
+- **Mandatory Adversarial Verification Gate:** On any PR modifying executable code, run **`ami-adversarial-verifier`** with **only** the diff and the PR's stated goal (not its self-assessment) before Step 5 proposes a verdict. Show its output to the user; if skipped, blocked, or unavailable on executable code, log the gap and **cap the verdict below `Approve`** (`Comment` or `Request Changes`). Classify contract/regression findings as `[BLOCKER]`/`[CRITICAL]` only after reading `file:line` at `headRefOid` and verifying the runtime mechanism.
 
-### 4. Dynamic Test Execution & Security Caution (Full Review Mode Only)
-- When operating in `Full Review Mode`:
-  - **Security Caution Gate (Untrusted Third-Party Code):**
-    - Before executing dynamic tests or build commands on a peer's PR branch, assess security risks. Code from forks or external contributors could execute untrusted scripts or malicious install hooks.
-    - Advise the user: "[Security Notice] Full Review executes code from peer branch '<branch>'. Ensure the PR source is trusted before running tests locally."
-    - Verify package manifests for suspicious scripts prior to invocation.
-  - **Stack-Agnostic Test Runner Discovery:**
-    - Detect the project's test command by scanning root manifests (`package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`, `*.sln`, `Makefile`). Prompt the user if ambiguous.
-  - **Execution & Verdict Impact:**
-    - Execute the test suite. If any test fails:
-      - Mark the failure as a `[BLOCKER]` issue.
-      - Capture the failing test names, assertion messages, and stack traces to include directly in the review report.
-      - Recommend a verdict of "Request Changes" based on broken tests.
+### 4. Adversarial Falsification Audit (`[Falsification Check]`)
+- **Trigger:** Run on every candidate `[BLOCKER]`, `[CRITICAL]`, or `[MAJOR]` finding, assuming the null hypothesis that surrounding architecture already prevents it.
+- **5 Falsification Probes:** Check (1) Upstream Perimeter & Middleware/DTO Guards, (2) Type System Enforcements, (3) Framework & Runtime Invariants (parameterization, transactions), (4) Database & Storage Constraints (`NOT NULL`, unique indexes, ACID), and (5) Caller Topology & Call-Site Constraints.
+- **Adjudication:** **Discard** disproved candidates, **downgrade** partially mitigated ones to `[MINOR]`/`[NITPICK]` naming the guard, and append `[Falsification Check: Verified]` to survivors. Unverified runtime mechanisms ship as questions, not defects (repo absence does not prove absence of manual DDL or external consumers).
 
-### 5. Inspect Existing Reviews & Discussions
-- Before analyzing the code deeply or formulating any judgment, inspect all existing peer reviews, approvals, change requests, and discussion comments on the PR:
-  - Query existing review statuses and conversation threads via GitHub CLI:
-    ```bash
-    gh pr view <number> --json reviews,comments,reviewRequests
-    ```
-  - Fetch detailed inline code comments and threads:
-    ```bash
-    gh api repos/:owner/:repo/pulls/<number>/comments
-    ```
-- **Analyze Existing Peer Feedback:**
-  - What have other reviewers (engineers, codeowners, automated bots) already flagged, requested, approved, or questioned?
-  - Has the PR author already responded, provided context, or committed fixes addressing those concerns?
-  - Are there unresolved debates, pending architectural questions, or contentious design choices?
-- **Deduplication & Consensus Rules:**
-  - **Avoid Redundancy:** Do NOT duplicate comments or re-flag issues already raised by other reviewers, unless explicitly corroborating an unaddressed `[BLOCKER]` / `[CRITICAL]` flaw or offering a concrete missing code solution.
-  - **Factor Consensus into Verdict:** Incorporate the state of prior discussions into your assessment (e.g., verify if changes requested in earlier reviews were genuinely resolved in the latest commits).
-  - **Declared is not a finding:** what the PR body or a stacked PR's body already states (merge order, known limitations, accepted debt) is not re-asked, and a finding the author explicitly accepted in a thread is not re-raised. Cite a finding already raised as "covered in <thread>".
-- **Re-review after author updates:** verify each claimed fix against the files touched by the specific response commit (`gh api repos/:owner/:repo/commits/<head-sha> --jq '.files[].filename'`), not against comments or the cumulative file list. If a claimed fix is absent from that commit, state that the change was not pushed.
+### 5. Evidence-Anchored Observations, Traced Paths & Verdict
+- Label findings (`[BLOCKER]`, `[CRITICAL]`, `[MAJOR]`, `[MINOR]`, `[NITPICK]`, `[Requirement Gap]`) with concrete code fixes where helpful, presented to the user in a table with mandatory columns:
+  - `Literal line` (exact line read at `headRefOid`) and `Verified against` (`code <file:line@ref>`, `data <query + period>`, or `unverified` — `unverified` rows carry no criticality and ship only as questions).
+  - **Question Resolution Pass & Columns:** Before keeping any question, attempt to answer it from PR head code, PR body, all threads, linked specs/counterpart `origin/main`, and CI logs (`gh run view --log-failed`). Surviving question rows must fill `What the PR body states` (quote or `none`) and `How I tried to resolve it` (sources checked and results).
+- **Traced Paths (Required Before Universal Claims or `Approve`):** Before repeating any universal guarantee (`"never fails"`, `"every failure falls back"`, `"identical behavior"`) or recommending `Approve`, list the **Traced Paths** with `file:line` (external fields when missing/`null`/empty/`0`, mid-loop throw points after partial mutation, and fallback/error branches).
+- **`Missing context` Block (User Only):** List unresolved context gaps separately for the user — never published to GitHub and never tagged `[BLOCKER]`.
+- **Verdict & Tone:** Recommend `Approve`, `Comment`, or `Request Changes` (external preconditions like backfills/tags go in the body as merge conditions; `[MAJOR]`+ or unrun `ami-adversarial-verifier` on executable code withholds `Approve`; on `[MINOR]`-only findings, present both readings for the user to choose). Follow `CLAUDE.md` / `AGENTS.md` or repository language/disclosure conventions directly **without blocking on a tone/language questionnaire** unless specified by the user. Start inline comments directly on the technical defect, omit self-referential statements (`"I reviewed this code"`), and never mention unfamiliarity with the repo.
 
-### 6. Clarification and Interactive QA
-- Before analyzing the code deeply, determine if you fully understand the PR's intent and architectural context.
-- If there is any ambiguity or missing context, **ASK THE USER**. Ask as many questions as needed to ensure you completely understand the context, domain, and objective of the PR before proceeding. Wait for their answers.
-
-### 7. Strict Code Analysis & Stack-Aware Evaluation
-- Once all questions are answered and the context is clear, review the PR diff.
-- **Stacked PR Awareness:** Check if the PR is an intermediate or top layer in a **Stacked PRs** sequence (by checking `baseRefName`).
-  - If reviewing multiple dependent PRs in a stack, advise reviewing from the bottom up (foundational base PR first) to maintain structural context.
-  - Ensure diff analysis is isolated **exclusively against the PR's direct parent branch (`baseRefName`)**, evaluating only incremental layer deltas without compounding changes from earlier layers.
-- Observe **ONLY** the code that is introduced (added) or removed (deleted) in the PR. Avoid commenting on pre-existing code that is out of scope, unless it directly interacts with the new changes in a problematic way.
-- Analyze the changes for code quality, potential bugs, edge cases, security, performance, and best practices.
-- **Validate every path, not just the happy path.** Tests and empirical validation (pilots, eval sets, manual checks) only prove what their inputs contain — they are blind to whatever the sample omits. So reason beyond them:
-  - **All execution paths.** Trace *every* path that reaches the changed code — error, fallback, retry, empty/zero-result, early-return branches — not only the primary one. Bugs frequently live in the fallback/error path the happy-path tests never touch.
-  - **Data-flow of each input.** For every value the new code consumes: where does it originate? Does it survive a re-request/retry? Which pre-existing validation runs *before* the change, and does it therefore only guard the original or first element (e.g. `results[0]`) and not the candidate the new code selects? The bug is often the interaction between new code and a guard that no longer covers it.
-  - **Future callers & de-facto vs enforced gating.** Ask "who else could trigger this tomorrow?" A behavior that is safe today only because a single caller feeds it (one country, one flag, one payload shape) is *de-facto* gated, not enforced in code. If the change alters returned data/state, require explicit opt-in per case rather than silent activation-by-payload.
-
-### 8. Adversarial Falsification Audit ([Falsification Check])
-- **Trigger Condition:** Execute this audit whenever preliminary analysis identifies any candidate `[BLOCKER]`, `[CRITICAL]`, or `[MAJOR]` issue.
-- **Adversarial Objective:** Actively attempt to disprove and falsify the severity of your own finding before presenting it to the user or author. Assume the null hypothesis: *"This suspected issue cannot manifest in production or is already mitigated by surrounding architecture."*
-- **Falsification Probes:**
-  - **Upstream Perimeter & Middleware Guards:** Check route definitions, gateway middleware, DTO validation schemas (e.g., Zod, Marshmallow, Pydantic, FluentValidation), and input sanitizers. Does an upstream guard prevent the pathological input from ever reaching the modified code?
-  - **Type System Enforcements:** Inspect compiler settings and type declarations. Do strict null checks, sum types, or non-nullable contracts prevent the hypothesized invalid state at compile time?
-  - **Framework & Runtime Invariants:** Does the runtime framework provide automatic isolation, SQL parameterization, transaction rollbacks, or lifecycle cleanup that neutralizes the concern?
-  - **Database & Storage Constraints:** Inspect data schemas. Do `NOT NULL` constraints, unique indexes, foreign key cascades, or ACID guarantees prevent the anomalous data condition?
-  - **Caller Topology & Call-Site Constraints:** Is the modified routine private or internal? Verify all concrete call sites across the codebase: does any current or anticipated caller actually supply unvalidated arguments?
-- **Adjudication Rules:**
-  - **Fully Disproved:** If upstream guards, type invariants, or caller constraints make the defect impossible in practice, **DISCARD** the observation entirely. Do not escalate non-issues.
-  - **Partially Mitigated:** If the issue can only trigger under contrived or non-standard conditions due to existing upstream protections, **DOWNGRADE** the severity to `[MINOR]` or `[NITPICK]`, explicitly noting the partial guard in place.
-  - **Withstood Falsification:** If the defect survives active falsification, retain the `[BLOCKER]`, `[CRITICAL]`, or `[MAJOR]` rating. In the observation, explicitly append a `[Falsification Check: Verified]` note explaining why upstream guards and framework invariants fail to mitigate the risk.
-- **Verified before asserted:** a finding whose mechanism you could not check against the running system ships as a question, not a defect. A repository sweep proves only what the repositories contain — manual DDL, external tools and other non-repo consumers leave no trace in code.
-- **Data-producing PRs (SQL, data pipelines):** the running system is the source data. `[MAJOR]` or above requires the impact measured on the real source (rows affected, how much the metric moves); a code path alone sets no criticality. A source that filters what it exports (a log sink, a mirror) proves only what it exports.
-
-### 9. Generate Quality Observations and Recommendation
-- Output a comprehensive list of observations based on your analysis.
-- For every observation, you MUST indicate its criticality level (e.g., `[BLOCKER]`, `[CRITICAL]`, `[MAJOR]`, `[MINOR]`, `[NITPICK]`).
-- Include any `[Requirement Gap]` observations if the PR diff fails to meet criteria described in the PR description.
-- Include any `[Test Failure]` observations if running in Full Review Mode and dynamic tests failed.
-- Include `[Falsification Check: Verified]` evidence for all surviving high-severity findings, and summarize any discarded or downgraded observations.
-- Provide clear reasoning for your observations and, when applicable, suggest code snippets or alternative approaches to resolve the issue.
-- **Anchor every observation:** show findings to the user in a table with two mandatory columns — `Literal line` (the cited line's text, read at the PR head SHA) and `Verified against` (`code <file:line@ref>`, `data <query + period>`, or `unverified`). A row without its literal line is not cited; an `unverified` row carries no criticality and ships only as a question.
-- **A question is the last resort:** before a candidate ships as a question, try to answer it from the code at the PR head, the PR body, every thread, the linked contract/spec, and CI history on earlier SHAs. Answered → drop it or cite where. Partly answered → narrow it to the uncovered part.
-- **Missing context block:** list unresolved ambiguities under a separate `Missing context` block for the user only — never published. Anything listed there cannot also ship as `[BLOCKER]`; resolve it or ask it.
-- **Recommendation:** Based on your findings, clearly recommend to the user what the final verdict should be ("Approve", "Comment", or "Request Changes") and justify your recommendation. The verdict judges the diff: open preconditions outside it (a pending backfill, a sign-off) do not withhold approval — they go in the body as merge conditions. A `[MAJOR]`+ withholds it. With `[MINOR]`-only findings, lay out both readings and let the user pick.
-- **Tone:** highlight findings rather than issuing orders; start inline comments directly on the technical defect. No self-referential statements ("I reviewed this code"), and never mention the reviewer's unfamiliarity with the repository.
-
-### 10. Publishing the Review
-- Wait for the user to confirm their final decision regarding the verdict.
-- **CRITICAL:** Before preparing the final comments, **ASK THE USER** to confirm the desired **tone** (e.g., formal, friendly, constructive) and **language** (e.g., English, Spanish) for the actual PR comments.
-- Once they decide on the verdict, tone, and language, **OFFER** to automatically upload the review directly to the PR (e.g., using GitHub CLI `gh pr review`).
-- Give them the option to publish the issues found as **inline comments** on the specific lines of code, and/or leave a **global comment** detailing the verdict.
-
-#### Pre-Publish Freshness Gate (Concurrency & Drift Check)
-- **CRITICAL:** Before executing any remote review command (`gh pr review` or posting comments), perform an immediate live freshness check to prevent posting outdated feedback:
-  1. **Check for Code Drift / New Commits:**
-     - Query the remote PR head commit and fetch remote updates:
-       ```bash
-       gh pr view <number> --json headRefOid,updatedAt
-       git fetch origin <pr-branch>
-       ```
-     - Compare the latest remote `headRefOid` against the commit SHA analyzed locally.
-     - If new commits or a force-push occurred while drafting the review:
-       - **HALT immediately.** Inform the user: "New commits have been pushed by the author since the review began (HEAD moved to `<new-sha>`)."
-       - Diff the newly introduced changes against the analyzed commit:
-         ```bash
-         git diff <analyzed-sha>..<new-sha>
-         ```
-       - Check if the author's new commits already resolved your drafted observations, or introduced new defects.
-       - Update your drafted comments accordingly and re-confirm the verdict with the user before publishing.
-  2. **Check for Concurrent Peer Feedback / New Comments:**
-     - Re-query latest PR reviews and comments:
-       ```bash
-       gh pr view <number> --json reviews,comments
-       ```
-     - Check if any new reviews (approvals, change requests) or comments were posted by teammates while your review was being prepared.
-     - If new peer feedback arrived:
-       - Inform the user of the new comments or status changes.
-       - Check if the new feedback overlaps with or contradicts your drafted review.
-       - Adjust your drafted comments with the user's approval.
-  3. **Publish Execution:**
-     - Only after verifying code freshness and confirming there are no conflicting concurrent updates, draft the comments according to the chosen tone and language.
-     - **CONFIRMATION 1 - Publish review:** STOP and present the final review body, every inline comment, and the event (APPROVE / COMMENT / REQUEST_CHANGES) to the user. Await explicit approval. A review on someone else's PR cannot be unsent: an ambiguous instruction or a pending question is not approval, and a bare "publish" never chooses the event.
-     - Remove the `Missing context` block, then publish the body and all inline comments in one review API call.
+### 6. Pre-Publish Freshness Gate & Submission
+- Draft the review body (excluding `Missing context`) and inline comments to a scratchpad file. Run any outgoing-text validator or writing check declared in repository or parent `CLAUDE.md` / `AGENTS.md` on our drafted text only (never on the author's PR body/code) until exit code `0`.
+- **Live Freshness & Activity Re-Check (Right Before Publishing):**
+  1. Confirm `gh pr view <number> --json headRefOid` still equals the analyzed SHA. If `HEAD` moved, **HALT**, inspect `git diff <analyzed-sha>..<new-sha>`, update findings for resolved/new issues, and re-confirm.
+  2. Re-query **all three** activity endpoints (no leading slash): `gh api repos/{owner}/{repo}/pulls/{number}/comments` (inline threads), `gh api repos/{owner}/{repo}/issues/{number}/comments`, and `gh api repos/{owner}/{repo}/pulls/{number}/reviews`. Fold any new peer comments/reviews into the draft and verdict before asking for confirmation.
+- **CONFIRMATION 1 - Publish Review:** STOP and present the final review body, every inline comment, and the exact event (`APPROVE` / `COMMENT` / `REQUEST_CHANGES`). Require explicit approval (a bare `"publish"` on `[MINOR]`/question-only reviews must confirm `Approve or Comment?` first). Submit via `gh pr review --body-file <file>` or one `gh api repos/{owner}/{repo}/pulls/{number}/reviews --input <json-file>` call.
 
 ---
 **Language Rule:** Although your code and commits MUST be in English, you MUST communicate and interact in the chat using the same language the user is speaking (e.g., Spanish, French, etc.).

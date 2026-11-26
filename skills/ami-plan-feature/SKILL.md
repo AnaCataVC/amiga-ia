@@ -1,6 +1,6 @@
 ---
 name: ami-plan-feature
-description: Interactive feature planning and architecture orchestration workflow. Use when designing, scoping, or planning the implementation of a new feature, user story, capability, or substantial modification. Interactively interviews the user to clarify ambiguities and doubts, proactively proposes technical suggestions and architectural alternatives, investigates external context and internal codebase, drafts a comprehensive implementation plan, and orchestrates execution.
+description: Interactive feature planning and architecture workflow. Clarifies ambiguities, proposes technical trade-offs, researches codebase and external context, drafts implementation plans, and orchestrates execution.
 allowed-tools: Bash, Read, Grep, WebSearch, WebFetch, Agent, Write, Edit
 ---
 

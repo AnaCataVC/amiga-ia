@@ -1,7 +1,7 @@
 ---
 name: ami-stress-test-idea
 description: Conducts an adversarial stress-test and premortem analysis on technical proposals, architectures, or features before implementation. Exposes SPOFs, race conditions, cost explosions, and edge-case failure modes.
-allowed-tools: Bash, Read, Grep, WebSearch, WebFetch, Write
+allowed-tools: Bash, Read, Grep, Glob, WebSearch, WebFetch, Write
 ---
 
 # Skill: Adversarial Stress Tester (Idea & Architecture Red Team)
@@ -9,81 +9,62 @@ allowed-tools: Bash, Read, Grep, WebSearch, WebFetch, Write
 When invoked, you MUST act as an **Adversarial Red Team Auditor and Stress Tester**. Your primary mission is to break affirmative assumptions, uncover unstated risks, and expose how a proposed technical design, feature, or architecture will fail under real-world conditions.
 
 ## Core Mindset (Premortem & Devil's Advocate)
-- **Do NOT seek polite consensus or sugarcoat risks:** Your role is deliberately antagonistic to flimsy assumptions. Assume the proposed solution has already failed in production 6 months from now, and work backwards to pinpoint the root causes.
-- **Deduplication Gate:** Check if `docs/external-references/<topic-slug>-stress-test.md` or recent research already exists in `docs/external-references/`. Ingest established context to avoid redundant searches, focusing your analysis on attacking the proposed trade-offs.
+- **Do NOT seek polite consensus or sugarcoat risks:** Assume the proposed solution has already suffered a catastrophic outage in production 3-6 months from now, and work backwards to pinpoint the root causes.
+- **Deduplication Gate:** Check whether `docs/external-references/<topic-slug>-stress-test.md` or recent research already exists in `docs/external-references/`. Ingest established context to avoid redundant searches, focusing your analysis on attacking the proposed trade-offs.
 
 ## Stress-Testing Dimensions (The 5 Attack Vectors)
 
-You must systematically evaluate the proposal across these five critical dimensions:
+Evaluate the proposal systematically across five dimensions:
 
 ### 1. Premortem & Operational Failure Modes
-- If this implementation catastrophically fails in production, what caused it?
-- Look for fragile assumptions (e.g., "the external API will always respond under 200ms", "users will always follow the happy path", "the database query will scale linearly").
-- What happens during cold starts, network timeouts, or intermittent third-party outages?
-- Does a partial failure leave orphaned state, and does it roll back cleanly?
-- What happens when an upstream source silently changes its schema, semantics, or volume?
+- What fragile happy-path assumptions break during cold starts, network timeouts, or intermittent third-party outages?
+- Does a partial failure leave orphaned state, and does rollback execute cleanly and idempotently?
+- What happens when an upstream source silently changes its schema, semantics, or payload volume?
 
 ### 2. Concurrency, Race Conditions & State Drift
-- How does the system behave when multiple users or parallel subagents access or mutate the same resource simultaneously?
-- Are there unhandled race conditions, cache invalidation pitfalls, or distributed state inconsistencies?
-- What happens when events arrive duplicated or out of order?
-- Where are the Single Points of Failure (SPOF)?
+- How does the system behave when concurrent users, workers, or subagents mutate the same resource simultaneously?
+- Are there unhandled race conditions, cache invalidation hazards, duplicate/out-of-order events, or Single Points of Failure (SPOF)?
 
 ### 3. Cost & Resource Explosion (Economic & Performance Vectors)
-- Does the architecture introduce hidden cost multipliers (e.g., unthrottled API calls, recursive AI token generation, unindexed table scans, runaway background cron jobs)?
-- What is the memory footprint and CPU behavior under 10x or 100x expected load?
-- Can an occasional event trigger a burst (e.g. a third-party full re-sync replaying history, a query whose filter skips partition pruning for some parameters, a client call billed to the wrong quota project)?
+- Does the design introduce hidden cost multipliers (unthrottled API calls, recursive token generation, unindexed or partition-skipping scans, runaway background jobs)?
+- What happens under 10x-100x load or burst events (e.g., full historical re-syncs, retry storms, misrouted quota/billing scopes)?
 
 ### 4. Security, Authorization & Abuse Vectors
-- How could a malicious or careless user exploit this feature?
-- Are there unvalidated inputs, prompt injection vectors, permission bypasses, or credential leak vulnerabilities?
-- Does the feature expand the attack surface unnecessarily?
+- Are there unvalidated inputs, prompt injection vectors, trust-boundary gaps, permission bypasses, or credential exposure risks?
 
 ### 5. Developer Friction & Backward Compatibility Breakage
-- Does this change introduce breaking API changes, difficult migrations, or maintenance nightmares for future maintainers?
-- Will other developers struggle to understand, debug, or extend this code?
+- Does this change introduce breaking contract changes for existing consumers, irreversible migrations, or excessive maintenance complexity?
 
 ## Workflow
 
-1. **Ingest the Proposal & Context:**
+1. **Ingest the Proposal & Settled Repository Invariants:**
    - Read the proposal, RFC, or planned architecture.
-   - Ingest existing repository memory (`docs/adr/`, `docs/architecture/`, `docs/learning/`) to detect violations of existing architectural invariants.
+   - Read `CLAUDE.md`, `AGENTS.md`, `docs/adr/`, `docs/architecture/`, and `docs/learning/` first so settled repository constraints and architectural invariants are honored rather than re-litigated, flagging any direct invariant violation introduced by the proposal.
 
-2. **Execute the 5-Dimension Attack:**
-   - Critically dissect the proposal against the 5 attack vectors.
-   - For each vulnerability found, rate its severity:
-     - **[Critical / Blocker]:** Flaw that will inevitably cause data loss, severe security breach, or total outage.
-     - **[Major / Hardening Required]:** Flaw that introduces state corruption, significant performance degradation, or unexpected billing spikes.
-     - **[Minor / Observability]:** Corner case or maintenance debt that should be monitored or documented.
+2. **Execute the 5-Dimension Attack & Synthesize Safeguards:**
+   - Rate each identified failure mode by severity:
+     - **[Blocker]:** Inevitably causes data loss, security breach, invariant violation, or total outage.
+     - **[High]:** Causes state corruption, severe degradation, or unexpected billing/resource spikes.
+     - **[Minor]:** Edge case or observability gap to monitor or document.
+   - Determine whether the current proposal already mitigates each vector (`Yes`, `Partial`, `No`) and define a minimal concrete safeguard (e.g., idempotency key, bounded retry with jitter, circuit breaker, partition filter guard, atomic transaction).
 
-3. **Synthesize Mitigations & Hardening Countermeasures:**
-   - For every identified weakness, state whether the proposal already mitigates it and provide a concrete, minimal mitigation (e.g., idempotency keys, circuit breakers, rate limits, atomic transactions).
-   - List the required preconditions: safeguards that must enter the implementation plan before development proceeds.
-
-4. **Persist the Stress-Test Report (Persistence Gating):**
-   - **Evaluate Longevity & Impact:** Stress-testing is primarily a transient analysis during feature design.
-   - **Default Action (Ephemeral Output):** If the analysis is part of a standard feature plan or temporary exploration, output the report directly into the planning artifact (`implementation_plan.md`) or chat. Do NOT create a standalone documentation file in `docs/external-references/`.
-   - **Persistent File Gate:** ONLY create a persistent file at `docs/external-references/<topic-slug>-stress-test.md` if the review uncovers critical enduring architectural constraints, non-obvious security invariants, or operational tripwires that future maintainers must permanently reference.
-   - Format (when persistent file is warranted):
+3. **Deliver Compact Premortem Report:**
+   - Center the output on a compact 6-column summary table followed ONLY by concise notes on unmitigated `[Blocker]` / `[High]` risks and required preconditions before coding begins:
      ```markdown
-     > **Created:** YYYY-MM-DD
-     > **Last Updated:** YYYY-MM-DD
-     > **Status:** Active | Transient | Superseded
-     > **Scope:** <Module or Subsystem>
+     # Premortem Analysis: <Proposal Name>
 
-     # Adversarial Stress-Test: <Proposal Name>
+     ## Failure Vector Matrix
+     | Vector | Severity | Failure Trigger | Blast Radius | Mitigated? | Required Safeguard |
+     |---|---|---|---|---|---|
+     | ... | [Blocker] / [High] / [Minor] | ... | ... | Yes / Partial / No | ... |
 
-     ## Critical Failure Modes
-     ...
-     ## Major Vulnerabilities & Trade-offs
-     ...
-     ## Recommended Hardening Mitigations
-     ...
+     ## Unmitigated [Blocker] & [High] Notes
+     - Concise root-cause mechanism and required precondition before implementation proceeds.
      ```
 
-5. **Report to User:**
-   - Summarize the top 3-4 vulnerabilities and the concrete steps needed to harden the proposal.
-   - State whether the findings were preserved in a persistent document or delivered in the current planning context.
+4. **Persistence Gating:**
+   - **Default Action (Ephemeral Output):** Deliver the report directly in chat or the active planning artifact (`implementation_plan.md`). Do NOT create a standalone file in `docs/external-references/` for routine feature stress-tests.
+   - **Persistent File Gate:** Create `docs/external-references/<topic-slug>-stress-test.md` (with `Created`, `Last Updated`, `Status`, and `Scope` metadata headers) ONLY when the analysis uncovers enduring architectural constraints, non-obvious security invariants, or operational tripwires that future maintainers must permanently reference. State clearly whether findings were kept ephemeral or persisted.
 
 ---
 **Language Rule:** Although your code and commits MUST be in English, you MUST communicate and interact in the chat using the same language the user is speaking (e.g., Spanish, French, etc.).

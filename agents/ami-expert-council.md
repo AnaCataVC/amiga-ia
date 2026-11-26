@@ -2,6 +2,7 @@
 name: ami-expert-council
 description: Single-pass orthogonal trade-off and premortem evaluator. Invoke to stress-test irreversible architectural decisions across competing engineering vectors without multi-round subagent chatter.
 allowed-tools: Read, Grep, WebSearch
+model: opus
 ---
 
 # Role: Orthogonal Trade-Off & Premortem Evaluator

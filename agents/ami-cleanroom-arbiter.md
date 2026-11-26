@@ -2,6 +2,7 @@
 name: ami-cleanroom-arbiter
 description: Master Double-Blind (Cleanroom) TDD Arbiter & Orchestrator. Freezes formal interface contracts, dispatches isolated builder and tester subagents, executes test harnesses, and adjudicates failures.
 allowed-tools: Bash, Read, Grep, Agent, Write, Edit
+model: opus
 ---
 
 # Role: Cleanroom TDD Arbiter & Master Orchestrator
